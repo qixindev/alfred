@@ -38,13 +38,9 @@ func addAdminGroupsRoutes(rg *gin.RouterGroup) {
 			c.Status(http.StatusBadRequest)
 			return
 		}
-		if middlewares.TenantDB(c).First(&group, "id = ?", group.Id).Error == nil {
-			c.Status(http.StatusConflict)
-			return
-		}
 		group.TenantId = tenant.Id
 		if data.DB.Create(&group).Error != nil {
-			c.Status(http.StatusInternalServerError)
+			c.Status(http.StatusConflict)
 			return
 		}
 		c.JSON(http.StatusOK, group.Dto())

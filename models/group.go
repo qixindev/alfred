@@ -12,23 +12,23 @@ type Group struct {
 }
 
 type GroupUser struct {
-	Id      uint `gorm:"primaryKey"`
-	GroupId uint
-	Group   Group
-	UserId  uint
-	User    User
-	Role    string
+	Id      uint   `gorm:"primaryKey" json:"id"`
+	GroupId uint   `json:"groupId"`
+	Group   Group  `json:"group"`
+	UserId  uint   `json:"userId"`
+	User    User   `json:"user"`
+	Role    string `json:"role"`
 
 	TenantId uint `gorm:"primaryKey"`
 	Tenant   Tenant
 }
 
 type GroupDevice struct {
-	Id       uint `gorm:"primaryKey"`
-	GroupId  uint
-	Group    Group
-	DeviceId uint
-	Device   Device
+	Id       uint   `gorm:"primaryKey" json:"id"`
+	GroupId  uint   `json:"groupId"`
+	Group    Group  `json:"group"`
+	DeviceId uint   `json:"deviceId"`
+	Device   Device `json:"device"`
 
 	TenantId uint `gorm:"primaryKey"`
 	Tenant   Tenant

@@ -3,7 +3,7 @@ package models
 import "accounts/models/dto"
 
 type User struct {
-	Id               uint   `gorm:"primaryKey"json:"id"`
+	Id               uint   `gorm:"primaryKey" json:"id"`
 	Username         string `json:"username"`
 	FirstName        string `json:"firstName"`
 	LastName         string `json:"lastName"`

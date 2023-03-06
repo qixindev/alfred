@@ -38,13 +38,9 @@ func addAdminDevicesRoutes(rg *gin.RouterGroup) {
 			c.Status(http.StatusBadRequest)
 			return
 		}
-		if middlewares.TenantDB(c).First(&device, "id = ?", device.Id).Error == nil {
-			c.Status(http.StatusConflict)
-			return
-		}
 		device.TenantId = tenant.Id
 		if data.DB.Create(&device).Error != nil {
-			c.Status(http.StatusInternalServerError)
+			c.Status(http.StatusConflict)
 			return
 		}
 		c.JSON(http.StatusOK, device.Dto())
