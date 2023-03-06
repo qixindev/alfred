@@ -2,6 +2,7 @@ package routes
 
 import (
 	"accounts/data"
+	"accounts/middlewares"
 	"accounts/models"
 	"accounts/models/dto"
 	"github.com/gin-contrib/sessions"
@@ -14,7 +15,7 @@ func GetUser(c *gin.Context) *models.User {
 }
 
 func Authorized(c *gin.Context) {
-	tenant := GetTenant(c)
+	tenant := middlewares.GetTenant(c)
 	session := sessions.Default(c)
 	tenantName := session.Get("tenant")
 	if tenant.Name != tenantName {

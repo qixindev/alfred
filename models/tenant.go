@@ -1,6 +1,6 @@
 package models
 
 type Tenant struct {
-	Id   uint
+	Id   uint `gorm:"primaryKey"`
 	Name string
 }

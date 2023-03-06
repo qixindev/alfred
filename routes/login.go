@@ -2,6 +2,7 @@ package routes
 
 import (
 	"accounts/data"
+	"accounts/middlewares"
 	"accounts/models"
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-gonic/gin"
@@ -31,7 +32,7 @@ func addLoginRoutes(rg *gin.RouterGroup) {
 			return
 		}
 
-		tenant := GetTenant(c)
+		tenant := middlewares.GetTenant(c)
 
 		var user models.User
 		if data.DB.First(&user, "tenant_id = ? AND username = ?", tenant.Id, login).Error != nil {
@@ -67,7 +68,7 @@ func addLoginRoutes(rg *gin.RouterGroup) {
 	})
 
 	rg.POST("/register", func(c *gin.Context) {
-		tenant := GetTenant(c)
+		tenant := middlewares.GetTenant(c)
 		login := c.PostForm("login")
 		password := c.PostForm("password")
 

@@ -2,6 +2,7 @@ package routes
 
 import (
 	"accounts/data"
+	"accounts/middlewares"
 	"accounts/models"
 	"accounts/models/dto"
 	"accounts/utils"
@@ -30,7 +31,7 @@ func GetHostWithScheme(c *gin.Context) string {
 
 func getAccessToken(c *gin.Context, client *models.Client) (string, error) {
 	user := GetUser(c)
-	tenant := GetTenant(c)
+	tenant := middlewares.GetTenant(c)
 	scope := c.Query("scope")
 	var clientUser models.ClientUser
 	if err := data.DB.First(&clientUser, "tenant_id = ? AND client_id = ? AND user_id = ?", client.TenantId, client.Id, user.Id).Error; err != nil {
@@ -89,7 +90,7 @@ func addOAuth2Routes(rg *gin.RouterGroup) {
 		state := strings.TrimSpace(c.Query("state"))
 		nonce := c.Query("nonce")
 
-		tenant := GetTenant(c)
+		tenant := middlewares.GetTenant(c)
 		var client models.Client
 		if data.DB.First(&client, "tenant_id = ? AND client_id = ?", tenant.Id, clientId).Error != nil {
 			c.JSON(http.StatusForbidden, gin.H{"message": "Invalid client_id."})
@@ -153,7 +154,7 @@ func addOAuth2Routes(rg *gin.RouterGroup) {
 	})
 
 	rg.GET("/.well-known/openid-configuration", func(c *gin.Context) {
-		tenant := GetTenant(c)
+		tenant := middlewares.GetTenant(c)
 		prefix := GetHostWithScheme(c)
 		conf := dto.OpenidConfigurationDto{
 			Issuer:                            fmt.Sprintf("%s/%s", prefix, tenant.Name),
@@ -173,7 +174,7 @@ func addOAuth2Routes(rg *gin.RouterGroup) {
 	})
 
 	rg.GET("/.well-known/jwks.json", func(c *gin.Context) {
-		tenant := GetTenant(c)
+		tenant := middlewares.GetTenant(c)
 		jwks, err := utils.LoadKeys(tenant.Name)
 		if err != nil {
 			c.Status(http.StatusInternalServerError)

@@ -1,28 +1,28 @@
 package models
 
 type ProviderDingDingConfig struct {
-	Id         uint
+	Id         uint `gorm:"primaryKey"`
 	ProviderId uint
 	Provider   Provider
 
-	TenantId uint
+	TenantId uint `gorm:"primaryKey"`
 	Tenant   Tenant
 }
 
 type ProviderWeComConfig struct {
-	Id         uint
+	Id         uint `gorm:"primaryKey"`
 	ProviderId uint
 	Provider   Provider
 
-	TenantId uint
+	TenantId uint `gorm:"primaryKey"`
 	Tenant   Tenant
 }
 
 type ProviderAzureAdConfig struct {
-	Id         uint
+	Id         uint `gorm:"primaryKey"`
 	ProviderId uint
 	Provider   Provider
 
-	TenantId uint
+	TenantId uint `gorm:"primaryKey"`
 	Tenant   Tenant
 }
