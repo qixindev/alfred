@@ -1,10 +1,12 @@
 package routes
 
 import (
-	"accounts/auth"
 	"accounts/data"
 	"accounts/middlewares"
 	"accounts/models"
+	"accounts/utils"
+	"errors"
+	"fmt"
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
@@ -22,6 +24,21 @@ func hashPassword(password string) (string, error) {
 func checkPasswordHash(password string, hash string) bool {
 	err := bcrypt.CompareHashAndPassword([]byte(hash), []byte(password))
 	return err == nil
+}
+
+func getAuthProvider(tenantId uint, providerName string) (models.AuthProvider, error) {
+	var provider models.Provider
+	if err := data.DB.First(&provider, "tenant_id = ? AND name = ?", tenantId, providerName).Error; err != nil {
+		return nil, err
+	}
+	if provider.Type == "oauth2" {
+		var oauth2Provider models.ProviderOAuth2
+		if err := data.DB.First(&oauth2Provider, "tenant_id = ? AND provider_id = ?", tenantId, provider.Id).Error; err != nil {
+			return nil, err
+		}
+		return oauth2Provider, nil
+	}
+	return nil, errors.New("provider config not found")
 }
 
 func addLoginRoutes(rg *gin.RouterGroup) {
@@ -53,6 +70,37 @@ func addLoginRoutes(rg *gin.RouterGroup) {
 		if err := session.Save(); err != nil {
 			c.JSON(http.StatusInternalServerError, err)
 		}
+	})
+
+	rg.GET("/login/:provider", func(c *gin.Context) {
+		tenant := middlewares.GetTenant(c)
+		providerName := c.Param("provider")
+		authProvider, err := getAuthProvider(tenant.Id, providerName)
+		if err != nil {
+			c.Status(http.StatusNotFound)
+			return
+		}
+		redirectUri := fmt.Sprintf("%s/%s/logged-in/%s", utils.GetHostWithScheme(c), tenant.Name, providerName)
+		location := authProvider.Auth(redirectUri)
+		c.Redirect(http.StatusFound, location)
+	})
+
+	rg.GET("/providers", func(c *gin.Context) {
+		var providers []models.Provider
+		if middlewares.TenantDB(c).Find(&providers).Error != nil {
+			c.Status(http.StatusInternalServerError)
+			return
+		}
+		c.JSON(http.StatusOK, utils.Filter(providers, models.Provider2Dto))
+	})
+	rg.GET("/providers/:provider", func(c *gin.Context) {
+		providerName := c.Param("provider")
+		var provider models.Provider
+		if middlewares.TenantDB(c).First(&provider, "name = ?", providerName).Error != nil {
+			c.Status(http.StatusNotFound)
+			return
+		}
+		c.JSON(http.StatusOK, provider.Dto())
 	})
 
 	rg.GET("/logout", middlewares.Authorized, func(c *gin.Context) {
@@ -99,37 +147,33 @@ func addLoginRoutes(rg *gin.RouterGroup) {
 		}
 	})
 
-	rg.GET("/login/:provider", func(c *gin.Context) {
+	rg.GET("/logged-in/:provider", func(c *gin.Context) {
 		providerName := c.Param("provider")
 		var provider models.Provider
 		if middlewares.TenantDB(c).First(&provider, "name = ?", providerName).Error != nil {
 			c.Status(http.StatusNotFound)
 			return
 		}
-		var userInfo *auth.UserInfo = nil
-		var authProvider models.AuthProvider
-		if provider.Type == "oauth2" {
-			var providerOAuth2 models.ProviderOAuth2
-			if middlewares.TenantDB(c).First(&providerOAuth2, "provider_id = ?", provider.Id).Error != nil {
-				c.Status(http.StatusNotFound)
-				return
-			}
-			authProvider = providerOAuth2
-			var err error
-			userInfo, err = authProvider.Login()
-			if err != nil {
-				c.Status(http.StatusUnauthorized)
-				return
-			}
+
+		authProvider, err := getAuthProvider(provider.TenantId, provider.Name)
+		if err != nil {
+			c.String(http.StatusNotFound, "provider not found")
+		}
+		userInfo, err := authProvider.Login(c)
+		if err != nil {
+			c.Status(http.StatusUnauthorized)
+			return
 		}
 
 		var providerUser models.ProviderUser
-		var existingUser *models.User = nil
-		if middlewares.TenantDB(c).First(&providerUser, "provider_id = ? AND name = ?", provider.Id, userInfo.Name).Error != nil {
+		existingUser := &models.User{}
+		if middlewares.TenantDB(c).First(&providerUser, "provider_id = ? AND name = ?", provider.Id, userInfo.Sub).Error != nil {
+			// Current bind not found.
 			// If logged in, bind to current user.
 			user, err := middlewares.GetUserStandalone(c)
 			if err != nil {
-				user := &models.User{
+				// If not logged in, create new user.
+				newUser := models.User{
 					Username:         uuid.NewString(),
 					FirstName:        userInfo.FirstName,
 					LastName:         userInfo.LastName,
@@ -142,23 +186,24 @@ func addLoginRoutes(rg *gin.RouterGroup) {
 					Disabled:         false,
 					TenantId:         provider.TenantId,
 				}
-				if data.DB.Create(user).Error != nil {
+				if data.DB.Create(&newUser).Error != nil {
 					c.Status(http.StatusConflict)
 					return
 				}
+				user = &newUser
 			}
 
 			providerUser.TenantId = provider.TenantId
 			providerUser.ProviderId = provider.Id
 			providerUser.UserId = user.Id
-			provider.Name = userInfo.Name
-			if data.DB.Create(&provider).Error != nil {
+			providerUser.Name = userInfo.Sub
+			if err := data.DB.Create(&providerUser).Error; err != nil {
 				c.Status(http.StatusInternalServerError)
 				return
 			}
 			existingUser = user
 		} else {
-			if middlewares.TenantDB(c).First(existingUser, "id = ?", providerUser.UserId).Error != nil {
+			if err := middlewares.TenantDB(c).First(existingUser, "id = ?", providerUser.UserId).Error; err != nil {
 				c.Status(http.StatusInternalServerError)
 				return
 			}

@@ -3,7 +3,7 @@ package models
 import "accounts/models/dto"
 
 type Device struct {
-	Id   uint   `gorm:"primaryKey" json:"id"`
+	Id   uint   `gorm:"primaryKey;autoIncrement" json:"id"`
 	Name string `json:"name"`
 
 	TenantId uint `gorm:"primaryKey"`

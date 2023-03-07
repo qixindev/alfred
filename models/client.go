@@ -3,7 +3,7 @@ package models
 import "accounts/models/dto"
 
 type Client struct {
-	Id       uint   `gorm:"primaryKey" json:"id"`
+	Id       uint   `gorm:"primaryKey;autoIncrement" json:"id"`
 	Name     string `json:"name"`
 	ClientId string `json:"clientId"`
 
@@ -12,24 +12,22 @@ type Client struct {
 }
 
 type RedirectUri struct {
-	Id          uint   `gorm:"primaryKey" json:"id"`
+	Id          uint   `gorm:"primaryKey;autoIncrement" json:"id"`
 	ClientId    uint   `json:"clientId"`
-	Client      Client `json:"client"`
+	Client      Client `gorm:"foreignKey:ClientId, TenantId" json:"client"`
 	RedirectUri string `json:"redirectUri"`
 
 	TenantId uint `gorm:"primaryKey"`
-	Tenant   Tenant
 }
 
 type ClientSecret struct {
-	Id       uint   `gorm:"primaryKey" json:"id"`
+	Id       uint   `gorm:"primaryKey;autoIncrement" json:"id"`
 	Name     string `json:"name"`
 	ClientId uint   `json:"clientId"`
-	Client   Client `json:"client"`
+	Client   Client `gorm:"foreignKey:ClientId, TenantId" json:"client"`
 	Secret   string `json:"secret"`
 
 	TenantId uint `gorm:"primaryKey"`
-	Tenant   Tenant
 }
 
 func (c *Client) Dto() dto.ClientDto {

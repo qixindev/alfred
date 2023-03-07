@@ -2,8 +2,9 @@ package data
 
 import (
 	"accounts/models"
-	"gorm.io/driver/sqlite"
+	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
+	"os"
 )
 
 var DB *gorm.DB
@@ -21,12 +22,14 @@ func migrateDB() {
 	DB.AutoMigrate(&models.ClientSecret{})
 	DB.AutoMigrate(&models.TokenCode{})
 	DB.AutoMigrate(&models.Provider{})
+	DB.AutoMigrate(&models.ProviderUser{})
 
 	DB.AutoMigrate(&models.ProviderOAuth2{})
 }
 
 func InitDB() error {
-	db, err := gorm.Open(sqlite.Open("test.db"), &gorm.Config{})
+	dsn := os.Getenv("dsn")
+	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
 	if err != nil {
 		return err
 	}

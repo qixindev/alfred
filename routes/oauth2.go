@@ -17,18 +17,6 @@ import (
 	"time"
 )
 
-func GetHostWithScheme(c *gin.Context) string {
-	scheme := "http"
-	if c.Request.TLS != nil {
-		scheme = "https"
-	}
-	if s := c.Request.Header.Get("X-Forwarded-Proto"); s != "" {
-		scheme = s
-	}
-
-	return fmt.Sprintf("%s://%s", scheme, c.Request.Host)
-}
-
 func getAccessToken(c *gin.Context, client *models.Client) (string, error) {
 	user := GetUser(c)
 	tenant := middlewares.GetTenant(c)
@@ -44,7 +32,7 @@ func getAccessToken(c *gin.Context, client *models.Client) (string, error) {
 		}
 	}
 
-	iss := fmt.Sprintf("%s/%s", GetHostWithScheme(c), tenant.Name)
+	iss := fmt.Sprintf("%s/%s", utils.GetHostWithScheme(c), tenant.Name)
 	now := time.Now()
 
 	token := jwt.New(jwt.SigningMethodRS256)
@@ -55,6 +43,7 @@ func getAccessToken(c *gin.Context, client *models.Client) (string, error) {
 	claims["azp"] = client.ClientId
 	claims["exp"] = now.Add(24 * time.Hour).Unix()
 	claims["iat"] = now.Unix()
+	claims["name"] = user.Name()
 	claims["scope"] = scope
 
 	keys, err := utils.LoadRsaPrivateKeys(tenant.Name)
@@ -81,10 +70,6 @@ func clearTokenCode(code string) {
 	if err := data.DB.Delete(&models.TokenCode{}, "code = ? OR created_at < ?", code, earliest); err != nil {
 		println(err)
 	}
-}
-
-func getAccessTokenFromCode(c *gin.Context, client *models.Client) {
-
 }
 
 func getAccessCode(c *gin.Context, client *models.Client) (string, error) {
@@ -201,7 +186,7 @@ func addOAuth2Routes(rg *gin.RouterGroup) {
 
 	rg.GET("/.well-known/openid-configuration", func(c *gin.Context) {
 		tenant := middlewares.GetTenant(c)
-		prefix := GetHostWithScheme(c)
+		prefix := utils.GetHostWithScheme(c)
 		conf := dto.OpenidConfigurationDto{
 			Issuer:                            fmt.Sprintf("%s/%s", prefix, tenant.Name),
 			AuthorizationEndpoint:             fmt.Sprintf("%s/%s/oauth2/auth", prefix, tenant.Name),

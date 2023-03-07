@@ -3,10 +3,11 @@ package models
 import (
 	"accounts/auth"
 	"accounts/models/dto"
+	"github.com/gin-gonic/gin"
 )
 
 type Provider struct {
-	Id   uint   `gorm:"primaryKey" json:"id"`
+	Id   uint   `gorm:"primaryKey;autoIncrement" json:"id"`
 	Name string `json:"name"`
 	Type string `json:"type"`
 
@@ -27,15 +28,14 @@ func Provider2Dto(p Provider) dto.ProviderDto {
 }
 
 type ProviderUser struct {
-	Id         uint     `gorm:"primaryKey" json:"id"`
+	Id         uint     `gorm:"primaryKey;autoIncrement" json:"id"`
 	ProviderId uint     `json:"providerId"`
-	Provider   Provider `json:"provider"`
+	Provider   Provider `gorm:"foreignKey:ProviderId, TenantId" json:"provider"`
 	UserId     uint     `json:"userId"`
-	User       User     `json:"user"`
+	User       User     `gorm:"foreignKey:UserId, TenantId" json:"user"`
 	Name       string   `json:"name"`
 
 	TenantId uint `gorm:"primaryKey"`
-	Tenant   Tenant
 }
 
 type AuthProvider interface {
@@ -43,5 +43,5 @@ type AuthProvider interface {
 	Auth(string) string
 
 	// Login Callback when auth completed.
-	Login() (*auth.UserInfo, error)
+	Login(*gin.Context) (*auth.UserInfo, error)
 }

@@ -3,7 +3,7 @@ package models
 import "accounts/models/dto"
 
 type User struct {
-	Id               uint   `gorm:"primaryKey" json:"id"`
+	Id               uint   `gorm:"primaryKey;autoIncrement;not null" json:"id"`
 	Username         string `json:"username"`
 	FirstName        string `json:"firstName"`
 	LastName         string `json:"lastName"`
@@ -19,6 +19,22 @@ type User struct {
 	TenantId uint `gorm:"primaryKey"`
 	Tenant   Tenant
 	Role     string
+}
+
+func (u *User) Name() string {
+	if u.DisplayName != "" {
+		return u.DisplayName
+	}
+	if u.FirstName != "" && u.LastName != "" {
+		return u.FirstName + " " + u.LastName
+	}
+	if u.FirstName != "" {
+		return u.FirstName
+	}
+	if u.LastName != "" {
+		return u.LastName
+	}
+	return u.Username
 }
 
 func (u *User) Dto() dto.UserDto {

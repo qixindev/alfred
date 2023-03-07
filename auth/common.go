@@ -1,11 +1,12 @@
 package auth
 
 type UserInfo struct {
+	Sub         string
 	Name        string
 	FirstName   string
 	LastName    string
 	DisplayName string
 	Email       string
 	Phone       string
-	Avatar      string
+	Picture     string
 }
