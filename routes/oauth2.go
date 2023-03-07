@@ -82,7 +82,7 @@ func getAccessCode() (string, error) {
 func addOAuth2Routes(rg *gin.RouterGroup) {
 	// If logged in, 302 to redirect uri.
 	// If not, return login form.
-	rg.GET("/oauth2/auth", Authorized, func(c *gin.Context) {
+	rg.GET("/oauth2/auth", middlewares.Authorized, func(c *gin.Context) {
 		clientId := c.Query("client_id")
 		scope := c.Query("scope")
 		responseType := c.Query("response_type")
@@ -136,7 +136,7 @@ func addOAuth2Routes(rg *gin.RouterGroup) {
 		fmt.Println(clientId, scope, responseType, redirectUri, state, nonce)
 	})
 
-	rg.POST("/oauth2/token", Authorized, func(c *gin.Context) {
+	rg.POST("/oauth2/token", middlewares.Authorized, func(c *gin.Context) {
 		clientId := c.Query("client_id")
 		clientSecret := c.Query("client_secret")
 		grantType := c.Query("grant_type")

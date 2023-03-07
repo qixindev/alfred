@@ -26,3 +26,20 @@ type ProviderAzureAdConfig struct {
 	TenantId uint `gorm:"primaryKey"`
 	Tenant   Tenant
 }
+
+type ProviderOAuth2Config struct {
+	Id         uint     `gorm:"primaryKey" json:"id"`
+	ProviderId uint     `json:"providerId"`
+	Provider   Provider `json:"provider"`
+
+	ClientId          string `json:"clientId"`
+	ClientSecret      string `json:"clientSecret"`
+	AuthorizeEndpoint string `json:"authorizeEndpoint"`
+	TokenEndpoint     string `json:"tokenEndpoint"`
+	UserinfoEndpoint  string `json:"userinfoEndpoint"`
+	Scope             string `json:"scope"`
+	ResponseType      string `json:"responseType"`
+
+	TenantId uint `gorm:"primaryKey"`
+	Tenant   Tenant
+}

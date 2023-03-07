@@ -5,7 +5,6 @@ import (
 	"accounts/middlewares"
 	"accounts/models"
 	"accounts/models/dto"
-	"github.com/gin-contrib/sessions"
 	"github.com/gin-gonic/gin"
 	"net/http"
 )
@@ -14,26 +13,8 @@ func GetUser(c *gin.Context) *models.User {
 	return c.MustGet("user").(*models.User)
 }
 
-func Authorized(c *gin.Context) {
-	tenant := middlewares.GetTenant(c)
-	session := sessions.Default(c)
-	tenantName := session.Get("tenant")
-	if tenant.Name != tenantName {
-		c.AbortWithStatus(http.StatusUnauthorized)
-		return
-	}
-	username := session.Get("user")
-	var user models.User
-	if data.DB.First(&user, "tenant_id = ? AND username = ?", tenant.Id, username).Error != nil {
-		c.AbortWithStatus(http.StatusUnauthorized)
-		return
-	}
-	c.Set("user", &user)
-	c.Next()
-}
-
 func addUsersRoutes(rg *gin.RouterGroup) {
-	rg.Use(Authorized)
+	rg.Use(middlewares.Authorized)
 	rg.GET("/me", func(c *gin.Context) {
 		user := GetUser(c)
 		c.JSON(http.StatusOK, user.Dto())

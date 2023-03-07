@@ -19,6 +19,8 @@ func migrateDB() {
 	DB.AutoMigrate(&models.GroupDevice{})
 	DB.AutoMigrate(&models.RedirectUri{})
 	DB.AutoMigrate(&models.Provider{})
+
+	DB.AutoMigrate(&models.ProviderOAuth2Config{})
 }
 
 func InitDB() error {
