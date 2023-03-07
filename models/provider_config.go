@@ -1,6 +1,12 @@
 package models
 
-type ProviderDingDingConfig struct {
+import (
+	"accounts/auth"
+	"fmt"
+	"net/url"
+)
+
+type ProviderDingDing struct {
 	Id         uint     `gorm:"primaryKey" json:"id"`
 	ProviderId uint     `json:"providerId"`
 	Provider   Provider `json:"provider"`
@@ -9,7 +15,7 @@ type ProviderDingDingConfig struct {
 	Tenant   Tenant
 }
 
-type ProviderWeComConfig struct {
+type ProviderWeCom struct {
 	Id         uint     `gorm:"primaryKey" json:"id"`
 	ProviderId uint     `json:"providerId"`
 	Provider   Provider `json:"provider"`
@@ -18,7 +24,7 @@ type ProviderWeComConfig struct {
 	Tenant   Tenant
 }
 
-type ProviderAzureAdConfig struct {
+type ProviderAzureAd struct {
 	Id         uint     `gorm:"primaryKey" json:"id"`
 	ProviderId uint     `json:"providerId"`
 	Provider   Provider `json:"provider"`
@@ -27,7 +33,7 @@ type ProviderAzureAdConfig struct {
 	Tenant   Tenant
 }
 
-type ProviderOAuth2Config struct {
+type ProviderOAuth2 struct {
 	Id         uint     `gorm:"primaryKey" json:"id"`
 	ProviderId uint     `json:"providerId"`
 	Provider   Provider `json:"provider"`
@@ -42,4 +48,22 @@ type ProviderOAuth2Config struct {
 
 	TenantId uint `gorm:"primaryKey"`
 	Tenant   Tenant
+}
+
+func (ProviderOAuth2) TableName() string {
+	return "provider_oauth2"
+}
+
+func (p ProviderOAuth2) Auth(redirectUri string) string {
+	var query url.Values
+	query.Set("client_id", p.ClientId)
+	query.Set("scope", p.Scope)
+	query.Set("response_type", p.ResponseType)
+	query.Set("redirect_uri", redirectUri)
+	location := fmt.Sprintf("%s?%s", p.AuthorizeEndpoint, query.Encode())
+	return location
+}
+
+func (ProviderOAuth2) Login() (*auth.UserInfo, error) {
+	return &auth.UserInfo{Name: "oauth2"}, nil
 }

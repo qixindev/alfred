@@ -1,6 +1,9 @@
 package models
 
-import "accounts/models/dto"
+import (
+	"accounts/auth"
+	"accounts/models/dto"
+)
 
 type Provider struct {
 	Id   uint   `gorm:"primaryKey" json:"id"`
@@ -33,4 +36,12 @@ type ProviderUser struct {
 
 	TenantId uint `gorm:"primaryKey"`
 	Tenant   Tenant
+}
+
+type AuthProvider interface {
+	// Auth Get to external auth. Return redirect location.
+	Auth(string) string
+
+	// Login Callback when auth completed.
+	Login() (*auth.UserInfo, error)
 }

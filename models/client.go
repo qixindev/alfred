@@ -21,6 +21,17 @@ type RedirectUri struct {
 	Tenant   Tenant
 }
 
+type ClientSecret struct {
+	Id       uint   `gorm:"primaryKey" json:"id"`
+	Name     string `json:"name"`
+	ClientId uint   `json:"clientId"`
+	Client   Client `json:"client"`
+	Secret   string `json:"secret"`
+
+	TenantId uint `gorm:"primaryKey"`
+	Tenant   Tenant
+}
+
 func (c *Client) Dto() dto.ClientDto {
 	return dto.ClientDto{
 		Id:       c.Id,
@@ -42,4 +53,16 @@ func (r *RedirectUri) Dto() dto.RedirectUriDto {
 
 func RedirectUri2Dto(r RedirectUri) dto.RedirectUriDto {
 	return r.Dto()
+}
+
+func (s *ClientSecret) Dto() dto.ClientSecretDto {
+	return dto.ClientSecretDto{
+		Id:     s.Id,
+		Name:   s.Name,
+		Secret: s.Secret,
+	}
+}
+
+func ClientSecret2Dto(s ClientSecret) dto.ClientSecretDto {
+	return s.Dto()
 }

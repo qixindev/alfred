@@ -10,3 +10,9 @@ type RedirectUriDto struct {
 	Id          uint   `gorm:"json:"id"`
 	RedirectUri string `json:"redirectUri"`
 }
+
+type ClientSecretDto struct {
+	Id     uint   `json:"id"`
+	Name   string `json:"name"`
+	Secret string `json:"secret"`
+}

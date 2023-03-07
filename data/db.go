@@ -18,9 +18,11 @@ func migrateDB() {
 	DB.AutoMigrate(&models.GroupUser{})
 	DB.AutoMigrate(&models.GroupDevice{})
 	DB.AutoMigrate(&models.RedirectUri{})
+	DB.AutoMigrate(&models.ClientSecret{})
+	DB.AutoMigrate(&models.TokenCode{})
 	DB.AutoMigrate(&models.Provider{})
 
-	DB.AutoMigrate(&models.ProviderOAuth2Config{})
+	DB.AutoMigrate(&models.ProviderOAuth2{})
 }
 
 func InitDB() error {

@@ -117,7 +117,53 @@ func addAdminClientsRoutes(rg *gin.RouterGroup) {
 		uriId := c.Param("uriId")
 		tenant := middlewares.GetTenant(c)
 		var uri models.RedirectUri
-		if middlewares.TenantDB(c).First(&uri, "tenant_id = ? AND client_id = ? AND uri_id = ?", tenant.Id, clientId, uriId).Error != nil {
+		if middlewares.TenantDB(c).First(&uri, "tenant_id = ? AND client_id = ? AND id = ?", tenant.Id, clientId, uriId).Error != nil {
+			c.Status(http.StatusNotFound)
+			return
+		}
+		c.Status(http.StatusNoContent)
+	})
+
+	rg.GET("/clients/:clientId/secrets", func(c *gin.Context) {
+		clientId := c.Param("clientId")
+		var client models.Client
+		if middlewares.TenantDB(c).First(&client, "id = ?", clientId).Error != nil {
+			c.Status(http.StatusNotFound)
+			return
+		}
+		var secrets []models.ClientSecret
+		if middlewares.TenantDB(c).Find(&secrets, "client_id = ?", client.Id).Error != nil {
+			c.Status(http.StatusInternalServerError)
+			return
+		}
+		c.JSON(http.StatusOK, utils.Filter(secrets, models.ClientSecret2Dto))
+	})
+	rg.POST("/clients/:clientId/secrets", func(c *gin.Context) {
+		clientId := c.Param("clientId")
+		var client models.Client
+		if middlewares.TenantDB(c).First(&client, "id = ?", clientId).Error != nil {
+			c.Status(http.StatusNotFound)
+			return
+		}
+		var secret models.ClientSecret
+		if c.BindJSON(&secret) != nil {
+			c.Status(http.StatusBadRequest)
+			return
+		}
+		secret.TenantId = client.TenantId
+		secret.ClientId = client.Id
+		if middlewares.TenantDB(c).Create(&secret).Error != nil {
+			c.Status(http.StatusConflict)
+			return
+		}
+		c.JSON(http.StatusOK, secret.Dto())
+	})
+	rg.DELETE("/clients/:clientId/secret/:secretId", func(c *gin.Context) {
+		clientId := c.Param("clientId")
+		secretId := c.Param("secretId")
+		tenant := middlewares.GetTenant(c)
+		var secret models.ClientSecret
+		if middlewares.TenantDB(c).First(&secret, "tenant_id = ? AND client_id = ? AND id = ?", tenant.Id, clientId, secretId).Error != nil {
 			c.Status(http.StatusNotFound)
 			return
 		}

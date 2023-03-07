@@ -55,7 +55,7 @@ func AuthorizedAdmin(c *gin.Context) {
 		c.AbortWithStatus(http.StatusUnauthorized)
 		return
 	}
-	c.Set("user", &user)
+	c.Set("user", user)
 	c.Next()
 }
 
@@ -65,6 +65,6 @@ func Authorized(c *gin.Context) {
 		c.AbortWithStatus(http.StatusUnauthorized)
 		return
 	}
-	c.Set("user", &user)
+	c.Set("user", user)
 	c.Next()
 }

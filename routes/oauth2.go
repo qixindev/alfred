@@ -75,8 +75,35 @@ func getAccessToken(c *gin.Context, client *models.Client) (string, error) {
 	return tokenString, nil
 }
 
-func getAccessCode() (string, error) {
-	return "", nil
+// clearTokenCode Deleted expired codes AND specific code.
+func clearTokenCode(code string) {
+	earliest := time.Now().Add(-2 * time.Minute)
+	if err := data.DB.Delete(&models.TokenCode{}, "code = ? OR created_at < ?", code, earliest); err != nil {
+		println(err)
+	}
+}
+
+func getAccessTokenFromCode(c *gin.Context, client *models.Client) {
+
+}
+
+func getAccessCode(c *gin.Context, client *models.Client) (string, error) {
+	token, err := getAccessToken(c, client)
+	if err != nil {
+		return "", err
+	}
+	code := uuid.NewString()
+	tokenCode := models.TokenCode{
+		Token:     token,
+		Code:      code,
+		CreatedAt: time.Now(),
+		ClientId:  client.Id,
+		TenantId:  client.TenantId,
+	}
+	if err := data.DB.Create(&tokenCode).Error; err != nil {
+		return "", err
+	}
+	return code, nil
 }
 
 func addOAuth2Routes(rg *gin.RouterGroup) {
@@ -102,7 +129,7 @@ func addOAuth2Routes(rg *gin.RouterGroup) {
 			return
 		}
 		if responseType == "code" {
-			code, err := getAccessCode()
+			code, err := getAccessCode(c, &client)
 			if err != nil {
 				c.Status(http.StatusInternalServerError)
 				return
@@ -136,7 +163,7 @@ func addOAuth2Routes(rg *gin.RouterGroup) {
 		fmt.Println(clientId, scope, responseType, redirectUri, state, nonce)
 	})
 
-	rg.POST("/oauth2/token", middlewares.Authorized, func(c *gin.Context) {
+	rg.GET("/oauth2/token", middlewares.Authorized, func(c *gin.Context) {
 		clientId := c.Query("client_id")
 		clientSecret := c.Query("client_secret")
 		grantType := c.Query("grant_type")
@@ -146,7 +173,26 @@ func addOAuth2Routes(rg *gin.RouterGroup) {
 		nonce := c.Query("nonce")
 
 		if grantType == "authorization_code" {
+			tenant := middlewares.GetTenant(c)
+			var client models.Client
+			if data.DB.First(&client, "tenant_id = ? AND client_id = ?", tenant.Id, clientId).Error != nil {
+				c.JSON(http.StatusForbidden, gin.H{"message": "Invalid client_id."})
+				return
+			}
+			var secret models.ClientSecret
+			if middlewares.TenantDB(c).First(&secret, "client_id = ? AND secret = ?", client.Id, clientSecret).Error != nil {
+				c.JSON(http.StatusForbidden, gin.H{"message": "Invalid client_secret."})
+				return
+			}
 
+			var tokenCode models.TokenCode
+			if middlewares.TenantDB(c).First(&tokenCode, "code = ?", code).Error != nil {
+				c.JSON(http.StatusForbidden, gin.H{"message": "Invalid code."})
+				return
+			}
+			clearTokenCode(tokenCode.Code)
+			c.JSON(http.StatusOK, gin.H{"access_token": tokenCode.Token})
+			return
 		}
 
 		c.String(http.StatusBadRequest, "Invalid grant_type.")

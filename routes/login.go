@@ -107,11 +107,19 @@ func addLoginRoutes(rg *gin.RouterGroup) {
 			return
 		}
 		var userInfo *auth.UserInfo = nil
+		var authProvider models.AuthProvider
 		if provider.Type == "oauth2" {
+			var providerOAuth2 models.ProviderOAuth2
+			if middlewares.TenantDB(c).First(&providerOAuth2, "provider_id = ?", provider.Id).Error != nil {
+				c.Status(http.StatusNotFound)
+				return
+			}
+			authProvider = providerOAuth2
 			var err error
-			userInfo, err = auth.GetOAuth2User(provider)
+			userInfo, err = authProvider.Login()
 			if err != nil {
 				c.Status(http.StatusUnauthorized)
+				return
 			}
 		}
 
