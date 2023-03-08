@@ -1,6 +1,7 @@
 package data
 
 import (
+	"accounts/auth"
 	"accounts/models"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
@@ -24,7 +25,8 @@ func migrateDB() {
 	DB.AutoMigrate(&models.Provider{})
 	DB.AutoMigrate(&models.ProviderUser{})
 
-	DB.AutoMigrate(&models.ProviderOAuth2{})
+	DB.AutoMigrate(&auth.ProviderOAuth2{})
+	DB.AutoMigrate(&auth.ProviderDingTalk{})
 }
 
 func InitDB() error {

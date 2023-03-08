@@ -1,9 +1,7 @@
 package models
 
 import (
-	"accounts/auth"
 	"accounts/models/dto"
-	"github.com/gin-gonic/gin"
 )
 
 type Provider struct {
@@ -36,12 +34,4 @@ type ProviderUser struct {
 	Name       string   `json:"name"`
 
 	TenantId uint `gorm:"primaryKey"`
-}
-
-type AuthProvider interface {
-	// Auth Get to external auth. Return redirect location.
-	Auth(string) string
-
-	// Login Callback when auth completed.
-	Login(*gin.Context) (*auth.UserInfo, error)
 }

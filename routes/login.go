@@ -1,6 +1,7 @@
 package routes
 
 import (
+	"accounts/auth"
 	"accounts/data"
 	"accounts/middlewares"
 	"accounts/models"
@@ -26,17 +27,24 @@ func checkPasswordHash(password string, hash string) bool {
 	return err == nil
 }
 
-func getAuthProvider(tenantId uint, providerName string) (models.AuthProvider, error) {
+func getAuthProvider(tenantId uint, providerName string) (auth.AuthProvider, error) {
 	var provider models.Provider
 	if err := data.DB.First(&provider, "tenant_id = ? AND name = ?", tenantId, providerName).Error; err != nil {
 		return nil, err
 	}
 	if provider.Type == "oauth2" {
-		var oauth2Provider models.ProviderOAuth2
-		if err := data.DB.First(&oauth2Provider, "tenant_id = ? AND provider_id = ?", tenantId, provider.Id).Error; err != nil {
+		var providerOAuth2 auth.ProviderOAuth2
+		if err := data.DB.First(&providerOAuth2, "tenant_id = ? AND provider_id = ?", tenantId, provider.Id).Error; err != nil {
 			return nil, err
 		}
-		return oauth2Provider, nil
+		return providerOAuth2, nil
+	}
+	if provider.Type == "dingtalk" {
+		var providerDingTalk auth.ProviderDingTalk
+		if err := data.DB.First(&providerDingTalk, "tenant_id = ? AND provider_id = ?", tenantId, provider.Id).Error; err != nil {
+			return nil, err
+		}
+		return providerDingTalk, nil
 	}
 	return nil, errors.New("provider config not found")
 }
