@@ -56,6 +56,14 @@ func addLoginRoutes(rg *gin.RouterGroup) {
 		if err := session.Save(); err != nil {
 			c.JSON(http.StatusInternalServerError, err)
 		}
+		next := c.Query("next")
+		if next == "" {
+			next = c.PostForm("next")
+		}
+		if next != "" {
+			c.Redirect(http.StatusFound, next)
+			return
+		}
 	})
 
 	rg.GET("/login/:provider", func(c *gin.Context) {
@@ -68,6 +76,13 @@ func addLoginRoutes(rg *gin.RouterGroup) {
 		}
 		redirectUri := fmt.Sprintf("%s/%s/logged-in/%s", utils.GetHostWithScheme(c), tenant.Name, providerName)
 		location := authProvider.Auth(redirectUri)
+
+		next := c.Query("next")
+		if next != "" {
+			session := sessions.Default(c)
+			session.Set("next", next)
+			session.Save()
+		}
 		c.Redirect(http.StatusFound, location)
 	})
 
@@ -198,8 +213,14 @@ func addLoginRoutes(rg *gin.RouterGroup) {
 		tenant := middlewares.GetTenant(c)
 		session.Set("tenant", tenant.Name)
 		session.Set("user", existingUser.Username)
+		next := utils.GetString(session.Get("next"))
+		session.Delete("next")
 		if err := session.Save(); err != nil {
 			c.JSON(http.StatusInternalServerError, err)
+		}
+		if next != "" {
+			c.Redirect(http.StatusFound, next)
+			return
 		}
 	})
 }

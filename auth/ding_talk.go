@@ -2,6 +2,7 @@ package auth
 
 import (
 	"accounts/models"
+	"accounts/utils"
 	"bytes"
 	"encoding/json"
 	"errors"
@@ -67,7 +68,7 @@ func (p ProviderDingTalk) Login(c *gin.Context) (*UserInfo, error) {
 	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
 		return nil, err
 	}
-	accessToken := GetString(result["accessToken"])
+	accessToken := utils.GetString(result["accessToken"])
 	if accessToken == "" {
 		return nil, err
 	}
@@ -89,15 +90,15 @@ func (p ProviderDingTalk) Login(c *gin.Context) (*UserInfo, error) {
 	if err := json.NewDecoder(res.Body).Decode(&profile); err != nil {
 		return nil, err
 	}
-	if GetString(profile["openId"]) == "" {
+	if utils.GetString(profile["openId"]) == "" {
 		return nil, errors.New("get userinfo failed")
 	}
 
 	return &UserInfo{
-		Sub:         GetString(profile["openId"]),
-		DisplayName: GetString(profile["nick"]),
-		Email:       GetString(profile["email"]),
-		Phone:       GetString(profile["mobile"]),
-		Picture:     GetString(profile["avatarUrl"]),
+		Sub:         utils.GetString(profile["openId"]),
+		DisplayName: utils.GetString(profile["nick"]),
+		Email:       utils.GetString(profile["email"]),
+		Phone:       utils.GetString(profile["mobile"]),
+		Picture:     utils.GetString(profile["avatarUrl"]),
 	}, nil
 }

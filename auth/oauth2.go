@@ -78,11 +78,11 @@ func (p ProviderOAuth2) Login(c *gin.Context) (*UserInfo, error) {
 	claims := token.Claims.(jwt.MapClaims)
 
 	return &UserInfo{
-		Sub:         GetString(claims["sub"]),
-		DisplayName: GetString(claims["name"]),
-		FirstName:   GetString(claims["given_name"]),
-		LastName:    GetString(claims["family_name"]),
-		Email:       GetString(claims["email"]),
-		Phone:       GetString(claims["phone_number"]),
+		Sub:         utils.GetString(claims["sub"]),
+		DisplayName: utils.GetString(claims["name"]),
+		FirstName:   utils.GetString(claims["given_name"]),
+		LastName:    utils.GetString(claims["family_name"]),
+		Email:       utils.GetString(claims["email"]),
+		Phone:       utils.GetString(claims["phone_number"]),
 	}, nil
 }

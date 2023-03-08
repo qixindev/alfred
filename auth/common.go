@@ -15,15 +15,6 @@ type UserInfo struct {
 	Picture     string
 }
 
-func GetString(v interface{}) string {
-	if v != nil {
-		if s, ok := v.(string); ok {
-			return s
-		}
-	}
-	return ""
-}
-
 type AuthProvider interface {
 	// Auth Get to external auth. Return redirect location.
 	Auth(string) string

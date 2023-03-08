@@ -2,6 +2,7 @@ package auth
 
 import (
 	"accounts/models"
+	"accounts/utils"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -53,7 +54,7 @@ func (p ProviderWeCom) Login(c *gin.Context) (*UserInfo, error) {
 	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
 		return nil, err
 	}
-	accessToken := GetString(result["access_token"])
+	accessToken := utils.GetString(result["access_token"])
 	if accessToken == "" {
 		return nil, err
 	}
@@ -71,13 +72,13 @@ func (p ProviderWeCom) Login(c *gin.Context) (*UserInfo, error) {
 	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
 		return nil, err
 	}
-	userId := GetString(result["userid"])
+	userId := utils.GetString(result["userid"])
 	if userId == "" {
 		return nil, err
 	}
 	var userInfo UserInfo
 	userInfo.Sub = userId
-	userInfo.DisplayName = GetString(result["userid"])
+	userInfo.DisplayName = utils.GetString(result["userid"])
 
 	detailInfoUrl := "https://qyapi.weixin.qq.com/cgi-bin/user/get"
 	detailInfoQuery := url.Values{}
@@ -91,7 +92,7 @@ func (p ProviderWeCom) Login(c *gin.Context) (*UserInfo, error) {
 	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
 		return &userInfo, nil
 	}
-	userInfo.DisplayName = GetString(result["name"])
+	userInfo.DisplayName = utils.GetString(result["name"])
 
 	return &userInfo, nil
 }

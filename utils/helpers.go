@@ -24,3 +24,12 @@ func GetHostWithScheme(c *gin.Context) string {
 
 	return fmt.Sprintf("%s://%s", scheme, c.Request.Host)
 }
+
+func GetString(v interface{}) string {
+	if v != nil {
+		if s, ok := v.(string); ok {
+			return s
+		}
+	}
+	return ""
+}

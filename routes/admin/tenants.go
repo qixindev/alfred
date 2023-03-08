@@ -10,78 +10,76 @@ import (
 	"net/http"
 )
 
-func addAdminDevicesRoutes(rg *gin.RouterGroup) {
-	rg.GET("/devices", func(c *gin.Context) {
-		var devices []models.Device
-		if middlewares.TenantDB(c).Find(&devices).Error != nil {
+func addAdminTenantsRoutes(rg *gin.RouterGroup) {
+	rg.GET("/tenants", func(c *gin.Context) {
+		var tenants []models.Tenant
+		if data.DB.Find(&tenants).Error != nil {
 			c.Status(http.StatusInternalServerError)
 			return
 		}
-		c.JSON(http.StatusOK, utils.Filter(devices, models.Device2Dto))
+		c.JSON(http.StatusOK, utils.Filter(tenants, models.Tenant2Dto))
 	})
 
-	rg.GET("/devices/:deviceId", func(c *gin.Context) {
-		deviceId := c.Param("deviceId")
-		var device models.Device
-		if middlewares.TenantDB(c).First(&device, "id = ?", deviceId).Error != nil {
+	rg.GET("/tenants/:tenantId", func(c *gin.Context) {
+		tenantId := c.Param("tenantId")
+		var tenant models.Tenant
+		if data.DB.First(&tenant, "id = ?", tenantId).Error != nil {
 			c.Status(http.StatusNotFound)
 			return
 		}
-		c.JSON(http.StatusOK, device.Dto())
+		c.JSON(http.StatusOK, tenant.Dto())
 	})
 
-	rg.POST("/devices", func(c *gin.Context) {
-		tenant := middlewares.GetTenant(c)
-		var device models.Device
-		err := c.BindJSON(&device)
+	rg.POST("/tenants", func(c *gin.Context) {
+		var tenant models.Tenant
+		err := c.BindJSON(&tenant)
 		if err != nil {
 			c.Status(http.StatusBadRequest)
 			return
 		}
-		device.TenantId = tenant.Id
-		if data.DB.Create(&device).Error != nil {
+		if data.DB.Create(&tenant).Error != nil {
 			c.Status(http.StatusConflict)
 			return
 		}
-		c.JSON(http.StatusOK, device.Dto())
+		c.JSON(http.StatusOK, tenant.Dto())
 	})
 
-	rg.PUT("/devices/:deviceId", func(c *gin.Context) {
-		deviceId := c.Param("deviceId")
-		var device models.Device
-		if middlewares.TenantDB(c).First(&device, "id = ?", deviceId).Error != nil {
+	rg.PUT("/tenants/:tenantId", func(c *gin.Context) {
+		tenantId := c.Param("tenantId")
+		var tenant models.Tenant
+		if data.DB.First(&tenant, "id = ?", tenantId).Error != nil {
 			c.Status(http.StatusNotFound)
 			return
 		}
-		var d models.Device
-		err := c.BindJSON(&d)
+		var t models.Tenant
+		err := c.BindJSON(&t)
 		if err != nil {
 			c.Status(http.StatusBadRequest)
 			return
 		}
-		device.Name = d.Name
-		if data.DB.Save(&device).Error != nil {
+		tenant.Name = t.Name
+		if data.DB.Save(&tenant).Error != nil {
 			c.Status(http.StatusInternalServerError)
 			return
 		}
-		c.JSON(http.StatusOK, device.Dto())
+		c.JSON(http.StatusOK, tenant.Dto())
 	})
 
-	rg.DELETE("/devices/:deviceId", func(c *gin.Context) {
-		deviceId := c.Param("deviceId")
-		var device models.Device
-		if middlewares.TenantDB(c).First(&device, "id = ?", deviceId).Error != nil {
+	rg.DELETE("/tenants/:tenantId", func(c *gin.Context) {
+		tenantId := c.Param("tenantId")
+		var tenant models.Tenant
+		if data.DB.First(&tenant, "id = ?", tenantId).Error != nil {
 			c.Status(http.StatusNotFound)
 			return
 		}
-		if data.DB.Delete(&device).Error != nil {
+		if data.DB.Delete(&tenant).Error != nil {
 			c.Status(http.StatusInternalServerError)
 			return
 		}
 		c.Status(http.StatusNoContent)
 	})
 
-	rg.GET("/devices/:deviceId/groups", func(c *gin.Context) {
+	rg.GET("/admin/:tenant/devices/:deviceId/groups", func(c *gin.Context) {
 		deviceId := c.Param("deviceId")
 		var device models.Device
 		if middlewares.TenantDB(c).First(&device, "id = ?", deviceId).Error != nil {
@@ -132,7 +130,7 @@ func addAdminDevicesRoutes(rg *gin.RouterGroup) {
 		c.JSON(http.StatusOK, groupDevice.GroupMemberDto())
 	})
 
-	rg.DELETE("/devices/:deviceId/groups/:groupId", func(c *gin.Context) {
+	rg.DELETE("/admin/:tenant/devices/:deviceId/groups/:groupId", func(c *gin.Context) {
 		deviceId := c.Param("deviceId")
 		var device models.Device
 		if middlewares.TenantDB(c).First(&device, "id = ?", deviceId).Error != nil {

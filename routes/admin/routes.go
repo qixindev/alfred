@@ -12,4 +12,7 @@ func AddAdminRoutes(rg *gin.RouterGroup) {
 	addAdminDevicesRoutes(tenantRoutes)
 	addAdminProvidersRoutes(tenantRoutes)
 	addAdminClientsRoutes(tenantRoutes)
+
+	adminRoutes := rg.Group("/admin")
+	addAdminTenantsRoutes(adminRoutes)
 }
