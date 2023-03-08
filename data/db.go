@@ -27,6 +27,7 @@ func migrateDB() {
 
 	DB.AutoMigrate(&auth.ProviderOAuth2{})
 	DB.AutoMigrate(&auth.ProviderDingTalk{})
+	DB.AutoMigrate(&auth.ProviderWeCom{})
 }
 
 func InitDB() error {
