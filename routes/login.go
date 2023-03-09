@@ -6,7 +6,6 @@ import (
 	"accounts/middlewares"
 	"accounts/models"
 	"accounts/utils"
-	"errors"
 	"fmt"
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-gonic/gin"
@@ -69,7 +68,7 @@ func addLoginRoutes(rg *gin.RouterGroup) {
 	rg.GET("/login/:provider", func(c *gin.Context) {
 		tenant := middlewares.GetTenant(c)
 		providerName := c.Param("provider")
-		authProvider, err := GetAuthProvider(tenant.Id, providerName)
+		authProvider, err := auth.GetAuthProvider(tenant.Id, providerName)
 		if err != nil {
 			c.Status(http.StatusNotFound)
 			return
@@ -156,7 +155,7 @@ func addLoginRoutes(rg *gin.RouterGroup) {
 			return
 		}
 
-		authProvider, err := GetAuthProvider(provider.TenantId, provider.Name)
+		authProvider, err := auth.GetAuthProvider(provider.TenantId, provider.Name)
 		if err != nil {
 			c.String(http.StatusNotFound, "provider not found")
 		}
@@ -223,33 +222,4 @@ func addLoginRoutes(rg *gin.RouterGroup) {
 			return
 		}
 	})
-}
-
-func GetAuthProvider(tenantId uint, providerName string) (auth.AuthProvider, error) {
-	var provider models.Provider
-	if err := data.DB.First(&provider, "tenant_id = ? AND name = ?", tenantId, providerName).Error; err != nil {
-		return nil, err
-	}
-	if provider.Type == "oauth2" {
-		var providerOAuth2 auth.ProviderOAuth2
-		if err := data.DB.First(&providerOAuth2, "tenant_id = ? AND provider_id = ?", tenantId, provider.Id).Error; err != nil {
-			return nil, err
-		}
-		return providerOAuth2, nil
-	}
-	if provider.Type == "dingtalk" {
-		var providerDingTalk auth.ProviderDingTalk
-		if err := data.DB.First(&providerDingTalk, "tenant_id = ? AND provider_id = ?", tenantId, provider.Id).Error; err != nil {
-			return nil, err
-		}
-		return providerDingTalk, nil
-	}
-	if provider.Type == "wecom" {
-		var providerWeCom auth.ProviderWeCom
-		if err := data.DB.First(&providerWeCom, "tenant_id = ? AND provider_id = ?", tenantId, provider.Id).Error; err != nil {
-			return nil, err
-		}
-		return providerWeCom, nil
-	}
-	return nil, errors.New("provider config not found")
 }

@@ -8,6 +8,8 @@ require (
 	github.com/go-jose/go-jose/v3 v3.0.0
 	github.com/golang-jwt/jwt v3.2.2+incompatible
 	github.com/google/uuid v1.3.0
+	github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/common v1.0.612
+	github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/sms v1.0.612
 	golang.org/x/crypto v0.6.0
 	gorm.io/driver/postgres v1.4.8
 	gorm.io/gorm v1.24.2

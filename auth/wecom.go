@@ -13,37 +13,29 @@ import (
 )
 
 type ProviderWeCom struct {
-	Id         uint            `gorm:"primaryKey;autoIncrement" json:"id"`
-	ProviderId uint            `json:"providerId"`
-	Provider   models.Provider `gorm:"foreignKey:ProviderId, TenantId" json:"provider"`
-
-	CorpId    string `json:"corpId"`
-	AgentId   string `json:"agentId"`
-	AppSecret string `json:"appSecret"`
-
-	TenantId uint `gorm:"primaryKey"`
+	Config models.ProviderWeCom
 }
 
 func (p ProviderWeCom) Auth(redirectUri string) string {
 	query := url.Values{}
-	query.Set("appid", p.CorpId)
+	query.Set("appid", p.Config.CorpId)
 	query.Set("scope", "snsapi_base")
 	query.Set("response_type", "code")
 	query.Set("redirect_uri", redirectUri)
-	query.Set("agentid", p.AgentId)
+	query.Set("agentid", p.Config.AgentId)
 	query.Set("state", uuid.NewString())
 	location := fmt.Sprintf("%s?%s#wechat_redirect", "https://open.weixin.qq.com/connect/oauth2/authorize", query.Encode())
 	return location
 }
 
-func (p ProviderWeCom) Login(c *gin.Context) (*UserInfo, error) {
+func (p ProviderWeCom) Login(c *gin.Context) (*models.UserInfo, error) {
 	code := c.Query("code")
 	if code == "" {
 		return nil, errors.New("no auth code")
 	}
 	query := url.Values{}
-	query.Set("corpid", p.CorpId)
-	query.Set("corpsecret", p.AppSecret)
+	query.Set("corpid", p.Config.CorpId)
+	query.Set("corpsecret", p.Config.AppSecret)
 
 	resp, err := http.Get(fmt.Sprintf("%s?%s", "https://qyapi.weixin.qq.com/cgi-bin/gettoken", query.Encode()))
 	if err != nil {
@@ -76,7 +68,7 @@ func (p ProviderWeCom) Login(c *gin.Context) (*UserInfo, error) {
 	if userId == "" {
 		return nil, err
 	}
-	var userInfo UserInfo
+	var userInfo models.UserInfo
 	userInfo.Sub = userId
 	userInfo.DisplayName = utils.GetString(result["userid"])
 

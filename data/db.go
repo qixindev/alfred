@@ -1,7 +1,6 @@
 package data
 
 import (
-	"accounts/auth"
 	"accounts/models"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
@@ -22,12 +21,15 @@ func migrateDB() {
 	DB.AutoMigrate(&models.RedirectUri{})
 	DB.AutoMigrate(&models.ClientSecret{})
 	DB.AutoMigrate(&models.TokenCode{})
-	DB.AutoMigrate(&models.Provider{})
 	DB.AutoMigrate(&models.ProviderUser{})
 
-	DB.AutoMigrate(&auth.ProviderOAuth2{})
-	DB.AutoMigrate(&auth.ProviderDingTalk{})
-	DB.AutoMigrate(&auth.ProviderWeCom{})
+	DB.AutoMigrate(&models.Provider{})
+	DB.AutoMigrate(&models.ProviderOAuth2{})
+	DB.AutoMigrate(&models.ProviderDingTalk{})
+	DB.AutoMigrate(&models.ProviderWeCom{})
+
+	DB.AutoMigrate(&models.SmsConnector{})
+	DB.AutoMigrate(&models.SmsTcloud{})
 }
 
 func InitDB() error {

@@ -13,19 +13,7 @@ import (
 )
 
 type ProviderOAuth2 struct {
-	Id         uint            `gorm:"primaryKey;autoIncrement" json:"id"`
-	ProviderId uint            `json:"providerId"`
-	Provider   models.Provider `gorm:"foreignKey:ProviderId, TenantId" json:"provider"`
-
-	ClientId          string `json:"clientId"`
-	ClientSecret      string `json:"clientSecret"`
-	AuthorizeEndpoint string `json:"authorizeEndpoint"`
-	TokenEndpoint     string `json:"tokenEndpoint"`
-	UserinfoEndpoint  string `json:"userinfoEndpoint"`
-	Scope             string `json:"scope"`
-	ResponseType      string `json:"responseType"`
-
-	TenantId uint `gorm:"primaryKey"`
+	Config models.ProviderOAuth2
 }
 
 func (ProviderOAuth2) TableName() string {
@@ -34,15 +22,15 @@ func (ProviderOAuth2) TableName() string {
 
 func (p ProviderOAuth2) Auth(redirectUri string) string {
 	query := url.Values{}
-	query.Set("client_id", p.ClientId)
-	query.Set("scope", p.Scope)
-	query.Set("response_type", p.ResponseType)
+	query.Set("client_id", p.Config.ClientId)
+	query.Set("scope", p.Config.Scope)
+	query.Set("response_type", p.Config.ResponseType)
 	query.Set("redirect_uri", redirectUri)
-	location := fmt.Sprintf("%s?%s", p.AuthorizeEndpoint, query.Encode())
+	location := fmt.Sprintf("%s?%s", p.Config.AuthorizeEndpoint, query.Encode())
 	return location
 }
 
-func (p ProviderOAuth2) Login(c *gin.Context) (*UserInfo, error) {
+func (p ProviderOAuth2) Login(c *gin.Context) (*models.UserInfo, error) {
 	tenantName := c.Param("tenant")
 	providerName := c.Param("provider")
 	code := c.Query("code")
@@ -51,13 +39,13 @@ func (p ProviderOAuth2) Login(c *gin.Context) (*UserInfo, error) {
 	}
 	redirectUri := fmt.Sprintf("%s/%s/logged-in/%s", utils.GetHostWithScheme(c), tenantName, providerName)
 	query := url.Values{}
-	query.Set("client_id", p.ClientId)
-	query.Set("client_secret", p.ClientSecret)
-	query.Set("scope", p.Scope)
+	query.Set("client_id", p.Config.ClientId)
+	query.Set("client_secret", p.Config.ClientSecret)
+	query.Set("scope", p.Config.Scope)
 	query.Set("code", code)
 	query.Set("redirect_uri", redirectUri)
 	query.Set("grant_type", "authorization_code")
-	resp, err := http.PostForm(p.TokenEndpoint, query)
+	resp, err := http.PostForm(p.Config.TokenEndpoint, query)
 	if err != nil {
 		return nil, err
 	}
@@ -77,7 +65,7 @@ func (p ProviderOAuth2) Login(c *gin.Context) (*UserInfo, error) {
 	}
 	claims := token.Claims.(jwt.MapClaims)
 
-	return &UserInfo{
+	return &models.UserInfo{
 		Sub:         utils.GetString(claims["sub"]),
 		DisplayName: utils.GetString(claims["name"]),
 		FirstName:   utils.GetString(claims["given_name"]),

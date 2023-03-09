@@ -14,20 +14,12 @@ import (
 )
 
 type ProviderDingTalk struct {
-	Id         uint            `gorm:"primaryKey;autoIncrement" json:"id"`
-	ProviderId uint            `json:"providerId"`
-	Provider   models.Provider `gorm:"foreignKey:ProviderId, TenantId" json:"provider"`
-
-	AgentId   string
-	AppKey    string
-	AppSecret string
-
-	TenantId uint `gorm:"primaryKey"`
+	Config models.ProviderDingTalk
 }
 
 func (p ProviderDingTalk) Auth(redirectUri string) string {
 	query := url.Values{}
-	query.Set("client_id", p.AppKey)
+	query.Set("client_id", p.Config.AppKey)
 	query.Set("scope", "openid corpid")
 	query.Set("response_type", "code")
 	query.Set("redirect_uri", redirectUri)
@@ -44,14 +36,14 @@ type dingTalkTokenRequest struct {
 	GrantType    string `json:"grantType"`
 }
 
-func (p ProviderDingTalk) Login(c *gin.Context) (*UserInfo, error) {
+func (p ProviderDingTalk) Login(c *gin.Context) (*models.UserInfo, error) {
 	code := c.Query("authCode")
 	if code == "" {
 		return nil, errors.New("no auth code")
 	}
 	request := dingTalkTokenRequest{
-		ClientId:     p.AppKey,
-		ClientSecret: p.AppSecret,
+		ClientId:     p.Config.AppKey,
+		ClientSecret: p.Config.AppSecret,
 		Code:         code,
 		GrantType:    "authorization_code",
 	}
@@ -94,7 +86,7 @@ func (p ProviderDingTalk) Login(c *gin.Context) (*UserInfo, error) {
 		return nil, errors.New("get userinfo failed")
 	}
 
-	return &UserInfo{
+	return &models.UserInfo{
 		Sub:         utils.GetString(profile["openId"]),
 		DisplayName: utils.GetString(profile["nick"]),
 		Email:       utils.GetString(profile["email"]),
