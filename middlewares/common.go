@@ -12,7 +12,7 @@ import (
 
 func TenantDB(c *gin.Context) *gorm.DB {
 	tenant := GetTenant(c)
-	return data.DB.Where("tenant_id = ?", tenant.Id)
+	return data.WithTenant(tenant.Id)
 }
 
 func GetTenant(c *gin.Context) *models.Tenant {

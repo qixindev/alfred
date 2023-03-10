@@ -30,6 +30,14 @@ func migrateDB() {
 
 	DB.AutoMigrate(&models.SmsConnector{})
 	DB.AutoMigrate(&models.SmsTcloud{})
+
+	DB.AutoMigrate(&models.ResourceType{})
+	DB.AutoMigrate(&models.ResourceTypeAction{})
+	DB.AutoMigrate(&models.ResourceTypeRole{})
+	DB.AutoMigrate(&models.ResourceTypeRoleAction{})
+	DB.AutoMigrate(&models.Resource{})
+	DB.AutoMigrate(&models.ResourceRoleUser{})
+
 }
 
 func InitDB() error {
@@ -41,4 +49,8 @@ func InitDB() error {
 	DB = db
 	migrateDB()
 	return nil
+}
+
+func WithTenant(tenantId uint) *gorm.DB {
+	return DB.Where("tenant_id = ?", tenantId)
 }
