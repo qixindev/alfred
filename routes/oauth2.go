@@ -39,8 +39,8 @@ func getAccessToken(c *gin.Context, client *models.Client) (string, error) {
 	claims := token.Claims.(jwt.MapClaims)
 	claims["iss"] = iss
 	claims["sub"] = clientUser.Sub
-	claims["aud"] = []string{client.ClientId}
-	claims["azp"] = client.ClientId
+	claims["aud"] = []string{client.CliId}
+	claims["azp"] = client.CliId
 	claims["exp"] = now.Add(24 * time.Hour).Unix()
 	claims["iat"] = now.Unix()
 	claims["name"] = user.Name()

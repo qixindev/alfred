@@ -37,7 +37,7 @@ func addAdminClientsRoutes(rg *gin.RouterGroup) {
 			return
 		}
 		client.TenantId = tenant.Id
-		client.ClientId = uuid.NewString()
+		client.CliId = uuid.NewString()
 		if data.DB.Create(&client).Error != nil {
 			c.Status(http.StatusConflict)
 			return

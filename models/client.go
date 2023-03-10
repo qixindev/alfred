@@ -3,9 +3,9 @@ package models
 import "accounts/models/dto"
 
 type Client struct {
-	Id       uint   `gorm:"primaryKey;autoIncrement" json:"id"`
-	Name     string `json:"name"`
-	ClientId string `json:"clientId"`
+	Id    uint   `gorm:"primaryKey;autoIncrement" json:"id"`
+	Name  string `json:"name"`
+	CliId string `json:"clientId"`
 
 	TenantId uint `gorm:"primaryKey"`
 	Tenant   Tenant
@@ -34,7 +34,7 @@ func (c *Client) Dto() dto.ClientDto {
 	return dto.ClientDto{
 		Id:       c.Id,
 		Name:     c.Name,
-		ClientId: c.ClientId,
+		ClientId: c.CliId,
 	}
 }
 
