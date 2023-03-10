@@ -16,7 +16,7 @@ type ProviderWeCom struct {
 	Config models.ProviderWeCom
 }
 
-func (p ProviderWeCom) Auth(redirectUri string) string {
+func (p ProviderWeCom) Auth(redirectUri string) (string, error) {
 	query := url.Values{}
 	query.Set("appid", p.Config.CorpId)
 	query.Set("scope", "snsapi_base")
@@ -25,7 +25,7 @@ func (p ProviderWeCom) Auth(redirectUri string) string {
 	query.Set("agentid", p.Config.AgentId)
 	query.Set("state", uuid.NewString())
 	location := fmt.Sprintf("%s?%s#wechat_redirect", "https://open.weixin.qq.com/connect/oauth2/authorize", query.Encode())
-	return location
+	return location, nil
 }
 
 func (p ProviderWeCom) Login(c *gin.Context) (*models.UserInfo, error) {

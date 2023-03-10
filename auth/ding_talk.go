@@ -17,7 +17,7 @@ type ProviderDingTalk struct {
 	Config models.ProviderDingTalk
 }
 
-func (p ProviderDingTalk) Auth(redirectUri string) string {
+func (p ProviderDingTalk) Auth(redirectUri string) (string, error) {
 	query := url.Values{}
 	query.Set("client_id", p.Config.AppKey)
 	query.Set("scope", "openid corpid")
@@ -26,7 +26,7 @@ func (p ProviderDingTalk) Auth(redirectUri string) string {
 	query.Set("state", uuid.NewString())
 	query.Set("prompt", "consent")
 	location := fmt.Sprintf("%s?%s", "https://login.dingtalk.com/oauth2/auth", query.Encode())
-	return location
+	return location, nil
 }
 
 type dingTalkTokenRequest struct {

@@ -74,7 +74,10 @@ func addLoginRoutes(rg *gin.RouterGroup) {
 			return
 		}
 		redirectUri := fmt.Sprintf("%s/%s/logged-in/%s", utils.GetHostWithScheme(c), tenant.Name, providerName)
-		location := authProvider.Auth(redirectUri)
+		location, err := authProvider.Auth(redirectUri)
+		if err != nil {
+			c.Status(http.StatusInternalServerError)
+		}
 
 		next := c.Query("next")
 		if next != "" {

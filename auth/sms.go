@@ -2,9 +2,12 @@ package auth
 
 import (
 	"accounts/connectors"
+	"accounts/data"
 	"accounts/models"
 	"errors"
+	"fmt"
 	"github.com/gin-gonic/gin"
+	"strings"
 	"time"
 )
 
@@ -12,18 +15,56 @@ type ProviderSms struct {
 	Config models.ProviderSms
 }
 
-type PhoneVerification struct {
-	Id        uint
-	Phone     string
-	Code      string
-	CreatedAt time.Time
-}
+func (p *ProviderSms) Auth(number string) (string, error) {
+	connector, err := connectors.GetConnector(p.Config.TenantId, p.Config.SmsConnectorId)
+	if err != nil {
+		return "", err
+	}
 
-func (p *ProviderSms) Auth(number string) string {
-	connector := connectors.GetConnector()
-	return "sent"
+	var phoneVerification models.PhoneVerification
+	if strings.HasPrefix(number, "+86") == false {
+		return "", errors.New("only +86 suffix supported")
+	}
+	code := fmt.Sprint(time.Now().Nanosecond())
+	if data.DB.First(&phoneVerification, "phone = ?", number).Error == nil {
+		// found existing verification
+		if phoneVerification.CreatedAt.Add(time.Minute).Unix() > time.Now().Unix() {
+			return "", errors.New("too fast")
+		}
+		phoneVerification.Code = code
+		phoneVerification.CreatedAt = time.Now()
+		if err := data.DB.Save(&phoneVerification).Error; err != nil {
+			return "", err
+		}
+	} else {
+		phoneVerification.Phone = number
+		phoneVerification.Code = code
+		phoneVerification.CreatedAt = time.Now()
+		if err := data.DB.Create(&phoneVerification).Error; err != nil {
+			return "", err
+		}
+	}
+	err = connector.Send(number, []string{code})
+	if err != nil {
+		return "", err
+	}
+
+	return "sent", nil
 }
 
 func (p *ProviderSms) Login(c *gin.Context) (*models.UserInfo, error) {
-	return nil, errors.New("")
+	phone := c.PostForm("phone")
+	code := c.PostForm("code")
+	var v models.PhoneVerification
+	if err := data.DB.First(&v, "phone = ? AND code = ?", phone, code).Error; err != nil {
+		return nil, err
+	}
+	if err := data.DB.Delete(&v).Error; err != nil {
+		return nil, err
+	}
+	u := models.UserInfo{
+		Sub:   phone,
+		Phone: phone,
+	}
+	return &u, nil
 }

@@ -20,14 +20,14 @@ func (ProviderOAuth2) TableName() string {
 	return "provider_oauth2"
 }
 
-func (p ProviderOAuth2) Auth(redirectUri string) string {
+func (p ProviderOAuth2) Auth(redirectUri string) (string, error) {
 	query := url.Values{}
 	query.Set("client_id", p.Config.ClientId)
 	query.Set("scope", p.Config.Scope)
 	query.Set("response_type", p.Config.ResponseType)
 	query.Set("redirect_uri", redirectUri)
 	location := fmt.Sprintf("%s?%s", p.Config.AuthorizeEndpoint, query.Encode())
-	return location
+	return location, nil
 }
 
 func (p ProviderOAuth2) Login(c *gin.Context) (*models.UserInfo, error) {

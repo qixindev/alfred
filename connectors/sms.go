@@ -6,7 +6,7 @@ import (
 )
 
 type SmsConnector interface {
-	Send(number, contents []string) error
+	Send(number string, contents []string) error
 }
 
 func GetConnector(tenantId, connectorId uint) (SmsConnector, error) {

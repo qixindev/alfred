@@ -1,5 +1,7 @@
 package models
 
+import "time"
+
 type UserInfo struct {
 	Sub         string
 	Name        string
@@ -9,4 +11,11 @@ type UserInfo struct {
 	Email       string
 	Phone       string
 	Picture     string
+}
+
+type PhoneVerification struct {
+	Id        uint
+	Phone     string
+	Code      string
+	CreatedAt time.Time
 }

@@ -9,7 +9,7 @@ import (
 
 type Provider interface {
 	// Auth Get to external auth. Return redirect location.
-	Auth(string) string
+	Auth(string) (string, error)
 
 	// Login Callback when auth completed.
 	Login(*gin.Context) (*models.UserInfo, error)
