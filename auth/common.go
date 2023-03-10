@@ -7,7 +7,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-type AuthProvider interface {
+type Provider interface {
 	// Auth Get to external auth. Return redirect location.
 	Auth(string) string
 
@@ -15,7 +15,7 @@ type AuthProvider interface {
 	Login(*gin.Context) (*models.UserInfo, error)
 }
 
-func GetAuthProvider(tenantId uint, providerName string) (AuthProvider, error) {
+func GetAuthProvider(tenantId uint, providerName string) (Provider, error) {
 	var provider models.Provider
 	if err := data.DB.First(&provider, "tenant_id = ? AND name = ?", tenantId, providerName).Error; err != nil {
 		return nil, err

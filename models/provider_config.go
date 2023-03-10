@@ -47,3 +47,12 @@ type ProviderWeCom struct {
 
 	TenantId uint `gorm:"primaryKey"`
 }
+
+type ProviderSms struct {
+	Id             uint         `gorm:"primaryKey;autoIncrement" json:"id"`
+	ProviderId     uint         `json:"providerId"`
+	Provider       Provider     `gorm:"foreignKey:ProviderId, TenantId"`
+	SmsConnectorId uint         `json:"smsConnectorId"`
+	SmsConnector   SmsConnector `gorm:"foreignKey:SmsConnectorId, TenantId"`
+	TenantId       uint         `gorm:"primaryKey;autoIncrement" json:"tenantId"`
+}

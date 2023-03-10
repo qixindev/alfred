@@ -9,12 +9,7 @@ import (
 )
 
 type ProviderSms struct {
-	Id             uint                    `gorm:"primaryKey;autoIncrement" json:"id"`
-	ProviderId     uint                    `json:"providerId"`
-	Provider       models.Provider         `gorm:"foreignKey:ProviderId, TenantId"`
-	SmsConnectorId uint                    `json:"smsConnectorId"`
-	SmsConnector   connectors.SmsConnector `gorm:"foreignKey:SmsConnectorId, TenantId"`
-	TenantId       uint                    `gorm:"primaryKey;autoIncrement" json:"tenantId"`
+	Config models.ProviderSms
 }
 
 type PhoneVerification struct {
@@ -25,10 +20,10 @@ type PhoneVerification struct {
 }
 
 func (p *ProviderSms) Auth(number string) string {
-
+	connector := connectors.GetConnector()
 	return "sent"
 }
 
-func (p ProviderSms) Login(c *gin.Context) (*models.UserInfo, error) {
+func (p *ProviderSms) Login(c *gin.Context) (*models.UserInfo, error) {
 	return nil, errors.New("")
 }
