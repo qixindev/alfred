@@ -3,8 +3,9 @@ package models
 type ResourceType struct {
 	Id       uint   `gorm:"primaryKey" json:"id"`
 	Name     string `json:"name"`
+	ClientId uint   `json:"clientId"`
+	Client   Client `gorm:"foreignKey:ClientId, TenantId" json:"client"`
 	TenantId uint   `gorm:"primaryKey"`
-	Tenant   Tenant
 }
 
 type Resource struct {
@@ -42,12 +43,12 @@ type ResourceTypeRoleAction struct {
 }
 
 type ResourceRoleUser struct {
-	Id         uint             `gorm:"primaryKey" json:"id"`
-	ResourceId uint             `json:"resourceId"`
-	Resource   Resource         `gorm:"foreignKey:ResourceId, TenantId" json:"resource"`
-	RoleId     uint             `json:"roleId"`
-	Role       ResourceTypeRole `gorm:"foreignKey:RoleId, TenantId" json:"role"`
-	UserId     uint             `json:"userId"`
-	User       User             `gorm:"foreignKey:UserId, TenantId" json:"user"`
-	TenantId   uint             `gorm:"primaryKey"`
+	Id           uint             `gorm:"primaryKey" json:"id"`
+	ResourceId   uint             `json:"resourceId"`
+	Resource     Resource         `gorm:"foreignKey:ResourceId, TenantId" json:"resource"`
+	RoleId       uint             `json:"roleId"`
+	Role         ResourceTypeRole `gorm:"foreignKey:RoleId, TenantId" json:"role"`
+	ClientUserId uint             `json:"userId"`
+	ClientUser   ClientUser       `gorm:"foreignKey:ClientUserId, TenantId" json:"user"`
+	TenantId     uint             `gorm:"primaryKey"`
 }

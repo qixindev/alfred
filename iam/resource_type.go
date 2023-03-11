@@ -5,15 +5,15 @@ import (
 	"accounts/models"
 )
 
-func ListResourceTypes(tenantId uint) ([]models.ResourceType, error) {
+func ListResourceTypes(tenantId, clientId uint) ([]models.ResourceType, error) {
 	var resourceTypes []models.ResourceType
-	if err := data.WithTenant(tenantId).Find(&resourceTypes).Error; err != nil {
+	if err := data.WithTenant(tenantId).Find(&resourceTypes, "client_id = ?", clientId).Error; err != nil {
 		return nil, err
 	}
 	return resourceTypes, nil
 }
 
-func GetResourceType(tenantId uint, typeId uint) (*models.ResourceType, error) {
+func GetResourceType(tenantId, typeId uint) (*models.ResourceType, error) {
 	var resourceType models.ResourceType
 	if err := data.WithTenant(tenantId).Take(&resourceType, "id = ?", typeId).Error; err != nil {
 		return nil, err
@@ -21,8 +21,9 @@ func GetResourceType(tenantId uint, typeId uint) (*models.ResourceType, error) {
 	return &resourceType, nil
 }
 
-func CreateResourceType(tenantId uint, resourceType *models.ResourceType) (*models.ResourceType, error) {
+func CreateResourceType(tenantId, clientId uint, resourceType *models.ResourceType) (*models.ResourceType, error) {
 	resourceType.TenantId = tenantId
+	resourceType.ClientId = clientId
 	if err := data.WithTenant(tenantId).Create(resourceType).Error; err != nil {
 		return nil, err
 	}
