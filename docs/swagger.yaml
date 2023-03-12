@@ -1,0 +1,370 @@
+definitions:
+  dto.AccessTokenDto:
+    properties:
+      access_token:
+        type: string
+    type: object
+  dto.ProviderDto:
+    properties:
+      id:
+        type: integer
+      name:
+        type: string
+      type:
+        type: string
+    type: object
+  dto.UserDto:
+    properties:
+      disabled:
+        type: boolean
+      displayName:
+        type: string
+      email:
+        type: string
+      emailVerified:
+        type: boolean
+      firstName:
+        type: string
+      id:
+        type: integer
+      lastName:
+        type: string
+      phone:
+        type: string
+      phoneVerified:
+        type: boolean
+      twoFactorEnabled:
+        type: boolean
+      username:
+        type: string
+    type: object
+  dto.UserProfileDto:
+    properties:
+      displayName:
+        type: string
+      email:
+        type: string
+      firstName:
+        type: string
+      lastName:
+        type: string
+      phone:
+        type: string
+      username:
+        type: string
+    type: object
+info:
+  contact: {}
+paths:
+  /{tenant}/logged-in/{provider}:
+    get:
+      description: provider callback
+      parameters:
+      - description: tenant
+        in: path
+        name: tenant
+        required: true
+        type: string
+      - description: provider
+        in: path
+        name: provider
+        required: true
+        type: string
+      - description: code
+        in: query
+        name: code
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+        "302":
+          description: Found
+      summary: provider callback
+      tags:
+      - login
+  /{tenant}/login:
+    post:
+      description: login using username and password
+      parameters:
+      - description: tenant
+        in: path
+        name: tenant
+        required: true
+        type: string
+      - description: username
+        in: formData
+        name: login
+        required: true
+        type: string
+      - description: password
+        in: formData
+        name: password
+        required: true
+        type: string
+      - description: next
+        in: query
+        name: next
+        type: string
+      responses:
+        "302":
+          description: Found
+      summary: login a user
+      tags:
+      - login
+  /{tenant}/login/{provider}:
+    get:
+      description: login via a provider
+      parameters:
+      - description: tenant
+        in: path
+        name: tenant
+        required: true
+        type: string
+      - description: provider
+        in: path
+        name: provider
+        required: true
+        type: string
+      - description: next
+        in: query
+        name: next
+        type: string
+      responses:
+        "302":
+          description: Found
+      summary: login via a provider
+      tags:
+      - login
+  /{tenant}/login/providers:
+    get:
+      description: list login providers
+      parameters:
+      - description: tenant
+        in: path
+        name: tenant
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/dto.ProviderDto'
+            type: array
+      summary: List all providers
+      tags:
+      - login
+  /{tenant}/login/providers/{provider}:
+    get:
+      description: get a login provider
+      parameters:
+      - description: tenant
+        in: path
+        name: tenant
+        required: true
+        type: string
+      - description: provider
+        in: path
+        name: provider
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.ProviderDto'
+      summary: get a provider
+      tags:
+      - login
+  /{tenant}/logout:
+    get:
+      description: logout current user
+      parameters:
+      - description: tenant
+        in: path
+        name: tenant
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+      summary: logout current user
+      tags:
+      - login
+  /{tenant}/me:
+    get:
+      description: get user
+      parameters:
+      - description: tenant
+        in: path
+        name: tenant
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.UserDto'
+      summary: get user
+      tags:
+      - user
+    put:
+      description: update user
+      parameters:
+      - description: tenant
+        in: path
+        name: tenant
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.UserDto'
+      summary: update user
+      tags:
+      - user
+  /{tenant}/me/profile:
+    get:
+      description: get user profile
+      parameters:
+      - description: tenant
+        in: path
+        name: tenant
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.UserProfileDto'
+      summary: get user profile
+      tags:
+      - user
+  /{tenant}/oauth2/auth:
+    get:
+      description: oauth2 authorize
+      parameters:
+      - description: tenant
+        in: path
+        name: tenant
+        required: true
+        type: string
+      - description: client_id
+        in: query
+        name: client_id
+        required: true
+        type: string
+      - description: scope
+        in: query
+        name: scope
+        required: true
+        type: string
+      - description: response_type
+        in: query
+        name: response_type
+        required: true
+        type: string
+      - description: redirect_uri
+        in: query
+        name: redirect_uri
+        required: true
+        type: string
+      - description: state
+        in: query
+        name: state
+        type: string
+      - description: nonce
+        in: query
+        name: nonce
+        type: string
+      responses:
+        "200":
+          description: OK
+        "302":
+          description: Found
+      summary: oauth2 authorize
+      tags:
+      - oauth2
+  /{tenant}/oauth2/token:
+    post:
+      description: oauth2 token
+      parameters:
+      - description: tenant
+        in: path
+        name: tenant
+        required: true
+        type: string
+      - description: client_id
+        in: formData
+        name: client_id
+        required: true
+        type: string
+      - description: client_secret
+        in: formData
+        name: client_secret
+        required: true
+        type: string
+      - description: code
+        in: formData
+        name: code
+        required: true
+        type: string
+      - description: scope
+        in: formData
+        name: scope
+        required: true
+        type: string
+      - description: grant_type
+        in: formData
+        name: grant_type
+        required: true
+        type: string
+      - description: redirect_uri
+        in: formData
+        name: redirect_uri
+        required: true
+        type: string
+      - description: state
+        in: formData
+        name: state
+        type: string
+      - description: nonce
+        in: formData
+        name: nonce
+        type: string
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.AccessTokenDto'
+      summary: oauth2 token
+      tags:
+      - oauth2
+  /{tenant}/register:
+    post:
+      description: register using username and password
+      parameters:
+      - description: tenant
+        in: path
+        name: tenant
+        required: true
+        type: string
+      - description: username
+        in: formData
+        name: login
+        required: true
+        type: string
+      - description: password
+        in: formData
+        name: password
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+      summary: register a user
+      tags:
+      - login
+swagger: "2.0"

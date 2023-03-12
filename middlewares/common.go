@@ -3,11 +3,14 @@ package middlewares
 import (
 	"accounts/data"
 	"accounts/models"
+	"accounts/utils"
 	"errors"
+	"fmt"
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
 	"net/http"
+	"net/url"
 )
 
 func TenantDB(c *gin.Context) *gorm.DB {
@@ -59,12 +62,25 @@ func AuthorizedAdmin(c *gin.Context) {
 	c.Next()
 }
 
-func Authorized(c *gin.Context) {
-	user, err := GetUserStandalone(c)
-	if err != nil {
-		c.AbortWithStatus(http.StatusUnauthorized)
-		return
+func Authorized(redirectToLogin bool) gin.HandlerFunc {
+	return func(c *gin.Context) {
+		user, err := GetUserStandalone(c)
+		if err != nil {
+			if redirectToLogin {
+				t := GetTenant(c)
+				h := utils.GetHostWithScheme(c)
+				base := fmt.Sprintf("%s/%s", h, t.Name)
+				next := fmt.Sprintf("%s/oauth2/auth", base)
+				location := fmt.Sprintf("%s/login?next=%s", base, url.QueryEscape(next))
+				c.Redirect(http.StatusFound, location)
+			} else {
+				c.AbortWithStatus(http.StatusUnauthorized)
+
+				c.Abort()
+			}
+			return
+		}
+		c.Set("user", user)
+		c.Next()
 	}
-	c.Set("user", user)
-	c.Next()
 }
