@@ -37,7 +37,17 @@ func migrateDB() {
 	DB.AutoMigrate(&models.ResourceTypeRoleAction{})
 	DB.AutoMigrate(&models.Resource{})
 	DB.AutoMigrate(&models.ResourceRoleUser{})
+}
 
+func CheckFirstRun() error {
+	var tenant models.Tenant
+	if err := DB.First(&tenant, "name = ?", "default").Error; err != nil {
+		tenant.Name = "default"
+		if err := DB.Create(&tenant).Error; err != nil {
+			return err
+		}
+	}
+	return nil
 }
 
 func InitDB() error {
@@ -48,7 +58,8 @@ func InitDB() error {
 	}
 	DB = db
 	migrateDB()
-	return nil
+	err = CheckFirstRun()
+	return err
 }
 
 func WithTenant(tenantId uint) *gorm.DB {

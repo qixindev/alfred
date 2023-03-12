@@ -25,12 +25,26 @@ func GetTenant(c *gin.Context) *models.Tenant {
 func MultiTenancy(c *gin.Context) {
 	tenantName := c.Param("tenant")
 	var tenant models.Tenant
-	if data.DB.First(&tenant, "name = ?", tenantName).Error != nil {
-		c.AbortWithStatusJSON(http.StatusNotFound, gin.H{"message": "Tenant not found."})
+	if data.DB.First(&tenant, "name = ?", tenantName).Error == nil {
+		c.Set("tenant", &tenant)
+		c.Next()
 		return
 	}
-	c.Set("tenant", &tenant)
-	c.Next()
+	tenantName = c.Request.Host
+	if data.DB.First(&tenant, "name = ?", tenantName).Error == nil {
+		c.Set("tenant", &tenant)
+		c.Next()
+		return
+	}
+
+	if data.DB.First(&tenant, "name = ?", "default").Error == nil {
+		c.Set("tenant", &tenant)
+		c.Next()
+		return
+	}
+
+	c.AbortWithStatusJSON(http.StatusNotFound, gin.H{"message": "Tenant not found."})
+	return
 }
 
 func GetUserStandalone(c *gin.Context) (*models.User, error) {
