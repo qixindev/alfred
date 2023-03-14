@@ -9,6 +9,8 @@ require (
 	github.com/go-jose/go-jose/v3 v3.0.0
 	github.com/golang-jwt/jwt v3.2.2+incompatible
 	github.com/google/uuid v1.3.0
+	github.com/swaggo/files v0.0.0-20220728132757-551d4a08d97a
+	github.com/swaggo/gin-swagger v1.5.3
 	github.com/swaggo/swag v1.8.10
 	github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/common v1.0.612
 	github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/sms v1.0.612
