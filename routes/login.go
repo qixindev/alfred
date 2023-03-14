@@ -41,10 +41,16 @@ func checkPasswordHash(password string, hash string) bool {
 //	@Success		302
 //	@Router			/{tenant}/login [post]
 func Login(c *gin.Context) {
-	login := c.PostForm("login")
-	password := c.PostForm("password")
+	var in struct {
+		Login    string `form:"login"`
+		Password string `form:"password"`
+	}
 
-	if strings.TrimSpace(login) == "" || strings.TrimSpace(password) == "" {
+	if err := c.ShouldBindJSON(&in); err != nil {
+		c.Status(http.StatusFailedDependency)
+		return
+	}
+	if strings.TrimSpace(in.Login) == "" || strings.TrimSpace(in.Password) == "" {
 		c.Status(http.StatusBadRequest)
 		return
 	}
@@ -52,12 +58,12 @@ func Login(c *gin.Context) {
 	tenant := middlewares.GetTenant(c)
 
 	var user models.User
-	if data.DB.First(&user, "tenant_id = ? AND username = ?", tenant.Id, login).Error != nil {
+	if data.DB.First(&user, "tenant_id = ? AND username = ?", tenant.Id, in.Login).Error != nil {
 		c.Status(http.StatusUnauthorized)
 		return
 	}
 
-	if checkPasswordHash(password, user.PasswordHash) == false {
+	if checkPasswordHash(in.Password, user.PasswordHash) == false {
 		c.Status(http.StatusUnauthorized)
 		return
 	}

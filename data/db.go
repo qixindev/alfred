@@ -57,7 +57,7 @@ func InitDB() error {
 		return err
 	}
 	DB = db
-	migrateDB()
+	// migrateDB()
 	err = CheckFirstRun()
 	return err
 }

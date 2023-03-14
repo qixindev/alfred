@@ -37,7 +37,7 @@ type dingTalkTokenRequest struct {
 }
 
 func (p ProviderDingTalk) Login(c *gin.Context) (*models.UserInfo, error) {
-	code := c.Query("authCode")
+	code := c.Query("code")
 	if code == "" {
 		return nil, errors.New("no auth code")
 	}
