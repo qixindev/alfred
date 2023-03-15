@@ -3,6 +3,7 @@ package models
 import "time"
 
 type UserInfo struct {
+	Id          uint
 	Sub         string
 	Name        string
 	FirstName   string

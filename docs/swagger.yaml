@@ -56,6 +56,524 @@ definitions:
 info:
   contact: {}
 paths:
+  /.well-known/jwks.json:
+    get:
+      description: jwk
+      responses:
+        "200":
+          description: OK
+      summary: jwk
+      tags:
+      - oauth2
+  /{tenant}/.well-known/openid-configuration:
+    get:
+      description: openid configuration
+      responses:
+        "200":
+          description: OK
+      summary: openid configuration
+      tags:
+      - oauth2
+  /{tenant}/iam/clients/{client}/types:
+    get:
+      description: get iam resource type list
+      parameters:
+      - description: tenant
+        in: path
+        name: tenant
+        required: true
+        type: string
+      - description: tenant
+        in: path
+        name: clientId
+        required: true
+        type: integer
+      responses:
+        "200":
+          description: OK
+      summary: iam resource type
+      tags:
+      - iam
+    post:
+      description: new iam resource type
+      parameters:
+      - description: tenant
+        in: path
+        name: tenant
+        required: true
+        type: string
+      - description: tenant
+        in: path
+        name: clientId
+        required: true
+        type: integer
+      responses:
+        "200":
+          description: OK
+      summary: iam resource type
+      tags:
+      - iam
+  /{tenant}/iam/clients/{client}/types/{type}:
+    delete:
+      description: delete iam resource type
+      parameters:
+      - description: tenant
+        in: path
+        name: tenant
+        required: true
+        type: string
+      - description: tenant
+        in: path
+        name: clientId
+        required: true
+        type: integer
+      - description: tenant
+        in: path
+        name: type
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+      summary: iam resource type
+      tags:
+      - iam
+  /{tenant}/iam/clients/{client}/types/{type}/actions:
+    post:
+      description: new iam action
+      parameters:
+      - description: tenant
+        in: path
+        name: tenant
+        required: true
+        type: string
+      - description: tenant
+        in: path
+        name: clientId
+        required: true
+        type: integer
+      - description: tenant
+        in: path
+        name: type
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+      summary: iam action
+      tags:
+      - iam
+  /{tenant}/iam/clients/{client}/types/{type}/actions/{action}:
+    delete:
+      description: delete iam action
+      parameters:
+      - description: tenant
+        in: path
+        name: tenant
+        required: true
+        type: string
+      - description: tenant
+        in: path
+        name: clientId
+        required: true
+        type: integer
+      - description: tenant
+        in: path
+        name: type
+        required: true
+        type: string
+      - description: tenant
+        in: path
+        name: action
+        required: true
+        type: integer
+      responses:
+        "200":
+          description: OK
+      summary: iam action
+      tags:
+      - iam
+  /{tenant}/iam/clients/{client}/types/{type}/resources:
+    get:
+      description: get iam resource list
+      parameters:
+      - description: tenant
+        in: path
+        name: tenant
+        required: true
+        type: string
+      - description: tenant
+        in: path
+        name: clientId
+        required: true
+        type: integer
+      - description: tenant
+        in: path
+        name: type
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+      summary: iam resource
+      tags:
+      - iam
+    post:
+      description: new iam resource
+      parameters:
+      - description: tenant
+        in: path
+        name: tenant
+        required: true
+        type: string
+      - description: tenant
+        in: path
+        name: clientId
+        required: true
+        type: integer
+      - description: tenant
+        in: path
+        name: type
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+      summary: iam resource
+      tags:
+      - iam
+  /{tenant}/iam/clients/{client}/types/{type}/resources/{resource}:
+    delete:
+      description: delete iam resource
+      parameters:
+      - description: tenant
+        in: path
+        name: tenant
+        required: true
+        type: string
+      - description: tenant
+        in: path
+        name: clientId
+        required: true
+        type: integer
+      - description: tenant
+        in: path
+        name: type
+        required: true
+        type: string
+      - description: tenant
+        in: path
+        name: resource
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+      summary: iam resource
+      tags:
+      - iam
+  /{tenant}/iam/clients/{client}/types/{type}/resources/{resource}/actions/{action}/users/{user}:
+    get:
+      description: get iam action user
+      parameters:
+      - description: tenant
+        in: path
+        name: tenant
+        required: true
+        type: string
+      - description: tenant
+        in: path
+        name: clientId
+        required: true
+        type: integer
+      - description: tenant
+        in: path
+        name: type
+        required: true
+        type: string
+      - description: tenant
+        in: path
+        name: action
+        required: true
+        type: string
+      - description: tenant
+        in: path
+        name: user
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+      summary: iam action user
+      tags:
+      - iam
+  /{tenant}/iam/clients/{client}/types/{type}/resources/{resource}/roles/{role}/users:
+    get:
+      description: get iam resource role list
+      parameters:
+      - description: tenant
+        in: path
+        name: tenant
+        required: true
+        type: string
+      - description: tenant
+        in: path
+        name: clientId
+        required: true
+        type: integer
+      - description: tenant
+        in: path
+        name: type
+        required: true
+        type: string
+      - description: tenant
+        in: path
+        name: resource
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+      summary: iam resource role
+      tags:
+      - iam
+    post:
+      description: new iam resource role
+      parameters:
+      - description: tenant
+        in: path
+        name: tenant
+        required: true
+        type: string
+      - description: tenant
+        in: path
+        name: clientId
+        required: true
+        type: integer
+      - description: tenant
+        in: path
+        name: type
+        required: true
+        type: string
+      - description: tenant
+        in: path
+        name: resource
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+      summary: iam resource role
+      tags:
+      - iam
+  /{tenant}/iam/clients/{client}/types/{type}/resources/{resource}/roles/{role}/users/{user}:
+    delete:
+      description: delete iam resource role
+      parameters:
+      - description: tenant
+        in: path
+        name: tenant
+        required: true
+        type: string
+      - description: tenant
+        in: path
+        name: clientId
+        required: true
+        type: integer
+      - description: tenant
+        in: path
+        name: type
+        required: true
+        type: string
+      - description: tenant
+        in: path
+        name: resource
+        required: true
+        type: string
+      - description: tenant
+        in: path
+        name: user
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+      summary: iam resource role
+      tags:
+      - iam
+  /{tenant}/iam/clients/{client}/types/{type}/roles:
+    get:
+      description: get iam role list
+      parameters:
+      - description: tenant
+        in: path
+        name: tenant
+        required: true
+        type: string
+      - description: tenant
+        in: path
+        name: clientId
+        required: true
+        type: integer
+      - description: tenant
+        in: path
+        name: type
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+      summary: iam role
+      tags:
+      - iam
+    post:
+      description: new iam role
+      parameters:
+      - description: tenant
+        in: path
+        name: tenant
+        required: true
+        type: string
+      - description: tenant
+        in: path
+        name: clientId
+        required: true
+        type: integer
+      - description: tenant
+        in: path
+        name: type
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+      summary: iam role
+      tags:
+      - iam
+  /{tenant}/iam/clients/{client}/types/{type}/roles/{role}:
+    delete:
+      description: delete iam role
+      parameters:
+      - description: tenant
+        in: path
+        name: tenant
+        required: true
+        type: string
+      - description: tenant
+        in: path
+        name: clientId
+        required: true
+        type: integer
+      - description: tenant
+        in: path
+        name: type
+        required: true
+        type: string
+      - description: tenant
+        in: path
+        name: role
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+      summary: iam role
+      tags:
+      - iam
+  /{tenant}/iam/clients/{client}/types/{type}/roles/{role}/actions:
+    get:
+      description: get iam role action list
+      parameters:
+      - description: tenant
+        in: path
+        name: tenant
+        required: true
+        type: string
+      - description: tenant
+        in: path
+        name: clientId
+        required: true
+        type: integer
+      - description: tenant
+        in: path
+        name: type
+        required: true
+        type: string
+      - description: tenant
+        in: path
+        name: role
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+      summary: iam role action
+      tags:
+      - iam
+    post:
+      description: new iam role action
+      parameters:
+      - description: tenant
+        in: path
+        name: tenant
+        required: true
+        type: string
+      - description: tenant
+        in: path
+        name: clientId
+        required: true
+        type: integer
+      - description: tenant
+        in: path
+        name: type
+        required: true
+        type: string
+      - description: tenant
+        in: path
+        name: role
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+      summary: iam role action
+      tags:
+      - iam
+  /{tenant}/iam/clients/{client}/types/{type}/roles/{role}/actions/{action}:
+    delete:
+      description: delete iam role action
+      parameters:
+      - description: tenant
+        in: path
+        name: tenant
+        required: true
+        type: string
+      - description: tenant
+        in: path
+        name: clientId
+        required: true
+        type: integer
+      - description: tenant
+        in: path
+        name: type
+        required: true
+        type: string
+      - description: tenant
+        in: path
+        name: role
+        required: true
+        type: string
+      - description: tenant
+        in: path
+        name: action
+        required: true
+        type: integer
+      responses:
+        "200":
+          description: OK
+      summary: iam role action
+      tags:
+      - iam
   /{tenant}/logged-in/{provider}:
     get:
       description: provider callback
@@ -367,4 +885,866 @@ paths:
       summary: register a user
       tags:
       - login
+  /admin/{tenant}/admin/tenants:
+    get:
+      description: list tenants
+      parameters:
+      - description: tenant
+        in: path
+        name: tenant
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+      summary: tenants
+      tags:
+      - admin-tenants
+    post:
+      description: new tenants
+      parameters:
+      - description: tenant
+        in: path
+        name: tenant
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+      summary: tenants
+      tags:
+      - admin-tenants
+  /admin/{tenant}/admin/tenants/{tenantId}:
+    delete:
+      description: delete tenants
+      parameters:
+      - description: tenant
+        in: path
+        name: tenant
+        required: true
+        type: string
+      - description: tenant
+        in: path
+        name: tenantId
+        required: true
+        type: integer
+      responses:
+        "200":
+          description: OK
+      summary: tenants
+      tags:
+      - admin-tenants
+    get:
+      description: get tenants
+      parameters:
+      - description: tenant
+        in: path
+        name: tenant
+        required: true
+        type: string
+      - description: tenant
+        in: path
+        name: tenantId
+        required: true
+        type: integer
+      responses:
+        "200":
+          description: OK
+      summary: tenants
+      tags:
+      - admin-tenants
+    put:
+      description: update tenants
+      parameters:
+      - description: tenant
+        in: path
+        name: tenant
+        required: true
+        type: string
+      - description: tenant
+        in: path
+        name: tenantId
+        required: true
+        type: integer
+      responses:
+        "200":
+          description: OK
+      summary: tenants
+      tags:
+      - admin-tenants
+  /admin/{tenant}/clients:
+    get:
+      description: get client list
+      parameters:
+      - description: tenant
+        in: path
+        name: tenant
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+      summary: client
+      tags:
+      - client
+    post:
+      description: new client
+      parameters:
+      - description: tenant
+        in: path
+        name: tenant
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+      summary: new client
+      tags:
+      - client
+  /admin/{tenant}/clients/{clientId}:
+    delete:
+      description: delete client
+      parameters:
+      - description: tenant
+        in: path
+        name: tenant
+        required: true
+        type: string
+      - description: clientId
+        in: path
+        name: clientId
+        required: true
+        type: integer
+      responses:
+        "200":
+          description: OK
+      summary: delete client
+      tags:
+      - client
+    get:
+      description: get client
+      parameters:
+      - description: tenant
+        in: path
+        name: tenant
+        required: true
+        type: string
+      - description: clientId
+        in: path
+        name: clientId
+        required: true
+        type: integer
+      responses:
+        "200":
+          description: OK
+      summary: client
+      tags:
+      - client
+    put:
+      description: update client
+      parameters:
+      - description: tenant
+        in: path
+        name: tenant
+        required: true
+        type: string
+      - description: clientId
+        in: path
+        name: clientId
+        required: true
+        type: integer
+      responses:
+        "200":
+          description: OK
+      summary: update client
+      tags:
+      - client
+  /admin/{tenant}/clients/{clientId}/redirect-uris:
+    get:
+      description: get client redirect uris
+      parameters:
+      - description: tenant
+        in: path
+        name: tenant
+        required: true
+        type: string
+      - description: tenant
+        in: path
+        name: clientId
+        required: true
+        type: integer
+      responses:
+        "200":
+          description: OK
+      summary: get client redirect uris
+      tags:
+      - client
+  /admin/{tenant}/clients/{clientId}/redirect-uris/:uriId:
+    delete:
+      description: delete client redirect uris
+      parameters:
+      - description: tenant
+        in: path
+        name: tenant
+        required: true
+        type: string
+      - description: tenant
+        in: path
+        name: clientId
+        required: true
+        type: integer
+      - description: tenant
+        in: path
+        name: uriId
+        required: true
+        type: integer
+      responses:
+        "200":
+          description: OK
+      summary: delete client redirect uris
+      tags:
+      - client
+  /admin/{tenant}/clients/{clientId}/secret/{secretId}:
+    delete:
+      description: delete client secret
+      parameters:
+      - description: tenant
+        in: path
+        name: tenant
+        required: true
+        type: string
+      - description: tenant
+        in: path
+        name: clientId
+        required: true
+        type: integer
+      - description: tenant
+        in: path
+        name: secretId
+        required: true
+        type: integer
+      responses:
+        "200":
+          description: OK
+      summary: delete client secret
+      tags:
+      - client
+  /admin/{tenant}/clients/{clientId}/secrets:
+    get:
+      description: get client secrets
+      parameters:
+      - description: tenant
+        in: path
+        name: tenant
+        required: true
+        type: string
+      - description: tenant
+        in: path
+        name: clientId
+        required: true
+        type: integer
+      responses:
+        "200":
+          description: OK
+      summary: get client secrets
+      tags:
+      - client
+    post:
+      description: new client secret
+      parameters:
+      - description: tenant
+        in: path
+        name: tenant
+        required: true
+        type: string
+      - description: tenant
+        in: path
+        name: clientId
+        required: true
+        type: integer
+      responses:
+        "200":
+          description: OK
+      summary: new client secret
+      tags:
+      - client
+  /admin/{tenant}/devices:
+    get:
+      description: list device
+      parameters:
+      - description: tenant
+        in: path
+        name: tenant
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+      summary: device
+      tags:
+      - device
+    post:
+      description: new device
+      parameters:
+      - description: tenant
+        in: path
+        name: tenant
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+      summary: device
+      tags:
+      - device
+  /admin/{tenant}/devices/{deviceId}:
+    delete:
+      description: delete device
+      parameters:
+      - description: tenant
+        in: path
+        name: tenant
+        required: true
+        type: string
+      - description: tenant
+        in: path
+        name: deviceId
+        required: true
+        type: integer
+      responses:
+        "200":
+          description: OK
+      summary: device
+      tags:
+      - device
+    get:
+      description: get device
+      parameters:
+      - description: tenant
+        in: path
+        name: tenant
+        required: true
+        type: string
+      - description: tenant
+        in: path
+        name: deviceId
+        required: true
+        type: integer
+      responses:
+        "200":
+          description: OK
+      summary: device
+      tags:
+      - device
+    put:
+      description: update device
+      parameters:
+      - description: tenant
+        in: path
+        name: tenant
+        required: true
+        type: string
+      - description: tenant
+        in: path
+        name: deviceId
+        required: true
+        type: integer
+      responses:
+        "200":
+          description: OK
+      summary: device
+      tags:
+      - device
+  /admin/{tenant}/devices/{deviceId}/groups:
+    get:
+      description: list device groups
+      parameters:
+      - description: tenant
+        in: path
+        name: tenant
+        required: true
+        type: string
+      - description: tenant
+        in: path
+        name: deviceId
+        required: true
+        type: integer
+      responses:
+        "200":
+          description: OK
+      summary: device groups
+      tags:
+      - device
+  /admin/{tenant}/devices/{deviceId}/groups/{groupId}:
+    delete:
+      description: delete device groups
+      parameters:
+      - description: tenant
+        in: path
+        name: tenant
+        required: true
+        type: string
+      - description: tenant
+        in: path
+        name: deviceId
+        required: true
+        type: integer
+      - description: tenant
+        in: path
+        name: groupId
+        required: true
+        type: integer
+      responses:
+        "200":
+          description: OK
+      summary: device groups
+      tags:
+      - device
+    get:
+      description: update device groups
+      parameters:
+      - description: tenant
+        in: path
+        name: tenant
+        required: true
+        type: string
+      - description: tenant
+        in: path
+        name: deviceId
+        required: true
+        type: integer
+      - description: tenant
+        in: path
+        name: groupId
+        required: true
+        type: integer
+      responses:
+        "200":
+          description: OK
+      summary: device groups
+      tags:
+      - device
+  /admin/{tenant}/groups:
+    get:
+      description: list groups
+      parameters:
+      - description: tenant
+        in: path
+        name: tenant
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+      summary: group
+      tags:
+      - group
+    post:
+      description: new groups
+      parameters:
+      - description: tenant
+        in: path
+        name: tenant
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+      summary: group
+      tags:
+      - group
+  /admin/{tenant}/groups/{groupId}:
+    delete:
+      description: delete groups
+      parameters:
+      - description: tenant
+        in: path
+        name: tenant
+        required: true
+        type: string
+      - description: tenant
+        in: path
+        name: groupId
+        required: true
+        type: integer
+      responses:
+        "200":
+          description: OK
+      summary: group
+      tags:
+      - group
+    get:
+      description: get groups
+      parameters:
+      - description: tenant
+        in: path
+        name: tenant
+        required: true
+        type: string
+      - description: tenant
+        in: path
+        name: groupId
+        required: true
+        type: integer
+      responses:
+        "200":
+          description: OK
+      summary: group
+      tags:
+      - group
+    put:
+      description: update groups
+      parameters:
+      - description: tenant
+        in: path
+        name: tenant
+        required: true
+        type: string
+      - description: tenant
+        in: path
+        name: groupId
+        required: true
+        type: integer
+      responses:
+        "200":
+          description: OK
+      summary: group
+      tags:
+      - group
+  /admin/{tenant}/groups/{groupId}/member:
+    get:
+      description: get groups members
+      parameters:
+      - description: tenant
+        in: path
+        name: tenant
+        required: true
+        type: string
+      - description: tenant
+        in: path
+        name: groupId
+        required: true
+        type: integer
+      responses:
+        "200":
+          description: OK
+      summary: group
+      tags:
+      - group
+  /admin/{tenant}/providers:
+    get:
+      description: list provider
+      parameters:
+      - description: tenant
+        in: path
+        name: tenant
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+      summary: provider
+      tags:
+      - provider
+    post:
+      description: new provider
+      parameters:
+      - description: tenant
+        in: path
+        name: tenant
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+      summary: provider
+      tags:
+      - provider
+  /admin/{tenant}/providers/{providerId}:
+    delete:
+      description: delete provider
+      parameters:
+      - description: tenant
+        in: path
+        name: tenant
+        required: true
+        type: string
+      - description: tenant
+        in: path
+        name: providerId
+        required: true
+        type: integer
+      responses:
+        "200":
+          description: OK
+      summary: provider
+      tags:
+      - provider
+    get:
+      description: get provider
+      parameters:
+      - description: tenant
+        in: path
+        name: tenant
+        required: true
+        type: string
+      - description: tenant
+        in: path
+        name: providerId
+        required: true
+        type: integer
+      responses:
+        "200":
+          description: OK
+      summary: provider
+      tags:
+      - provider
+    put:
+      description: update provider
+      parameters:
+      - description: tenant
+        in: path
+        name: tenant
+        required: true
+        type: string
+      - description: tenant
+        in: path
+        name: providerId
+        required: true
+        type: integer
+      responses:
+        "200":
+          description: OK
+      summary: provider
+      tags:
+      - provider
+  /admin/{tenant}/redirect-uris:
+    post:
+      description: new client redirect uri
+      parameters:
+      - description: tenant
+        in: path
+        name: tenant
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+      summary: new client redirect uri
+      tags:
+      - client
+  /admin/{tenant}/users:
+    get:
+      description: get user list
+      parameters:
+      - description: tenant
+        in: path
+        name: tenant
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+      summary: user
+      tags:
+      - user
+    post:
+      description: new user
+      parameters:
+      - description: tenant
+        in: path
+        name: tenant
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+      summary: user
+      tags:
+      - user
+  /admin/{tenant}/users/{userId}:
+    delete:
+      description: delete user
+      parameters:
+      - description: tenant
+        in: path
+        name: tenant
+        required: true
+        type: string
+      - description: tenant
+        in: path
+        name: userId
+        required: true
+        type: integer
+      responses:
+        "200":
+          description: OK
+      summary: user
+      tags:
+      - user
+    get:
+      description: get user
+      parameters:
+      - description: tenant
+        in: path
+        name: tenant
+        required: true
+        type: string
+      - description: tenant
+        in: path
+        name: userId
+        required: true
+        type: integer
+      responses:
+        "200":
+          description: OK
+      summary: user
+      tags:
+      - user
+    put:
+      description: update user
+      parameters:
+      - description: tenant
+        in: path
+        name: tenant
+        required: true
+        type: string
+      - description: tenant
+        in: path
+        name: userId
+        required: true
+        type: integer
+      responses:
+        "200":
+          description: OK
+      summary: user
+      tags:
+      - user
+  /admin/{tenant}/users/{userId}/groups:
+    get:
+      description: get user groups
+      parameters:
+      - description: tenant
+        in: path
+        name: tenant
+        required: true
+        type: string
+      - description: tenant
+        in: path
+        name: userId
+        required: true
+        type: integer
+      responses:
+        "200":
+          description: OK
+      summary: user
+      tags:
+      - user
+  /admin/{tenant}/users/{userId}/groups/{groupId}:
+    delete:
+      description: update user groups
+      parameters:
+      - description: tenant
+        in: path
+        name: tenant
+        required: true
+        type: string
+      - description: tenant
+        in: path
+        name: userId
+        required: true
+        type: integer
+      - description: tenant
+        in: path
+        name: groupId
+        required: true
+        type: integer
+      responses:
+        "200":
+          description: OK
+      summary: user
+      tags:
+      - user
+    get:
+      description: update user groups
+      parameters:
+      - description: tenant
+        in: path
+        name: tenant
+        required: true
+        type: string
+      - description: tenant
+        in: path
+        name: userId
+        required: true
+        type: integer
+      - description: tenant
+        in: path
+        name: groupId
+        required: true
+        type: integer
+      responses:
+        "200":
+          description: OK
+      summary: user
+      tags:
+      - user
+  /admin/{tenants}/devices/{deviceId}/groups:
+    delete:
+      description: delete admin device group
+      parameters:
+      - description: tenant
+        in: path
+        name: tenant
+        required: true
+        type: string
+      - description: tenant
+        in: path
+        name: deviceId
+        required: true
+        type: integer
+      responses:
+        "200":
+          description: OK
+      summary: admin device
+      tags:
+      - admin-device
+    get:
+      description: get admin device group
+      parameters:
+      - description: tenant
+        in: path
+        name: tenant
+        required: true
+        type: string
+      - description: tenant
+        in: path
+        name: deviceId
+        required: true
+        type: integer
+      responses:
+        "200":
+          description: OK
+      summary: admin device
+      tags:
+      - admin-device
+    put:
+      description: update admin device group
+      parameters:
+      - description: tenant
+        in: path
+        name: tenant
+        required: true
+        type: string
+      - description: tenant
+        in: path
+        name: deviceId
+        required: true
+        type: integer
+      responses:
+        "200":
+          description: OK
+      summary: admin device
+      tags:
+      - admin-device
 swagger: "2.0"

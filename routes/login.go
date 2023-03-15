@@ -35,22 +35,13 @@ func checkPasswordHash(password string, hash string) bool {
 //	@Param			tenant		path		string	true	"tenant"
 //	@Param			login		formData	string	true	"username"
 //	@Param			password	formData	string	true	"password"
-//
 //	@Param			next		query		string	false	"next"
-//
 //	@Success		302
 //	@Router			/{tenant}/login [post]
 func Login(c *gin.Context) {
-	var in struct {
-		Login    string `form:"login"`
-		Password string `form:"password"`
-	}
-
-	if err := c.ShouldBindJSON(&in); err != nil {
-		c.Status(http.StatusFailedDependency)
-		return
-	}
-	if strings.TrimSpace(in.Login) == "" || strings.TrimSpace(in.Password) == "" {
+	login := c.PostForm("login")
+	password := c.PostForm("password")
+	if strings.TrimSpace(login) == "" || strings.TrimSpace(password) == "" {
 		c.Status(http.StatusBadRequest)
 		return
 	}
@@ -58,12 +49,12 @@ func Login(c *gin.Context) {
 	tenant := middlewares.GetTenant(c)
 
 	var user models.User
-	if data.DB.First(&user, "tenant_id = ? AND username = ?", tenant.Id, in.Login).Error != nil {
+	if data.DB.First(&user, "tenant_id = ? AND username = ?", tenant.Id, login).Error != nil {
 		c.Status(http.StatusUnauthorized)
 		return
 	}
 
-	if checkPasswordHash(in.Password, user.PasswordHash) == false {
+	if checkPasswordHash(password, user.PasswordHash) == false {
 		c.Status(http.StatusUnauthorized)
 		return
 	}
@@ -71,6 +62,8 @@ func Login(c *gin.Context) {
 	session := sessions.Default(c)
 	session.Set("tenant", tenant.Name)
 	session.Set("user", user.Username)
+	session.Set("userId", user.Id)
+	fmt.Println(session.Get("tenant"), session.Get("user"))
 	if err := session.Save(); err != nil {
 		c.JSON(http.StatusInternalServerError, err)
 	}
@@ -92,9 +85,7 @@ func Login(c *gin.Context) {
 //	@Tags			login
 //	@Param			tenant		path	string	true	"tenant"
 //	@Param			provider	path	string	true	"provider"
-//
 //	@Param			next		query	string	false	"next"
-//
 //	@Success		302
 //	@Router			/{tenant}/login/{provider} [get]
 func LoginToProvider(c *gin.Context) {

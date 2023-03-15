@@ -217,6 +217,14 @@ func GetToken(c *gin.Context) {
 	fmt.Println(clientId, clientSecret, grantType, code, redirectUri, state, nonce)
 }
 
+// GetOpenidConfiguration godoc
+//
+//	@Summary	openid configuration
+//	@Schemes
+//	@Description	openid configuration
+//	@Tags			oauth2
+//	@Success		200
+//	@Router			/{tenant}/.well-known/openid-configuration [get]
 func GetOpenidConfiguration(c *gin.Context) {
 	tenant := middlewares.GetTenant(c)
 	prefix := utils.GetHostWithScheme(c)
@@ -237,6 +245,14 @@ func GetOpenidConfiguration(c *gin.Context) {
 	c.JSON(http.StatusOK, conf)
 }
 
+// GetJwks godoc
+//
+//	@Summary	jwk
+//	@Schemes
+//	@Description	jwk
+//	@Tags			oauth2
+//	@Success		200
+//	@Router			/.well-known/jwks.json [get]
 func GetJwks(c *gin.Context) {
 	tenant := middlewares.GetTenant(c)
 	jwks, err := utils.LoadKeys(tenant.Name)
