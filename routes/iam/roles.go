@@ -18,7 +18,7 @@ import (
 //	@Param			client		path	string	true	"tenant"
 //	@Param			type		path	string	true	"tenant"
 //	@Success		200
-//	@Router			/{tenant}/iam/clients/{client}/types/{type}/roles [get]
+//	@Router			/accounts/{tenant}/iam/clients/{client}/types/{type}/roles [get]
 func ListIamRole(c *gin.Context) {
 	typ, err := getType(c)
 	if err != nil {
@@ -43,7 +43,7 @@ func ListIamRole(c *gin.Context) {
 //	@Param			client		path	string	true	"tenant"
 //	@Param			type		path	string	true	"tenant"
 //	@Success		200
-//	@Router			/{tenant}/iam/clients/{client}/types/{type}/roles [post]
+//	@Router			/accounts/{tenant}/iam/clients/{client}/types/{type}/roles [post]
 func NewIamRole(c *gin.Context) {
 	var role models.ResourceTypeRole
 	if c.BindJSON(&role) != nil {
@@ -74,7 +74,7 @@ func NewIamRole(c *gin.Context) {
 //	@Param			type		path	string	true	"tenant"
 //	@Param			role		path	string	true	"tenant"
 //	@Success		200
-//	@Router			/{tenant}/iam/clients/{client}/types/{type}/roles/{role} [delete]
+//	@Router			/accounts/{tenant}/iam/clients/{client}/types/{type}/roles/{role} [delete]
 func DeleteIamRole(c *gin.Context) {
 	typ, err := getType(c)
 	if err != nil {
@@ -106,7 +106,7 @@ func DeleteIamRole(c *gin.Context) {
 //	@Param			role		path	string	true	"tenant"
 //	@Param			resource	path	string	true	"tenant"
 //	@Success		200
-//	@Router			/{tenant}/iam/clients/{client}/types/{type}/resources/{resource}/roles/{role}/users [get]
+//	@Router			/accounts/{tenant}/iam/clients/{client}/types/{type}/resources/{resource}/roles/{role}/users [get]
 func ListIamResourceRole(c *gin.Context) {
 	resource, role, err := getResourceAndRole(c)
 	if err != nil {
@@ -134,7 +134,7 @@ func ListIamResourceRole(c *gin.Context) {
 //	@Param			role		path	string	true	"tenant"
 //	@Param			resource	path	string	true	"tenant"
 //	@Success		200
-//	@Router			/{tenant}/iam/clients/{client}/types/{type}/resources/{resource}/roles/{role}/users [post]
+//	@Router			/accounts/{tenant}/iam/clients/{client}/types/{type}/resources/{resource}/roles/{role}/users [post]
 func NewIamResourceRole(c *gin.Context) {
 	var roleUser models.ResourceRoleUser
 	if c.BindJSON(&roleUser) != nil {
@@ -167,7 +167,7 @@ func NewIamResourceRole(c *gin.Context) {
 //	@Param			role		path	string	true	"tenant"
 //	@Param			user		path	string	true	"tenant"
 //	@Success		200
-//	@Router			/{tenant}/iam/clients/{client}/types/{type}/resources/{resource}/roles/{role}/users/{user} [delete]
+//	@Router			/accounts/{tenant}/iam/clients/{client}/types/{type}/resources/{resource}/roles/{role}/users/{user} [delete]
 func DeleteIamResourceRole(c *gin.Context) {
 	resource, role, err := getResourceAndRole(c)
 	if err != nil {

@@ -11,15 +11,16 @@ import (
 )
 
 func AddRoutes(rg *gin.RouterGroup) {
-	rg.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
+	api := rg.Group("/accounts")
+	{
+		api.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
+		tenantRoutes := api.Group("/:tenant", middlewares.MultiTenancy)
+		addLoginRoutes(tenantRoutes)
+		addUsersRoutes(tenantRoutes)
+		addOAuth2Routes(tenantRoutes)
 
-	tenantRoutes := rg.Group("/:tenant", middlewares.MultiTenancy)
-	addLoginRoutes(tenantRoutes)
-	addUsersRoutes(tenantRoutes)
-	addOAuth2Routes(tenantRoutes)
-
-	iamRoutes := rg.Group("/:tenant/iam/clients/:client", middlewares.MultiTenancy)
-	iam.AddIamRoutes(iamRoutes)
-
-	admin.AddAdminRoutes(rg)
+		iamRoutes := api.Group("/:tenant/iam/clients/:client", middlewares.MultiTenancy)
+		iam.AddIamRoutes(iamRoutes)
+		admin.AddAdminRoutes(api)
+	}
 }

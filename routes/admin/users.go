@@ -18,7 +18,7 @@ import (
 //	@Tags			user
 //	@Param			tenant	path	string	true	"tenant"
 //	@Success		200
-//	@Router			/admin/{tenant}/users [get]
+//	@Router			/accounts/admin/{tenant}/users [get]
 func ListUsers(c *gin.Context) {
 	var users []models.User
 	if middlewares.TenantDB(c).Find(&users).Error != nil {
@@ -37,7 +37,7 @@ func ListUsers(c *gin.Context) {
 //	@Param			tenant	path	string	true	"tenant"
 //	@Param			userId	path	integer	true	"tenant"
 //	@Success		200
-//	@Router			/admin/{tenant}/users/{userId} [get]
+//	@Router			/accounts/admin/{tenant}/users/{userId} [get]
 func GetUser(c *gin.Context) {
 	userId := c.Param("userId")
 	var user models.User
@@ -56,7 +56,7 @@ func GetUser(c *gin.Context) {
 //	@Tags			user
 //	@Param			tenant	path	string	true	"tenant"
 //	@Success		200
-//	@Router			/admin/{tenant}/users [post]
+//	@Router			/accounts/admin/{tenant}/users [post]
 func NewUser(c *gin.Context) {
 	tenant := middlewares.GetTenant(c)
 	var user models.User
@@ -82,7 +82,7 @@ func NewUser(c *gin.Context) {
 //	@Param			tenant	path	string	true	"tenant"
 //	@Param			userId	path	integer	true	"tenant"
 //	@Success		200
-//	@Router			/admin/{tenant}/users/{userId} [put]
+//	@Router			/accounts/admin/{tenant}/users/{userId} [put]
 func UpdateUser(c *gin.Context) {
 	userId := c.Param("userId")
 	var user models.User
@@ -122,7 +122,7 @@ func UpdateUser(c *gin.Context) {
 //	@Param			tenant	path	string	true	"tenant"
 //	@Param			userId	path	integer	true	"tenant"
 //	@Success		200
-//	@Router			/admin/{tenant}/users/{userId} [delete]
+//	@Router			/accounts/admin/{tenant}/users/{userId} [delete]
 func DeleteUser(c *gin.Context) {
 	userId := c.Param("userId")
 	var user models.User
@@ -146,7 +146,7 @@ func DeleteUser(c *gin.Context) {
 //	@Param			tenant	path	string	true	"tenant"
 //	@Param			userId	path	integer	true	"tenant"
 //	@Success		200
-//	@Router			/admin/{tenant}/users/{userId}/groups [get]
+//	@Router			/accounts/admin/{tenant}/users/{userId}/groups [get]
 func GetUserGroups(c *gin.Context) {
 	userId := c.Param("userId")
 	var user models.User
@@ -179,7 +179,7 @@ func GetUserGroups(c *gin.Context) {
 //	@Param			tenant	path	string	true	"tenant"
 //	@Param			userId	path	integer	true	"tenant"
 //	@Success		200
-//	@Router			/admin/{tenant}/users/{userId}/groups [post]
+//	@Router			/accounts/admin/{tenant}/users/{userId}/groups [post]
 func NewUserGroup(c *gin.Context) {
 	userId := c.Param("userId")
 	var groupUser models.GroupUser
@@ -215,7 +215,7 @@ func NewUserGroup(c *gin.Context) {
 //	@Param			userId	path	integer	true	"tenant"
 //	@Param			groupId	path	integer	true	"tenant"
 //	@Success		200
-//	@Router			/admin/{tenant}/users/{userId}/groups/{groupId} [get]
+//	@Router			/accounts/admin/{tenant}/users/{userId}/groups/{groupId} [get]
 func UpdateUserGroup(c *gin.Context) {
 	userId := c.Param("userId")
 	var user models.User
@@ -262,7 +262,7 @@ func UpdateUserGroup(c *gin.Context) {
 //	@Param			userId	path	integer	true	"tenant"
 //	@Param			groupId	path	integer	true	"tenant"
 //	@Success		200
-//	@Router			/admin/{tenant}/users/{userId}/groups/{groupId} [delete]
+//	@Router			/accounts/admin/{tenant}/users/{userId}/groups/{groupId} [delete]
 func DeleteUserGroup(c *gin.Context) {
 	userId := c.Param("userId")
 	var user models.User

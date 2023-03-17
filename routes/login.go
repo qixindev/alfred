@@ -37,7 +37,7 @@ func checkPasswordHash(password string, hash string) bool {
 //	@Param			password	formData	string	true	"password"
 //	@Param			next		query		string	false	"next"
 //	@Success		302
-//	@Router			/{tenant}/login [post]
+//	@Router			/accounts/{tenant}/login [post]
 func Login(c *gin.Context) {
 	login := c.PostForm("login")
 	password := c.PostForm("password")
@@ -87,7 +87,7 @@ func Login(c *gin.Context) {
 //	@Param			provider	path	string	true	"provider"
 //	@Param			next		query	string	false	"next"
 //	@Success		302
-//	@Router			/{tenant}/login/{provider} [get]
+//	@Router			/accounts/{tenant}/login/{provider} [get]
 func LoginToProvider(c *gin.Context) {
 	tenant := middlewares.GetTenant(c)
 	providerName := c.Param("provider")
@@ -119,7 +119,7 @@ func LoginToProvider(c *gin.Context) {
 //	@Tags			login
 //	@Param			tenant	path		string	true	"tenant"
 //	@Success		200		{object}	[]dto.ProviderDto
-//	@Router			/{tenant}/login/providers [get]
+//	@Router			/accounts/{tenant}/login/providers [get]
 func ListProviders(c *gin.Context) {
 	var providers []models.Provider
 	if middlewares.TenantDB(c).Find(&providers).Error != nil {
@@ -138,7 +138,7 @@ func ListProviders(c *gin.Context) {
 //	@Param			tenant		path		string	true	"tenant"
 //	@Param			provider	path		string	true	"provider"
 //	@Success		200			{object}	dto.ProviderDto
-//	@Router			/{tenant}/login/providers/{provider} [get]
+//	@Router			/accounts/{tenant}/login/providers/{provider} [get]
 func GetProvider(c *gin.Context) {
 	providerName := c.Param("provider")
 	var provider models.Provider
@@ -159,7 +159,7 @@ func GetProvider(c *gin.Context) {
 //	@Param			login		formData	string	true	"username"
 //	@Param			password	formData	string	true	"password"
 //	@Success		200
-//	@Router			/{tenant}/register [post]
+//	@Router			/accounts/{tenant}/register [post]
 func Register(c *gin.Context) {
 	tenant := middlewares.GetTenant(c)
 	login := c.PostForm("login")
@@ -198,7 +198,7 @@ func Register(c *gin.Context) {
 //	@Tags			login
 //	@Param			tenant	path	string	true	"tenant"
 //	@Success		200
-//	@Router			/{tenant}/logout [get]
+//	@Router			/accounts/{tenant}/logout [get]
 func Logout(c *gin.Context) {
 	session := sessions.Default(c)
 	user := session.Get("user")
@@ -224,7 +224,7 @@ func Logout(c *gin.Context) {
 //	@Param			code		query	string	true	"code"
 //	@Success		302
 //	@Success		200
-//	@Router			/{tenant}/logged-in/{provider} [get]
+//	@Router			/accounts/{tenant}/logged-in/{provider} [get]
 func ProviderCallback(c *gin.Context) {
 	providerName := c.Param("provider")
 	var provider models.Provider

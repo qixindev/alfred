@@ -21,7 +21,7 @@ func GetUser(c *gin.Context) *models.User {
 //	@Tags			user
 //	@Param			tenant	path		string	true	"tenant"
 //	@Success		200		{object}	dto.UserDto
-//	@Router			/{tenant}/me [get]
+//	@Router			/accounts/{tenant}/me [get]
 func GetUserDetail(c *gin.Context) {
 	user := GetUser(c)
 	c.JSON(http.StatusOK, user.Dto())
@@ -36,7 +36,7 @@ func GetUserDetail(c *gin.Context) {
 //	@Param			tenant	path		string	true	"tenant"
 //	@Body			request	body							dto.UserProfileDto	true	"request"
 //	@Success		200		{object}	dto.UserDto
-//	@Router			/{tenant}/me [put]
+//	@Router			/accounts/{tenant}/me [put]
 func UpdateUserDetail(c *gin.Context) {
 	user := GetUser(c)
 	var u dto.UserDto
@@ -57,7 +57,7 @@ func UpdateUserDetail(c *gin.Context) {
 //	@Tags			user
 //	@Param			tenant	path		string	true	"tenant"
 //	@Success		200		{object}	dto.UserProfileDto
-//	@Router			/{tenant}/me/profile [get]
+//	@Router			/accounts/{tenant}/me/profile [get]
 func GetUserProfile(c *gin.Context) {
 	user := GetUser(c)
 	c.JSON(http.StatusOK, user.ProfileDto())

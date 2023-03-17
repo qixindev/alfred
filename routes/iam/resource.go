@@ -17,7 +17,7 @@ import (
 //	@Param			tenant		path	string	true	"tenant"
 //	@Param			client		path	string	true	"tenant"
 //	@Success		200
-//	@Router			/{tenant}/iam/clients/{client}/types [get]
+//	@Router			/accounts/{tenant}/iam/clients/{client}/types [get]
 func ListIamResourceType(c *gin.Context) {
 	client, err := GetClientFromCid(c)
 	if err != nil {
@@ -41,7 +41,7 @@ func ListIamResourceType(c *gin.Context) {
 //	@Param			tenant		path	string	true	"tenant"
 //	@Param			client		path	string	true	"tenant"
 //	@Success		200
-//	@Router			/{tenant}/iam/clients/{client}/types [post]
+//	@Router			/accounts/{tenant}/iam/clients/{client}/types [post]
 func NewIamResourceType(c *gin.Context) {
 	var typ models.ResourceType
 	if c.BindJSON(&typ) != nil {
@@ -71,7 +71,7 @@ func NewIamResourceType(c *gin.Context) {
 //	@Param			client		path	string	true	"tenant"
 //	@Param			type		path	string	true	"tenant"
 //	@Success		200
-//	@Router			/{tenant}/iam/clients/{client}/types/{type} [delete]
+//	@Router			/accounts/{tenant}/iam/clients/{client}/types/{type} [delete]
 func DeleteIamResourceType(c *gin.Context) {
 	client, err := GetClientFromCid(c)
 	if err != nil {
@@ -101,7 +101,7 @@ func DeleteIamResourceType(c *gin.Context) {
 //	@Param			client		path	string	true	"tenant"
 //	@Param			type		path	string	true	"tenant"
 //	@Success		200
-//	@Router			/{tenant}/iam/clients/{client}/types/{type}/resources [get]
+//	@Router			/accounts/{tenant}/iam/clients/{client}/types/{type}/resources [get]
 func ListIamResource(c *gin.Context) {
 	typ, err := getType(c)
 	if err != nil {
@@ -126,7 +126,7 @@ func ListIamResource(c *gin.Context) {
 //	@Param			client		path	string	true	"tenant"
 //	@Param			type		path	string	true	"tenant"
 //	@Success		200
-//	@Router			/{tenant}/iam/clients/{client}/types/{type}/resources [post]
+//	@Router			/accounts/{tenant}/iam/clients/{client}/types/{type}/resources [post]
 func NewIamResource(c *gin.Context) {
 	var resource models.Resource
 	if c.BindJSON(&resource) != nil {
@@ -157,7 +157,7 @@ func NewIamResource(c *gin.Context) {
 //	@Param			type		path	string	true	"tenant"
 //	@Param			resource	path	string	true	"tenant"
 //	@Success		200
-//	@Router			/{tenant}/iam/clients/{client}/types/{type}/resources/{resource} [delete]
+//	@Router			/accounts/{tenant}/iam/clients/{client}/types/{type}/resources/{resource} [delete]
 func DeleteIamResource(c *gin.Context) {
 	typ, err := getType(c)
 	if err != nil {

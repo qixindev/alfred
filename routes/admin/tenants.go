@@ -16,7 +16,7 @@ import (
 //	@Tags			admin-tenants
 //	@Param			tenant	path	string	true	"tenant"
 //	@Success		200
-//	@Router			/admin/tenants [get]
+//	@Router			/accounts/admin/tenants [get]
 func ListTenants(c *gin.Context) {
 	var tenants []models.Tenant
 	if data.DB.Find(&tenants).Error != nil {
@@ -35,7 +35,7 @@ func ListTenants(c *gin.Context) {
 //	@Param			tenant		path	string	true	"tenant"
 //	@Param			tenantId	path	integer	true	"tenant"
 //	@Success		200
-//	@Router			/admin/tenants/{tenantId} [get]
+//	@Router			/accounts/admin/tenants/{tenantId} [get]
 func GetTenant(c *gin.Context) {
 	tenantId := c.Param("tenantId")
 	var tenant models.Tenant
@@ -54,7 +54,7 @@ func GetTenant(c *gin.Context) {
 //	@Tags			admin-tenants
 //	@Param			tenant	path	string	true	"tenant"
 //	@Success		200
-//	@Router			/admin/tenants [post]
+//	@Router			/accounts/admin/tenants [post]
 func NewTenant(c *gin.Context) {
 	var tenant models.Tenant
 	err := c.BindJSON(&tenant)
@@ -78,7 +78,7 @@ func NewTenant(c *gin.Context) {
 //	@Param			tenant		path	string	true	"tenant"
 //	@Param			tenantId	path	integer	true	"tenant"
 //	@Success		200
-//	@Router			/admin/tenants/{tenantId} [put]
+//	@Router			/accounts/admin/tenants/{tenantId} [put]
 func UpdateTenant(c *gin.Context) {
 	tenantId := c.Param("tenantId")
 	var tenant models.Tenant
@@ -109,7 +109,7 @@ func UpdateTenant(c *gin.Context) {
 //	@Param			tenant		path	string	true	"tenant"
 //	@Param			tenantId	path	integer	true	"tenant"
 //	@Success		200
-//	@Router			/admin/tenants/{tenantId} [delete]
+//	@Router			/accounts/admin/tenants/{tenantId} [delete]
 func DeleteTenant(c *gin.Context) {
 	tenantId := c.Param("tenantId")
 	var tenant models.Tenant
