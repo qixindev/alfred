@@ -1,0 +1,87 @@
+//用户状态信息模块
+import { login, getUserInfo, auth, getToken, thirdLogin } from '~/api/user';
+import { useGetQuery } from './useUtil'
+
+export const useUser = () => useState("user", () => null);
+
+export async function useLogin(params: any) {
+  await login(params)
+  // await auth({
+  //   client_id: '1',
+  //   scope: 'profileOpenId',
+  //   response_type: 'code',
+  //   redirect_uri: 'http://10.1.0.135:3002'
+  // })
+  const route = useRoute()
+  navigateTo(route.query.from as string || '/', { replace: true })
+}
+
+/**
+ *  获取用户信息（昵称、头像、角色集合、权限集合）
+ */
+export async function useGetUserInfo() {
+  getUserInfo().then((res: any) => {
+    const user = useUser();
+    user.value = res
+  })
+}
+
+/**
+ *  注销
+ */
+export async function useLogout() {
+  useRemoveToken()
+  navigateTo('/')
+}
+
+/**
+ * 获取token
+ */
+export async function useGetToken(code: string) {
+  const params = {
+    client_id: '1',
+    code: code,
+    redirect_uri: 'http://10.1.0.135:3002',
+    grant_type: 'authorization_code',
+    client_secret: 'abcdefg'
+  }
+  getToken(params).then((res: any) => {
+    const token = useCookie('token')
+    token.value = res.access_token
+    useGetUserInfo()
+    // 处理登录成功后页面跳转
+    const route = useRoute()
+    navigateTo(route.query.from as string || '/', { replace: true })
+  })
+}
+
+/**
+ * 第三方登录
+ */
+export async function useThirdLogin(type: string, code: string) {
+  const params = {
+    code: code,
+  }
+  await thirdLogin(type, params)
+  await useGetUserInfo()
+  // code使用完后删除url参数
+  const route = useRoute()  
+  navigateTo(route.query.from as string || '/', { replace: true })
+  
+}
+
+/**
+ * 清除本地数据
+ */
+export async function useRemoveToken() {
+  // 清除cookie
+  const auth = useCookie('QixinAuth')
+  auth.value = null
+
+  // const token = useCookie('token')
+  // token.value = null
+
+  // 重置用户信息
+  const user = useState('user')
+  user.value = null
+}

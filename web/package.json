@@ -1,0 +1,22 @@
+{
+  "private": true,
+  "scripts": {
+    "build": "nuxt build",
+    "dev": "nuxt dev --port=9527 --dotenv .env.development",
+    "build:prod": "nuxt build --dotenv .env.production",
+    "generate": "nuxt generate",
+    "preview": "nuxt preview",
+    "postinstall": "nuxt prepare"
+  },
+  "devDependencies": {
+    "nuxt": "^3.2.2",
+    "vite-plugin-svg-icons": "^2.0.1"
+  },
+  "__npminstall_done": false,
+  "dependencies": {
+    "@nuxtjs/composition-api": "^0.33.1",
+    "element-plus": "^2.2.32",
+    "sass": "^1.58.3",
+    "sass-loader": "^13.2.0"
+  }
+}
