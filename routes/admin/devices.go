@@ -160,6 +160,40 @@ func GetDeviceGroups(c *gin.Context) {
 	c.JSON(http.StatusOK, groups)
 }
 
+// NewDeviceGroup godoc
+//
+//	@Summary	device groups
+//	@Schemes
+//	@Description	new device groups
+//	@Tags			device
+//	@Param			tenant		path	string	true	"tenant"
+//	@Param			deviceId	path	integer	true	"tenant"
+//	@Success		200
+//	@Router			/admin/{tenant}/devices/{deviceId}/groups [post]
+func NewDeviceGroup(c *gin.Context) {
+	deviceId := c.Param("deviceId")
+	var deviceGroup models.GroupDevice
+	if err := c.BindJSON(&deviceGroup); err != nil {
+		c.Status(http.StatusBadRequest)
+		return
+	}
+
+	var device models.Device
+	if middlewares.TenantDB(c).First(&device, "id = ?", deviceId).Error != nil {
+		c.Status(http.StatusNotFound)
+		return
+	}
+
+	deviceGroup.TenantId = device.TenantId
+	deviceGroup.DeviceId = device.Id
+	if data.DB.Create(&deviceGroup).Error != nil {
+		c.Status(http.StatusConflict)
+		return
+	}
+
+	c.JSON(http.StatusOK, deviceGroup.Dto())
+}
+
 // UpdateDeviceGroup godoc
 //
 //	@Summary	device groups
@@ -237,6 +271,7 @@ func addAdminDevicesRoutes(rg *gin.RouterGroup) {
 	rg.PUT("/devices/:deviceId", UpdateDevice)
 	rg.DELETE("/devices/:deviceId", DeleteDevice)
 	rg.GET("/devices/:deviceId/groups", GetDeviceGroups)
+	rg.POST("/devices/:deviceId/groups", NewDeviceGroup)
 	rg.PUT("/devices/:deviceId/groups/:groupId", UpdateDeviceGroup)
 	rg.DELETE("/devices/:deviceId/groups/:groupId", DeleteDeviceGroup)
 }

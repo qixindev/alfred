@@ -9,7 +9,7 @@ import (
 func GetClientFromCid(c *gin.Context) (*models.Client, error) {
 	cid := c.Param("client")
 	var client models.Client
-	if err := middlewares.TenantDB(c).First(&client, "cid = ?", cid).Error; err != nil {
+	if err := middlewares.TenantDB(c).First(&client, "cli_id = ?", cid).Error; err != nil {
 		return nil, err
 	}
 	return &client, nil
@@ -84,4 +84,32 @@ func getResourceAndRole(c *gin.Context) (*models.Resource, *models.ResourceTypeR
 		return nil, nil, err
 	}
 	return &resource, &role, nil
+}
+
+func AddIamRoutes(rg *gin.RouterGroup) {
+	rg.GET("/types", ListIamResourceType)
+	rg.POST("/types", NewIamResourceType)
+	rg.DELETE("/types/:type", DeleteIamResourceType)
+
+	rg.GET("/types/:type/roles", ListIamRole)
+	rg.POST("/types/:type/roles", NewIamRole)
+	rg.DELETE("/types/:type/roles/:role", DeleteIamRole)
+
+	rg.GET("/types/:type/actions", ListIamAction)
+	rg.POST("/types/:type/actions", NewIamAction)
+	rg.DELETE("/types/:type/actions/:action", DeleteIamAction)
+
+	rg.GET("/types/:type/roles/:role/actions", ListIamRoleAction)
+	rg.POST("/types/:type/roles/:role/actions", NewIamRoleAction)
+	rg.DELETE("/types/:type/roles/:role/actions/:action", DeleteIamRoleAction)
+
+	rg.GET("/types/:type/resources", ListIamResource)
+	rg.POST("/types/:type/resources", NewIamResource)
+	rg.DELETE("/types/:type/resources/:resource", DeleteIamResource)
+
+	rg.GET("/types/:type/resources/:resource/roles/:role/users", ListIamResourceRole)
+	rg.POST("/types/:type/resources/:resource/roles/:role/users", NewIamResourceRole)
+	rg.DELETE("/types/:type/resources/:resource/roles/:role/users/:user", DeleteIamResourceRole)
+
+	rg.GET("/types/:type/resources/:resource/actions/:action/users/:user", GetIamActionUser)
 }

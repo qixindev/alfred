@@ -5,6 +5,7 @@ import (
 	"accounts/middlewares"
 	"accounts/models"
 	"accounts/utils"
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
 	"net/http"
@@ -16,11 +17,12 @@ import (
 //	@Schemes
 //	@Description	get client list
 //	@Tags			client
-//	@Param			tenant	path	string	true	"tenant"
+//	@Param			tenant	path		string	true	"tenant"
 //	@Success		200
 //	@Router			/admin/{tenant}/clients [get]
 func ListClients(c *gin.Context) {
 	var clients []models.Client
+	fmt.Println(middlewares.GetTenant(c))
 	if middlewares.TenantDB(c).Find(&clients).Error != nil {
 		c.Status(http.StatusInternalServerError)
 		return
@@ -34,8 +36,8 @@ func ListClients(c *gin.Context) {
 //	@Schemes
 //	@Description	get client
 //	@Tags			client
-//	@Param			tenant		path	string	true	"tenant"
-//	@Param			clientId	path	integer	true	"clientId"
+//	@Param			tenant		path		string	true	"tenant"
+//	@Param			clientId	path		integer	true	"clientId"
 //	@Success		200
 //	@Router			/admin/{tenant}/clients/{clientId} [get]
 func GetClient(c *gin.Context) {
@@ -55,6 +57,7 @@ func GetClient(c *gin.Context) {
 //	@Description	new client
 //	@Tags			client
 //	@Param			tenant	path	string	true	"tenant"
+//	@Param			name	body	object	true	"{"name": "main"}"
 //	@Success		200
 //	@Router			/admin/{tenant}/clients [post]
 func NewClient(c *gin.Context) {
@@ -128,7 +131,7 @@ func DeleteClient(c *gin.Context) {
 	c.Status(http.StatusNoContent)
 }
 
-// GetClientRedirectUri godoc
+// ListClientRedirectUri godoc
 //
 //	@Summary	get client redirect uris
 //	@Schemes
@@ -138,7 +141,7 @@ func DeleteClient(c *gin.Context) {
 //	@Param			clientId	path	integer	true	"tenant"
 //	@Success		200
 //	@Router			/admin/{tenant}/clients/{clientId}/redirect-uris [get]
-func GetClientRedirectUri(c *gin.Context) {
+func ListClientRedirectUri(c *gin.Context) {
 	clientId := c.Param("clientId")
 	var client models.Client
 	if middlewares.TenantDB(c).First(&client, "id = ?", clientId).Error != nil {
@@ -163,7 +166,7 @@ func GetClientRedirectUri(c *gin.Context) {
 //	@Tags			client
 //	@Param			tenant	path	string	true	"tenant"
 //	@Success		200
-//	@Router			/admin/{tenant}/redirect-uris [post]
+//	@Router			/admin/{tenant}/clients/:clientId/redirect-uris [post]
 func NewClientRedirectUri(c *gin.Context) {
 	clientId := c.Param("clientId")
 	var client models.Client
@@ -195,7 +198,7 @@ func NewClientRedirectUri(c *gin.Context) {
 //	@Param			clientId	path	integer	true	"tenant"
 //	@Param			uriId		path	integer	true	"tenant"
 //	@Success		200
-//	@Router			/admin/{tenant}/clients/{clientId}/redirect-uris/:uriId [delete]
+//	@Router			/admin/{tenant}/clients/{clientId}/redirect-uris/{uriId} [delete]
 func DeleteClientRedirectUri(c *gin.Context) {
 	clientId := c.Param("clientId")
 	uriId := c.Param("uriId")
@@ -205,6 +208,12 @@ func DeleteClientRedirectUri(c *gin.Context) {
 		c.Status(http.StatusNotFound)
 		return
 	}
+
+	if err := data.DB.Delete(&uri).Error; err != nil {
+		c.Status(http.StatusInternalServerError)
+		return
+	}
+
 	c.Status(http.StatusNoContent)
 }
 
@@ -251,7 +260,7 @@ func NewClientSecret(c *gin.Context) {
 		return
 	}
 	var secret models.ClientSecret
-	if c.BindJSON(&secret) != nil {
+	if err := c.BindJSON(&secret); err != nil {
 		c.Status(http.StatusBadRequest)
 		return
 	}
@@ -284,7 +293,33 @@ func DeleteClientSecret(c *gin.Context) {
 		c.Status(http.StatusNotFound)
 		return
 	}
+
+	if err := data.DB.Delete(&secret).Error; err != nil {
+		c.Status(http.StatusInternalServerError)
+		return
+	}
+
 	c.Status(http.StatusNoContent)
+}
+
+// ListClientUsers godoc
+//
+//	@Summary		client user
+//	@Schemes
+//	@Description	get client user list
+//	@Tags			client
+//	@Param			tenant		path	string	true	"tenant"
+//	@Param			clientId	path	integer	true	"tenant"
+//	@Success		200
+//	@Router			/admin/{tenant}/clients/{clientId}/users [get]
+func ListClientUsers(c *gin.Context) {
+	var clientUser []models.ClientUser
+	clientId := c.Param("clientId")
+	if err := middlewares.TenantDB(c).Find(&clientUser, "client_id = ?", clientId).Error; err != nil {
+		c.Status(http.StatusInternalServerError)
+		return
+	}
+	c.JSON(http.StatusOK, clientUser)
 }
 
 func addAdminClientsRoutes(rg *gin.RouterGroup) {
@@ -293,10 +328,11 @@ func addAdminClientsRoutes(rg *gin.RouterGroup) {
 	rg.POST("/clients", NewClient)
 	rg.PUT("/clients/:clientId", UpdateClient)
 	rg.DELETE("/clients/:clientId", DeleteClient)
-	rg.GET("/clients/:clientId/redirect-uris", GetClientRedirectUri)
+	rg.GET("/clients/:clientId/redirect-uris", ListClientRedirectUri)
 	rg.POST("/clients/:clientId/redirect-uris", NewClientRedirectUri)
 	rg.DELETE("/clients/:clientId/redirect-uris/:uriId", DeleteClientRedirectUri)
 	rg.GET("/clients/:clientId/secrets", GetClientSecret)
 	rg.POST("/clients/:clientId/secrets", NewClientSecret)
 	rg.DELETE("/clients/:clientId/secret/:secretId", DeleteClientSecret)
+	rg.GET("/clients/:clientId/users", ListClientUsers)
 }

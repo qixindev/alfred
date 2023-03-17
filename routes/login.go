@@ -49,7 +49,7 @@ func Login(c *gin.Context) {
 	tenant := middlewares.GetTenant(c)
 
 	var user models.User
-	if data.DB.First(&user, "tenant_id = ? AND username = ?", tenant.Id, login).Error != nil {
+	if err := data.DB.First(&user, "tenant_id = ? AND username = ?", tenant.Id, login).Error; err != nil {
 		c.Status(http.StatusUnauthorized)
 		return
 	}

@@ -1,5 +1,7 @@
 package models
 
+import "accounts/models/dto"
+
 type ResourceType struct {
 	Id       uint   `gorm:"primaryKey" json:"id"`
 	Name     string `json:"name"`
@@ -34,12 +36,23 @@ type ResourceTypeRole struct {
 }
 
 type ResourceTypeRoleAction struct {
-	Id       uint               `gorm:"primaryKey" json:"id"`
-	RoleId   uint               `json:"roleId"`
-	Role     ResourceTypeRole   `gorm:"foreignKey:RoleId, TenantId" json:"role"`
-	ActionId uint               `json:"actionId"`
-	Action   ResourceTypeAction `gorm:"foreignKey:RoleId, TenantId" json:"action"`
-	TenantId uint               `gorm:"primaryKey"`
+	Id         uint               `gorm:"primaryKey" json:"id"`
+	RoleId     uint               `json:"roleId"`
+	Role       ResourceTypeRole   `gorm:"foreignKey:RoleId, TenantId" json:"role"`
+	ActionId   uint               `json:"actionId"`
+	Action     ResourceTypeAction `gorm:"foreignKey:ActionId, TenantId" json:"action"`
+	ActionName string             `gorm:"column:action_name" json:"actionName"`
+	TenantId   uint               `gorm:"primaryKey"`
+}
+
+func (r *ResourceTypeRoleAction) Dto() *dto.ResourceTypeRoleActionDto {
+	return &dto.ResourceTypeRoleActionDto{
+		Id:         r.Id,
+		RoleId:     r.RoleId,
+		TenantId:   r.TenantId,
+		ActionId:   r.ActionId,
+		ActionName: r.ActionName,
+	}
 }
 
 type ResourceRoleUser struct {

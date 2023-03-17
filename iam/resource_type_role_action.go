@@ -5,9 +5,12 @@ import (
 	"accounts/models"
 )
 
-func ListResourceTypeRoleActions(tenantId, typeId, roleId uint) ([]models.ResourceTypeRoleAction, error) {
+func ListResourceTypeRoleActions(tenantId, roleId uint) ([]models.ResourceTypeRoleAction, error) {
 	var resourceTypeRoleActions []models.ResourceTypeRoleAction
-	if err := data.WithTenant(tenantId).Find(&resourceTypeRoleActions, "type_id = ? AND role_id = ?", typeId, roleId).Error; err != nil {
+	if err := data.DB.Table("resource_type_role_actions ra").
+		Select("ra.id", "ra.role_id", "ra.action_id", "ra.tenant_id", "a.name action_name").
+		Joins("LEFT JOIN resource_type_actions a ON ra.action_id = a.id AND ra.tenant_id = a.tenant_id").
+		Find(&resourceTypeRoleActions, "role_id = ? AND ra.tenant_id = ?", roleId, tenantId).Error; err != nil {
 		return nil, err
 	}
 	return resourceTypeRoleActions, nil

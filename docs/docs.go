@@ -29,93 +29,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/admin/{tenants}/devices/{deviceId}/groups": {
-            "get": {
-                "description": "get admin device group",
-                "tags": [
-                    "admin-device"
-                ],
-                "summary": "admin device",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "tenant",
-                        "name": "tenant",
-                        "in": "path",
-                        "required": true
-                    },
-                    {
-                        "type": "integer",
-                        "description": "tenant",
-                        "name": "deviceId",
-                        "in": "path",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK"
-                    }
-                }
-            },
-            "put": {
-                "description": "update admin device group",
-                "tags": [
-                    "admin-device"
-                ],
-                "summary": "admin device",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "tenant",
-                        "name": "tenant",
-                        "in": "path",
-                        "required": true
-                    },
-                    {
-                        "type": "integer",
-                        "description": "tenant",
-                        "name": "deviceId",
-                        "in": "path",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK"
-                    }
-                }
-            },
-            "delete": {
-                "description": "delete admin device group",
-                "tags": [
-                    "admin-device"
-                ],
-                "summary": "admin device",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "tenant",
-                        "name": "tenant",
-                        "in": "path",
-                        "required": true
-                    },
-                    {
-                        "type": "integer",
-                        "description": "tenant",
-                        "name": "deviceId",
-                        "in": "path",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK"
-                    }
-                }
-            }
-        },
-        "/admin/{tenant}/admin/tenants": {
+        "/admin/tenants": {
             "get": {
                 "description": "list tenants",
                 "tags": [
@@ -159,7 +73,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/admin/{tenant}/admin/tenants/{tenantId}": {
+        "/admin/tenants/{tenantId}": {
             "get": {
                 "description": "get tenants",
                 "tags": [
@@ -273,6 +187,38 @@ const docTemplate = `{
                     "client"
                 ],
                 "summary": "new client",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "tenant",
+                        "name": "tenant",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "{",
+                        "name": "name",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "object"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/admin/{tenant}/clients/:clientId/redirect-uris": {
+            "post": {
+                "description": "new client redirect uri",
+                "tags": [
+                    "client"
+                ],
+                "summary": "new client redirect uri",
                 "parameters": [
                     {
                         "type": "string",
@@ -405,7 +351,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/admin/{tenant}/clients/{clientId}/redirect-uris/:uriId": {
+        "/admin/{tenant}/clients/{clientId}/redirect-uris/{uriId}": {
             "delete": {
                 "description": "delete client redirect uris",
                 "tags": [
@@ -514,6 +460,36 @@ const docTemplate = `{
                     "client"
                 ],
                 "summary": "new client secret",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "tenant",
+                        "name": "tenant",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "tenant",
+                        "name": "clientId",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/admin/{tenant}/clients/{clientId}/users": {
+            "get": {
+                "description": "get client user list",
+                "tags": [
+                    "client"
+                ],
+                "summary": "client user",
                 "parameters": [
                     {
                         "type": "string",
@@ -670,6 +646,34 @@ const docTemplate = `{
         "/admin/{tenant}/devices/{deviceId}/groups": {
             "get": {
                 "description": "list device groups",
+                "tags": [
+                    "device"
+                ],
+                "summary": "device groups",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "tenant",
+                        "name": "tenant",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "tenant",
+                        "name": "deviceId",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            },
+            "post": {
+                "description": "new device groups",
                 "tags": [
                     "device"
                 ],
@@ -1059,29 +1063,6 @@ const docTemplate = `{
                 }
             }
         },
-        "/admin/{tenant}/redirect-uris": {
-            "post": {
-                "description": "new client redirect uri",
-                "tags": [
-                    "client"
-                ],
-                "summary": "new client redirect uri",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "tenant",
-                        "name": "tenant",
-                        "in": "path",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK"
-                    }
-                }
-            }
-        },
         "/admin/{tenant}/users": {
             "get": {
                 "description": "get user list",
@@ -1240,6 +1221,34 @@ const docTemplate = `{
                         "description": "OK"
                     }
                 }
+            },
+            "post": {
+                "description": "get user groups",
+                "tags": [
+                    "user"
+                ],
+                "summary": "user",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "tenant",
+                        "name": "tenant",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "tenant",
+                        "name": "userId",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
             }
         },
         "/admin/{tenant}/users/{userId}/groups/{groupId}": {
@@ -1332,7 +1341,7 @@ const docTemplate = `{
             "get": {
                 "description": "get iam resource type list",
                 "tags": [
-                    "iam"
+                    "iam-resource"
                 ],
                 "summary": "iam resource type",
                 "parameters": [
@@ -1344,9 +1353,9 @@ const docTemplate = `{
                         "required": true
                     },
                     {
-                        "type": "integer",
+                        "type": "string",
                         "description": "tenant",
-                        "name": "clientId",
+                        "name": "client",
                         "in": "path",
                         "required": true
                     }
@@ -1360,7 +1369,7 @@ const docTemplate = `{
             "post": {
                 "description": "new iam resource type",
                 "tags": [
-                    "iam"
+                    "iam-resource"
                 ],
                 "summary": "iam resource type",
                 "parameters": [
@@ -1372,9 +1381,9 @@ const docTemplate = `{
                         "required": true
                     },
                     {
-                        "type": "integer",
+                        "type": "string",
                         "description": "tenant",
-                        "name": "clientId",
+                        "name": "client",
                         "in": "path",
                         "required": true
                     }
@@ -1390,7 +1399,7 @@ const docTemplate = `{
             "delete": {
                 "description": "delete iam resource type",
                 "tags": [
-                    "iam"
+                    "iam-resource"
                 ],
                 "summary": "iam resource type",
                 "parameters": [
@@ -1402,9 +1411,9 @@ const docTemplate = `{
                         "required": true
                     },
                     {
-                        "type": "integer",
+                        "type": "string",
                         "description": "tenant",
-                        "name": "clientId",
+                        "name": "client",
                         "in": "path",
                         "required": true
                     },
@@ -1424,10 +1433,10 @@ const docTemplate = `{
             }
         },
         "/{tenant}/iam/clients/{client}/types/{type}/actions": {
-            "post": {
-                "description": "new iam action",
+            "get": {
+                "description": "get iam action list",
                 "tags": [
-                    "iam"
+                    "iam-action"
                 ],
                 "summary": "iam action",
                 "parameters": [
@@ -1439,9 +1448,44 @@ const docTemplate = `{
                         "required": true
                     },
                     {
-                        "type": "integer",
+                        "type": "string",
                         "description": "tenant",
-                        "name": "clientId",
+                        "name": "client",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "tenant",
+                        "name": "type",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            },
+            "post": {
+                "description": "new iam action",
+                "tags": [
+                    "iam-action"
+                ],
+                "summary": "iam action",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "tenant",
+                        "name": "tenant",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "tenant",
+                        "name": "client",
                         "in": "path",
                         "required": true
                     },
@@ -1464,7 +1508,7 @@ const docTemplate = `{
             "delete": {
                 "description": "delete iam action",
                 "tags": [
-                    "iam"
+                    "iam-action"
                 ],
                 "summary": "iam action",
                 "parameters": [
@@ -1476,9 +1520,9 @@ const docTemplate = `{
                         "required": true
                     },
                     {
-                        "type": "integer",
+                        "type": "string",
                         "description": "tenant",
-                        "name": "clientId",
+                        "name": "client",
                         "in": "path",
                         "required": true
                     },
@@ -1490,7 +1534,7 @@ const docTemplate = `{
                         "required": true
                     },
                     {
-                        "type": "integer",
+                        "type": "string",
                         "description": "tenant",
                         "name": "action",
                         "in": "path",
@@ -1508,7 +1552,7 @@ const docTemplate = `{
             "get": {
                 "description": "get iam resource list",
                 "tags": [
-                    "iam"
+                    "iam-resource"
                 ],
                 "summary": "iam resource",
                 "parameters": [
@@ -1520,9 +1564,9 @@ const docTemplate = `{
                         "required": true
                     },
                     {
-                        "type": "integer",
+                        "type": "string",
                         "description": "tenant",
-                        "name": "clientId",
+                        "name": "client",
                         "in": "path",
                         "required": true
                     },
@@ -1543,7 +1587,7 @@ const docTemplate = `{
             "post": {
                 "description": "new iam resource",
                 "tags": [
-                    "iam"
+                    "iam-resource"
                 ],
                 "summary": "iam resource",
                 "parameters": [
@@ -1555,9 +1599,9 @@ const docTemplate = `{
                         "required": true
                     },
                     {
-                        "type": "integer",
+                        "type": "string",
                         "description": "tenant",
-                        "name": "clientId",
+                        "name": "client",
                         "in": "path",
                         "required": true
                     },
@@ -1580,7 +1624,7 @@ const docTemplate = `{
             "delete": {
                 "description": "delete iam resource",
                 "tags": [
-                    "iam"
+                    "iam-resource"
                 ],
                 "summary": "iam resource",
                 "parameters": [
@@ -1592,9 +1636,9 @@ const docTemplate = `{
                         "required": true
                     },
                     {
-                        "type": "integer",
+                        "type": "string",
                         "description": "tenant",
-                        "name": "clientId",
+                        "name": "client",
                         "in": "path",
                         "required": true
                     },
@@ -1624,7 +1668,7 @@ const docTemplate = `{
             "get": {
                 "description": "get iam action user",
                 "tags": [
-                    "iam"
+                    "iam-action"
                 ],
                 "summary": "iam action user",
                 "parameters": [
@@ -1636,9 +1680,9 @@ const docTemplate = `{
                         "required": true
                     },
                     {
-                        "type": "integer",
+                        "type": "string",
                         "description": "tenant",
-                        "name": "clientId",
+                        "name": "client",
                         "in": "path",
                         "required": true
                     },
@@ -1675,7 +1719,7 @@ const docTemplate = `{
             "get": {
                 "description": "get iam resource role list",
                 "tags": [
-                    "iam"
+                    "iam-role"
                 ],
                 "summary": "iam resource role",
                 "parameters": [
@@ -1687,9 +1731,9 @@ const docTemplate = `{
                         "required": true
                     },
                     {
-                        "type": "integer",
+                        "type": "string",
                         "description": "tenant",
-                        "name": "clientId",
+                        "name": "client",
                         "in": "path",
                         "required": true
                     },
@@ -1697,6 +1741,13 @@ const docTemplate = `{
                         "type": "string",
                         "description": "tenant",
                         "name": "type",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "tenant",
+                        "name": "role",
                         "in": "path",
                         "required": true
                     },
@@ -1717,7 +1768,7 @@ const docTemplate = `{
             "post": {
                 "description": "new iam resource role",
                 "tags": [
-                    "iam"
+                    "iam-role"
                 ],
                 "summary": "iam resource role",
                 "parameters": [
@@ -1729,9 +1780,9 @@ const docTemplate = `{
                         "required": true
                     },
                     {
-                        "type": "integer",
+                        "type": "string",
                         "description": "tenant",
-                        "name": "clientId",
+                        "name": "client",
                         "in": "path",
                         "required": true
                     },
@@ -1739,6 +1790,13 @@ const docTemplate = `{
                         "type": "string",
                         "description": "tenant",
                         "name": "type",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "tenant",
+                        "name": "role",
                         "in": "path",
                         "required": true
                     },
@@ -1761,7 +1819,7 @@ const docTemplate = `{
             "delete": {
                 "description": "delete iam resource role",
                 "tags": [
-                    "iam"
+                    "iam-role"
                 ],
                 "summary": "iam resource role",
                 "parameters": [
@@ -1773,9 +1831,9 @@ const docTemplate = `{
                         "required": true
                     },
                     {
-                        "type": "integer",
+                        "type": "string",
                         "description": "tenant",
-                        "name": "clientId",
+                        "name": "client",
                         "in": "path",
                         "required": true
                     },
@@ -1790,6 +1848,13 @@ const docTemplate = `{
                         "type": "string",
                         "description": "tenant",
                         "name": "resource",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "tenant",
+                        "name": "role",
                         "in": "path",
                         "required": true
                     },
@@ -1812,7 +1877,7 @@ const docTemplate = `{
             "get": {
                 "description": "get iam role list",
                 "tags": [
-                    "iam"
+                    "iam-role"
                 ],
                 "summary": "iam role",
                 "parameters": [
@@ -1824,9 +1889,9 @@ const docTemplate = `{
                         "required": true
                     },
                     {
-                        "type": "integer",
+                        "type": "string",
                         "description": "tenant",
-                        "name": "clientId",
+                        "name": "client",
                         "in": "path",
                         "required": true
                     },
@@ -1847,7 +1912,7 @@ const docTemplate = `{
             "post": {
                 "description": "new iam role",
                 "tags": [
-                    "iam"
+                    "iam-role"
                 ],
                 "summary": "iam role",
                 "parameters": [
@@ -1859,9 +1924,9 @@ const docTemplate = `{
                         "required": true
                     },
                     {
-                        "type": "integer",
+                        "type": "string",
                         "description": "tenant",
-                        "name": "clientId",
+                        "name": "client",
                         "in": "path",
                         "required": true
                     },
@@ -1884,7 +1949,7 @@ const docTemplate = `{
             "delete": {
                 "description": "delete iam role",
                 "tags": [
-                    "iam"
+                    "iam-role"
                 ],
                 "summary": "iam role",
                 "parameters": [
@@ -1896,9 +1961,9 @@ const docTemplate = `{
                         "required": true
                     },
                     {
-                        "type": "integer",
+                        "type": "string",
                         "description": "tenant",
-                        "name": "clientId",
+                        "name": "client",
                         "in": "path",
                         "required": true
                     },
@@ -1928,7 +1993,7 @@ const docTemplate = `{
             "get": {
                 "description": "get iam role action list",
                 "tags": [
-                    "iam"
+                    "iam-action"
                 ],
                 "summary": "iam role action",
                 "parameters": [
@@ -1940,9 +2005,9 @@ const docTemplate = `{
                         "required": true
                     },
                     {
-                        "type": "integer",
+                        "type": "string",
                         "description": "tenant",
-                        "name": "clientId",
+                        "name": "client",
                         "in": "path",
                         "required": true
                     },
@@ -1970,7 +2035,7 @@ const docTemplate = `{
             "post": {
                 "description": "new iam role action",
                 "tags": [
-                    "iam"
+                    "iam-action"
                 ],
                 "summary": "iam role action",
                 "parameters": [
@@ -1982,9 +2047,9 @@ const docTemplate = `{
                         "required": true
                     },
                     {
-                        "type": "integer",
+                        "type": "string",
                         "description": "tenant",
-                        "name": "clientId",
+                        "name": "client",
                         "in": "path",
                         "required": true
                     },
@@ -2014,7 +2079,7 @@ const docTemplate = `{
             "delete": {
                 "description": "delete iam role action",
                 "tags": [
-                    "iam"
+                    "iam-action"
                 ],
                 "summary": "iam role action",
                 "parameters": [
@@ -2026,9 +2091,9 @@ const docTemplate = `{
                         "required": true
                     },
                     {
-                        "type": "integer",
+                        "type": "string",
                         "description": "tenant",
-                        "name": "clientId",
+                        "name": "client",
                         "in": "path",
                         "required": true
                     },

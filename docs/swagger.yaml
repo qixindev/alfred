@@ -85,15 +85,15 @@ paths:
         type: string
       - description: tenant
         in: path
-        name: clientId
+        name: client
         required: true
-        type: integer
+        type: string
       responses:
         "200":
           description: OK
       summary: iam resource type
       tags:
-      - iam
+      - iam-resource
     post:
       description: new iam resource type
       parameters:
@@ -104,15 +104,15 @@ paths:
         type: string
       - description: tenant
         in: path
-        name: clientId
+        name: client
         required: true
-        type: integer
+        type: string
       responses:
         "200":
           description: OK
       summary: iam resource type
       tags:
-      - iam
+      - iam-resource
   /{tenant}/iam/clients/{client}/types/{type}:
     delete:
       description: delete iam resource type
@@ -124,9 +124,9 @@ paths:
         type: string
       - description: tenant
         in: path
-        name: clientId
+        name: client
         required: true
-        type: integer
+        type: string
       - description: tenant
         in: path
         name: type
@@ -137,10 +137,10 @@ paths:
           description: OK
       summary: iam resource type
       tags:
-      - iam
+      - iam-resource
   /{tenant}/iam/clients/{client}/types/{type}/actions:
-    post:
-      description: new iam action
+    get:
+      description: get iam action list
       parameters:
       - description: tenant
         in: path
@@ -149,9 +149,9 @@ paths:
         type: string
       - description: tenant
         in: path
-        name: clientId
+        name: client
         required: true
-        type: integer
+        type: string
       - description: tenant
         in: path
         name: type
@@ -162,7 +162,31 @@ paths:
           description: OK
       summary: iam action
       tags:
-      - iam
+      - iam-action
+    post:
+      description: new iam action
+      parameters:
+      - description: tenant
+        in: path
+        name: tenant
+        required: true
+        type: string
+      - description: tenant
+        in: path
+        name: client
+        required: true
+        type: string
+      - description: tenant
+        in: path
+        name: type
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+      summary: iam action
+      tags:
+      - iam-action
   /{tenant}/iam/clients/{client}/types/{type}/actions/{action}:
     delete:
       description: delete iam action
@@ -174,9 +198,9 @@ paths:
         type: string
       - description: tenant
         in: path
-        name: clientId
+        name: client
         required: true
-        type: integer
+        type: string
       - description: tenant
         in: path
         name: type
@@ -186,13 +210,13 @@ paths:
         in: path
         name: action
         required: true
-        type: integer
+        type: string
       responses:
         "200":
           description: OK
       summary: iam action
       tags:
-      - iam
+      - iam-action
   /{tenant}/iam/clients/{client}/types/{type}/resources:
     get:
       description: get iam resource list
@@ -204,9 +228,9 @@ paths:
         type: string
       - description: tenant
         in: path
-        name: clientId
+        name: client
         required: true
-        type: integer
+        type: string
       - description: tenant
         in: path
         name: type
@@ -217,7 +241,7 @@ paths:
           description: OK
       summary: iam resource
       tags:
-      - iam
+      - iam-resource
     post:
       description: new iam resource
       parameters:
@@ -228,9 +252,9 @@ paths:
         type: string
       - description: tenant
         in: path
-        name: clientId
+        name: client
         required: true
-        type: integer
+        type: string
       - description: tenant
         in: path
         name: type
@@ -241,7 +265,7 @@ paths:
           description: OK
       summary: iam resource
       tags:
-      - iam
+      - iam-resource
   /{tenant}/iam/clients/{client}/types/{type}/resources/{resource}:
     delete:
       description: delete iam resource
@@ -253,9 +277,9 @@ paths:
         type: string
       - description: tenant
         in: path
-        name: clientId
+        name: client
         required: true
-        type: integer
+        type: string
       - description: tenant
         in: path
         name: type
@@ -271,7 +295,7 @@ paths:
           description: OK
       summary: iam resource
       tags:
-      - iam
+      - iam-resource
   /{tenant}/iam/clients/{client}/types/{type}/resources/{resource}/actions/{action}/users/{user}:
     get:
       description: get iam action user
@@ -283,9 +307,9 @@ paths:
         type: string
       - description: tenant
         in: path
-        name: clientId
+        name: client
         required: true
-        type: integer
+        type: string
       - description: tenant
         in: path
         name: type
@@ -306,7 +330,7 @@ paths:
           description: OK
       summary: iam action user
       tags:
-      - iam
+      - iam-action
   /{tenant}/iam/clients/{client}/types/{type}/resources/{resource}/roles/{role}/users:
     get:
       description: get iam resource role list
@@ -318,12 +342,17 @@ paths:
         type: string
       - description: tenant
         in: path
-        name: clientId
+        name: client
         required: true
-        type: integer
+        type: string
       - description: tenant
         in: path
         name: type
+        required: true
+        type: string
+      - description: tenant
+        in: path
+        name: role
         required: true
         type: string
       - description: tenant
@@ -336,7 +365,7 @@ paths:
           description: OK
       summary: iam resource role
       tags:
-      - iam
+      - iam-role
     post:
       description: new iam resource role
       parameters:
@@ -347,12 +376,17 @@ paths:
         type: string
       - description: tenant
         in: path
-        name: clientId
+        name: client
         required: true
-        type: integer
+        type: string
       - description: tenant
         in: path
         name: type
+        required: true
+        type: string
+      - description: tenant
+        in: path
+        name: role
         required: true
         type: string
       - description: tenant
@@ -365,7 +399,7 @@ paths:
           description: OK
       summary: iam resource role
       tags:
-      - iam
+      - iam-role
   /{tenant}/iam/clients/{client}/types/{type}/resources/{resource}/roles/{role}/users/{user}:
     delete:
       description: delete iam resource role
@@ -377,9 +411,9 @@ paths:
         type: string
       - description: tenant
         in: path
-        name: clientId
+        name: client
         required: true
-        type: integer
+        type: string
       - description: tenant
         in: path
         name: type
@@ -388,6 +422,11 @@ paths:
       - description: tenant
         in: path
         name: resource
+        required: true
+        type: string
+      - description: tenant
+        in: path
+        name: role
         required: true
         type: string
       - description: tenant
@@ -400,7 +439,7 @@ paths:
           description: OK
       summary: iam resource role
       tags:
-      - iam
+      - iam-role
   /{tenant}/iam/clients/{client}/types/{type}/roles:
     get:
       description: get iam role list
@@ -412,9 +451,9 @@ paths:
         type: string
       - description: tenant
         in: path
-        name: clientId
+        name: client
         required: true
-        type: integer
+        type: string
       - description: tenant
         in: path
         name: type
@@ -425,7 +464,7 @@ paths:
           description: OK
       summary: iam role
       tags:
-      - iam
+      - iam-role
     post:
       description: new iam role
       parameters:
@@ -436,9 +475,9 @@ paths:
         type: string
       - description: tenant
         in: path
-        name: clientId
+        name: client
         required: true
-        type: integer
+        type: string
       - description: tenant
         in: path
         name: type
@@ -449,7 +488,7 @@ paths:
           description: OK
       summary: iam role
       tags:
-      - iam
+      - iam-role
   /{tenant}/iam/clients/{client}/types/{type}/roles/{role}:
     delete:
       description: delete iam role
@@ -461,9 +500,9 @@ paths:
         type: string
       - description: tenant
         in: path
-        name: clientId
+        name: client
         required: true
-        type: integer
+        type: string
       - description: tenant
         in: path
         name: type
@@ -479,7 +518,7 @@ paths:
           description: OK
       summary: iam role
       tags:
-      - iam
+      - iam-role
   /{tenant}/iam/clients/{client}/types/{type}/roles/{role}/actions:
     get:
       description: get iam role action list
@@ -491,9 +530,9 @@ paths:
         type: string
       - description: tenant
         in: path
-        name: clientId
+        name: client
         required: true
-        type: integer
+        type: string
       - description: tenant
         in: path
         name: type
@@ -509,7 +548,7 @@ paths:
           description: OK
       summary: iam role action
       tags:
-      - iam
+      - iam-action
     post:
       description: new iam role action
       parameters:
@@ -520,9 +559,9 @@ paths:
         type: string
       - description: tenant
         in: path
-        name: clientId
+        name: client
         required: true
-        type: integer
+        type: string
       - description: tenant
         in: path
         name: type
@@ -538,7 +577,7 @@ paths:
           description: OK
       summary: iam role action
       tags:
-      - iam
+      - iam-action
   /{tenant}/iam/clients/{client}/types/{type}/roles/{role}/actions/{action}:
     delete:
       description: delete iam role action
@@ -550,9 +589,9 @@ paths:
         type: string
       - description: tenant
         in: path
-        name: clientId
+        name: client
         required: true
-        type: integer
+        type: string
       - description: tenant
         in: path
         name: type
@@ -573,7 +612,7 @@ paths:
           description: OK
       summary: iam role action
       tags:
-      - iam
+      - iam-action
   /{tenant}/logged-in/{provider}:
     get:
       description: provider callback
@@ -885,93 +924,6 @@ paths:
       summary: register a user
       tags:
       - login
-  /admin/{tenant}/admin/tenants:
-    get:
-      description: list tenants
-      parameters:
-      - description: tenant
-        in: path
-        name: tenant
-        required: true
-        type: string
-      responses:
-        "200":
-          description: OK
-      summary: tenants
-      tags:
-      - admin-tenants
-    post:
-      description: new tenants
-      parameters:
-      - description: tenant
-        in: path
-        name: tenant
-        required: true
-        type: string
-      responses:
-        "200":
-          description: OK
-      summary: tenants
-      tags:
-      - admin-tenants
-  /admin/{tenant}/admin/tenants/{tenantId}:
-    delete:
-      description: delete tenants
-      parameters:
-      - description: tenant
-        in: path
-        name: tenant
-        required: true
-        type: string
-      - description: tenant
-        in: path
-        name: tenantId
-        required: true
-        type: integer
-      responses:
-        "200":
-          description: OK
-      summary: tenants
-      tags:
-      - admin-tenants
-    get:
-      description: get tenants
-      parameters:
-      - description: tenant
-        in: path
-        name: tenant
-        required: true
-        type: string
-      - description: tenant
-        in: path
-        name: tenantId
-        required: true
-        type: integer
-      responses:
-        "200":
-          description: OK
-      summary: tenants
-      tags:
-      - admin-tenants
-    put:
-      description: update tenants
-      parameters:
-      - description: tenant
-        in: path
-        name: tenant
-        required: true
-        type: string
-      - description: tenant
-        in: path
-        name: tenantId
-        required: true
-        type: integer
-      responses:
-        "200":
-          description: OK
-      summary: tenants
-      tags:
-      - admin-tenants
   /admin/{tenant}/clients:
     get:
       description: get client list
@@ -995,10 +947,31 @@ paths:
         name: tenant
         required: true
         type: string
+      - description: '{'
+        in: body
+        name: name
+        required: true
+        schema:
+          type: object
       responses:
         "200":
           description: OK
       summary: new client
+      tags:
+      - client
+  /admin/{tenant}/clients/:clientId/redirect-uris:
+    post:
+      description: new client redirect uri
+      parameters:
+      - description: tenant
+        in: path
+        name: tenant
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+      summary: new client redirect uri
       tags:
       - client
   /admin/{tenant}/clients/{clientId}:
@@ -1079,7 +1052,7 @@ paths:
       summary: get client redirect uris
       tags:
       - client
-  /admin/{tenant}/clients/{clientId}/redirect-uris/:uriId:
+  /admin/{tenant}/clients/{clientId}/redirect-uris/{uriId}:
     delete:
       description: delete client redirect uris
       parameters:
@@ -1166,6 +1139,26 @@ paths:
         "200":
           description: OK
       summary: new client secret
+      tags:
+      - client
+  /admin/{tenant}/clients/{clientId}/users:
+    get:
+      description: get client user list
+      parameters:
+      - description: tenant
+        in: path
+        name: tenant
+        required: true
+        type: string
+      - description: tenant
+        in: path
+        name: clientId
+        required: true
+        type: integer
+      responses:
+        "200":
+          description: OK
+      summary: client user
       tags:
       - client
   /admin/{tenant}/devices:
@@ -1258,6 +1251,25 @@ paths:
   /admin/{tenant}/devices/{deviceId}/groups:
     get:
       description: list device groups
+      parameters:
+      - description: tenant
+        in: path
+        name: tenant
+        required: true
+        type: string
+      - description: tenant
+        in: path
+        name: deviceId
+        required: true
+        type: integer
+      responses:
+        "200":
+          description: OK
+      summary: device groups
+      tags:
+      - device
+    post:
+      description: new device groups
       parameters:
       - description: tenant
         in: path
@@ -1518,21 +1530,6 @@ paths:
       summary: provider
       tags:
       - provider
-  /admin/{tenant}/redirect-uris:
-    post:
-      description: new client redirect uri
-      parameters:
-      - description: tenant
-        in: path
-        name: tenant
-        required: true
-        type: string
-      responses:
-        "200":
-          description: OK
-      summary: new client redirect uri
-      tags:
-      - client
   /admin/{tenant}/users:
     get:
       description: get user list
@@ -1640,6 +1637,25 @@ paths:
       summary: user
       tags:
       - user
+    post:
+      description: get user groups
+      parameters:
+      - description: tenant
+        in: path
+        name: tenant
+        required: true
+        type: string
+      - description: tenant
+        in: path
+        name: userId
+        required: true
+        type: integer
+      responses:
+        "200":
+          description: OK
+      summary: user
+      tags:
+      - user
   /admin/{tenant}/users/{userId}/groups/{groupId}:
     delete:
       description: update user groups
@@ -1689,28 +1705,38 @@ paths:
       summary: user
       tags:
       - user
-  /admin/{tenants}/devices/{deviceId}/groups:
-    delete:
-      description: delete admin device group
-      parameters:
-      - description: tenant
-        in: path
-        name: tenant
-        required: true
-        type: string
-      - description: tenant
-        in: path
-        name: deviceId
-        required: true
-        type: integer
-      responses:
-        "200":
-          description: OK
-      summary: admin device
-      tags:
-      - admin-device
+  /admin/tenants:
     get:
-      description: get admin device group
+      description: list tenants
+      parameters:
+      - description: tenant
+        in: path
+        name: tenant
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+      summary: tenants
+      tags:
+      - admin-tenants
+    post:
+      description: new tenants
+      parameters:
+      - description: tenant
+        in: path
+        name: tenant
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+      summary: tenants
+      tags:
+      - admin-tenants
+  /admin/tenants/{tenantId}:
+    delete:
+      description: delete tenants
       parameters:
       - description: tenant
         in: path
@@ -1719,17 +1745,36 @@ paths:
         type: string
       - description: tenant
         in: path
-        name: deviceId
+        name: tenantId
         required: true
         type: integer
       responses:
         "200":
           description: OK
-      summary: admin device
+      summary: tenants
       tags:
-      - admin-device
+      - admin-tenants
+    get:
+      description: get tenants
+      parameters:
+      - description: tenant
+        in: path
+        name: tenant
+        required: true
+        type: string
+      - description: tenant
+        in: path
+        name: tenantId
+        required: true
+        type: integer
+      responses:
+        "200":
+          description: OK
+      summary: tenants
+      tags:
+      - admin-tenants
     put:
-      description: update admin device group
+      description: update tenants
       parameters:
       - description: tenant
         in: path
@@ -1738,13 +1783,13 @@ paths:
         type: string
       - description: tenant
         in: path
-        name: deviceId
+        name: tenantId
         required: true
         type: integer
       responses:
         "200":
           description: OK
-      summary: admin device
+      summary: tenants
       tags:
-      - admin-device
+      - admin-tenants
 swagger: "2.0"

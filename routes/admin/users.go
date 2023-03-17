@@ -170,6 +170,41 @@ func GetUserGroups(c *gin.Context) {
 	c.JSON(http.StatusOK, groups)
 }
 
+// NewUserGroup godoc
+//
+//	@Summary	user
+//	@Schemes
+//	@Description	get user groups
+//	@Tags			user
+//	@Param			tenant	path	string	true	"tenant"
+//	@Param			userId	path	integer	true	"tenant"
+//	@Success		200
+//	@Router			/admin/{tenant}/users/{userId}/groups [post]
+func NewUserGroup(c *gin.Context) {
+	userId := c.Param("userId")
+	var groupUser models.GroupUser
+	if err := c.BindJSON(&groupUser); err != nil {
+		c.Status(http.StatusBadRequest)
+		return
+	}
+
+	var user models.User
+	if middlewares.TenantDB(c).First(&user, "id = ?", userId).Error != nil {
+		c.Status(http.StatusNotFound)
+		return
+	}
+
+	groupUser.TenantId = user.TenantId
+	groupUser.UserId = user.Id
+	groupUser.Role = user.Role
+	if data.DB.Create(&groupUser).Error != nil {
+		c.Status(http.StatusConflict)
+		return
+	}
+
+	c.JSON(http.StatusOK, groupUser.Dto())
+}
+
 // UpdateUserGroup godoc
 //
 //	@Summary	user
@@ -254,6 +289,7 @@ func addAdminUsersRoutes(rg *gin.RouterGroup) {
 	rg.PUT("/users/:userId", UpdateUser)
 	rg.DELETE("/users/:userId", DeleteUser)
 	rg.GET("/users/:userId/groups", GetUserGroups)
+	rg.POST("/users/:userId/groups", NewUserGroup)
 	rg.PUT("/users/:userId/groups/:groupId", UpdateUserGroup)
 	rg.DELETE("/users/:userId/groups/:groupId", DeleteUserGroup)
 }

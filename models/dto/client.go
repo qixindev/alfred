@@ -7,7 +7,7 @@ type ClientDto struct {
 }
 
 type RedirectUriDto struct {
-	Id          uint   `gorm:"json:"id"`
+	Id          uint   `json:"id"`
 	RedirectUri string `json:"redirectUri"`
 }
 

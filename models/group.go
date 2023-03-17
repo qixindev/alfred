@@ -22,6 +22,15 @@ type GroupUser struct {
 	TenantId uint `gorm:"primaryKey"`
 }
 
+func (g *GroupUser) Dto() dto.GroupUserDto {
+	return dto.GroupUserDto{
+		Id:      g.Id,
+		GroupId: g.GroupId,
+		UserId:  g.UserId,
+		Role:    g.Role,
+	}
+}
+
 type GroupDevice struct {
 	Id       uint   `gorm:"primaryKey;autoIncrement" json:"id"`
 	GroupId  uint   `json:"groupId"`
@@ -30,6 +39,14 @@ type GroupDevice struct {
 	Device   Device `gorm:"foreignKey:DeviceId, TenantId" json:"device"`
 
 	TenantId uint `gorm:"primaryKey"`
+}
+
+func (g *GroupDevice) Dto() dto.GroupDeviceDto {
+	return dto.GroupDeviceDto{
+		Id:       g.Id,
+		GroupId:  g.GroupId,
+		DeviceId: g.DeviceId,
+	}
 }
 
 func (g *Group) Dto() dto.GroupDto {
