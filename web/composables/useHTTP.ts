@@ -40,9 +40,9 @@ const fetch = (url: string , option: HttpOption) => {
         if (status === 204) {
           resolve(data)
         }
-        // else if ( status === 401 ) {
-        //   navigateTo('/login')
-        // }
+        else if ( status === 401 ) {
+          navigateTo('/login')
+        }
         // console.log(response)
         // const { code, msg } = response._data;
         // console.log(response);
