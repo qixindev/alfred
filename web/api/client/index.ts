@@ -1,6 +1,7 @@
-const tenant = useRuntimeConfig().public.VITE_APP_TENANT
+const tenant =  import.meta.env.VITE_APP_TENANT
 
 export const getClient = async () => {
+  console.log(import.meta)
   return await useHttp.get(`/admin/${tenant}/clients`)
 }
 

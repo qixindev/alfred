@@ -16,7 +16,6 @@ export default defineNuxtConfig({
   },
   css: ['element-plus/dist/index.css',"~/assets/css/main.scss"],
   vite: {
-    envDir: '~/env', // 指定env文件夹
     server: {
       proxy: {
         '/accounts': {
