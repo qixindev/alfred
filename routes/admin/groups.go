@@ -18,7 +18,7 @@ import (
 //	@Tags			group
 //	@Param			tenant	path	string	true	"tenant"
 //	@Success		200
-//	@Router			/admin/{tenant}/groups [get]
+//	@Router			/accounts/admin/{tenant}/groups [get]
 func ListGroups(c *gin.Context) {
 	var groups []models.Group
 	if middlewares.TenantDB(c).Find(&groups).Error != nil {
@@ -37,7 +37,7 @@ func ListGroups(c *gin.Context) {
 //	@Param			tenant	path	string	true	"tenant"
 //	@Param			groupId	path	integer	true	"tenant"
 //	@Success		200
-//	@Router			/admin/{tenant}/groups/{groupId} [get]
+//	@Router			/accounts/admin/{tenant}/groups/{groupId} [get]
 func GetGroup(c *gin.Context) {
 	groupId := c.Param("groupId")
 	var group models.Group
@@ -56,7 +56,7 @@ func GetGroup(c *gin.Context) {
 //	@Tags			group
 //	@Param			tenant	path	string	true	"tenant"
 //	@Success		200
-//	@Router			/admin/{tenant}/groups [post]
+//	@Router			/accounts/admin/{tenant}/groups [post]
 func NewGroup(c *gin.Context) {
 	tenant := middlewares.GetTenant(c)
 	var group models.Group
@@ -82,7 +82,7 @@ func NewGroup(c *gin.Context) {
 //	@Param			tenant	path	string	true	"tenant"
 //	@Param			groupId	path	integer	true	"tenant"
 //	@Success		200
-//	@Router			/admin/{tenant}/groups/{groupId} [put]
+//	@Router			/accounts/admin/{tenant}/groups/{groupId} [put]
 func UpdateGroup(c *gin.Context) {
 	groupId := c.Param("groupId")
 	var group models.Group
@@ -114,7 +114,7 @@ func UpdateGroup(c *gin.Context) {
 //	@Param			tenant	path	string	true	"tenant"
 //	@Param			groupId	path	integer	true	"tenant"
 //	@Success		200
-//	@Router			/admin/{tenant}/groups/{groupId} [delete]
+//	@Router			/accounts/admin/{tenant}/groups/{groupId} [delete]
 func DeleteGroup(c *gin.Context) {
 	groupId := c.Param("groupId")
 	var group models.Group
@@ -138,7 +138,7 @@ func DeleteGroup(c *gin.Context) {
 //	@Param			tenant	path	string	true	"tenant"
 //	@Param			groupId	path	integer	true	"tenant"
 //	@Success		200
-//	@Router			/admin/{tenant}/groups/{groupId}/member [get]
+//	@Router			/accounts/admin/{tenant}/groups/{groupId}/member [get]
 func GetGroupMembers(c *gin.Context) {
 	groupId := c.Param("groupId")
 	var group models.Group

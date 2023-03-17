@@ -56,7 +56,7 @@ definitions:
 info:
   contact: {}
 paths:
-  /.well-known/jwks.json:
+  /accounts/.well-known/jwks.json:
     get:
       description: jwk
       responses:
@@ -65,7 +65,7 @@ paths:
       summary: jwk
       tags:
       - oauth2
-  /{tenant}/.well-known/openid-configuration:
+  /accounts/{tenant}/.well-known/openid-configuration:
     get:
       description: openid configuration
       responses:
@@ -74,7 +74,7 @@ paths:
       summary: openid configuration
       tags:
       - oauth2
-  /{tenant}/iam/clients/{client}/types:
+  /accounts/{tenant}/iam/clients/{client}/types:
     get:
       description: get iam resource type list
       parameters:
@@ -113,7 +113,7 @@ paths:
       summary: iam resource type
       tags:
       - iam-resource
-  /{tenant}/iam/clients/{client}/types/{type}:
+  /accounts/{tenant}/iam/clients/{client}/types/{type}:
     delete:
       description: delete iam resource type
       parameters:
@@ -138,7 +138,7 @@ paths:
       summary: iam resource type
       tags:
       - iam-resource
-  /{tenant}/iam/clients/{client}/types/{type}/actions:
+  /accounts/{tenant}/iam/clients/{client}/types/{type}/actions:
     get:
       description: get iam action list
       parameters:
@@ -187,7 +187,7 @@ paths:
       summary: iam action
       tags:
       - iam-action
-  /{tenant}/iam/clients/{client}/types/{type}/actions/{action}:
+  /accounts/{tenant}/iam/clients/{client}/types/{type}/actions/{action}:
     delete:
       description: delete iam action
       parameters:
@@ -217,7 +217,7 @@ paths:
       summary: iam action
       tags:
       - iam-action
-  /{tenant}/iam/clients/{client}/types/{type}/resources:
+  /accounts/{tenant}/iam/clients/{client}/types/{type}/resources:
     get:
       description: get iam resource list
       parameters:
@@ -266,7 +266,7 @@ paths:
       summary: iam resource
       tags:
       - iam-resource
-  /{tenant}/iam/clients/{client}/types/{type}/resources/{resource}:
+  /accounts/{tenant}/iam/clients/{client}/types/{type}/resources/{resource}:
     delete:
       description: delete iam resource
       parameters:
@@ -296,7 +296,7 @@ paths:
       summary: iam resource
       tags:
       - iam-resource
-  /{tenant}/iam/clients/{client}/types/{type}/resources/{resource}/actions/{action}/users/{user}:
+  /accounts/{tenant}/iam/clients/{client}/types/{type}/resources/{resource}/actions/{action}/users/{user}:
     get:
       description: get iam action user
       parameters:
@@ -331,7 +331,7 @@ paths:
       summary: iam action user
       tags:
       - iam-action
-  /{tenant}/iam/clients/{client}/types/{type}/resources/{resource}/roles/{role}/users:
+  /accounts/{tenant}/iam/clients/{client}/types/{type}/resources/{resource}/roles/{role}/users:
     get:
       description: get iam resource role list
       parameters:
@@ -400,7 +400,7 @@ paths:
       summary: iam resource role
       tags:
       - iam-role
-  /{tenant}/iam/clients/{client}/types/{type}/resources/{resource}/roles/{role}/users/{user}:
+  /accounts/{tenant}/iam/clients/{client}/types/{type}/resources/{resource}/roles/{role}/users/{user}:
     delete:
       description: delete iam resource role
       parameters:
@@ -440,7 +440,7 @@ paths:
       summary: iam resource role
       tags:
       - iam-role
-  /{tenant}/iam/clients/{client}/types/{type}/roles:
+  /accounts/{tenant}/iam/clients/{client}/types/{type}/roles:
     get:
       description: get iam role list
       parameters:
@@ -489,7 +489,7 @@ paths:
       summary: iam role
       tags:
       - iam-role
-  /{tenant}/iam/clients/{client}/types/{type}/roles/{role}:
+  /accounts/{tenant}/iam/clients/{client}/types/{type}/roles/{role}:
     delete:
       description: delete iam role
       parameters:
@@ -519,7 +519,7 @@ paths:
       summary: iam role
       tags:
       - iam-role
-  /{tenant}/iam/clients/{client}/types/{type}/roles/{role}/actions:
+  /accounts/{tenant}/iam/clients/{client}/types/{type}/roles/{role}/actions:
     get:
       description: get iam role action list
       parameters:
@@ -578,7 +578,7 @@ paths:
       summary: iam role action
       tags:
       - iam-action
-  /{tenant}/iam/clients/{client}/types/{type}/roles/{role}/actions/{action}:
+  /accounts/{tenant}/iam/clients/{client}/types/{type}/roles/{role}/actions/{action}:
     delete:
       description: delete iam role action
       parameters:
@@ -613,7 +613,7 @@ paths:
       summary: iam role action
       tags:
       - iam-action
-  /{tenant}/logged-in/{provider}:
+  /accounts/{tenant}/logged-in/{provider}:
     get:
       description: provider callback
       parameters:
@@ -640,7 +640,7 @@ paths:
       summary: provider callback
       tags:
       - login
-  /{tenant}/login:
+  /accounts/{tenant}/login:
     post:
       description: login using username and password
       parameters:
@@ -669,7 +669,7 @@ paths:
       summary: login a user
       tags:
       - login
-  /{tenant}/login/{provider}:
+  /accounts/{tenant}/login/{provider}:
     get:
       description: login via a provider
       parameters:
@@ -693,7 +693,7 @@ paths:
       summary: login via a provider
       tags:
       - login
-  /{tenant}/login/providers:
+  /accounts/{tenant}/login/providers:
     get:
       description: list login providers
       parameters:
@@ -712,7 +712,7 @@ paths:
       summary: List all providers
       tags:
       - login
-  /{tenant}/login/providers/{provider}:
+  /accounts/{tenant}/login/providers/{provider}:
     get:
       description: get a login provider
       parameters:
@@ -734,7 +734,7 @@ paths:
       summary: get a provider
       tags:
       - login
-  /{tenant}/logout:
+  /accounts/{tenant}/logout:
     get:
       description: logout current user
       parameters:
@@ -749,7 +749,7 @@ paths:
       summary: logout current user
       tags:
       - login
-  /{tenant}/me:
+  /accounts/{tenant}/me:
     get:
       description: get user
       parameters:
@@ -782,7 +782,7 @@ paths:
       summary: update user
       tags:
       - user
-  /{tenant}/me/profile:
+  /accounts/{tenant}/me/profile:
     get:
       description: get user profile
       parameters:
@@ -799,7 +799,7 @@ paths:
       summary: get user profile
       tags:
       - user
-  /{tenant}/oauth2/auth:
+  /accounts/{tenant}/oauth2/auth:
     get:
       description: oauth2 authorize
       parameters:
@@ -844,7 +844,7 @@ paths:
       summary: oauth2 authorize
       tags:
       - oauth2
-  /{tenant}/oauth2/token:
+  /accounts/{tenant}/oauth2/token:
     post:
       description: oauth2 token
       parameters:
@@ -899,7 +899,7 @@ paths:
       summary: oauth2 token
       tags:
       - oauth2
-  /{tenant}/register:
+  /accounts/{tenant}/register:
     post:
       description: register using username and password
       parameters:
@@ -924,7 +924,7 @@ paths:
       summary: register a user
       tags:
       - login
-  /admin/{tenant}/clients:
+  /accounts/admin/{tenant}/clients:
     get:
       description: get client list
       parameters:
@@ -959,7 +959,7 @@ paths:
       summary: new client
       tags:
       - client
-  /admin/{tenant}/clients/:clientId/redirect-uris:
+  /accounts/admin/{tenant}/clients/:clientId/redirect-uris:
     post:
       description: new client redirect uri
       parameters:
@@ -974,7 +974,7 @@ paths:
       summary: new client redirect uri
       tags:
       - client
-  /admin/{tenant}/clients/{clientId}:
+  /accounts/admin/{tenant}/clients/{clientId}:
     delete:
       description: delete client
       parameters:
@@ -1032,7 +1032,7 @@ paths:
       summary: update client
       tags:
       - client
-  /admin/{tenant}/clients/{clientId}/redirect-uris:
+  /accounts/admin/{tenant}/clients/{clientId}/redirect-uris:
     get:
       description: get client redirect uris
       parameters:
@@ -1052,7 +1052,7 @@ paths:
       summary: get client redirect uris
       tags:
       - client
-  /admin/{tenant}/clients/{clientId}/redirect-uris/{uriId}:
+  /accounts/admin/{tenant}/clients/{clientId}/redirect-uris/{uriId}:
     delete:
       description: delete client redirect uris
       parameters:
@@ -1077,7 +1077,7 @@ paths:
       summary: delete client redirect uris
       tags:
       - client
-  /admin/{tenant}/clients/{clientId}/secret/{secretId}:
+  /accounts/admin/{tenant}/clients/{clientId}/secret/{secretId}:
     delete:
       description: delete client secret
       parameters:
@@ -1102,7 +1102,7 @@ paths:
       summary: delete client secret
       tags:
       - client
-  /admin/{tenant}/clients/{clientId}/secrets:
+  /accounts/admin/{tenant}/clients/{clientId}/secrets:
     get:
       description: get client secrets
       parameters:
@@ -1141,7 +1141,7 @@ paths:
       summary: new client secret
       tags:
       - client
-  /admin/{tenant}/clients/{clientId}/users:
+  /accounts/admin/{tenant}/clients/{clientId}/users:
     get:
       description: get client user list
       parameters:
@@ -1161,7 +1161,7 @@ paths:
       summary: client user
       tags:
       - client
-  /admin/{tenant}/devices:
+  /accounts/admin/{tenant}/devices:
     get:
       description: list device
       parameters:
@@ -1190,7 +1190,7 @@ paths:
       summary: device
       tags:
       - device
-  /admin/{tenant}/devices/{deviceId}:
+  /accounts/admin/{tenant}/devices/{deviceId}:
     delete:
       description: delete device
       parameters:
@@ -1248,7 +1248,7 @@ paths:
       summary: device
       tags:
       - device
-  /admin/{tenant}/devices/{deviceId}/groups:
+  /accounts/admin/{tenant}/devices/{deviceId}/groups:
     get:
       description: list device groups
       parameters:
@@ -1287,7 +1287,7 @@ paths:
       summary: device groups
       tags:
       - device
-  /admin/{tenant}/devices/{deviceId}/groups/{groupId}:
+  /accounts/admin/{tenant}/devices/{deviceId}/groups/{groupId}:
     delete:
       description: delete device groups
       parameters:
@@ -1336,7 +1336,7 @@ paths:
       summary: device groups
       tags:
       - device
-  /admin/{tenant}/groups:
+  /accounts/admin/{tenant}/groups:
     get:
       description: list groups
       parameters:
@@ -1365,7 +1365,7 @@ paths:
       summary: group
       tags:
       - group
-  /admin/{tenant}/groups/{groupId}:
+  /accounts/admin/{tenant}/groups/{groupId}:
     delete:
       description: delete groups
       parameters:
@@ -1423,7 +1423,7 @@ paths:
       summary: group
       tags:
       - group
-  /admin/{tenant}/groups/{groupId}/member:
+  /accounts/admin/{tenant}/groups/{groupId}/member:
     get:
       description: get groups members
       parameters:
@@ -1443,7 +1443,7 @@ paths:
       summary: group
       tags:
       - group
-  /admin/{tenant}/providers:
+  /accounts/admin/{tenant}/providers:
     get:
       description: list provider
       parameters:
@@ -1472,7 +1472,7 @@ paths:
       summary: provider
       tags:
       - provider
-  /admin/{tenant}/providers/{providerId}:
+  /accounts/admin/{tenant}/providers/{providerId}:
     delete:
       description: delete provider
       parameters:
@@ -1530,7 +1530,7 @@ paths:
       summary: provider
       tags:
       - provider
-  /admin/{tenant}/users:
+  /accounts/admin/{tenant}/users:
     get:
       description: get user list
       parameters:
@@ -1559,7 +1559,7 @@ paths:
       summary: user
       tags:
       - user
-  /admin/{tenant}/users/{userId}:
+  /accounts/admin/{tenant}/users/{userId}:
     delete:
       description: delete user
       parameters:
@@ -1617,7 +1617,7 @@ paths:
       summary: user
       tags:
       - user
-  /admin/{tenant}/users/{userId}/groups:
+  /accounts/admin/{tenant}/users/{userId}/groups:
     get:
       description: get user groups
       parameters:
@@ -1656,7 +1656,7 @@ paths:
       summary: user
       tags:
       - user
-  /admin/{tenant}/users/{userId}/groups/{groupId}:
+  /accounts/admin/{tenant}/users/{userId}/groups/{groupId}:
     delete:
       description: update user groups
       parameters:
@@ -1705,7 +1705,7 @@ paths:
       summary: user
       tags:
       - user
-  /admin/tenants:
+  /accounts/admin/tenants:
     get:
       description: list tenants
       parameters:
@@ -1734,7 +1734,7 @@ paths:
       summary: tenants
       tags:
       - admin-tenants
-  /admin/tenants/{tenantId}:
+  /accounts/admin/tenants/{tenantId}:
     delete:
       description: delete tenants
       parameters:

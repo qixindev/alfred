@@ -18,7 +18,7 @@ import (
 //	@Tags			device
 //	@Param			tenant	path	string	true	"tenant"
 //	@Success		200
-//	@Router			/admin/{tenant}/devices [get]
+//	@Router			/accounts/admin/{tenant}/devices [get]
 func ListDevices(c *gin.Context) {
 	var devices []models.Device
 	if middlewares.TenantDB(c).Find(&devices).Error != nil {
@@ -37,7 +37,7 @@ func ListDevices(c *gin.Context) {
 //	@Param			tenant		path	string	true	"tenant"
 //	@Param			deviceId	path	integer	true	"tenant"
 //	@Success		200
-//	@Router			/admin/{tenant}/devices/{deviceId} [get]
+//	@Router			/accounts/admin/{tenant}/devices/{deviceId} [get]
 func GetDevice(c *gin.Context) {
 	deviceId := c.Param("deviceId")
 	var device models.Device
@@ -56,7 +56,7 @@ func GetDevice(c *gin.Context) {
 //	@Tags			device
 //	@Param			tenant	path	string	true	"tenant"
 //	@Success		200
-//	@Router			/admin/{tenant}/devices [post]
+//	@Router			/accounts/admin/{tenant}/devices [post]
 func NewDevice(c *gin.Context) {
 	tenant := middlewares.GetTenant(c)
 	var device models.Device
@@ -82,7 +82,7 @@ func NewDevice(c *gin.Context) {
 //	@Param			tenant		path	string	true	"tenant"
 //	@Param			deviceId	path	integer	true	"tenant"
 //	@Success		200
-//	@Router			/admin/{tenant}/devices/{deviceId} [put]
+//	@Router			/accounts/admin/{tenant}/devices/{deviceId} [put]
 func UpdateDevice(c *gin.Context) {
 	deviceId := c.Param("deviceId")
 	var device models.Device
@@ -113,7 +113,7 @@ func UpdateDevice(c *gin.Context) {
 //	@Param			tenant		path	string	true	"tenant"
 //	@Param			deviceId	path	integer	true	"tenant"
 //	@Success		200
-//	@Router			/admin/{tenant}/devices/{deviceId} [delete]
+//	@Router			/accounts/admin/{tenant}/devices/{deviceId} [delete]
 func DeleteDevice(c *gin.Context) {
 	deviceId := c.Param("deviceId")
 	var device models.Device
@@ -137,7 +137,7 @@ func DeleteDevice(c *gin.Context) {
 //	@Param			tenant		path	string	true	"tenant"
 //	@Param			deviceId	path	integer	true	"tenant"
 //	@Success		200
-//	@Router			/admin/{tenant}/devices/{deviceId}/groups [get]
+//	@Router			/accounts/admin/{tenant}/devices/{deviceId}/groups [get]
 func GetDeviceGroups(c *gin.Context) {
 	deviceId := c.Param("deviceId")
 	var device models.Device
@@ -169,7 +169,7 @@ func GetDeviceGroups(c *gin.Context) {
 //	@Param			tenant		path	string	true	"tenant"
 //	@Param			deviceId	path	integer	true	"tenant"
 //	@Success		200
-//	@Router			/admin/{tenant}/devices/{deviceId}/groups [post]
+//	@Router			/accounts/admin/{tenant}/devices/{deviceId}/groups [post]
 func NewDeviceGroup(c *gin.Context) {
 	deviceId := c.Param("deviceId")
 	var deviceGroup models.GroupDevice
@@ -204,7 +204,7 @@ func NewDeviceGroup(c *gin.Context) {
 //	@Param			deviceId	path	integer	true	"tenant"
 //	@Param			groupId		path	integer	true	"tenant"
 //	@Success		200
-//	@Router			/admin/{tenant}/devices/{deviceId}/groups/{groupId} [get]
+//	@Router			/accounts/admin/{tenant}/devices/{deviceId}/groups/{groupId} [get]
 func UpdateDeviceGroup(c *gin.Context) {
 	deviceId := c.Param("deviceId")
 	var device models.Device
@@ -244,7 +244,7 @@ func UpdateDeviceGroup(c *gin.Context) {
 //	@Param			deviceId	path	integer	true	"tenant"
 //	@Param			groupId		path	integer	true	"tenant"
 //	@Success		200
-//	@Router			/admin/{tenant}/devices/{deviceId}/groups/{groupId} [delete]
+//	@Router			/accounts/admin/{tenant}/devices/{deviceId}/groups/{groupId} [delete]
 func DeleteDeviceGroup(c *gin.Context) {
 	deviceId := c.Param("deviceId")
 	var device models.Device

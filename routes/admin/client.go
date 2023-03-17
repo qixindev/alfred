@@ -19,7 +19,7 @@ import (
 //	@Tags			client
 //	@Param			tenant	path		string	true	"tenant"
 //	@Success		200
-//	@Router			/admin/{tenant}/clients [get]
+//	@Router			/accounts/admin/{tenant}/clients [get]
 func ListClients(c *gin.Context) {
 	var clients []models.Client
 	fmt.Println(middlewares.GetTenant(c))
@@ -39,7 +39,7 @@ func ListClients(c *gin.Context) {
 //	@Param			tenant		path		string	true	"tenant"
 //	@Param			clientId	path		integer	true	"clientId"
 //	@Success		200
-//	@Router			/admin/{tenant}/clients/{clientId} [get]
+//	@Router			/accounts/admin/{tenant}/clients/{clientId} [get]
 func GetClient(c *gin.Context) {
 	clientId := c.Param("clientId")
 	var client models.Client
@@ -59,7 +59,7 @@ func GetClient(c *gin.Context) {
 //	@Param			tenant	path	string	true	"tenant"
 //	@Param			name	body	object	true	"{"name": "main"}"
 //	@Success		200
-//	@Router			/admin/{tenant}/clients [post]
+//	@Router			/accounts/admin/{tenant}/clients [post]
 func NewClient(c *gin.Context) {
 	tenant := middlewares.GetTenant(c)
 	var client models.Client
@@ -85,7 +85,7 @@ func NewClient(c *gin.Context) {
 //	@Param			tenant		path	string	true	"tenant"
 //	@Param			clientId	path	integer	true	"clientId"
 //	@Success		200
-//	@Router			/admin/{tenant}/clients/{clientId} [put]
+//	@Router			/accounts/admin/{tenant}/clients/{clientId} [put]
 func UpdateClient(c *gin.Context) {
 	clientId := c.Param("clientId")
 	var client models.Client
@@ -116,7 +116,7 @@ func UpdateClient(c *gin.Context) {
 //	@Param			tenant		path	string	true	"tenant"
 //	@Param			clientId	path	integer	true	"clientId"
 //	@Success		200
-//	@Router			/admin/{tenant}/clients/{clientId} [delete]
+//	@Router			/accounts/admin/{tenant}/clients/{clientId} [delete]
 func DeleteClient(c *gin.Context) {
 	clientId := c.Param("clientId")
 	var client models.Client
@@ -140,7 +140,7 @@ func DeleteClient(c *gin.Context) {
 //	@Param			tenant		path	string	true	"tenant"
 //	@Param			clientId	path	integer	true	"tenant"
 //	@Success		200
-//	@Router			/admin/{tenant}/clients/{clientId}/redirect-uris [get]
+//	@Router			/accounts/admin/{tenant}/clients/{clientId}/redirect-uris [get]
 func ListClientRedirectUri(c *gin.Context) {
 	clientId := c.Param("clientId")
 	var client models.Client
@@ -166,7 +166,7 @@ func ListClientRedirectUri(c *gin.Context) {
 //	@Tags			client
 //	@Param			tenant	path	string	true	"tenant"
 //	@Success		200
-//	@Router			/admin/{tenant}/clients/:clientId/redirect-uris [post]
+//	@Router			/accounts/admin/{tenant}/clients/:clientId/redirect-uris [post]
 func NewClientRedirectUri(c *gin.Context) {
 	clientId := c.Param("clientId")
 	var client models.Client
@@ -198,7 +198,7 @@ func NewClientRedirectUri(c *gin.Context) {
 //	@Param			clientId	path	integer	true	"tenant"
 //	@Param			uriId		path	integer	true	"tenant"
 //	@Success		200
-//	@Router			/admin/{tenant}/clients/{clientId}/redirect-uris/{uriId} [delete]
+//	@Router			/accounts/admin/{tenant}/clients/{clientId}/redirect-uris/{uriId} [delete]
 func DeleteClientRedirectUri(c *gin.Context) {
 	clientId := c.Param("clientId")
 	uriId := c.Param("uriId")
@@ -226,7 +226,7 @@ func DeleteClientRedirectUri(c *gin.Context) {
 //	@Param			tenant		path	string	true	"tenant"
 //	@Param			clientId	path	integer	true	"tenant"
 //	@Success		200
-//	@Router			/admin/{tenant}/clients/{clientId}/secrets [get]
+//	@Router			/accounts/admin/{tenant}/clients/{clientId}/secrets [get]
 func GetClientSecret(c *gin.Context) {
 	clientId := c.Param("clientId")
 	var client models.Client
@@ -251,7 +251,7 @@ func GetClientSecret(c *gin.Context) {
 //	@Param			tenant		path	string	true	"tenant"
 //	@Param			clientId	path	integer	true	"tenant"
 //	@Success		200
-//	@Router			/admin/{tenant}/clients/{clientId}/secrets [post]
+//	@Router			/accounts/admin/{tenant}/clients/{clientId}/secrets [post]
 func NewClientSecret(c *gin.Context) {
 	clientId := c.Param("clientId")
 	var client models.Client
@@ -283,7 +283,7 @@ func NewClientSecret(c *gin.Context) {
 //	@Param			clientId	path	integer	true	"tenant"
 //	@Param			secretId	path	integer	true	"tenant"
 //	@Success		200
-//	@Router			/admin/{tenant}/clients/{clientId}/secret/{secretId} [delete]
+//	@Router			/accounts/admin/{tenant}/clients/{clientId}/secret/{secretId} [delete]
 func DeleteClientSecret(c *gin.Context) {
 	clientId := c.Param("clientId")
 	secretId := c.Param("secretId")
@@ -311,7 +311,7 @@ func DeleteClientSecret(c *gin.Context) {
 //	@Param			tenant		path	string	true	"tenant"
 //	@Param			clientId	path	integer	true	"tenant"
 //	@Success		200
-//	@Router			/admin/{tenant}/clients/{clientId}/users [get]
+//	@Router			/accounts/admin/{tenant}/clients/{clientId}/users [get]
 func ListClientUsers(c *gin.Context) {
 	var clientUser []models.ClientUser
 	clientId := c.Param("clientId")

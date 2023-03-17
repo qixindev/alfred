@@ -106,7 +106,7 @@ func getAccessCode(c *gin.Context, client *models.Client) (string, error) {
 //	@Param			nonce			query	string	false	"nonce"
 //	@Success		302
 //	@Success		200
-//	@Router			/{tenant}/oauth2/auth [get]
+//	@Router			/accounts/{tenant}/oauth2/auth [get]
 func GetAuthCode(c *gin.Context) {
 	// If logged in, 302 to redirect uri.
 	// If not, return login form.
@@ -179,7 +179,7 @@ func GetAuthCode(c *gin.Context) {
 //	@Param			state			formData	string	false	"state"
 //	@Param			nonce			formData	string	false	"nonce"
 //	@Success		200				{object}	dto.AccessTokenDto
-//	@Router			/{tenant}/oauth2/token [post]
+//	@Router			/accounts/{tenant}/oauth2/token [post]
 func GetToken(c *gin.Context) {
 	clientId := c.Query("client_id")
 	clientSecret := c.Query("client_secret")
@@ -224,7 +224,7 @@ func GetToken(c *gin.Context) {
 //	@Description	openid configuration
 //	@Tags			oauth2
 //	@Success		200
-//	@Router			/{tenant}/.well-known/openid-configuration [get]
+//	@Router			/accounts/{tenant}/.well-known/openid-configuration [get]
 func GetOpenidConfiguration(c *gin.Context) {
 	tenant := middlewares.GetTenant(c)
 	prefix := utils.GetHostWithScheme(c)
@@ -252,7 +252,7 @@ func GetOpenidConfiguration(c *gin.Context) {
 //	@Description	jwk
 //	@Tags			oauth2
 //	@Success		200
-//	@Router			/.well-known/jwks.json [get]
+//	@Router			/accounts/.well-known/jwks.json [get]
 func GetJwks(c *gin.Context) {
 	tenant := middlewares.GetTenant(c)
 	jwks, err := utils.LoadKeys(tenant.Name)

@@ -17,7 +17,7 @@ import (
 //	@Tags			provider
 //	@Param			tenant	path	string	true	"tenant"
 //	@Success		200
-//	@Router			/admin/{tenant}/providers [get]
+//	@Router			/accounts/admin/{tenant}/providers [get]
 func ListProviders(c *gin.Context) {
 	var providers []models.Provider
 	if middlewares.TenantDB(c).Find(&providers).Error != nil {
@@ -36,7 +36,7 @@ func ListProviders(c *gin.Context) {
 //	@Param			tenant		path	string	true	"tenant"
 //	@Param			providerId	path	integer	true	"tenant"
 //	@Success		200
-//	@Router			/admin/{tenant}/providers/{providerId} [get]
+//	@Router			/accounts/admin/{tenant}/providers/{providerId} [get]
 func GetProvider(c *gin.Context) {
 	providerId := c.Param("providerId")
 	var provider models.Provider
@@ -55,7 +55,7 @@ func GetProvider(c *gin.Context) {
 //	@Tags			provider
 //	@Param			tenant	path	string	true	"tenant"
 //	@Success		200
-//	@Router			/admin/{tenant}/providers [post]
+//	@Router			/accounts/admin/{tenant}/providers [post]
 func NewProvider(c *gin.Context) {
 	tenant := middlewares.GetTenant(c)
 	var provider models.Provider
@@ -81,7 +81,7 @@ func NewProvider(c *gin.Context) {
 //	@Param			tenant		path	string	true	"tenant"
 //	@Param			providerId	path	integer	true	"tenant"
 //	@Success		200
-//	@Router			/admin/{tenant}/providers/{providerId} [put]
+//	@Router			/accounts/admin/{tenant}/providers/{providerId} [put]
 func UpdateProvider(c *gin.Context) {
 	providerId := c.Param("providerId")
 	var provider models.Provider
@@ -112,7 +112,7 @@ func UpdateProvider(c *gin.Context) {
 //	@Param			tenant		path	string	true	"tenant"
 //	@Param			providerId	path	integer	true	"tenant"
 //	@Success		200
-//	@Router			/admin/{tenant}/providers/{providerId} [delete]
+//	@Router			/accounts/admin/{tenant}/providers/{providerId} [delete]
 func DeleteProvider(c *gin.Context) {
 	providerId := c.Param("providerId")
 	var provider models.Provider

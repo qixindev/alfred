@@ -15,7 +15,7 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
-        "/.well-known/jwks.json": {
+        "/accounts/.well-known/jwks.json": {
             "get": {
                 "description": "jwk",
                 "tags": [
@@ -29,7 +29,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/admin/tenants": {
+        "/accounts/admin/tenants": {
             "get": {
                 "description": "list tenants",
                 "tags": [
@@ -73,7 +73,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/admin/tenants/{tenantId}": {
+        "/accounts/admin/tenants/{tenantId}": {
             "get": {
                 "description": "get tenants",
                 "tags": [
@@ -159,7 +159,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/admin/{tenant}/clients": {
+        "/accounts/admin/{tenant}/clients": {
             "get": {
                 "description": "get client list",
                 "tags": [
@@ -212,7 +212,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/admin/{tenant}/clients/:clientId/redirect-uris": {
+        "/accounts/admin/{tenant}/clients/:clientId/redirect-uris": {
             "post": {
                 "description": "new client redirect uri",
                 "tags": [
@@ -235,7 +235,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/admin/{tenant}/clients/{clientId}": {
+        "/accounts/admin/{tenant}/clients/{clientId}": {
             "get": {
                 "description": "get client",
                 "tags": [
@@ -321,7 +321,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/admin/{tenant}/clients/{clientId}/redirect-uris": {
+        "/accounts/admin/{tenant}/clients/{clientId}/redirect-uris": {
             "get": {
                 "description": "get client redirect uris",
                 "tags": [
@@ -351,7 +351,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/admin/{tenant}/clients/{clientId}/redirect-uris/{uriId}": {
+        "/accounts/admin/{tenant}/clients/{clientId}/redirect-uris/{uriId}": {
             "delete": {
                 "description": "delete client redirect uris",
                 "tags": [
@@ -388,7 +388,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/admin/{tenant}/clients/{clientId}/secret/{secretId}": {
+        "/accounts/admin/{tenant}/clients/{clientId}/secret/{secretId}": {
             "delete": {
                 "description": "delete client secret",
                 "tags": [
@@ -425,7 +425,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/admin/{tenant}/clients/{clientId}/secrets": {
+        "/accounts/admin/{tenant}/clients/{clientId}/secrets": {
             "get": {
                 "description": "get client secrets",
                 "tags": [
@@ -483,7 +483,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/admin/{tenant}/clients/{clientId}/users": {
+        "/accounts/admin/{tenant}/clients/{clientId}/users": {
             "get": {
                 "description": "get client user list",
                 "tags": [
@@ -513,7 +513,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/admin/{tenant}/devices": {
+        "/accounts/admin/{tenant}/devices": {
             "get": {
                 "description": "list device",
                 "tags": [
@@ -557,7 +557,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/admin/{tenant}/devices/{deviceId}": {
+        "/accounts/admin/{tenant}/devices/{deviceId}": {
             "get": {
                 "description": "get device",
                 "tags": [
@@ -643,7 +643,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/admin/{tenant}/devices/{deviceId}/groups": {
+        "/accounts/admin/{tenant}/devices/{deviceId}/groups": {
             "get": {
                 "description": "list device groups",
                 "tags": [
@@ -701,7 +701,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/admin/{tenant}/devices/{deviceId}/groups/{groupId}": {
+        "/accounts/admin/{tenant}/devices/{deviceId}/groups/{groupId}": {
             "get": {
                 "description": "update device groups",
                 "tags": [
@@ -773,7 +773,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/admin/{tenant}/groups": {
+        "/accounts/admin/{tenant}/groups": {
             "get": {
                 "description": "list groups",
                 "tags": [
@@ -817,7 +817,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/admin/{tenant}/groups/{groupId}": {
+        "/accounts/admin/{tenant}/groups/{groupId}": {
             "get": {
                 "description": "get groups",
                 "tags": [
@@ -903,7 +903,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/admin/{tenant}/groups/{groupId}/member": {
+        "/accounts/admin/{tenant}/groups/{groupId}/member": {
             "get": {
                 "description": "get groups members",
                 "tags": [
@@ -933,7 +933,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/admin/{tenant}/providers": {
+        "/accounts/admin/{tenant}/providers": {
             "get": {
                 "description": "list provider",
                 "tags": [
@@ -977,7 +977,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/admin/{tenant}/providers/{providerId}": {
+        "/accounts/admin/{tenant}/providers/{providerId}": {
             "get": {
                 "description": "get provider",
                 "tags": [
@@ -1063,7 +1063,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/admin/{tenant}/users": {
+        "/accounts/admin/{tenant}/users": {
             "get": {
                 "description": "get user list",
                 "tags": [
@@ -1107,7 +1107,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/admin/{tenant}/users/{userId}": {
+        "/accounts/admin/{tenant}/users/{userId}": {
             "get": {
                 "description": "get user",
                 "tags": [
@@ -1193,7 +1193,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/admin/{tenant}/users/{userId}/groups": {
+        "/accounts/admin/{tenant}/users/{userId}/groups": {
             "get": {
                 "description": "get user groups",
                 "tags": [
@@ -1251,7 +1251,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/admin/{tenant}/users/{userId}/groups/{groupId}": {
+        "/accounts/admin/{tenant}/users/{userId}/groups/{groupId}": {
             "get": {
                 "description": "update user groups",
                 "tags": [
@@ -1323,7 +1323,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/{tenant}/.well-known/openid-configuration": {
+        "/accounts/{tenant}/.well-known/openid-configuration": {
             "get": {
                 "description": "openid configuration",
                 "tags": [
@@ -1337,7 +1337,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/{tenant}/iam/clients/{client}/types": {
+        "/accounts/{tenant}/iam/clients/{client}/types": {
             "get": {
                 "description": "get iam resource type list",
                 "tags": [
@@ -1395,7 +1395,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/{tenant}/iam/clients/{client}/types/{type}": {
+        "/accounts/{tenant}/iam/clients/{client}/types/{type}": {
             "delete": {
                 "description": "delete iam resource type",
                 "tags": [
@@ -1432,7 +1432,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/{tenant}/iam/clients/{client}/types/{type}/actions": {
+        "/accounts/{tenant}/iam/clients/{client}/types/{type}/actions": {
             "get": {
                 "description": "get iam action list",
                 "tags": [
@@ -1504,7 +1504,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/{tenant}/iam/clients/{client}/types/{type}/actions/{action}": {
+        "/accounts/{tenant}/iam/clients/{client}/types/{type}/actions/{action}": {
             "delete": {
                 "description": "delete iam action",
                 "tags": [
@@ -1548,7 +1548,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/{tenant}/iam/clients/{client}/types/{type}/resources": {
+        "/accounts/{tenant}/iam/clients/{client}/types/{type}/resources": {
             "get": {
                 "description": "get iam resource list",
                 "tags": [
@@ -1620,7 +1620,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/{tenant}/iam/clients/{client}/types/{type}/resources/{resource}": {
+        "/accounts/{tenant}/iam/clients/{client}/types/{type}/resources/{resource}": {
             "delete": {
                 "description": "delete iam resource",
                 "tags": [
@@ -1664,7 +1664,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/{tenant}/iam/clients/{client}/types/{type}/resources/{resource}/actions/{action}/users/{user}": {
+        "/accounts/{tenant}/iam/clients/{client}/types/{type}/resources/{resource}/actions/{action}/users/{user}": {
             "get": {
                 "description": "get iam action user",
                 "tags": [
@@ -1715,7 +1715,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/{tenant}/iam/clients/{client}/types/{type}/resources/{resource}/roles/{role}/users": {
+        "/accounts/{tenant}/iam/clients/{client}/types/{type}/resources/{resource}/roles/{role}/users": {
             "get": {
                 "description": "get iam resource role list",
                 "tags": [
@@ -1815,7 +1815,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/{tenant}/iam/clients/{client}/types/{type}/resources/{resource}/roles/{role}/users/{user}": {
+        "/accounts/{tenant}/iam/clients/{client}/types/{type}/resources/{resource}/roles/{role}/users/{user}": {
             "delete": {
                 "description": "delete iam resource role",
                 "tags": [
@@ -1873,7 +1873,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/{tenant}/iam/clients/{client}/types/{type}/roles": {
+        "/accounts/{tenant}/iam/clients/{client}/types/{type}/roles": {
             "get": {
                 "description": "get iam role list",
                 "tags": [
@@ -1945,7 +1945,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/{tenant}/iam/clients/{client}/types/{type}/roles/{role}": {
+        "/accounts/{tenant}/iam/clients/{client}/types/{type}/roles/{role}": {
             "delete": {
                 "description": "delete iam role",
                 "tags": [
@@ -1989,7 +1989,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/{tenant}/iam/clients/{client}/types/{type}/roles/{role}/actions": {
+        "/accounts/{tenant}/iam/clients/{client}/types/{type}/roles/{role}/actions": {
             "get": {
                 "description": "get iam role action list",
                 "tags": [
@@ -2075,7 +2075,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/{tenant}/iam/clients/{client}/types/{type}/roles/{role}/actions/{action}": {
+        "/accounts/{tenant}/iam/clients/{client}/types/{type}/roles/{role}/actions/{action}": {
             "delete": {
                 "description": "delete iam role action",
                 "tags": [
@@ -2126,7 +2126,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/{tenant}/logged-in/{provider}": {
+        "/accounts/{tenant}/logged-in/{provider}": {
             "get": {
                 "description": "provider callback",
                 "tags": [
@@ -2166,7 +2166,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/{tenant}/login": {
+        "/accounts/{tenant}/login": {
             "post": {
                 "description": "login using username and password",
                 "tags": [
@@ -2209,7 +2209,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/{tenant}/login/providers": {
+        "/accounts/{tenant}/login/providers": {
             "get": {
                 "description": "list login providers",
                 "tags": [
@@ -2238,7 +2238,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/{tenant}/login/providers/{provider}": {
+        "/accounts/{tenant}/login/providers/{provider}": {
             "get": {
                 "description": "get a login provider",
                 "tags": [
@@ -2271,7 +2271,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/{tenant}/login/{provider}": {
+        "/accounts/{tenant}/login/{provider}": {
             "get": {
                 "description": "login via a provider",
                 "tags": [
@@ -2307,7 +2307,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/{tenant}/logout": {
+        "/accounts/{tenant}/logout": {
             "get": {
                 "description": "logout current user",
                 "tags": [
@@ -2330,7 +2330,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/{tenant}/me": {
+        "/accounts/{tenant}/me": {
             "get": {
                 "description": "get user",
                 "tags": [
@@ -2380,7 +2380,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/{tenant}/me/profile": {
+        "/accounts/{tenant}/me/profile": {
             "get": {
                 "description": "get user profile",
                 "tags": [
@@ -2406,7 +2406,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/{tenant}/oauth2/auth": {
+        "/accounts/{tenant}/oauth2/auth": {
             "get": {
                 "description": "oauth2 authorize",
                 "tags": [
@@ -2472,7 +2472,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/{tenant}/oauth2/token": {
+        "/accounts/{tenant}/oauth2/token": {
             "post": {
                 "description": "oauth2 token",
                 "tags": [
@@ -2552,7 +2552,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/{tenant}/register": {
+        "/accounts/{tenant}/register": {
             "post": {
                 "description": "register using username and password",
                 "tags": [
