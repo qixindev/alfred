@@ -1,5 +1,6 @@
 import { ElMessage } from 'element-plus'
 import { UseFetchOptions } from 'nuxt/dist/app/composables'
+const tenant =  import.meta.env.VITE_APP_TENANT
 
 // 指定后端返回的基本数据类型
 export interface ResOptions {
@@ -10,7 +11,7 @@ export type HttpOption = UseFetchOptions<ResOptions>
 
 const fetch = (url: string , option: HttpOption) => {
   const auth = useCookie('QixinAuth')
-  const baseUrl = useRuntimeConfig().public.VITE_APP_BASE_API
+  const baseUrl = import.meta.env.VITE_APP_BASE_API
   url = baseUrl + url
   console.log(url)
   if (auth) {

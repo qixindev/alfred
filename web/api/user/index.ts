@@ -1,4 +1,4 @@
-const tenant = 'default'
+const tenant =  import.meta.env.VITE_APP_TENANT
 
 export const getUserInfo = async () => {
   return await useHttp.get(`/${tenant}/me`)
