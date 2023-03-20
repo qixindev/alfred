@@ -1,0 +1,17 @@
+version: '3'
+
+services:
+  postgres:
+    build: .
+    restart: always
+    container_name: accounts
+    ports:
+      - "8086:8086"
+    env_file:
+      - accounts.env
+    networks:
+      - qixin
+
+networks:
+  qixin:
+    driver: bridge

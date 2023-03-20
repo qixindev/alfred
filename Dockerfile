@@ -7,7 +7,7 @@ COPY ./web /app
 
 
 RUN yarn install
-RUN npm run build:prod
+RUN npm run generate
 
 
 ##
@@ -31,12 +31,11 @@ FROM alpine:latest
 RUN mkdir -p /app/web
 WORKDIR /app
 COPY --from=build-web       /app/.output ./web/.output
-COPY --from=build-web       /app/.nuxt   ./web/.nuxt
-COPY --from=build-web       /app/assets  ./web/assets
+#COPY --from=build-web       /app/.nuxt   ./web/.nuxt
+#COPY --from=build-web       /app/assets  ./web/assets
 
 COPY --from=build-back   /app/accounts    ./
 
 EXPOSE 8086
-ENV dsn = "host=143.64.18.19 port=5432 dbname=accounts user=qixin password=at9z9?gntsLPv/_Jk/,pyIrX"
 ENTRYPOINT ["/app/accounts"]
 

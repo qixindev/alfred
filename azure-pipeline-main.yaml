@@ -1,0 +1,19 @@
+trigger:
+  - main
+
+name: $(SourceBranchName)-$(Date:yyyyMMdd)$(Rev:.r)
+
+stages:
+  - stage: build
+    jobs:
+      - job: docker
+        pool:
+          vmImage: ubuntu-latest
+        steps:
+          - task: Docker@2
+            inputs:
+              containerRegistry: 'acr'
+              repository: 'iot/accounts'
+              command: 'buildAndPush'
+              Dockerfile: '**/Dockerfile'
+              tags: $(Build.BuildNumber)

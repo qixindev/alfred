@@ -179,7 +179,7 @@ func GetAuthCode(c *gin.Context) {
 //	@Param			state			formData	string	false	"state"
 //	@Param			nonce			formData	string	false	"nonce"
 //	@Success		200				{object}	dto.AccessTokenDto
-//	@Router			/accounts/{tenant}/oauth2/token [post]
+//	@Router			/accounts/{tenant}/oauth2/token [get]
 func GetToken(c *gin.Context) {
 	clientId := c.Query("client_id")
 	clientSecret := c.Query("client_secret")
@@ -265,7 +265,7 @@ func GetJwks(c *gin.Context) {
 
 func addOAuth2Routes(rg *gin.RouterGroup) {
 	rg.GET("/oauth2/auth", middlewares.Authorized(true), GetAuthCode)
-	rg.GET("/oauth2/token", middlewares.Authorized(false), GetToken)
+	rg.GET("/oxauth2/token", middlewares.Authorized(false), GetToken)
 	rg.GET("/.well-known/openid-configuration", GetOpenidConfiguration)
 	rg.GET("/.well-known/jwks.json", GetJwks)
 }
