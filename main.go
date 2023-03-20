@@ -16,7 +16,7 @@ func main() {
 	r := gin.Default()
 	r.Use(cors.Default())
 	r.Use(sessions.Sessions("QixinAuth", cookie.NewStore(secret)))
-	routes.AddRoutes(&r.RouterGroup)
+	routes.AddRoutes(r)
 	if err := data.InitDB(); err != nil {
 		log.Fatal(err)
 		return
