@@ -5,13 +5,15 @@ import (
 	"accounts/middlewares"
 	"accounts/routes/admin"
 	"accounts/routes/iam"
+	"github.com/gin-contrib/static"
 	"github.com/gin-gonic/gin"
 	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
 )
 
-func AddRoutes(rg *gin.RouterGroup) {
-	api := rg.Group("/accounts")
+func AddRoutes(r *gin.Engine) {
+	AddWebRoutes(r)
+	api := r.RouterGroup.Group("/accounts")
 	{
 		api.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 		tenantRoutes := api.Group("/:tenant", middlewares.MultiTenancy)
@@ -23,4 +25,9 @@ func AddRoutes(rg *gin.RouterGroup) {
 		iam.AddIamRoutes(iamRoutes)
 		admin.AddAdminRoutes(api)
 	}
+}
+
+func AddWebRoutes(r *gin.Engine) {
+	r.Use(static.Serve("/", static.LocalFile("./web/.output/public", false)))
+	r.StaticFile("/", "./web/.output/public/index.html")
 }

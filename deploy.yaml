@@ -1,0 +1,75 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: account
+  name: account
+spec:
+  ports:
+    - port: 8086
+  selector:
+    app: account
+  type: LoadBalancer
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: account
+  name: account
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: account
+  template:
+    metadata:
+      labels:
+        app: account
+    spec:
+      containers:
+        - env:
+            - name: CONFIG_PATH
+              value: "config.dev.yml"
+            - name: DEPLOY_TYPE
+              value: "k8s"
+            - name: SERVICE_CONFIG_MAP
+              value: "service-config"
+            - name: NANE_SPACE
+              value: "default"
+            - name: dsn
+              value: "host=143.64.18.19 port=5432 dbname=accounts user=qixin password=at9z9?gntsLPv/_Jk/,pyIrX"
+          image: qixindev.azurecr.io/iot/account:develop-20230320.1
+          name: account
+          ports:
+            - containerPort: 8080
+          volumeMounts:
+            - mountPath: /root/.kube
+              name: kubeconfig
+            - mountPath: /app/data/
+              name: backenddata
+            - name: timezone
+              mountPath: /etc/localtime
+              subPath: Shanghai
+          resources:
+            limits:
+              cpu: "64m"
+              memory: 512Mi
+            requests:
+              cpu: 6m
+              memory: 8Mi
+      imagePullSecrets:
+        - name: acrcred
+      volumes:
+        - name: kubeconfig
+          configMap:
+            name: kubeconfig
+            items:
+              - key: config
+                path: config
+        - name: backenddata
+          hostPath:
+            path: /etc/data/accounts/
+        - name: timezone
+          configMap:
+            name: timezone

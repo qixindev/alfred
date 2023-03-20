@@ -4,7 +4,6 @@ import (
 	"accounts/models"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
-	"os"
 )
 
 var DB *gorm.DB
@@ -53,7 +52,7 @@ func CheckFirstRun() error {
 }
 
 func InitDB() error {
-	dsn := os.Getenv("dsn")
+	dsn := "host=143.64.18.19 port=5432 dbname=accounts user=qixin password=at9z9?gntsLPv/_Jk/,pyIrX"
 	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
 	if err != nil {
 		return err

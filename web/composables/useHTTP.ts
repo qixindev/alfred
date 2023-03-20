@@ -13,7 +13,6 @@ const fetch = (url: string , option: HttpOption) => {
   const auth = useCookie('QixinAuth')
   const baseUrl = import.meta.env.VITE_APP_BASE_API
   url = baseUrl + url
-  console.log(url)
   if (auth) {
     option = mergeObj(option,{
       headers: {
