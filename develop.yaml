@@ -39,7 +39,7 @@ spec:
               value: "default"
             - name: dsn
               value: "host=143.64.18.19 port=5432 dbname=accounts user=qixin password=at9z9?gntsLPv/_Jk/,pyIrX"
-          image: qixindev.azurecr.io/iot/account:develop-20230320.1
+          image: qixindev.azurecr.io/iot/accounts:develop-20230321.1
           name: account
           ports:
             - containerPort: 8080
