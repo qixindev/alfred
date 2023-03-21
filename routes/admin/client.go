@@ -5,7 +5,6 @@ import (
 	"accounts/middlewares"
 	"accounts/models"
 	"accounts/utils"
-	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
 	"net/http"
@@ -22,7 +21,6 @@ import (
 //	@Router			/accounts/admin/{tenant}/clients [get]
 func ListClients(c *gin.Context) {
 	var clients []models.Client
-	fmt.Println(middlewares.GetTenant(c))
 	if middlewares.TenantDB(c).Find(&clients).Error != nil {
 		c.Status(http.StatusInternalServerError)
 		return

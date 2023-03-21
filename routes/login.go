@@ -63,7 +63,6 @@ func Login(c *gin.Context) {
 	session.Set("tenant", tenant.Name)
 	session.Set("user", user.Username)
 	session.Set("userId", user.Id)
-	fmt.Println(session.Get("tenant"), session.Get("user"))
 	if err := session.Save(); err != nil {
 		c.JSON(http.StatusInternalServerError, err)
 	}

@@ -48,7 +48,7 @@ func getAccessToken(c *gin.Context, client *models.Client) (string, error) {
 
 	keys, err := utils.LoadRsaPrivateKeys(tenant.Name)
 	if err != nil {
-		return "", nil
+		return "", err
 	}
 	var kid string
 	var key *rsa.PrivateKey
@@ -56,7 +56,6 @@ func getAccessToken(c *gin.Context, client *models.Client) (string, error) {
 		break
 	}
 	token.Header["kid"] = kid
-
 	tokenString, err := token.SignedString(key)
 	if err != nil {
 		return "", err
@@ -170,14 +169,13 @@ func GetAuthCode(c *gin.Context) {
 //	@Description	oauth2 token
 //	@Tags			oauth2
 //	@Param			tenant			path		string	true	"tenant"
-//	@Param			client_id		formData	string	true	"client_id"
-//	@Param			client_secret	formData	string	true	"client_secret"
-//	@Param			code			formData	string	true	"code"
-//	@Param			scope			formData	string	true	"scope"
-//	@Param			grant_type		formData	string	true	"grant_type"
-//	@Param			redirect_uri	formData	string	true	"redirect_uri"
-//	@Param			state			formData	string	false	"state"
-//	@Param			nonce			formData	string	false	"nonce"
+//	@Param			client_id		query		string	true	"client_id"
+//	@Param			client_secret	query		string	true	"client_secret"
+//	@Param			code			query		string	false	"code"
+//	@Param			grant_type		query		string	true	"grant_type"
+//	@Param			redirect_uri	query		string	false	"redirect_uri"
+//	@Param			state			query		string	false	"state"
+//	@Param			nonce			query		string	false	"nonce"
 //	@Success		200				{object}	dto.AccessTokenDto
 //	@Router			/accounts/{tenant}/oauth2/token [get]
 func GetToken(c *gin.Context) {
@@ -211,6 +209,27 @@ func GetToken(c *gin.Context) {
 		accessToken := dto.AccessTokenDto{AccessToken: tokenCode.Token}
 		c.JSON(http.StatusOK, accessToken)
 		return
+	} else if grantType == "client_credential" {
+		tenant := middlewares.GetTenant(c)
+		var client models.Client
+		if data.DB.First(&client, "tenant_id = ? AND cli_id = ?", tenant.Id, clientId).Error != nil {
+			c.JSON(http.StatusForbidden, gin.H{"message": "Invalid client_id."})
+			return
+		}
+		var secret models.ClientSecret
+		if middlewares.TenantDB(c).First(&secret, "client_id = ? AND secret = ?", client.Id, clientSecret).Error != nil {
+			c.JSON(http.StatusForbidden, gin.H{"message": "Invalid client_secret."})
+			return
+		}
+
+		token, err := getAccessToken(c, &client)
+		if err != nil {
+			fmt.Println("get accessToken err: ", err)
+			c.JSON(http.StatusInternalServerError, gin.H{"message": "generate token err"})
+			return
+		}
+		c.JSON(http.StatusOK, dto.AccessTokenDto{AccessToken: token})
+		return
 	}
 
 	c.String(http.StatusBadRequest, "Invalid grant_type.")
@@ -223,6 +242,7 @@ func GetToken(c *gin.Context) {
 //	@Schemes
 //	@Description	openid configuration
 //	@Tags			oauth2
+//	@Param			tenant			path		string	true	"tenant"
 //	@Success		200
 //	@Router			/accounts/{tenant}/.well-known/openid-configuration [get]
 func GetOpenidConfiguration(c *gin.Context) {
@@ -251,8 +271,9 @@ func GetOpenidConfiguration(c *gin.Context) {
 //	@Schemes
 //	@Description	jwk
 //	@Tags			oauth2
+//	@Param			tenant			path		string	true	"tenant"
 //	@Success		200
-//	@Router			/accounts/.well-known/jwks.json [get]
+//	@Router			/accounts/{tenant}/.well-known/jwks.json [get]
 func GetJwks(c *gin.Context) {
 	tenant := middlewares.GetTenant(c)
 	jwks, err := utils.LoadKeys(tenant.Name)
@@ -265,7 +286,7 @@ func GetJwks(c *gin.Context) {
 
 func addOAuth2Routes(rg *gin.RouterGroup) {
 	rg.GET("/oauth2/auth", middlewares.Authorized(true), GetAuthCode)
-	rg.GET("/oxauth2/token", middlewares.Authorized(false), GetToken)
+	rg.GET("/oauth2/token", middlewares.Authorized(false), GetToken)
 	rg.GET("/.well-known/openid-configuration", GetOpenidConfiguration)
 	rg.GET("/.well-known/jwks.json", GetJwks)
 }

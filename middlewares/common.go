@@ -52,6 +52,7 @@ func GetUserStandalone(c *gin.Context) (*models.User, error) {
 	session := sessions.Default(c)
 	tenantName := session.Get("tenant")
 	if tenant.Name != tenantName {
+		fmt.Printf("tenant name err: %s %s\n", tenant.Name, tenantName)
 		return nil, errors.New("")
 	}
 	username := session.Get("user")
@@ -65,11 +66,11 @@ func GetUserStandalone(c *gin.Context) (*models.User, error) {
 func AuthorizedAdmin(c *gin.Context) {
 	user, err := GetUserStandalone(c)
 	if err != nil {
-		c.AbortWithStatus(http.StatusUnauthorized)
+		c.AbortWithStatusJSON(http.StatusUnauthorized, "租户不匹配")
 		return
 	}
 	if user.Role != "owner" && user.Role != "admin" {
-		c.AbortWithStatus(http.StatusUnauthorized)
+		c.AbortWithStatusJSON(http.StatusUnauthorized, "非管理员无权访问")
 		return
 	}
 	c.Set("user", user)
