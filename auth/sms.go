@@ -2,7 +2,7 @@ package auth
 
 import (
 	"accounts/connectors"
-	"accounts/data"
+	"accounts/global"
 	"accounts/models"
 	"errors"
 	"fmt"
@@ -26,21 +26,21 @@ func (p *ProviderSms) Auth(number string) (string, error) {
 		return "", errors.New("only +86 suffix supported")
 	}
 	code := fmt.Sprint(time.Now().Nanosecond())
-	if data.DB.First(&phoneVerification, "phone = ?", number).Error == nil {
+	if global.DB.First(&phoneVerification, "phone = ?", number).Error == nil {
 		// found existing verification
 		if phoneVerification.CreatedAt.Add(time.Minute).Unix() > time.Now().Unix() {
 			return "", errors.New("too fast")
 		}
 		phoneVerification.Code = code
 		phoneVerification.CreatedAt = time.Now()
-		if err := data.DB.Save(&phoneVerification).Error; err != nil {
+		if err := global.DB.Save(&phoneVerification).Error; err != nil {
 			return "", err
 		}
 	} else {
 		phoneVerification.Phone = number
 		phoneVerification.Code = code
 		phoneVerification.CreatedAt = time.Now()
-		if err := data.DB.Create(&phoneVerification).Error; err != nil {
+		if err := global.DB.Create(&phoneVerification).Error; err != nil {
 			return "", err
 		}
 	}
@@ -56,10 +56,10 @@ func (p *ProviderSms) Login(c *gin.Context) (*models.UserInfo, error) {
 	phone := c.PostForm("phone")
 	code := c.PostForm("code")
 	var v models.PhoneVerification
-	if err := data.DB.First(&v, "phone = ? AND code = ?", phone, code).Error; err != nil {
+	if err := global.DB.First(&v, "phone = ? AND code = ?", phone, code).Error; err != nil {
 		return nil, err
 	}
-	if err := data.DB.Delete(&v).Error; err != nil {
+	if err := global.DB.Delete(&v).Error; err != nil {
 		return nil, err
 	}
 	u := models.UserInfo{

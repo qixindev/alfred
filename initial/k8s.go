@@ -1,6 +1,7 @@
-package config
+package initial
 
 import (
+	"accounts/config"
 	"accounts/config/env"
 	"context"
 	"encoding/json"
@@ -43,8 +44,8 @@ func GetK8sClient() (*kubernetes.Clientset, error) {
 	return kubernetes.NewForConfig(kubeConfig)
 }
 
-func GetK8sConfig() (*Config, error) {
-	conf := Config{}
+func GetK8sConfig() (*config.Config, error) {
+	conf := config.Config{}
 	cm, err := GetConfigMap()
 	if err != nil {
 		return nil, err

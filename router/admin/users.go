@@ -1,10 +1,11 @@
 package admin
 
 import (
-	"accounts/data"
+	"accounts/global"
 	"accounts/middlewares"
 	"accounts/models"
 	"accounts/models/dto"
+	"accounts/router/internal"
 	"accounts/utils"
 	"github.com/gin-gonic/gin"
 	"net/http"
@@ -21,8 +22,9 @@ import (
 //	@Router			/accounts/admin/{tenant}/users [get]
 func ListUsers(c *gin.Context) {
 	var users []models.User
-	if middlewares.TenantDB(c).Find(&users).Error != nil {
+	if err := middlewares.TenantDB(c).Find(&users).Error; err != nil {
 		c.Status(http.StatusInternalServerError)
+		global.LOG.Error("get tenant users err: " + err.Error())
 		return
 	}
 	c.JSON(http.StatusOK, utils.Filter(users, models.User2AdminDto))
@@ -60,14 +62,14 @@ func GetUser(c *gin.Context) {
 func NewUser(c *gin.Context) {
 	tenant := middlewares.GetTenant(c)
 	var user models.User
-	err := c.BindJSON(&user)
-	if err != nil {
-		c.Status(http.StatusBadRequest)
+	if err := c.BindJSON(&user); err != nil {
+		internal.ErrReqPara(c, err)
 		return
 	}
 	user.TenantId = tenant.Id
-	if data.DB.Create(&user).Error != nil {
+	if err := global.DB.Create(&user).Error; err != nil {
 		c.Status(http.StatusConflict)
+		global.LOG.Error("new tenant user err: " + err.Error())
 		return
 	}
 	c.JSON(http.StatusOK, user.AdminDto())
@@ -91,9 +93,8 @@ func UpdateUser(c *gin.Context) {
 		return
 	}
 	var u models.User
-	err := c.BindJSON(&u)
-	if err != nil {
-		c.Status(http.StatusBadRequest)
+	if err := c.BindJSON(&u); err != nil {
+		internal.ErrReqPara(c, err)
 		return
 	}
 	user.Username = u.Username
@@ -106,8 +107,9 @@ func UpdateUser(c *gin.Context) {
 	user.PhoneVerified = u.PhoneVerified
 	user.TwoFactorEnabled = u.TwoFactorEnabled
 	user.Disabled = u.Disabled
-	if data.DB.Save(&user).Error != nil {
+	if err := global.DB.Save(&user).Error; err != nil {
 		c.Status(http.StatusInternalServerError)
+		global.LOG.Error("update tenant user err: " + err.Error())
 		return
 	}
 	c.JSON(http.StatusOK, user.AdminDto())
@@ -130,8 +132,9 @@ func DeleteUser(c *gin.Context) {
 		c.Status(http.StatusNotFound)
 		return
 	}
-	if data.DB.Delete(&user).Error != nil {
+	if err := global.DB.Delete(&user).Error; err != nil {
 		c.Status(http.StatusInternalServerError)
+		global.LOG.Error("delete tenant user err: " + err.Error())
 		return
 	}
 	c.Status(http.StatusNoContent)
@@ -155,9 +158,10 @@ func GetUserGroups(c *gin.Context) {
 		return
 	}
 	var groupUsers []models.GroupUser
-	if data.DB.Joins("Group", "group_users.group_id = groups.id AND group_users.tenant_id = groups.tenant_id").
-		Find(&groupUsers, "group_users.tenant_id = ? AND user_id = ?", user.TenantId, user.Id).Error != nil {
+	if err := global.DB.Joins("Group", "group_users.group_id = groups.id AND group_users.tenant_id = groups.tenant_id").
+		Find(&groupUsers, "group_users.tenant_id = ? AND user_id = ?", user.TenantId, user.Id).Error; err != nil {
 		c.Status(http.StatusInternalServerError)
+		global.LOG.Error("get tenant user groups err: " + err.Error())
 		return
 	}
 	groups := utils.Filter(groupUsers, func(gu models.GroupUser) dto.GroupMemberDto {
@@ -184,7 +188,7 @@ func NewUserGroup(c *gin.Context) {
 	userId := c.Param("userId")
 	var groupUser models.GroupUser
 	if err := c.BindJSON(&groupUser); err != nil {
-		c.Status(http.StatusBadRequest)
+		internal.ErrReqPara(c, err)
 		return
 	}
 
@@ -197,8 +201,9 @@ func NewUserGroup(c *gin.Context) {
 	groupUser.TenantId = user.TenantId
 	groupUser.UserId = user.Id
 	groupUser.Role = user.Role
-	if data.DB.Create(&groupUser).Error != nil {
+	if err := global.DB.Create(&groupUser).Error; err != nil {
 		c.Status(http.StatusConflict)
+		global.LOG.Error("create tenant user group err: " + err.Error())
 		return
 	}
 
@@ -230,8 +235,8 @@ func UpdateUserGroup(c *gin.Context) {
 		return
 	}
 	var gu dto.GroupMemberDto
-	if c.BindJSON(&gu) != nil {
-		c.Status(http.StatusBadRequest)
+	if err := c.BindJSON(&gu); err != nil {
+		internal.ErrReqPara(c, err)
 		return
 	}
 	var groupUser models.GroupUser
@@ -244,8 +249,9 @@ func UpdateUserGroup(c *gin.Context) {
 	} else {
 		// Found, update it.
 		groupUser.Role = gu.Role
-		if middlewares.TenantDB(c).Save(&groupUser).Error != nil {
+		if err := middlewares.TenantDB(c).Save(&groupUser).Error; err != nil {
 			c.Status(http.StatusInternalServerError)
+			global.LOG.Error("get tenant user group err: " + err.Error())
 			return
 		}
 	}
@@ -276,8 +282,10 @@ func DeleteUserGroup(c *gin.Context) {
 		c.Status(http.StatusNotFound)
 		return
 	}
-	if middlewares.TenantDB(c).Delete(&groupUser).Error != nil {
+	if err := middlewares.TenantDB(c).Delete(&groupUser).Error; err != nil {
 		c.Status(http.StatusInternalServerError)
+		global.LOG.Error("delete user group err: " + err.Error())
+		return
 	}
 	c.Status(http.StatusNoContent)
 }

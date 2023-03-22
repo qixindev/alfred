@@ -1317,7 +1317,7 @@ paths:
       summary: device groups
       tags:
       - device
-    get:
+    put:
       description: update device groups
       parameters:
       - description: tenant

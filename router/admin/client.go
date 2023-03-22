@@ -1,9 +1,10 @@
 package admin
 
 import (
-	"accounts/data"
+	"accounts/global"
 	"accounts/middlewares"
 	"accounts/models"
+	"accounts/router/internal"
 	"accounts/utils"
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
@@ -21,7 +22,7 @@ import (
 //	@Router			/accounts/admin/{tenant}/clients [get]
 func ListClients(c *gin.Context) {
 	var clients []models.Client
-	if middlewares.TenantDB(c).Find(&clients).Error != nil {
+	if err := middlewares.TenantDB(c).Find(&clients).Error; err != nil {
 		c.Status(http.StatusInternalServerError)
 		return
 	}
@@ -62,12 +63,12 @@ func NewClient(c *gin.Context) {
 	tenant := middlewares.GetTenant(c)
 	var client models.Client
 	if err := c.BindJSON(&client); err != nil {
-		c.Status(http.StatusBadRequest)
+		internal.ErrReqPara(c, err)
 		return
 	}
 	client.TenantId = tenant.Id
 	client.CliId = uuid.NewString()
-	if data.DB.Create(&client).Error != nil {
+	if global.DB.Create(&client).Error != nil {
 		c.Status(http.StatusConflict)
 		return
 	}
@@ -92,14 +93,14 @@ func UpdateClient(c *gin.Context) {
 		return
 	}
 	var cli models.Client
-	err := c.BindJSON(&cli)
-	if err != nil {
-		c.Status(http.StatusBadRequest)
+	if err := c.BindJSON(&cli); err != nil {
+		internal.ErrReqPara(c, err)
 		return
 	}
 	client.Name = cli.Name
-	if data.DB.Save(&client).Error != nil {
+	if err := global.DB.Save(&client).Error; err != nil {
 		c.Status(http.StatusInternalServerError)
+		global.LOG.Error("update clients err: " + err.Error())
 		return
 	}
 	c.JSON(http.StatusOK, client.Dto())
@@ -122,8 +123,9 @@ func DeleteClient(c *gin.Context) {
 		c.Status(http.StatusNotFound)
 		return
 	}
-	if data.DB.Delete(&client).Error != nil {
+	if err := global.DB.Delete(&client).Error; err != nil {
 		c.Status(http.StatusInternalServerError)
+		global.LOG.Error("delete client err: " + err.Error())
 		return
 	}
 	c.Status(http.StatusNoContent)
@@ -148,8 +150,9 @@ func ListClientRedirectUri(c *gin.Context) {
 	}
 
 	var uris []models.RedirectUri
-	if middlewares.TenantDB(c).Find(&uris, "client_id = ?", client.Id).Error != nil {
+	if err := middlewares.TenantDB(c).Find(&uris, "client_id = ?", client.Id).Error; err != nil {
 		c.Status(http.StatusInternalServerError)
+		global.LOG.Error("get redirect-uris err: " + err.Error())
 		return
 	}
 
@@ -173,13 +176,13 @@ func NewClientRedirectUri(c *gin.Context) {
 		return
 	}
 	var uri models.RedirectUri
-	if c.BindJSON(&uri) != nil {
-		c.Status(http.StatusBadRequest)
+	if err := c.BindJSON(&uri); err != nil {
+		internal.ErrReqPara(c, err)
 		return
 	}
 	uri.TenantId = client.TenantId
 	uri.ClientId = client.Id
-	if middlewares.TenantDB(c).Create(&uri).Error != nil {
+	if err := middlewares.TenantDB(c).Create(&uri).Error; err != nil {
 		c.Status(http.StatusConflict)
 		return
 	}
@@ -207,8 +210,9 @@ func DeleteClientRedirectUri(c *gin.Context) {
 		return
 	}
 
-	if err := data.DB.Delete(&uri).Error; err != nil {
+	if err := global.DB.Delete(&uri).Error; err != nil {
 		c.Status(http.StatusInternalServerError)
+		global.LOG.Error("delete redirect-uri err: " + err.Error())
 		return
 	}
 
@@ -233,8 +237,9 @@ func GetClientSecret(c *gin.Context) {
 		return
 	}
 	var secrets []models.ClientSecret
-	if middlewares.TenantDB(c).Find(&secrets, "client_id = ?", client.Id).Error != nil {
+	if err := middlewares.TenantDB(c).Find(&secrets, "client_id = ?", client.Id).Error; err != nil {
 		c.Status(http.StatusInternalServerError)
+		global.LOG.Error("get clients secret err: " + err.Error())
 		return
 	}
 	c.JSON(http.StatusOK, utils.Filter(secrets, models.ClientSecret2Dto))
@@ -259,13 +264,14 @@ func NewClientSecret(c *gin.Context) {
 	}
 	var secret models.ClientSecret
 	if err := c.BindJSON(&secret); err != nil {
-		c.Status(http.StatusBadRequest)
+		internal.ErrReqPara(c, err)
 		return
 	}
 	secret.TenantId = client.TenantId
 	secret.ClientId = client.Id
-	if middlewares.TenantDB(c).Create(&secret).Error != nil {
+	if err := middlewares.TenantDB(c).Create(&secret).Error; err != nil {
 		c.Status(http.StatusConflict)
+		global.LOG.Error("new client secret err: " + err.Error())
 		return
 	}
 	c.JSON(http.StatusOK, secret.Dto())
@@ -292,8 +298,9 @@ func DeleteClientSecret(c *gin.Context) {
 		return
 	}
 
-	if err := data.DB.Delete(&secret).Error; err != nil {
+	if err := global.DB.Delete(&secret).Error; err != nil {
 		c.Status(http.StatusInternalServerError)
+		global.LOG.Error("delete client secret err: " + err.Error())
 		return
 	}
 
@@ -315,6 +322,7 @@ func ListClientUsers(c *gin.Context) {
 	clientId := c.Param("clientId")
 	if err := middlewares.TenantDB(c).Find(&clientUser, "client_id = ?", clientId).Error; err != nil {
 		c.Status(http.StatusInternalServerError)
+		global.LOG.Error("get client user err: " + err.Error())
 		return
 	}
 	c.JSON(http.StatusOK, clientUser)

@@ -1,9 +1,10 @@
 package admin
 
 import (
-	"accounts/data"
+	"accounts/global"
 	"accounts/middlewares"
 	"accounts/models"
+	"accounts/router/internal"
 	"accounts/utils"
 	"github.com/gin-gonic/gin"
 	"net/http"
@@ -20,8 +21,9 @@ import (
 //	@Router			/accounts/admin/{tenant}/providers [get]
 func ListProviders(c *gin.Context) {
 	var providers []models.Provider
-	if middlewares.TenantDB(c).Find(&providers).Error != nil {
+	if err := middlewares.TenantDB(c).Find(&providers).Error; err != nil {
 		c.Status(http.StatusInternalServerError)
+		global.LOG.Error("get provider err: " + err.Error())
 		return
 	}
 	c.JSON(http.StatusOK, utils.Filter(providers, models.Provider2Dto))
@@ -59,14 +61,14 @@ func GetProvider(c *gin.Context) {
 func NewProvider(c *gin.Context) {
 	tenant := middlewares.GetTenant(c)
 	var provider models.Provider
-	err := c.BindJSON(&provider)
-	if err != nil {
-		c.Status(http.StatusBadRequest)
+	if err := c.BindJSON(&provider); err != nil {
+		internal.ErrReqPara(c, err)
 		return
 	}
 	provider.TenantId = tenant.Id
-	if data.DB.Create(&provider).Error != nil {
+	if err := global.DB.Create(&provider).Error; err != nil {
 		c.Status(http.StatusConflict)
+		global.LOG.Error("new provider err: " + err.Error())
 		return
 	}
 	c.JSON(http.StatusOK, provider.Dto())
@@ -90,14 +92,14 @@ func UpdateProvider(c *gin.Context) {
 		return
 	}
 	var p models.Provider
-	err := c.BindJSON(&p)
-	if err != nil {
-		c.Status(http.StatusBadRequest)
+	if err := c.BindJSON(&p); err != nil {
+		internal.ErrReqPara(c, err)
 		return
 	}
 	provider.Name = p.Name
-	if data.DB.Save(&provider).Error != nil {
+	if err := global.DB.Save(&provider).Error; err != nil {
 		c.Status(http.StatusInternalServerError)
+		global.LOG.Error("update provider err: " + err.Error())
 		return
 	}
 	c.JSON(http.StatusOK, provider.Dto())
@@ -120,8 +122,9 @@ func DeleteProvider(c *gin.Context) {
 		c.Status(http.StatusNotFound)
 		return
 	}
-	if data.DB.Delete(&provider).Error != nil {
+	if err := global.DB.Delete(&provider).Error; err != nil {
 		c.Status(http.StatusInternalServerError)
+		global.LOG.Error("delete provider err: " + err.Error())
 		return
 	}
 	c.Status(http.StatusNoContent)

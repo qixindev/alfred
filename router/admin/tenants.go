@@ -1,8 +1,9 @@
 package admin
 
 import (
-	"accounts/data"
+	"accounts/global"
 	"accounts/models"
+	"accounts/router/internal"
 	"accounts/utils"
 	"github.com/gin-gonic/gin"
 	"net/http"
@@ -19,8 +20,9 @@ import (
 //	@Router			/accounts/admin/tenants [get]
 func ListTenants(c *gin.Context) {
 	var tenants []models.Tenant
-	if data.DB.Find(&tenants).Error != nil {
+	if err := global.DB.Find(&tenants).Error; err != nil {
 		c.Status(http.StatusInternalServerError)
+		global.LOG.Error("get tenants err: " + err.Error())
 		return
 	}
 	c.JSON(http.StatusOK, utils.Filter(tenants, models.Tenant2Dto))
@@ -39,7 +41,7 @@ func ListTenants(c *gin.Context) {
 func GetTenant(c *gin.Context) {
 	tenantId := c.Param("tenantId")
 	var tenant models.Tenant
-	if data.DB.First(&tenant, "id = ?", tenantId).Error != nil {
+	if global.DB.First(&tenant, "id = ?", tenantId).Error != nil {
 		c.Status(http.StatusNotFound)
 		return
 	}
@@ -57,13 +59,13 @@ func GetTenant(c *gin.Context) {
 //	@Router			/accounts/admin/tenants [post]
 func NewTenant(c *gin.Context) {
 	var tenant models.Tenant
-	err := c.BindJSON(&tenant)
-	if err != nil {
-		c.Status(http.StatusBadRequest)
+	if err := c.BindJSON(&tenant); err != nil {
+		internal.ErrReqPara(c, err)
 		return
 	}
-	if data.DB.Create(&tenant).Error != nil {
+	if err := global.DB.Create(&tenant).Error; err != nil {
 		c.Status(http.StatusConflict)
+		global.LOG.Error("new tenants err: " + err.Error())
 		return
 	}
 	c.JSON(http.StatusOK, tenant.Dto())
@@ -82,19 +84,19 @@ func NewTenant(c *gin.Context) {
 func UpdateTenant(c *gin.Context) {
 	tenantId := c.Param("tenantId")
 	var tenant models.Tenant
-	if data.DB.First(&tenant, "id = ?", tenantId).Error != nil {
+	if global.DB.First(&tenant, "id = ?", tenantId).Error != nil {
 		c.Status(http.StatusNotFound)
 		return
 	}
 	var t models.Tenant
-	err := c.BindJSON(&t)
-	if err != nil {
-		c.Status(http.StatusBadRequest)
+	if err := c.BindJSON(&t); err != nil {
+		internal.ErrReqPara(c, err)
 		return
 	}
 	tenant.Name = t.Name
-	if data.DB.Save(&tenant).Error != nil {
+	if err := global.DB.Save(&tenant).Error; err != nil {
 		c.Status(http.StatusInternalServerError)
+		global.LOG.Error("update tenant err: " + err.Error())
 		return
 	}
 	c.JSON(http.StatusOK, tenant.Dto())
@@ -113,12 +115,13 @@ func UpdateTenant(c *gin.Context) {
 func DeleteTenant(c *gin.Context) {
 	tenantId := c.Param("tenantId")
 	var tenant models.Tenant
-	if data.DB.First(&tenant, "id = ?", tenantId).Error != nil {
+	if global.DB.First(&tenant, "id = ?", tenantId).Error != nil {
 		c.Status(http.StatusNotFound)
 		return
 	}
-	if data.DB.Delete(&tenant).Error != nil {
+	if err := global.DB.Delete(&tenant).Error; err != nil {
 		c.Status(http.StatusInternalServerError)
+		global.LOG.Error("delete tenant err: " + err.Error())
 		return
 	}
 	c.Status(http.StatusNoContent)

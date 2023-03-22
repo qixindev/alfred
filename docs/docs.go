@@ -688,7 +688,7 @@ const docTemplate = `{
             }
         },
         "/accounts/admin/{tenant}/devices/{deviceId}/groups/{groupId}": {
-            "get": {
+            "put": {
                 "description": "update device groups",
                 "tags": [
                     "device"
