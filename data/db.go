@@ -52,7 +52,7 @@ func CheckFirstRun() error {
 }
 
 func InitDB() error {
-	dsn := "host=143.64.18.19 port=5432 dbname=accounts user=qixin password=at9z9?gntsLPv/_Jk/,pyIrX"
+	dsn := "host=base.postgres.database.chinacloudapi.cn port=5432 dbname=accounts user=qixin password=Qx20190822"
 	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
 	if err != nil {
 		return err
