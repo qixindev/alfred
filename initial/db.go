@@ -36,7 +36,7 @@ func migrateDB() {
 		&models.ResourceRoleUser{},
 	}
 
-	if err := global.DB.AutoMigrate(migrateList); err != nil {
+	if err := global.DB.AutoMigrate(migrateList...); err != nil {
 		fmt.Println("migrate db err: ", err)
 		return
 	}
@@ -46,7 +46,7 @@ func CheckFirstRun() error {
 	var tenant models.Tenant
 	if err := global.DB.First(&tenant, "name = ?", "default").Error; err != nil {
 		tenant.Name = "default"
-		if err := global.DB.Create(&tenant).Error; err != nil {
+		if err = global.DB.Create(&tenant).Error; err != nil {
 			return err
 		}
 	}
@@ -60,7 +60,7 @@ func InitDB() error {
 		return err
 	}
 	global.DB = db
-	migrateDB()
+	// migrateDB()
 	err = CheckFirstRun()
 	return err
 }
