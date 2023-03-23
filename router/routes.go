@@ -1,10 +1,10 @@
-package routes
+package router
 
 import (
 	_ "accounts/docs"
 	"accounts/middlewares"
-	"accounts/routes/admin"
-	"accounts/routes/iam"
+	"accounts/router/admin"
+	"accounts/router/iam"
 	"github.com/gin-contrib/static"
 	"github.com/gin-gonic/gin"
 	swaggerFiles "github.com/swaggo/files"

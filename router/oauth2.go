@@ -1,7 +1,7 @@
-package routes
+package router
 
 import (
-	"accounts/data"
+	"accounts/global"
 	"accounts/middlewares"
 	"accounts/models"
 	"accounts/models/dto"
@@ -22,12 +22,12 @@ func getAccessToken(c *gin.Context, client *models.Client) (string, error) {
 	tenant := middlewares.GetTenant(c)
 	scope := c.Query("scope")
 	var clientUser models.ClientUser
-	if err := data.DB.First(&clientUser, "tenant_id = ? AND client_id = ? AND user_id = ?", client.TenantId, client.Id, user.Id).Error; err != nil {
+	if err := global.DB.First(&clientUser, "tenant_id = ? AND client_id = ? AND user_id = ?", client.TenantId, client.Id, user.Id).Error; err != nil {
 		clientUser.TenantId = client.TenantId
 		clientUser.ClientId = client.Id
 		clientUser.UserId = user.Id
 		clientUser.Sub = uuid.NewString()
-		if err := data.DB.Create(&clientUser).Error; err != nil {
+		if err := global.DB.Create(&clientUser).Error; err != nil {
 			return "", err
 		}
 	}
@@ -66,7 +66,7 @@ func getAccessToken(c *gin.Context, client *models.Client) (string, error) {
 // clearTokenCode Deleted expired codes AND specific code.
 func clearTokenCode(code string) {
 	earliest := time.Now().Add(-2 * time.Minute)
-	if err := data.DB.Delete(&models.TokenCode{}, "code = ? OR created_at < ?", code, earliest); err != nil {
+	if err := global.DB.Delete(&models.TokenCode{}, "code = ? OR created_at < ?", code, earliest); err != nil {
 		println(err)
 	}
 }
@@ -84,7 +84,7 @@ func getAccessCode(c *gin.Context, client *models.Client) (string, error) {
 		ClientId:  client.Id,
 		TenantId:  client.TenantId,
 	}
-	if err := data.DB.Create(&tokenCode).Error; err != nil {
+	if err := global.DB.Create(&tokenCode).Error; err != nil {
 		return "", err
 	}
 	return code, nil
@@ -118,12 +118,12 @@ func GetAuthCode(c *gin.Context) {
 
 	tenant := middlewares.GetTenant(c)
 	var client models.Client
-	if data.DB.First(&client, "tenant_id = ? AND client_id = ?", tenant.Id, clientId).Error != nil {
+	if global.DB.First(&client, "tenant_id = ? AND client_id = ?", tenant.Id, clientId).Error != nil {
 		c.JSON(http.StatusForbidden, gin.H{"message": "Invalid client_id."})
 		return
 	}
 	var uri models.RedirectUri
-	if data.DB.First(&uri, "tenant_id = ? AND client_id = ? AND redirect_uri = ?", tenant.Id, client.Id, redirectUri).Error != nil {
+	if global.DB.First(&uri, "tenant_id = ? AND client_id = ? AND redirect_uri = ?", tenant.Id, client.Id, redirectUri).Error != nil {
 		c.JSON(http.StatusForbidden, gin.H{"message": "Invalid redirect_uri."})
 		return
 	}
@@ -190,7 +190,7 @@ func GetToken(c *gin.Context) {
 	if grantType == "authorization_code" {
 		tenant := middlewares.GetTenant(c)
 		var client models.Client
-		if data.DB.First(&client, "tenant_id = ? AND client_id = ?", tenant.Id, clientId).Error != nil {
+		if global.DB.First(&client, "tenant_id = ? AND client_id = ?", tenant.Id, clientId).Error != nil {
 			c.JSON(http.StatusForbidden, gin.H{"message": "Invalid client_id."})
 			return
 		}
@@ -212,7 +212,7 @@ func GetToken(c *gin.Context) {
 	} else if grantType == "client_credential" {
 		tenant := middlewares.GetTenant(c)
 		var client models.Client
-		if data.DB.First(&client, "tenant_id = ? AND cli_id = ?", tenant.Id, clientId).Error != nil {
+		if global.DB.First(&client, "tenant_id = ? AND cli_id = ?", tenant.Id, clientId).Error != nil {
 			c.JSON(http.StatusForbidden, gin.H{"message": "Invalid client_id."})
 			return
 		}
@@ -286,7 +286,7 @@ func GetJwks(c *gin.Context) {
 
 func addOAuth2Routes(rg *gin.RouterGroup) {
 	rg.GET("/oauth2/auth", middlewares.Authorized(true), GetAuthCode)
-	rg.GET("/oauth2/token", middlewares.Authorized(false), GetToken)
+	rg.GET("/oauth2/token", GetToken)
 	rg.GET("/.well-known/openid-configuration", GetOpenidConfiguration)
 	rg.GET("/.well-known/jwks.json", GetJwks)
 }

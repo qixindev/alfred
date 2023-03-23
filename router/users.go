@@ -1,7 +1,7 @@
-package routes
+package router
 
 import (
-	"accounts/data"
+	"accounts/global"
 	"accounts/middlewares"
 	"accounts/models"
 	"accounts/models/dto"
@@ -46,7 +46,7 @@ func UpdateUserDetail(c *gin.Context) {
 		user.LastName = u.DisplayName
 		user.DisplayName = u.DisplayName
 	}
-	data.DB.Save(&user)
+	global.DB.Save(&user)
 }
 
 // GetUserProfile godoc

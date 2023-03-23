@@ -1,10 +1,11 @@
 package admin
 
 import (
-	"accounts/data"
+	"accounts/global"
 	"accounts/middlewares"
 	"accounts/models"
 	"accounts/models/dto"
+	"accounts/router/internal"
 	"accounts/utils"
 	"github.com/gin-gonic/gin"
 	"net/http"
@@ -21,8 +22,9 @@ import (
 //	@Router			/accounts/admin/{tenant}/groups [get]
 func ListGroups(c *gin.Context) {
 	var groups []models.Group
-	if middlewares.TenantDB(c).Find(&groups).Error != nil {
+	if err := middlewares.TenantDB(c).Find(&groups).Error; err != nil {
 		c.Status(http.StatusInternalServerError)
+		global.LOG.Error("get group err: " + err.Error())
 		return
 	}
 	c.JSON(http.StatusOK, utils.Filter(groups, models.Group2Dto))
@@ -60,14 +62,14 @@ func GetGroup(c *gin.Context) {
 func NewGroup(c *gin.Context) {
 	tenant := middlewares.GetTenant(c)
 	var group models.Group
-	err := c.BindJSON(&group)
-	if err != nil {
-		c.Status(http.StatusBadRequest)
+	if err := c.BindJSON(&group); err != nil {
+		internal.ErrReqPara(c, err)
 		return
 	}
 	group.TenantId = tenant.Id
-	if data.DB.Create(&group).Error != nil {
+	if err := global.DB.Create(&group).Error; err != nil {
 		c.Status(http.StatusConflict)
+		global.LOG.Error("new group err: " + err.Error())
 		return
 	}
 	c.JSON(http.StatusOK, group.Dto())
@@ -91,15 +93,15 @@ func UpdateGroup(c *gin.Context) {
 		return
 	}
 	var g models.Group
-	err := c.BindJSON(&g)
-	if err != nil {
-		c.Status(http.StatusBadRequest)
+	if err := c.BindJSON(&g); err != nil {
+		internal.ErrReqPara(c, err)
 		return
 	}
 	group.Name = g.Name
 	group.ParentId = g.ParentId
-	if data.DB.Save(&group).Error != nil {
+	if err := global.DB.Save(&group).Error; err != nil {
 		c.Status(http.StatusInternalServerError)
+		global.LOG.Error("update group err: " + err.Error())
 		return
 	}
 	c.JSON(http.StatusOK, group.Dto())
@@ -122,8 +124,9 @@ func DeleteGroup(c *gin.Context) {
 		c.Status(http.StatusNotFound)
 		return
 	}
-	if data.DB.Delete(&group).Error != nil {
+	if err := global.DB.Delete(&group).Error; err != nil {
 		c.Status(http.StatusInternalServerError)
+		global.LOG.Error("delete group err: " + err.Error())
 		return
 	}
 	c.Status(http.StatusNoContent)
@@ -150,8 +153,9 @@ func GetGroupMembers(c *gin.Context) {
 	var members []dto.GroupMemberDto
 
 	var groups []models.Group
-	if middlewares.TenantDB(c).Find(&groups, "parent_id = ?", group.Id).Error != nil {
+	if err := middlewares.TenantDB(c).Find(&groups, "parent_id = ?", group.Id).Error; err != nil {
 		c.Status(http.StatusInternalServerError)
+		global.LOG.Error("get group err: " + err.Error())
 		return
 	}
 	for _, g := range groups {
@@ -159,9 +163,10 @@ func GetGroupMembers(c *gin.Context) {
 	}
 
 	var groupUsers []models.GroupUser
-	if data.DB.Joins("User", "group_users.user_id = users.id AND group_users.tenant_id = users.tenant_id").
-		Find(&groupUsers, "group_users.tenant_id = ? AND group_id = ?", group.TenantId, group.Id).Error != nil {
+	if err := global.DB.Joins("User", "group_users.user_id = users.id AND group_users.tenant_id = users.tenant_id").
+		Find(&groupUsers, "group_users.tenant_id = ? AND group_id = ?", group.TenantId, group.Id).Error; err != nil {
 		c.Status(http.StatusInternalServerError)
+		global.LOG.Error("get group member err: " + err.Error())
 		return
 	}
 	for _, u := range groupUsers {
@@ -169,9 +174,10 @@ func GetGroupMembers(c *gin.Context) {
 	}
 
 	var groupDevices []models.GroupDevice
-	if data.DB.Joins("Device", "group_devices.device_id = devices.id AND group_devices.tenant_id = devices.tenant_id").
-		Find(&groupDevices, "group_devices.tenant_id = ? AND group_id = ?", group.TenantId, group.Id).Error != nil {
+	if err := global.DB.Joins("Device", "group_devices.device_id = devices.id AND group_devices.tenant_id = devices.tenant_id").
+		Find(&groupDevices, "group_devices.tenant_id = ? AND group_id = ?", group.TenantId, group.Id).Error; err != nil {
 		c.Status(http.StatusInternalServerError)
+		global.LOG.Error("get group device err: " + err.Error())
 		return
 	}
 	for _, d := range groupDevices {

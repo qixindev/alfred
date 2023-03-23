@@ -1,7 +1,7 @@
 package middlewares
 
 import (
-	"accounts/data"
+	"accounts/global"
 	"accounts/models"
 	"accounts/utils"
 	"errors"
@@ -15,7 +15,7 @@ import (
 
 func TenantDB(c *gin.Context) *gorm.DB {
 	tenant := GetTenant(c)
-	return data.WithTenant(tenant.Id)
+	return global.DB.Where("tenant_id = ?", tenant.Id)
 }
 
 func GetTenant(c *gin.Context) *models.Tenant {
@@ -25,19 +25,19 @@ func GetTenant(c *gin.Context) *models.Tenant {
 func MultiTenancy(c *gin.Context) {
 	tenantName := c.Param("tenant")
 	var tenant models.Tenant
-	if data.DB.First(&tenant, "name = ?", tenantName).Error == nil {
+	if global.DB.First(&tenant, "name = ?", tenantName).Error == nil {
 		c.Set("tenant", &tenant)
 		c.Next()
 		return
 	}
 	tenantName = c.Request.Host
-	if data.DB.First(&tenant, "name = ?", tenantName).Error == nil {
+	if global.DB.First(&tenant, "name = ?", tenantName).Error == nil {
 		c.Set("tenant", &tenant)
 		c.Next()
 		return
 	}
 
-	if data.DB.First(&tenant, "name = ?", "default").Error == nil {
+	if global.DB.First(&tenant, "name = ?", "default").Error == nil {
 		c.Set("tenant", &tenant)
 		c.Next()
 		return
@@ -52,12 +52,14 @@ func GetUserStandalone(c *gin.Context) (*models.User, error) {
 	session := sessions.Default(c)
 	tenantName := session.Get("tenant")
 	if tenant.Name != tenantName {
-		fmt.Printf("tenant name err: %s %s\n", tenant.Name, tenantName)
+		global.LOG.Error(fmt.Sprintf("tenant name err: %s %s", tenant.Name, tenantName))
 		return nil, errors.New("")
 	}
-	username := session.Get("user")
+
 	var user models.User
-	if data.DB.First(&user, "tenant_id = ? AND username = ?", tenant.Id, username).Error != nil {
+	username := session.Get("user")
+	if err := global.DB.First(&user, "tenant_id = ? AND username = ?", tenant.Id, username).Error; err != nil {
+		global.LOG.Error("get tenant user err: " + err.Error())
 		return nil, errors.New("")
 	}
 	return &user, nil
@@ -66,7 +68,7 @@ func GetUserStandalone(c *gin.Context) (*models.User, error) {
 func AuthorizedAdmin(c *gin.Context) {
 	user, err := GetUserStandalone(c)
 	if err != nil {
-		c.AbortWithStatusJSON(http.StatusUnauthorized, "租户不匹配")
+		c.AbortWithStatusJSON(http.StatusUnauthorized, "用户与租户不匹配")
 		return
 	}
 	if user.Role != "owner" && user.Role != "admin" {

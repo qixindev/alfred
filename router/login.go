@@ -1,8 +1,8 @@
-package routes
+package router
 
 import (
 	"accounts/auth"
-	"accounts/data"
+	"accounts/global"
 	"accounts/middlewares"
 	"accounts/models"
 	"accounts/utils"
@@ -49,7 +49,7 @@ func Login(c *gin.Context) {
 	tenant := middlewares.GetTenant(c)
 
 	var user models.User
-	if err := data.DB.First(&user, "tenant_id = ? AND username = ?", tenant.Id, login).Error; err != nil {
+	if err := global.DB.First(&user, "tenant_id = ? AND username = ?", tenant.Id, login).Error; err != nil {
 		c.Status(http.StatusUnauthorized)
 		return
 	}
@@ -165,7 +165,7 @@ func Register(c *gin.Context) {
 	password := c.PostForm("password")
 
 	var user models.User
-	err := data.DB.First(&user, "tenant_id = ? AND username = ?", tenant.Id, login).Error
+	err := global.DB.First(&user, "tenant_id = ? AND username = ?", tenant.Id, login).Error
 	if err == nil {
 		c.Status(http.StatusConflict)
 		return
@@ -182,7 +182,7 @@ func Register(c *gin.Context) {
 		Username:     login,
 		PasswordHash: hash,
 	}
-	if err := data.DB.Create(&newUser).Error; err != nil {
+	if err := global.DB.Create(&newUser).Error; err != nil {
 		log.Print(err)
 		c.Status(http.StatusInternalServerError)
 		return
@@ -263,7 +263,7 @@ func ProviderCallback(c *gin.Context) {
 				Disabled:         false,
 				TenantId:         provider.TenantId,
 			}
-			if data.DB.Create(&newUser).Error != nil {
+			if global.DB.Create(&newUser).Error != nil {
 				c.Status(http.StatusConflict)
 				return
 			}
@@ -274,7 +274,7 @@ func ProviderCallback(c *gin.Context) {
 		providerUser.ProviderId = provider.Id
 		providerUser.UserId = user.Id
 		providerUser.Name = userInfo.Sub
-		if err := data.DB.Create(&providerUser).Error; err != nil {
+		if err := global.DB.Create(&providerUser).Error; err != nil {
 			c.Status(http.StatusInternalServerError)
 			return
 		}
