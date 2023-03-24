@@ -1341,6 +1341,70 @@ paths:
       summary: device groups
       tags:
       - device
+  /accounts/admin/{tenant}/devices/{deviceId}/secrets:
+    get:
+      description: get client secrets
+      parameters:
+      - description: tenant
+        in: path
+        name: tenant
+        required: true
+        type: string
+      - description: tenant
+        in: path
+        name: clientId
+        required: true
+        type: integer
+      responses:
+        "200":
+          description: OK
+      summary: get client secrets
+      tags:
+      - client
+    post:
+      description: get client secrets
+      parameters:
+      - description: tenant
+        in: path
+        name: tenant
+        required: true
+        type: string
+      - description: tenant
+        in: path
+        name: clientId
+        required: true
+        type: integer
+      responses:
+        "200":
+          description: OK
+      summary: get client secrets
+      tags:
+      - client
+  /accounts/admin/{tenant}/devices/{deviceId}/secrets/{secretId}:
+    delete:
+      description: get client secrets
+      parameters:
+      - description: tenant
+        in: path
+        name: tenant
+        required: true
+        type: string
+      - description: tenant
+        in: path
+        name: clientId
+        required: true
+        type: integer
+      - description: tenant
+        in: path
+        name: secretId
+        required: true
+        type: integer
+      responses:
+        "200":
+          description: OK
+      summary: get client secrets
+      tags:
+      - client
   /accounts/admin/{tenant}/groups:
     get:
       description: list groups

@@ -27,13 +27,12 @@ func InitSystem() error {
 	// 初始化日志
 	global.LOG = initial.Zap()
 	zap.ReplaceGlobals(global.LOG)
-
 	if err = initial.InitDB(); err != nil {
 		fmt.Println("Init DB error: ", err)
 		return err
 	}
 
-	return err
+	return nil
 }
 
 func main() {

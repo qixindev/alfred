@@ -219,7 +219,7 @@ func DeleteClientRedirectUri(c *gin.Context) {
 	c.Status(http.StatusNoContent)
 }
 
-// GetClientSecret godoc
+// ListClientSecret godoc
 //
 //	@Summary	get client secrets
 //	@Schemes
@@ -229,7 +229,7 @@ func DeleteClientRedirectUri(c *gin.Context) {
 //	@Param			clientId	path	integer	true	"tenant"
 //	@Success		200
 //	@Router			/accounts/admin/{tenant}/clients/{clientId}/secrets [get]
-func GetClientSecret(c *gin.Context) {
+func ListClientSecret(c *gin.Context) {
 	clientId := c.Param("clientId")
 	var client models.Client
 	if middlewares.TenantDB(c).First(&client, "id = ?", clientId).Error != nil {
@@ -337,7 +337,7 @@ func AddAdminClientsRoutes(rg *gin.RouterGroup) {
 	rg.GET("/clients/:clientId/redirect-uris", ListClientRedirectUri)
 	rg.POST("/clients/:clientId/redirect-uris", NewClientRedirectUri)
 	rg.DELETE("/clients/:clientId/redirect-uris/:uriId", DeleteClientRedirectUri)
-	rg.GET("/clients/:clientId/secrets", GetClientSecret)
+	rg.GET("/clients/:clientId/secrets", ListClientSecret)
 	rg.POST("/clients/:clientId/secrets", NewClientSecret)
 	rg.DELETE("/clients/:clientId/secret/:secretId", DeleteClientSecret)
 	rg.GET("/clients/:clientId/users", ListClientUsers)

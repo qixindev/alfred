@@ -8,6 +8,7 @@ const (
 	DefaultServiceConfigMap = "service-config"
 	DefaultConfigPath       = "config.dev.yml"
 	DefaultDeployType       = "local"
+	DefaultReleaseType      = "pro"
 )
 
 func getEnv(env, defaultValue string) string {
@@ -32,4 +33,8 @@ func GetNameSpace() string {
 
 func GetServiceConfigMapName() string {
 	return getEnv("SERVICE_CONFIG_MAP", DefaultServiceConfigMap)
+}
+
+func GetReleaseType() string {
+	return getEnv("RELEASE_TYPE", DefaultReleaseType)
 }

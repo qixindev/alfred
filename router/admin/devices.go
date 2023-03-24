@@ -131,6 +131,94 @@ func DeleteDevice(c *gin.Context) {
 	c.Status(http.StatusNoContent)
 }
 
+// ListDeviceSecret godoc
+//
+//	@Summary	get client secrets
+//	@Schemes
+//	@Description	get client secrets
+//	@Tags			client
+//	@Param			tenant		path	string	true	"tenant"
+//	@Param			clientId	path	integer	true	"tenant"
+//	@Success		200
+//	@Router			/accounts/admin/{tenant}/devices/{deviceId}/secrets [get]
+func ListDeviceSecret(c *gin.Context) {
+	deviceId := c.Param("deviceId")
+	var device models.Device
+	if middlewares.TenantDB(c).First(&device, "id = ?", deviceId).Error != nil {
+		c.Status(http.StatusNotFound)
+		return
+	}
+	var secrets []models.DeviceSecret
+	if err := middlewares.TenantDB(c).Find(&secrets, "device_id = ?", device.Id).Error; err != nil {
+		c.Status(http.StatusInternalServerError)
+		global.LOG.Error("get device secret err: " + err.Error())
+		return
+	}
+	c.JSON(http.StatusOK, utils.Filter(secrets, models.DeviceSecret2Dto))
+}
+
+// NewDeviceSecret godoc
+//
+//	@Summary	get client secrets
+//	@Schemes
+//	@Description	get client secrets
+//	@Tags			client
+//	@Param			tenant		path	string	true	"tenant"
+//	@Param			clientId	path	integer	true	"tenant"
+//	@Success		200
+//	@Router			/accounts/admin/{tenant}/devices/{deviceId}/secrets [post]
+func NewDeviceSecret(c *gin.Context) {
+	deviceId := c.Param("deviceId")
+	var device models.Device
+	if middlewares.TenantDB(c).First(&device, "id = ?", deviceId).Error != nil {
+		c.Status(http.StatusNotFound)
+		return
+	}
+	var secret models.DeviceSecret
+	if err := c.BindJSON(&secret); err != nil {
+		internal.ErrReqPara(c, err)
+		return
+	}
+	secret.DeviceId = device.Id
+	secret.TenantId = device.TenantId
+	if err := global.DB.Create(&secret).Error; err != nil {
+		c.Status(http.StatusInternalServerError)
+		global.LOG.Error("create device secret err: " + err.Error())
+		return
+	}
+	c.JSON(http.StatusOK, secret.Dto())
+}
+
+// DeleteDeviceSecret godoc
+//
+//	@Summary	get client secrets
+//	@Schemes
+//	@Description	get client secrets
+//	@Tags			client
+//	@Param			tenant		path	string	true	"tenant"
+//	@Param			clientId	path	integer	true	"tenant"
+//	@Param			secretId	path	integer	true	"tenant"
+//	@Success		200
+//	@Router			/accounts/admin/{tenant}/devices/{deviceId}/secrets/{secretId} [delete]
+func DeleteDeviceSecret(c *gin.Context) {
+	deviceId := c.Param("deviceId")
+	secretId := c.Param("secretId")
+	tenant := middlewares.GetTenant(c)
+	var secret models.DeviceSecret
+	if middlewares.TenantDB(c).First(&secret, "tenant_id = ? AND device_id = ? AND id = ?", tenant.Id, deviceId, secretId).Error != nil {
+		c.Status(http.StatusNotFound)
+		return
+	}
+
+	if err := global.DB.Delete(&secret).Error; err != nil {
+		c.Status(http.StatusInternalServerError)
+		global.LOG.Error("delete client secret err: " + err.Error())
+		return
+	}
+
+	c.Status(http.StatusNoContent)
+}
+
 // GetDeviceGroups godoc
 //
 //	@Summary	device groups
@@ -278,6 +366,10 @@ func AddAdminDevicesRoutes(rg *gin.RouterGroup) {
 	rg.POST("/devices", NewDevice)
 	rg.PUT("/devices/:deviceId", UpdateDevice)
 	rg.DELETE("/devices/:deviceId", DeleteDevice)
+	rg.GET("/devices/:deviceId/secrets", ListDeviceSecret)
+	rg.POST("/devices/:deviceId/secrets", NewDeviceSecret)
+	rg.DELETE("/devices/:deviceId/secret/:secretId", DeleteDeviceSecret)
+
 	rg.GET("/devices/:deviceId/groups", GetDeviceGroups)
 	rg.POST("/devices/:deviceId/groups", NewDeviceGroup)
 	rg.PUT("/devices/:deviceId/groups/:groupId", UpdateDeviceGroup)

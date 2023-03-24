@@ -5,7 +5,6 @@ FROM node:14 AS build-web
 WORKDIR /app
 COPY ./web /app
 
-
 RUN yarn install
 RUN npm run generate
 
@@ -35,7 +34,7 @@ COPY --from=build-web       /app/.output ./web/.output
 #COPY --from=build-web       /app/assets  ./web/assets
 
 COPY --from=build-back   /app/accounts    ./
+COPY --from=build-back   /app/config*.yaml ./
 
 EXPOSE 8086
 ENTRYPOINT ["/app/accounts"]
-

@@ -1,6 +1,7 @@
 package initial
 
 import (
+	"accounts/config/env"
 	"accounts/global"
 	"accounts/models"
 	"fmt"
@@ -16,6 +17,7 @@ func migrateDB() {
 		&models.Client{},
 		&models.ClientUser{},
 		&models.Device{},
+		&models.DeviceSecret{},
 		&models.GroupUser{},
 		&models.GroupDevice{},
 		&models.RedirectUri{},
@@ -54,17 +56,20 @@ func CheckFirstRun() error {
 }
 
 func InitDB() error {
-	dsn := "host=base.postgres.database.chinacloudapi.cn port=5432 dbname=accounts user=qixin password=Qx20190822"
+	dsn := global.CONFIG.Pgsql.ConfigDsn()
 	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
 	if err != nil {
 		return err
 	}
-	global.DB = db
-	// migrateDB()
-	err = CheckFirstRun()
-	return err
-}
 
-func WithTenant(tenantId uint) *gorm.DB {
-	return global.DB.Where("tenant_id = ?", tenantId)
+	global.DB = db
+	if env.GetReleaseType() == "first" {
+		migrateDB()
+	}
+
+	if err = CheckFirstRun(); err != nil {
+		return err
+	}
+
+	return nil
 }

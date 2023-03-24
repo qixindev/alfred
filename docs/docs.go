@@ -759,6 +759,101 @@ const docTemplate = `{
                 }
             }
         },
+        "/accounts/admin/{tenant}/devices/{deviceId}/secrets": {
+            "get": {
+                "description": "get client secrets",
+                "tags": [
+                    "client"
+                ],
+                "summary": "get client secrets",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "tenant",
+                        "name": "tenant",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "tenant",
+                        "name": "clientId",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            },
+            "post": {
+                "description": "get client secrets",
+                "tags": [
+                    "client"
+                ],
+                "summary": "get client secrets",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "tenant",
+                        "name": "tenant",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "tenant",
+                        "name": "clientId",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/accounts/admin/{tenant}/devices/{deviceId}/secrets/{secretId}": {
+            "delete": {
+                "description": "get client secrets",
+                "tags": [
+                    "client"
+                ],
+                "summary": "get client secrets",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "tenant",
+                        "name": "tenant",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "tenant",
+                        "name": "clientId",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "tenant",
+                        "name": "secretId",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
         "/accounts/admin/{tenant}/groups": {
             "get": {
                 "description": "list groups",
