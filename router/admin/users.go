@@ -290,7 +290,7 @@ func DeleteUserGroup(c *gin.Context) {
 	c.Status(http.StatusNoContent)
 }
 
-func addAdminUsersRoutes(rg *gin.RouterGroup) {
+func AddAdminUsersRoutes(rg *gin.RouterGroup) {
 	rg.GET("/users", ListUsers)
 	rg.GET("/users/:userId", GetUser)
 	rg.POST("/users", NewUser)

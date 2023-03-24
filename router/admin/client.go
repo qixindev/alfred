@@ -328,7 +328,7 @@ func ListClientUsers(c *gin.Context) {
 	c.JSON(http.StatusOK, clientUser)
 }
 
-func addAdminClientsRoutes(rg *gin.RouterGroup) {
+func AddAdminClientsRoutes(rg *gin.RouterGroup) {
 	rg.GET("/clients", ListClients)
 	rg.GET("/clients/:clientId", GetClient)
 	rg.POST("/clients", NewClient)

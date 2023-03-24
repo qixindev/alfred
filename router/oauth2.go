@@ -17,6 +17,40 @@ import (
 	"time"
 )
 
+func getClientAccessToken(c *gin.Context, client *models.Client) (string, error) {
+	tenant := middlewares.GetTenant(c)
+	scope := c.Query("scope")
+	iss := fmt.Sprintf("%s/%s", utils.GetHostWithScheme(c), tenant.Name)
+	now := time.Now()
+	token := jwt.New(jwt.SigningMethodRS256)
+	claims := token.Claims.(jwt.MapClaims)
+	claims["iss"] = iss
+	claims["aud"] = []string{client.CliId}
+	claims["azp"] = client.CliId
+	claims["exp"] = now.Add(24 * time.Hour).Unix()
+	claims["iat"] = now.Unix()
+	claims["scope"] = scope
+
+	keys, err := utils.LoadRsaPrivateKeys(tenant.Name)
+	if err != nil {
+		return "", err
+	}
+
+	var kid string
+	var key *rsa.PrivateKey
+	for kid, key = range keys {
+		break
+	}
+
+	token.Header["kid"] = kid
+	tokenString, err := token.SignedString(key)
+	if err != nil {
+		return "", err
+	}
+
+	return tokenString, nil
+}
+
 func getAccessToken(c *gin.Context, client *models.Client) (string, error) {
 	user := GetUser(c)
 	tenant := middlewares.GetTenant(c)
@@ -34,7 +68,6 @@ func getAccessToken(c *gin.Context, client *models.Client) (string, error) {
 
 	iss := fmt.Sprintf("%s/%s", utils.GetHostWithScheme(c), tenant.Name)
 	now := time.Now()
-
 	token := jwt.New(jwt.SigningMethodRS256)
 	claims := token.Claims.(jwt.MapClaims)
 	claims["iss"] = iss
@@ -50,16 +83,19 @@ func getAccessToken(c *gin.Context, client *models.Client) (string, error) {
 	if err != nil {
 		return "", err
 	}
+
 	var kid string
 	var key *rsa.PrivateKey
 	for kid, key = range keys {
 		break
 	}
+
 	token.Header["kid"] = kid
 	tokenString, err := token.SignedString(key)
 	if err != nil {
 		return "", err
 	}
+
 	return tokenString, nil
 }
 
@@ -222,7 +258,7 @@ func GetToken(c *gin.Context) {
 			return
 		}
 
-		token, err := getAccessToken(c, &client)
+		token, err := getClientAccessToken(c, &client)
 		if err != nil {
 			fmt.Println("get accessToken err: ", err)
 			c.JSON(http.StatusInternalServerError, gin.H{"message": "generate token err"})
@@ -279,6 +315,7 @@ func GetJwks(c *gin.Context) {
 	jwks, err := utils.LoadKeys(tenant.Name)
 	if err != nil {
 		c.Status(http.StatusInternalServerError)
+		global.LOG.Error("get jwks err: " + err.Error())
 		return
 	}
 	c.JSON(http.StatusOK, jwks)

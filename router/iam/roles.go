@@ -2,9 +2,9 @@ package iam
 
 import (
 	"accounts/global"
-	"accounts/iam"
 	"accounts/middlewares"
 	"accounts/models"
+	"accounts/models/iam"
 	"accounts/router/internal"
 	"github.com/gin-gonic/gin"
 	"net/http"

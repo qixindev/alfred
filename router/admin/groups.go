@@ -187,7 +187,7 @@ func GetGroupMembers(c *gin.Context) {
 	c.JSON(http.StatusOK, members)
 }
 
-func addAdminGroupsRoutes(rg *gin.RouterGroup) {
+func AddAdminGroupsRoutes(rg *gin.RouterGroup) {
 	rg.GET("/groups", ListGroups)
 	rg.GET("/groups/:groupId", GetGroup)
 	rg.POST("/groups", NewGroup)

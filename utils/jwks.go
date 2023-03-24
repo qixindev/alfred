@@ -19,6 +19,7 @@ func LoadRsaPrivateKeys(tenant string) (map[string]*rsa.PrivateKey, error) {
 	if err != nil {
 		return nil, err
 	}
+
 	keys := make(map[string]*rsa.PrivateKey)
 	for _, file := range files {
 		if strings.HasSuffix(file.Name(), ".key") == false {
@@ -36,15 +37,14 @@ func LoadRsaPrivateKeys(tenant string) (map[string]*rsa.PrivateKey, error) {
 		kid := strings.Split(file.Name(), ".")[0]
 		keys[kid] = key
 	}
+
 	return keys, nil
 }
 
 func LoadKeys(tenant string) (*jose.JSONWebKeySet, error) {
 	path := "config/jwks/" + tenant
-	_, err := os.ReadDir(path)
-	if err != nil {
-		err := os.MkdirAll(path, 0700)
-		if err != nil {
+	if _, err := os.ReadDir(path); err != nil {
+		if err = os.MkdirAll(path, 0700); err != nil {
 			return nil, err
 		}
 
@@ -52,22 +52,24 @@ func LoadKeys(tenant string) (*jose.JSONWebKeySet, error) {
 		if err != nil {
 			return nil, err
 		}
+
 		writeFile := fmt.Sprintf("%s/%s.key", path, uuid.New())
 		payload := pem.EncodeToMemory(&pem.Block{
 			Type:  "RSA PRIVATE KEY",
 			Bytes: x509.MarshalPKCS1PrivateKey(privateKey),
 		})
-		err = os.WriteFile(writeFile, payload, 0400)
-		if err != nil {
+
+		if err = os.WriteFile(writeFile, payload, 0400); err != nil {
 			return nil, err
 		}
 	}
 
-	var jwks jose.JSONWebKeySet
 	privateKeys, err := LoadRsaPrivateKeys(tenant)
 	if err != nil {
 		return nil, err
 	}
+
+	var jwks jose.JSONWebKeySet
 	for kid, key := range privateKeys {
 		pub := key.Public()
 		jwk := jose.JSONWebKey{

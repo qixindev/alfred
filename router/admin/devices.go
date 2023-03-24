@@ -272,7 +272,7 @@ func DeleteDeviceGroup(c *gin.Context) {
 	c.Status(http.StatusNoContent)
 }
 
-func addAdminDevicesRoutes(rg *gin.RouterGroup) {
+func AddAdminDevicesRoutes(rg *gin.RouterGroup) {
 	rg.GET("/devices", ListDevices)
 	rg.GET("/devices/:deviceId", GetDevice)
 	rg.POST("/devices", NewDevice)

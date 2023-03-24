@@ -127,7 +127,7 @@ func DeleteTenant(c *gin.Context) {
 	c.Status(http.StatusNoContent)
 }
 
-func addAdminTenantsRoutes(rg *gin.RouterGroup) {
+func AddAdminTenantsRoutes(rg *gin.RouterGroup) {
 	rg.GET("/tenants", ListTenants)
 	rg.GET("/tenants/:tenantId", GetTenant)
 	rg.POST("/tenants", NewTenant)

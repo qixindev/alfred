@@ -130,7 +130,7 @@ func DeleteProvider(c *gin.Context) {
 	c.Status(http.StatusNoContent)
 }
 
-func addAdminProvidersRoutes(rg *gin.RouterGroup) {
+func AddAdminProvidersRoutes(rg *gin.RouterGroup) {
 	rg.GET("/providers", ListProviders)
 	rg.GET("/providers/:providerId", GetProvider)
 	rg.POST("/providers", NewProvider)

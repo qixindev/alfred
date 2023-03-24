@@ -4,10 +4,12 @@ import (
 	"accounts/global"
 	"accounts/models"
 	"accounts/utils"
+	"crypto/rsa"
 	"errors"
 	"fmt"
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-gonic/gin"
+	"github.com/golang-jwt/jwt/v4"
 	"gorm.io/gorm"
 	"net/http"
 	"net/url"
@@ -66,6 +68,11 @@ func GetUserStandalone(c *gin.Context) (*models.User, error) {
 }
 
 func AuthorizedAdmin(c *gin.Context) {
+	if c.GetHeader("Authorization") != "" {
+		AuthAccessToken(c)
+		return
+	}
+
 	user, err := GetUserStandalone(c)
 	if err != nil {
 		c.AbortWithStatusJSON(http.StatusUnauthorized, "用户与租户不匹配")
@@ -77,6 +84,27 @@ func AuthorizedAdmin(c *gin.Context) {
 	}
 	c.Set("user", user)
 	c.Next()
+}
+
+func AuthAccessToken(c *gin.Context) {
+	tokenString := c.GetHeader("Authorization")
+	t := GetTenant(c)
+	keys, err := utils.LoadRsaPrivateKeys(t.Name)
+	if err != nil {
+		return
+	}
+
+	var key *rsa.PrivateKey
+	for _, key = range keys {
+		break
+	}
+	claim := jwt.New(jwt.SigningMethodRS256)
+	token, err := jwt.ParseWithClaims(tokenString, claim.Claims, func(token *jwt.Token) (interface{}, error) {
+		return key.Public(), nil
+	})
+	if err != nil || !token.Valid {
+		c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"message": "token invalidate"})
+	}
 }
 
 func Authorized(redirectToLogin bool) gin.HandlerFunc {
@@ -92,7 +120,6 @@ func Authorized(redirectToLogin bool) gin.HandlerFunc {
 				c.Redirect(http.StatusFound, location)
 			} else {
 				c.AbortWithStatus(http.StatusUnauthorized)
-
 				c.Abort()
 			}
 			return
