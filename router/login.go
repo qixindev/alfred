@@ -11,7 +11,6 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
 	"golang.org/x/crypto/bcrypt"
-	"log"
 	"net/http"
 	"strings"
 )
@@ -51,11 +50,13 @@ func Login(c *gin.Context) {
 	var user models.User
 	if err := global.DB.First(&user, "tenant_id = ? AND username = ?", tenant.Id, login).Error; err != nil {
 		c.Status(http.StatusUnauthorized)
+		global.LOG.Error("get user err: " + err.Error())
 		return
 	}
 
 	if checkPasswordHash(password, user.PasswordHash) == false {
 		c.Status(http.StatusUnauthorized)
+		global.LOG.Error("incorrect password")
 		return
 	}
 
@@ -93,19 +94,22 @@ func LoginToProvider(c *gin.Context) {
 	authProvider, err := auth.GetAuthProvider(tenant.Id, providerName)
 	if err != nil {
 		c.Status(http.StatusNotFound)
+		global.LOG.Error("get provider err: " + err.Error())
 		return
 	}
 	redirectUri := fmt.Sprintf("%s/%s/logged-in/%s", utils.GetHostWithScheme(c), tenant.Name, providerName)
 	location, err := authProvider.Auth(redirectUri)
 	if err != nil {
 		c.Status(http.StatusInternalServerError)
+		global.LOG.Error("provider auth err: " + err.Error())
+		return
 	}
 
 	next := c.Query("next")
 	if next != "" {
 		session := sessions.Default(c)
 		session.Set("next", next)
-		session.Save()
+		_ = session.Save()
 	}
 	c.Redirect(http.StatusFound, location)
 }
@@ -121,8 +125,9 @@ func LoginToProvider(c *gin.Context) {
 //	@Router			/accounts/{tenant}/login/providers [get]
 func ListProviders(c *gin.Context) {
 	var providers []models.Provider
-	if middlewares.TenantDB(c).Find(&providers).Error != nil {
+	if err := middlewares.TenantDB(c).Find(&providers).Error; err != nil {
 		c.Status(http.StatusInternalServerError)
+		global.LOG.Error("get provider list err: " + err.Error())
 		return
 	}
 	c.JSON(http.StatusOK, utils.Filter(providers, models.Provider2Dto))
@@ -141,8 +146,9 @@ func ListProviders(c *gin.Context) {
 func GetProvider(c *gin.Context) {
 	providerName := c.Param("provider")
 	var provider models.Provider
-	if middlewares.TenantDB(c).First(&provider, "name = ?", providerName).Error != nil {
+	if err := middlewares.TenantDB(c).First(&provider, "name = ?", providerName).Error; err != nil {
 		c.Status(http.StatusNotFound)
+		global.LOG.Error("get provider err: " + err.Error())
 		return
 	}
 	c.JSON(http.StatusOK, provider.Dto())
@@ -163,17 +169,17 @@ func Register(c *gin.Context) {
 	tenant := middlewares.GetTenant(c)
 	login := c.PostForm("login")
 	password := c.PostForm("password")
-
 	var user models.User
-	err := global.DB.First(&user, "tenant_id = ? AND username = ?", tenant.Id, login).Error
-	if err == nil {
+	if err := global.DB.First(&user, "tenant_id = ? AND username = ?", tenant.Id, login).Error; err == nil {
 		c.Status(http.StatusConflict)
+		global.LOG.Error("user is exist: " + err.Error())
 		return
 	}
 
 	hash, err := hashPassword(password)
 	if err != nil {
 		c.Status(http.StatusInternalServerError)
+		global.LOG.Error("hashPassword err: " + err.Error())
 		return
 	}
 
@@ -182,9 +188,9 @@ func Register(c *gin.Context) {
 		Username:     login,
 		PasswordHash: hash,
 	}
-	if err := global.DB.Create(&newUser).Error; err != nil {
-		log.Print(err)
+	if err = global.DB.Create(&newUser).Error; err != nil {
 		c.Status(http.StatusInternalServerError)
+		global.LOG.Error("create user err: " + err.Error())
 		return
 	}
 }

@@ -102,8 +102,8 @@ func getAccessToken(c *gin.Context, client *models.Client) (string, error) {
 // clearTokenCode Deleted expired codes AND specific code.
 func clearTokenCode(code string) {
 	earliest := time.Now().Add(-2 * time.Minute)
-	if err := global.DB.Delete(&models.TokenCode{}, "code = ? OR created_at < ?", code, earliest); err != nil {
-		println(err)
+	if err := global.DB.Delete(&models.TokenCode{}, "code = ? OR created_at < ?", code, earliest).Error; err != nil {
+		global.LOG.Error("delete token code err: " + err.Error())
 	}
 }
 
@@ -154,19 +154,22 @@ func GetAuthCode(c *gin.Context) {
 
 	tenant := middlewares.GetTenant(c)
 	var client models.Client
-	if global.DB.First(&client, "tenant_id = ? AND client_id = ?", tenant.Id, clientId).Error != nil {
+	if err := global.DB.First(&client, "tenant_id = ? AND client_id = ?", tenant.Id, clientId).Error; err != nil {
 		c.JSON(http.StatusForbidden, gin.H{"message": "Invalid client_id."})
+		global.LOG.Error("get client err: " + err.Error())
 		return
 	}
 	var uri models.RedirectUri
-	if global.DB.First(&uri, "tenant_id = ? AND client_id = ? AND redirect_uri = ?", tenant.Id, client.Id, redirectUri).Error != nil {
+	if err := global.DB.First(&uri, "tenant_id = ? AND client_id = ? AND redirect_uri = ?", tenant.Id, client.Id, redirectUri).Error; err != nil {
 		c.JSON(http.StatusForbidden, gin.H{"message": "Invalid redirect_uri."})
+		global.LOG.Error("get redirect uri err: " + err.Error())
 		return
 	}
 	if responseType == "code" {
 		code, err := getAccessCode(c, &client)
 		if err != nil {
 			c.Status(http.StatusInternalServerError)
+			global.LOG.Error("get access code err: " + err.Error())
 			return
 		}
 		query := url.Values{}
@@ -183,6 +186,7 @@ func GetAuthCode(c *gin.Context) {
 		token, err := getAccessToken(c, &client)
 		if err != nil {
 			c.Status(http.StatusInternalServerError)
+			global.LOG.Error("get access token err: " + err.Error())
 			return
 		}
 		query := url.Values{}
@@ -226,19 +230,22 @@ func GetToken(c *gin.Context) {
 	if grantType == "authorization_code" {
 		tenant := middlewares.GetTenant(c)
 		var client models.Client
-		if global.DB.First(&client, "tenant_id = ? AND client_id = ?", tenant.Id, clientId).Error != nil {
+		if err := global.DB.First(&client, "tenant_id = ? AND client_id = ?", tenant.Id, clientId).Error; err != nil {
 			c.JSON(http.StatusForbidden, gin.H{"message": "Invalid client_id."})
+			global.LOG.Error("get client err: " + err.Error())
 			return
 		}
 		var secret models.ClientSecret
-		if middlewares.TenantDB(c).First(&secret, "client_id = ? AND secret = ?", client.Id, clientSecret).Error != nil {
+		if err := middlewares.TenantDB(c).First(&secret, "client_id = ? AND secret = ?", client.Id, clientSecret).Error; err != nil {
 			c.JSON(http.StatusForbidden, gin.H{"message": "Invalid client_secret."})
+			global.LOG.Error("get client secret err: " + err.Error())
 			return
 		}
 
 		var tokenCode models.TokenCode
-		if middlewares.TenantDB(c).First(&tokenCode, "code = ?", code).Error != nil {
+		if err := middlewares.TenantDB(c).First(&tokenCode, "code = ?", code).Error; err != nil {
 			c.JSON(http.StatusForbidden, gin.H{"message": "Invalid code."})
+			global.LOG.Error("get token code err: " + err.Error())
 			return
 		}
 		clearTokenCode(tokenCode.Code)
@@ -248,19 +255,21 @@ func GetToken(c *gin.Context) {
 	} else if grantType == "client_credential" {
 		tenant := middlewares.GetTenant(c)
 		var client models.Client
-		if global.DB.First(&client, "tenant_id = ? AND cli_id = ?", tenant.Id, clientId).Error != nil {
+		if err := global.DB.First(&client, "tenant_id = ? AND cli_id = ?", tenant.Id, clientId).Error; err != nil {
 			c.JSON(http.StatusForbidden, gin.H{"message": "Invalid client_id."})
+			global.LOG.Error("get client err: " + err.Error())
 			return
 		}
 		var secret models.ClientSecret
-		if middlewares.TenantDB(c).First(&secret, "client_id = ? AND secret = ?", client.Id, clientSecret).Error != nil {
+		if err := middlewares.TenantDB(c).First(&secret, "client_id = ? AND secret = ?", client.Id, clientSecret).Error; err != nil {
 			c.JSON(http.StatusForbidden, gin.H{"message": "Invalid client_secret."})
+			global.LOG.Error("get client secret err: " + err.Error())
 			return
 		}
 
 		token, err := getClientAccessToken(c, &client)
 		if err != nil {
-			fmt.Println("get accessToken err: ", err)
+			global.LOG.Error("get accessToken err: " + err.Error())
 			c.JSON(http.StatusInternalServerError, gin.H{"message": "generate token err"})
 			return
 		}
