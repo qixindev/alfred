@@ -964,21 +964,6 @@ paths:
       summary: new client
       tags:
       - client
-  /accounts/admin/{tenant}/clients/:clientId/redirect-uris:
-    post:
-      description: new client redirect uri
-      parameters:
-      - description: tenant
-        in: path
-        name: tenant
-        required: true
-        type: string
-      responses:
-        "200":
-          description: OK
-      summary: new client redirect uri
-      tags:
-      - client
   /accounts/admin/{tenant}/clients/{clientId}:
     delete:
       description: delete client
@@ -1055,6 +1040,20 @@ paths:
         "200":
           description: OK
       summary: get client redirect uris
+      tags:
+      - client
+    post:
+      description: new client redirect uri
+      parameters:
+      - description: tenant
+        in: path
+        name: tenant
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+      summary: new client redirect uri
       tags:
       - client
   /accounts/admin/{tenant}/clients/{clientId}/redirect-uris/{uriId}:

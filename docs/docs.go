@@ -198,29 +198,6 @@ const docTemplate = `{
                 }
             }
         },
-        "/accounts/admin/{tenant}/clients/:clientId/redirect-uris": {
-            "post": {
-                "description": "new client redirect uri",
-                "tags": [
-                    "client"
-                ],
-                "summary": "new client redirect uri",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "tenant",
-                        "name": "tenant",
-                        "in": "path",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK"
-                    }
-                }
-            }
-        },
         "/accounts/admin/{tenant}/clients/{clientId}": {
             "get": {
                 "description": "get client",
@@ -326,6 +303,27 @@ const docTemplate = `{
                         "type": "integer",
                         "description": "tenant",
                         "name": "clientId",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            },
+            "post": {
+                "description": "new client redirect uri",
+                "tags": [
+                    "client"
+                ],
+                "summary": "new client redirect uri",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "tenant",
+                        "name": "tenant",
                         "in": "path",
                         "required": true
                     }

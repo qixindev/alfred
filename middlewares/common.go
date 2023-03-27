@@ -96,15 +96,18 @@ func AuthAccessToken(c *gin.Context) {
 
 	var key *rsa.PrivateKey
 	for _, key = range keys {
-		break
+		claim := jwt.New(jwt.SigningMethodRS256)
+		token, err := jwt.ParseWithClaims(tokenString, claim.Claims, func(token *jwt.Token) (interface{}, error) {
+			return key.Public(), nil
+		})
+
+		if err == nil && token.Valid {
+			return
+		}
+		global.LOG.Warn("token is invalid " + t.Name)
 	}
-	claim := jwt.New(jwt.SigningMethodRS256)
-	token, err := jwt.ParseWithClaims(tokenString, claim.Claims, func(token *jwt.Token) (interface{}, error) {
-		return key.Public(), nil
-	})
-	if err != nil || !token.Valid {
-		c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"message": "token invalidate"})
-	}
+
+	c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"message": "token invalidate"})
 }
 
 func Authorized(redirectToLogin bool) gin.HandlerFunc {

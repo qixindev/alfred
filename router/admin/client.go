@@ -167,7 +167,7 @@ func ListClientRedirectUri(c *gin.Context) {
 //	@Tags			client
 //	@Param			tenant	path	string	true	"tenant"
 //	@Success		200
-//	@Router			/accounts/admin/{tenant}/clients/:clientId/redirect-uris [post]
+//	@Router			/accounts/admin/{tenant}/clients/{clientId}/redirect-uris [post]
 func NewClientRedirectUri(c *gin.Context) {
 	clientId := c.Param("clientId")
 	var client models.Client

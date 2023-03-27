@@ -321,7 +321,7 @@ func GetOpenidConfiguration(c *gin.Context) {
 //	@Router			/accounts/{tenant}/.well-known/jwks.json [get]
 func GetJwks(c *gin.Context) {
 	tenant := middlewares.GetTenant(c)
-	jwks, err := utils.LoadKeys(tenant.Name)
+	jwks, err := utils.LoadRsaPublicKeys(tenant.Name)
 	if err != nil {
 		c.Status(http.StatusInternalServerError)
 		global.LOG.Error("get jwks err: " + err.Error())

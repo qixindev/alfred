@@ -6,9 +6,10 @@ const (
 	K8sConfigPath           = "/root/.kube/config"
 	DefaultNameSpace        = "default"
 	DefaultServiceConfigMap = "service-config"
-	DefaultConfigPath       = "config.dev.yml"
+	DefaultConfigPath       = "config.dev.yaml"
 	DefaultDeployType       = "local"
 	DefaultReleaseType      = "pro"
+	DefaultCmJWKS           = "accounts.jwks"
 )
 
 func getEnv(env, defaultValue string) string {
