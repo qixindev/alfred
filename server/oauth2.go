@@ -1,10 +1,10 @@
-package router
+package server
 
 import (
 	"accounts/global"
-	"accounts/middlewares"
 	"accounts/models"
 	"accounts/models/dto"
+	"accounts/server/internal"
 	"accounts/utils"
 	"crypto/rsa"
 	"fmt"
@@ -18,7 +18,7 @@ import (
 )
 
 func getClientAccessToken(c *gin.Context, client *models.Client) (string, error) {
-	tenant := middlewares.GetTenant(c)
+	tenant := internal.GetTenant(c)
 	scope := c.Query("scope")
 	iss := fmt.Sprintf("%s/%s", utils.GetHostWithScheme(c), tenant.Name)
 	now := time.Now()
@@ -53,7 +53,7 @@ func getClientAccessToken(c *gin.Context, client *models.Client) (string, error)
 
 func getAccessToken(c *gin.Context, client *models.Client) (string, error) {
 	user := GetUser(c)
-	tenant := middlewares.GetTenant(c)
+	tenant := internal.GetTenant(c)
 	scope := c.Query("scope")
 	var clientUser models.ClientUser
 	if err := global.DB.First(&clientUser, "tenant_id = ? AND client_id = ? AND user_id = ?", client.TenantId, client.Id, user.Id).Error; err != nil {
@@ -152,7 +152,7 @@ func GetAuthCode(c *gin.Context) {
 	state := strings.TrimSpace(c.Query("state"))
 	nonce := c.Query("nonce")
 
-	tenant := middlewares.GetTenant(c)
+	tenant := internal.GetTenant(c)
 	var client models.Client
 	if err := global.DB.First(&client, "tenant_id = ? AND client_id = ?", tenant.Id, clientId).Error; err != nil {
 		c.JSON(http.StatusForbidden, gin.H{"message": "Invalid client_id."})
@@ -228,7 +228,7 @@ func GetToken(c *gin.Context) {
 	nonce := c.Query("nonce")
 
 	if grantType == "authorization_code" {
-		tenant := middlewares.GetTenant(c)
+		tenant := internal.GetTenant(c)
 		var client models.Client
 		if err := global.DB.First(&client, "tenant_id = ? AND client_id = ?", tenant.Id, clientId).Error; err != nil {
 			c.JSON(http.StatusForbidden, gin.H{"message": "Invalid client_id."})
@@ -236,14 +236,14 @@ func GetToken(c *gin.Context) {
 			return
 		}
 		var secret models.ClientSecret
-		if err := middlewares.TenantDB(c).First(&secret, "client_id = ? AND secret = ?", client.Id, clientSecret).Error; err != nil {
+		if err := internal.TenantDB(c).First(&secret, "client_id = ? AND secret = ?", client.Id, clientSecret).Error; err != nil {
 			c.JSON(http.StatusForbidden, gin.H{"message": "Invalid client_secret."})
 			global.LOG.Error("get client secret err: " + err.Error())
 			return
 		}
 
 		var tokenCode models.TokenCode
-		if err := middlewares.TenantDB(c).First(&tokenCode, "code = ?", code).Error; err != nil {
+		if err := internal.TenantDB(c).First(&tokenCode, "code = ?", code).Error; err != nil {
 			c.JSON(http.StatusForbidden, gin.H{"message": "Invalid code."})
 			global.LOG.Error("get token code err: " + err.Error())
 			return
@@ -253,7 +253,7 @@ func GetToken(c *gin.Context) {
 		c.JSON(http.StatusOK, accessToken)
 		return
 	} else if grantType == "client_credential" {
-		tenant := middlewares.GetTenant(c)
+		tenant := internal.GetTenant(c)
 		var client models.Client
 		if err := global.DB.First(&client, "tenant_id = ? AND cli_id = ?", tenant.Id, clientId).Error; err != nil {
 			c.JSON(http.StatusForbidden, gin.H{"message": "Invalid client_id."})
@@ -261,7 +261,7 @@ func GetToken(c *gin.Context) {
 			return
 		}
 		var secret models.ClientSecret
-		if err := middlewares.TenantDB(c).First(&secret, "client_id = ? AND secret = ?", client.Id, clientSecret).Error; err != nil {
+		if err := internal.TenantDB(c).First(&secret, "client_id = ? AND secret = ?", client.Id, clientSecret).Error; err != nil {
 			c.JSON(http.StatusForbidden, gin.H{"message": "Invalid client_secret."})
 			global.LOG.Error("get client secret err: " + err.Error())
 			return
@@ -291,7 +291,7 @@ func GetToken(c *gin.Context) {
 //	@Success		200
 //	@Router			/accounts/{tenant}/.well-known/openid-configuration [get]
 func GetOpenidConfiguration(c *gin.Context) {
-	tenant := middlewares.GetTenant(c)
+	tenant := internal.GetTenant(c)
 	prefix := utils.GetHostWithScheme(c)
 	conf := dto.OpenidConfigurationDto{
 		Issuer:                            fmt.Sprintf("%s/%s", prefix, tenant.Name),
@@ -320,7 +320,7 @@ func GetOpenidConfiguration(c *gin.Context) {
 //	@Success		200
 //	@Router			/accounts/{tenant}/.well-known/jwks.json [get]
 func GetJwks(c *gin.Context) {
-	tenant := middlewares.GetTenant(c)
+	tenant := internal.GetTenant(c)
 	jwks, err := utils.LoadRsaPublicKeys(tenant.Name)
 	if err != nil {
 		c.Status(http.StatusInternalServerError)
@@ -331,7 +331,7 @@ func GetJwks(c *gin.Context) {
 }
 
 func addOAuth2Routes(rg *gin.RouterGroup) {
-	rg.GET("/oauth2/auth", middlewares.Authorized(true), GetAuthCode)
+	rg.GET("/oauth2/auth", internal.Authorized(true), GetAuthCode)
 	rg.GET("/oauth2/token", GetToken)
 	rg.GET("/.well-known/openid-configuration", GetOpenidConfiguration)
 	rg.GET("/.well-known/jwks.json", GetJwks)

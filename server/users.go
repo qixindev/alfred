@@ -1,10 +1,10 @@
-package router
+package server
 
 import (
 	"accounts/global"
-	"accounts/middlewares"
 	"accounts/models"
 	"accounts/models/dto"
+	"accounts/server/internal"
 	"github.com/gin-gonic/gin"
 	"net/http"
 )
@@ -64,7 +64,7 @@ func GetUserProfile(c *gin.Context) {
 }
 
 func addUsersRoutes(rg *gin.RouterGroup) {
-	rg.GET("/me", middlewares.Authorized(false), GetUserDetail)
-	rg.PUT("/me", middlewares.Authorized(false), UpdateUserDetail)
-	rg.GET("/me/profile", middlewares.Authorized(false), GetUserProfile)
+	rg.GET("/me", internal.Authorized(false), GetUserDetail)
+	rg.PUT("/me", internal.Authorized(false), UpdateUserDetail)
+	rg.GET("/me/profile", internal.Authorized(false), GetUserProfile)
 }

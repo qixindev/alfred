@@ -3,7 +3,7 @@ package admin
 import (
 	"accounts/global"
 	"accounts/models"
-	"accounts/router/internal"
+	"accounts/server/internal"
 	"accounts/utils"
 	"github.com/gin-gonic/gin"
 	"net/http"

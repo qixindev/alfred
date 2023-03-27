@@ -1,4 +1,4 @@
-package middlewares
+package internal
 
 import (
 	"accounts/global"
@@ -9,20 +9,10 @@ import (
 	"fmt"
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-gonic/gin"
-	"github.com/golang-jwt/jwt/v4"
-	"gorm.io/gorm"
+	"github.com/golang-jwt/jwt"
 	"net/http"
 	"net/url"
 )
-
-func TenantDB(c *gin.Context) *gorm.DB {
-	tenant := GetTenant(c)
-	return global.DB.Where("tenant_id = ?", tenant.Id)
-}
-
-func GetTenant(c *gin.Context) *models.Tenant {
-	return c.MustGet("tenant").(*models.Tenant)
-}
 
 func MultiTenancy(c *gin.Context) {
 	tenantName := c.Param("tenant")
@@ -91,6 +81,8 @@ func AuthAccessToken(c *gin.Context) {
 	t := GetTenant(c)
 	keys, err := utils.LoadRsaPrivateKeys(t.Name)
 	if err != nil {
+		c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"message": "load key err"})
+		global.LOG.Error("get private key err")
 		return
 	}
 
@@ -104,7 +96,7 @@ func AuthAccessToken(c *gin.Context) {
 		if err == nil && token.Valid {
 			return
 		}
-		global.LOG.Warn("token is invalid " + t.Name)
+		global.LOG.Warn(fmt.Sprintf("%s token valid err: %s", t.Name, err))
 	}
 
 	c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"message": "token invalidate"})

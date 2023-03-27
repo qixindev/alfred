@@ -1,10 +1,10 @@
-package router
+package server
 
 import (
 	_ "accounts/docs"
-	"accounts/middlewares"
-	"accounts/router/admin"
-	"accounts/router/iam"
+	"accounts/server/admin"
+	"accounts/server/iam"
+	"accounts/server/internal"
 	"github.com/gin-contrib/static"
 	"github.com/gin-gonic/gin"
 	swaggerFiles "github.com/swaggo/files"
@@ -15,14 +15,14 @@ func AddRoutes(r *gin.Engine) {
 	AddWebRoutes(r)
 	r.GET("/accounts/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
-	tenantApi := r.RouterGroup.Group("/accounts/:tenant", middlewares.MultiTenancy)
+	tenantApi := r.RouterGroup.Group("/accounts/:tenant", internal.MultiTenancy)
 	{
 		addLoginRoutes(tenantApi)
 		addUsersRoutes(tenantApi)
 		addOAuth2Routes(tenantApi)
 	}
 
-	adminApi := r.RouterGroup.Group("/accounts/admin/:tenant", middlewares.MultiTenancy, middlewares.AuthorizedAdmin)
+	adminApi := r.RouterGroup.Group("/accounts/admin/:tenant", internal.MultiTenancy, internal.AuthorizedAdmin)
 	{
 		admin.AddAdminGroupsRoutes(adminApi)
 		admin.AddAdminUsersRoutes(adminApi)
@@ -31,8 +31,11 @@ func AddRoutes(r *gin.Engine) {
 		admin.AddAdminClientsRoutes(adminApi)
 	}
 
-	admin.AddAdminTenantsRoutes(r.RouterGroup.Group("/accounts/admin")) // all tenants
-	iam.AddIamRoutes(r.RouterGroup.Group("/accounts/:tenant/iam/clients/:client", middlewares.MultiTenancy))
+	adminRouter := r.RouterGroup.Group("/accounts/admin", internal.AuthorizedAdmin)
+	admin.AddAdminTenantsRoutes(adminRouter) // all tenants
+
+	iamRouter := r.RouterGroup.Group("/accounts/:tenant/iam/clients/:client", internal.MultiTenancy, internal.AuthorizedAdmin)
+	iam.AddIamRoutes(iamRouter)
 }
 
 func AddWebRoutes(r *gin.Engine) {

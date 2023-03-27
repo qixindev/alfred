@@ -4,7 +4,7 @@ import (
 	"accounts/config/env"
 	"accounts/global"
 	"accounts/initial"
-	"accounts/router"
+	"accounts/server"
 	"accounts/utils"
 	"fmt"
 	"github.com/gin-contrib/cors"
@@ -53,7 +53,7 @@ func main() {
 	r := gin.Default()
 	r.Use(cors.Default())
 	r.Use(sessions.Sessions("QixinAuth", cookie.NewStore(secret)))
-	router.AddRoutes(r)
+	server.AddRoutes(r)
 
 	if err = r.Run(":8086"); err != nil {
 		fmt.Println("server run err: ", err)

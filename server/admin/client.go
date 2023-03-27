@@ -2,9 +2,8 @@ package admin
 
 import (
 	"accounts/global"
-	"accounts/middlewares"
 	"accounts/models"
-	"accounts/router/internal"
+	"accounts/server/internal"
 	"accounts/utils"
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
@@ -22,7 +21,7 @@ import (
 //	@Router			/accounts/admin/{tenant}/clients [get]
 func ListClients(c *gin.Context) {
 	var clients []models.Client
-	if err := middlewares.TenantDB(c).Find(&clients).Error; err != nil {
+	if err := internal.TenantDB(c).Find(&clients).Error; err != nil {
 		c.Status(http.StatusInternalServerError)
 		return
 	}
@@ -42,7 +41,7 @@ func ListClients(c *gin.Context) {
 func GetClient(c *gin.Context) {
 	clientId := c.Param("clientId")
 	var client models.Client
-	if middlewares.TenantDB(c).First(&client, "id = ?", clientId).Error != nil {
+	if internal.TenantDB(c).First(&client, "id = ?", clientId).Error != nil {
 		c.Status(http.StatusNotFound)
 		return
 	}
@@ -60,7 +59,7 @@ func GetClient(c *gin.Context) {
 //	@Success		200
 //	@Router			/accounts/admin/{tenant}/clients [post]
 func NewClient(c *gin.Context) {
-	tenant := middlewares.GetTenant(c)
+	tenant := internal.GetTenant(c)
 	var client models.Client
 	if err := c.BindJSON(&client); err != nil {
 		internal.ErrReqPara(c, err)
@@ -88,7 +87,7 @@ func NewClient(c *gin.Context) {
 func UpdateClient(c *gin.Context) {
 	clientId := c.Param("clientId")
 	var client models.Client
-	if middlewares.TenantDB(c).First(&client, "id = ?", clientId).Error != nil {
+	if internal.TenantDB(c).First(&client, "id = ?", clientId).Error != nil {
 		c.Status(http.StatusNotFound)
 		return
 	}
@@ -119,7 +118,7 @@ func UpdateClient(c *gin.Context) {
 func DeleteClient(c *gin.Context) {
 	clientId := c.Param("clientId")
 	var client models.Client
-	if middlewares.TenantDB(c).First(&client, "id = ?", clientId).Error != nil {
+	if internal.TenantDB(c).First(&client, "id = ?", clientId).Error != nil {
 		c.Status(http.StatusNotFound)
 		return
 	}
@@ -144,13 +143,13 @@ func DeleteClient(c *gin.Context) {
 func ListClientRedirectUri(c *gin.Context) {
 	clientId := c.Param("clientId")
 	var client models.Client
-	if middlewares.TenantDB(c).First(&client, "id = ?", clientId).Error != nil {
+	if internal.TenantDB(c).First(&client, "id = ?", clientId).Error != nil {
 		c.Status(http.StatusNotFound)
 		return
 	}
 
 	var uris []models.RedirectUri
-	if err := middlewares.TenantDB(c).Find(&uris, "client_id = ?", client.Id).Error; err != nil {
+	if err := internal.TenantDB(c).Find(&uris, "client_id = ?", client.Id).Error; err != nil {
 		c.Status(http.StatusInternalServerError)
 		global.LOG.Error("get redirect-uris err: " + err.Error())
 		return
@@ -171,7 +170,7 @@ func ListClientRedirectUri(c *gin.Context) {
 func NewClientRedirectUri(c *gin.Context) {
 	clientId := c.Param("clientId")
 	var client models.Client
-	if middlewares.TenantDB(c).First(&client, "id = ?", clientId).Error != nil {
+	if internal.TenantDB(c).First(&client, "id = ?", clientId).Error != nil {
 		c.Status(http.StatusNotFound)
 		return
 	}
@@ -182,7 +181,7 @@ func NewClientRedirectUri(c *gin.Context) {
 	}
 	uri.TenantId = client.TenantId
 	uri.ClientId = client.Id
-	if err := middlewares.TenantDB(c).Create(&uri).Error; err != nil {
+	if err := internal.TenantDB(c).Create(&uri).Error; err != nil {
 		c.Status(http.StatusConflict)
 		return
 	}
@@ -203,9 +202,9 @@ func NewClientRedirectUri(c *gin.Context) {
 func DeleteClientRedirectUri(c *gin.Context) {
 	clientId := c.Param("clientId")
 	uriId := c.Param("uriId")
-	tenant := middlewares.GetTenant(c)
+	tenant := internal.GetTenant(c)
 	var uri models.RedirectUri
-	if middlewares.TenantDB(c).First(&uri, "tenant_id = ? AND client_id = ? AND id = ?", tenant.Id, clientId, uriId).Error != nil {
+	if internal.TenantDB(c).First(&uri, "tenant_id = ? AND client_id = ? AND id = ?", tenant.Id, clientId, uriId).Error != nil {
 		c.Status(http.StatusNotFound)
 		return
 	}
@@ -232,12 +231,12 @@ func DeleteClientRedirectUri(c *gin.Context) {
 func ListClientSecret(c *gin.Context) {
 	clientId := c.Param("clientId")
 	var client models.Client
-	if middlewares.TenantDB(c).First(&client, "id = ?", clientId).Error != nil {
+	if internal.TenantDB(c).First(&client, "id = ?", clientId).Error != nil {
 		c.Status(http.StatusNotFound)
 		return
 	}
 	var secrets []models.ClientSecret
-	if err := middlewares.TenantDB(c).Find(&secrets, "client_id = ?", client.Id).Error; err != nil {
+	if err := internal.TenantDB(c).Find(&secrets, "client_id = ?", client.Id).Error; err != nil {
 		c.Status(http.StatusInternalServerError)
 		global.LOG.Error("get clients secret err: " + err.Error())
 		return
@@ -258,7 +257,7 @@ func ListClientSecret(c *gin.Context) {
 func NewClientSecret(c *gin.Context) {
 	clientId := c.Param("clientId")
 	var client models.Client
-	if middlewares.TenantDB(c).First(&client, "id = ?", clientId).Error != nil {
+	if internal.TenantDB(c).First(&client, "id = ?", clientId).Error != nil {
 		c.Status(http.StatusNotFound)
 		return
 	}
@@ -269,7 +268,7 @@ func NewClientSecret(c *gin.Context) {
 	}
 	secret.TenantId = client.TenantId
 	secret.ClientId = client.Id
-	if err := middlewares.TenantDB(c).Create(&secret).Error; err != nil {
+	if err := internal.TenantDB(c).Create(&secret).Error; err != nil {
 		c.Status(http.StatusConflict)
 		global.LOG.Error("new client secret err: " + err.Error())
 		return
@@ -291,9 +290,9 @@ func NewClientSecret(c *gin.Context) {
 func DeleteClientSecret(c *gin.Context) {
 	clientId := c.Param("clientId")
 	secretId := c.Param("secretId")
-	tenant := middlewares.GetTenant(c)
+	tenant := internal.GetTenant(c)
 	var secret models.ClientSecret
-	if middlewares.TenantDB(c).First(&secret, "tenant_id = ? AND client_id = ? AND id = ?", tenant.Id, clientId, secretId).Error != nil {
+	if internal.TenantDB(c).First(&secret, "tenant_id = ? AND client_id = ? AND id = ?", tenant.Id, clientId, secretId).Error != nil {
 		c.Status(http.StatusNotFound)
 		return
 	}
@@ -320,7 +319,7 @@ func DeleteClientSecret(c *gin.Context) {
 func ListClientUsers(c *gin.Context) {
 	var clientUser []models.ClientUser
 	clientId := c.Param("clientId")
-	if err := middlewares.TenantDB(c).Find(&clientUser, "client_id = ?", clientId).Error; err != nil {
+	if err := internal.TenantDB(c).Find(&clientUser, "client_id = ?", clientId).Error; err != nil {
 		c.Status(http.StatusInternalServerError)
 		global.LOG.Error("get client user err: " + err.Error())
 		return

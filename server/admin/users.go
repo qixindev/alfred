@@ -2,10 +2,9 @@ package admin
 
 import (
 	"accounts/global"
-	"accounts/middlewares"
 	"accounts/models"
 	"accounts/models/dto"
-	"accounts/router/internal"
+	"accounts/server/internal"
 	"accounts/utils"
 	"github.com/gin-gonic/gin"
 	"net/http"
@@ -22,7 +21,7 @@ import (
 //	@Router			/accounts/admin/{tenant}/users [get]
 func ListUsers(c *gin.Context) {
 	var users []models.User
-	if err := middlewares.TenantDB(c).Find(&users).Error; err != nil {
+	if err := internal.TenantDB(c).Find(&users).Error; err != nil {
 		c.Status(http.StatusInternalServerError)
 		global.LOG.Error("get tenant users err: " + err.Error())
 		return
@@ -43,7 +42,7 @@ func ListUsers(c *gin.Context) {
 func GetUser(c *gin.Context) {
 	userId := c.Param("userId")
 	var user models.User
-	if middlewares.TenantDB(c).First(&user, "id = ?", userId).Error != nil {
+	if internal.TenantDB(c).First(&user, "id = ?", userId).Error != nil {
 		c.Status(http.StatusNotFound)
 		return
 	}
@@ -60,7 +59,7 @@ func GetUser(c *gin.Context) {
 //	@Success		200
 //	@Router			/accounts/admin/{tenant}/users [post]
 func NewUser(c *gin.Context) {
-	tenant := middlewares.GetTenant(c)
+	tenant := internal.GetTenant(c)
 	var user models.User
 	if err := c.BindJSON(&user); err != nil {
 		internal.ErrReqPara(c, err)
@@ -88,7 +87,7 @@ func NewUser(c *gin.Context) {
 func UpdateUser(c *gin.Context) {
 	userId := c.Param("userId")
 	var user models.User
-	if middlewares.TenantDB(c).First(&user, "id = ?", userId).Error != nil {
+	if internal.TenantDB(c).First(&user, "id = ?", userId).Error != nil {
 		c.Status(http.StatusNotFound)
 		return
 	}
@@ -128,7 +127,7 @@ func UpdateUser(c *gin.Context) {
 func DeleteUser(c *gin.Context) {
 	userId := c.Param("userId")
 	var user models.User
-	if middlewares.TenantDB(c).First(&user, "id = ?", userId).Error != nil {
+	if internal.TenantDB(c).First(&user, "id = ?", userId).Error != nil {
 		c.Status(http.StatusNotFound)
 		return
 	}
@@ -153,7 +152,7 @@ func DeleteUser(c *gin.Context) {
 func GetUserGroups(c *gin.Context) {
 	userId := c.Param("userId")
 	var user models.User
-	if middlewares.TenantDB(c).First(&user, "id = ?", userId).Error != nil {
+	if internal.TenantDB(c).First(&user, "id = ?", userId).Error != nil {
 		c.Status(http.StatusNotFound)
 		return
 	}
@@ -193,7 +192,7 @@ func NewUserGroup(c *gin.Context) {
 	}
 
 	var user models.User
-	if middlewares.TenantDB(c).First(&user, "id = ?", userId).Error != nil {
+	if internal.TenantDB(c).First(&user, "id = ?", userId).Error != nil {
 		c.Status(http.StatusNotFound)
 		return
 	}
@@ -224,13 +223,13 @@ func NewUserGroup(c *gin.Context) {
 func UpdateUserGroup(c *gin.Context) {
 	userId := c.Param("userId")
 	var user models.User
-	if middlewares.TenantDB(c).First(&user, "id = ?", userId).Error != nil {
+	if internal.TenantDB(c).First(&user, "id = ?", userId).Error != nil {
 		c.Status(http.StatusNotFound)
 		return
 	}
 	groupId := c.Param("groupId")
 	var group models.Group
-	if middlewares.TenantDB(c).First(&group, "id = ?", groupId).Error != nil {
+	if internal.TenantDB(c).First(&group, "id = ?", groupId).Error != nil {
 		c.Status(http.StatusNotFound)
 		return
 	}
@@ -240,7 +239,7 @@ func UpdateUserGroup(c *gin.Context) {
 		return
 	}
 	var groupUser models.GroupUser
-	if middlewares.TenantDB(c).First(groupUser, "group_id = ? AND user_id = ?", group.Id, user.Id).Error != nil {
+	if internal.TenantDB(c).First(groupUser, "group_id = ? AND user_id = ?", group.Id, user.Id).Error != nil {
 		// Not found, create one.
 		groupUser.UserId = user.Id
 		groupUser.GroupId = group.Id
@@ -249,7 +248,7 @@ func UpdateUserGroup(c *gin.Context) {
 	} else {
 		// Found, update it.
 		groupUser.Role = gu.Role
-		if err := middlewares.TenantDB(c).Save(&groupUser).Error; err != nil {
+		if err := internal.TenantDB(c).Save(&groupUser).Error; err != nil {
 			c.Status(http.StatusInternalServerError)
 			global.LOG.Error("get tenant user group err: " + err.Error())
 			return
@@ -272,17 +271,17 @@ func UpdateUserGroup(c *gin.Context) {
 func DeleteUserGroup(c *gin.Context) {
 	userId := c.Param("userId")
 	var user models.User
-	if middlewares.TenantDB(c).First(&user, "id = ?", userId).Error != nil {
+	if internal.TenantDB(c).First(&user, "id = ?", userId).Error != nil {
 		c.Status(http.StatusNotFound)
 		return
 	}
 	groupId := c.Param("groupId")
 	var groupUser models.GroupUser
-	if middlewares.TenantDB(c).First(&groupUser, "user_id = ? AND group_id = ?", user.Id, groupId).Error != nil {
+	if internal.TenantDB(c).First(&groupUser, "user_id = ? AND group_id = ?", user.Id, groupId).Error != nil {
 		c.Status(http.StatusNotFound)
 		return
 	}
-	if err := middlewares.TenantDB(c).Delete(&groupUser).Error; err != nil {
+	if err := internal.TenantDB(c).Delete(&groupUser).Error; err != nil {
 		c.Status(http.StatusInternalServerError)
 		global.LOG.Error("delete user group err: " + err.Error())
 		return

@@ -2,10 +2,9 @@ package admin
 
 import (
 	"accounts/global"
-	"accounts/middlewares"
 	"accounts/models"
 	"accounts/models/dto"
-	"accounts/router/internal"
+	"accounts/server/internal"
 	"accounts/utils"
 	"github.com/gin-gonic/gin"
 	"net/http"
@@ -22,7 +21,7 @@ import (
 //	@Router			/accounts/admin/{tenant}/groups [get]
 func ListGroups(c *gin.Context) {
 	var groups []models.Group
-	if err := middlewares.TenantDB(c).Find(&groups).Error; err != nil {
+	if err := internal.TenantDB(c).Find(&groups).Error; err != nil {
 		c.Status(http.StatusInternalServerError)
 		global.LOG.Error("get group err: " + err.Error())
 		return
@@ -43,7 +42,7 @@ func ListGroups(c *gin.Context) {
 func GetGroup(c *gin.Context) {
 	groupId := c.Param("groupId")
 	var group models.Group
-	if middlewares.TenantDB(c).First(&group, "id = ?", groupId).Error != nil {
+	if internal.TenantDB(c).First(&group, "id = ?", groupId).Error != nil {
 		c.Status(http.StatusNotFound)
 		return
 	}
@@ -60,7 +59,7 @@ func GetGroup(c *gin.Context) {
 //	@Success		200
 //	@Router			/accounts/admin/{tenant}/groups [post]
 func NewGroup(c *gin.Context) {
-	tenant := middlewares.GetTenant(c)
+	tenant := internal.GetTenant(c)
 	var group models.Group
 	if err := c.BindJSON(&group); err != nil {
 		internal.ErrReqPara(c, err)
@@ -88,7 +87,7 @@ func NewGroup(c *gin.Context) {
 func UpdateGroup(c *gin.Context) {
 	groupId := c.Param("groupId")
 	var group models.Group
-	if middlewares.TenantDB(c).First(&group, "id = ?", groupId).Error != nil {
+	if internal.TenantDB(c).First(&group, "id = ?", groupId).Error != nil {
 		c.Status(http.StatusNotFound)
 		return
 	}
@@ -120,7 +119,7 @@ func UpdateGroup(c *gin.Context) {
 func DeleteGroup(c *gin.Context) {
 	groupId := c.Param("groupId")
 	var group models.Group
-	if middlewares.TenantDB(c).First(&group, "id = ?", groupId).Error != nil {
+	if internal.TenantDB(c).First(&group, "id = ?", groupId).Error != nil {
 		c.Status(http.StatusNotFound)
 		return
 	}
@@ -145,7 +144,7 @@ func DeleteGroup(c *gin.Context) {
 func GetGroupMembers(c *gin.Context) {
 	groupId := c.Param("groupId")
 	var group models.Group
-	if middlewares.TenantDB(c).First(&group, "id = ?", groupId).Error != nil {
+	if internal.TenantDB(c).First(&group, "id = ?", groupId).Error != nil {
 		c.Status(http.StatusNotFound)
 		return
 	}
@@ -153,7 +152,7 @@ func GetGroupMembers(c *gin.Context) {
 	var members []dto.GroupMemberDto
 
 	var groups []models.Group
-	if err := middlewares.TenantDB(c).Find(&groups, "parent_id = ?", group.Id).Error; err != nil {
+	if err := internal.TenantDB(c).Find(&groups, "parent_id = ?", group.Id).Error; err != nil {
 		c.Status(http.StatusInternalServerError)
 		global.LOG.Error("get group err: " + err.Error())
 		return

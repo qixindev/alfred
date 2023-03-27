@@ -1,6 +1,8 @@
 package models
 
-import "accounts/models/dto"
+import (
+	"accounts/models/dto"
+)
 
 type Tenant struct {
 	Id   uint   `gorm:"primaryKey;autoIncrement" json:"id"`

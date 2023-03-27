@@ -2,10 +2,9 @@ package iam
 
 import (
 	"accounts/global"
-	"accounts/middlewares"
 	"accounts/models"
 	"accounts/models/iam"
-	"accounts/router/internal"
+	"accounts/server/internal"
 	"github.com/gin-gonic/gin"
 	"net/http"
 )
@@ -87,7 +86,7 @@ func DeleteIamResourceType(c *gin.Context) {
 	}
 	typeName := c.Param("type")
 	var typ models.ResourceType
-	if err = middlewares.TenantDB(c).First(&typ, "client_id = ? AND name = ?", client.Id, typeName).Error; err != nil {
+	if err = internal.TenantDB(c).First(&typ, "client_id = ? AND name = ?", client.Id, typeName).Error; err != nil {
 		c.Status(http.StatusBadRequest)
 		global.LOG.Error("get resource type err: " + err.Error())
 		return
@@ -180,7 +179,7 @@ func DeleteIamResource(c *gin.Context) {
 	}
 	resourceName := c.Param("resource")
 	var resource models.Resource
-	if err = middlewares.TenantDB(c).First(&resource, "type_id = ? AND name = ?", typ.Id, resourceName).Error; err != nil {
+	if err = internal.TenantDB(c).First(&resource, "type_id = ? AND name = ?", typ.Id, resourceName).Error; err != nil {
 		c.Status(http.StatusBadRequest)
 		global.LOG.Error("get resource err: " + err.Error())
 		return

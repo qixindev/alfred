@@ -2,9 +2,8 @@ package admin
 
 import (
 	"accounts/global"
-	"accounts/middlewares"
 	"accounts/models"
-	"accounts/router/internal"
+	"accounts/server/internal"
 	"accounts/utils"
 	"github.com/gin-gonic/gin"
 	"net/http"
@@ -21,7 +20,7 @@ import (
 //	@Router			/accounts/admin/{tenant}/providers [get]
 func ListProviders(c *gin.Context) {
 	var providers []models.Provider
-	if err := middlewares.TenantDB(c).Find(&providers).Error; err != nil {
+	if err := internal.TenantDB(c).Find(&providers).Error; err != nil {
 		c.Status(http.StatusInternalServerError)
 		global.LOG.Error("get provider err: " + err.Error())
 		return
@@ -42,7 +41,7 @@ func ListProviders(c *gin.Context) {
 func GetProvider(c *gin.Context) {
 	providerId := c.Param("providerId")
 	var provider models.Provider
-	if middlewares.TenantDB(c).First(&provider, "id = ?", providerId).Error != nil {
+	if internal.TenantDB(c).First(&provider, "id = ?", providerId).Error != nil {
 		c.Status(http.StatusNotFound)
 		return
 	}
@@ -59,7 +58,7 @@ func GetProvider(c *gin.Context) {
 //	@Success		200
 //	@Router			/accounts/admin/{tenant}/providers [post]
 func NewProvider(c *gin.Context) {
-	tenant := middlewares.GetTenant(c)
+	tenant := internal.GetTenant(c)
 	var provider models.Provider
 	if err := c.BindJSON(&provider); err != nil {
 		internal.ErrReqPara(c, err)
@@ -87,7 +86,7 @@ func NewProvider(c *gin.Context) {
 func UpdateProvider(c *gin.Context) {
 	providerId := c.Param("providerId")
 	var provider models.Provider
-	if middlewares.TenantDB(c).First(&provider, "id = ?", providerId).Error != nil {
+	if internal.TenantDB(c).First(&provider, "id = ?", providerId).Error != nil {
 		c.Status(http.StatusNotFound)
 		return
 	}
@@ -118,7 +117,7 @@ func UpdateProvider(c *gin.Context) {
 func DeleteProvider(c *gin.Context) {
 	providerId := c.Param("providerId")
 	var provider models.Provider
-	if middlewares.TenantDB(c).First(&provider, "id = ?", providerId).Error != nil {
+	if internal.TenantDB(c).First(&provider, "id = ?", providerId).Error != nil {
 		c.Status(http.StatusNotFound)
 		return
 	}

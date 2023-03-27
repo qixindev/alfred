@@ -2,10 +2,9 @@ package iam
 
 import (
 	"accounts/global"
-	"accounts/middlewares"
 	"accounts/models"
 	"accounts/models/iam"
-	"accounts/router/internal"
+	"accounts/server/internal"
 	"github.com/gin-gonic/gin"
 	"net/http"
 )
@@ -90,7 +89,7 @@ func DeleteIamRole(c *gin.Context) {
 	}
 	roleName := c.Param("role")
 	var role models.ResourceTypeRole
-	if err = middlewares.TenantDB(c).First(&role, "type_id = ? AND name = ?", typ.Id, roleName).Error; err != nil {
+	if err = internal.TenantDB(c).First(&role, "type_id = ? AND name = ?", typ.Id, roleName).Error; err != nil {
 		c.Status(http.StatusBadRequest)
 		global.LOG.Error("get resource type role err: " + err.Error())
 		return
@@ -197,13 +196,13 @@ func DeleteIamResourceRole(c *gin.Context) {
 
 	userName := c.Param("user")
 	var clientUser models.ClientUser
-	if err = middlewares.TenantDB(c).First(&clientUser, "client_id = ? AND sub = ?", client.Id, userName).Error; err != nil {
+	if err = internal.TenantDB(c).First(&clientUser, "client_id = ? AND sub = ?", client.Id, userName).Error; err != nil {
 		c.Status(http.StatusBadRequest)
 		global.LOG.Error("get client user err: " + err.Error())
 		return
 	}
 	var roleUser models.ResourceRoleUser
-	if err = middlewares.TenantDB(c).First(&roleUser, "resource_id = ? AND role_id = ? and client_user_id", resource.Id, role.Id, clientUser.Id).Error; err != nil {
+	if err = internal.TenantDB(c).First(&roleUser, "resource_id = ? AND role_id = ? and client_user_id", resource.Id, role.Id, clientUser.Id).Error; err != nil {
 		c.Status(http.StatusBadRequest)
 		global.LOG.Error("get resource role user err: " + err.Error())
 		return

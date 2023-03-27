@@ -2,10 +2,9 @@ package iam
 
 import (
 	"accounts/global"
-	"accounts/middlewares"
 	"accounts/models"
 	"accounts/models/iam"
-	"accounts/router/internal"
+	"accounts/server/internal"
 	"github.com/gin-gonic/gin"
 	"net/http"
 )
@@ -90,7 +89,7 @@ func DeleteIamAction(c *gin.Context) {
 	}
 	actionName := c.Param("action")
 	var action models.ResourceTypeAction
-	if err = middlewares.TenantDB(c).First(&action, "type_id = ? AND name = ?", typ.Id, actionName).Error; err != nil {
+	if err = internal.TenantDB(c).First(&action, "type_id = ? AND name = ?", typ.Id, actionName).Error; err != nil {
 		c.Status(http.StatusBadRequest)
 		global.LOG.Error("get resource type action err: " + err.Error())
 		return
@@ -186,13 +185,13 @@ func DeleteIamRoleAction(c *gin.Context) {
 	}
 	actionName := c.Param("action")
 	var action models.ResourceTypeAction
-	if err = middlewares.TenantDB(c).First(&action, "type_id = ? AND name = ?", role.TypeId, actionName).Error; err != nil {
+	if err = internal.TenantDB(c).First(&action, "type_id = ? AND name = ?", role.TypeId, actionName).Error; err != nil {
 		c.Status(http.StatusBadRequest)
 		global.LOG.Error("get resource type action err: " + err.Error())
 		return
 	}
 	var roleAction models.ResourceTypeRoleAction
-	if err = middlewares.TenantDB(c).First(&roleAction, "role_id = ? AND action_id = ?", role.Id, action.Id).Error; err != nil {
+	if err = internal.TenantDB(c).First(&roleAction, "role_id = ? AND action_id = ?", role.Id, action.Id).Error; err != nil {
 		c.Status(http.StatusBadRequest)
 		global.LOG.Error("get resource type role action err: " + err.Error())
 		return
@@ -240,7 +239,7 @@ func GetIamActionUser(c *gin.Context) {
 	}
 	userName := c.Param("user")
 	var clientUser models.ClientUser
-	if err = middlewares.TenantDB(c).First(&clientUser, "client_id = ? AND sub = ?", client.Id, userName).Error; err != nil {
+	if err = internal.TenantDB(c).First(&clientUser, "client_id = ? AND sub = ?", client.Id, userName).Error; err != nil {
 		c.Status(http.StatusBadRequest)
 		global.LOG.Error("get client user err: " + err.Error())
 		return

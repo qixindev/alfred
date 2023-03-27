@@ -2,10 +2,9 @@ package admin
 
 import (
 	"accounts/global"
-	"accounts/middlewares"
 	"accounts/models"
 	"accounts/models/dto"
-	"accounts/router/internal"
+	"accounts/server/internal"
 	"accounts/utils"
 	"github.com/gin-gonic/gin"
 	"net/http"
@@ -22,7 +21,7 @@ import (
 //	@Router			/accounts/admin/{tenant}/devices [get]
 func ListDevices(c *gin.Context) {
 	var devices []models.Device
-	if err := middlewares.TenantDB(c).Find(&devices).Error; err != nil {
+	if err := internal.TenantDB(c).Find(&devices).Error; err != nil {
 		c.Status(http.StatusInternalServerError)
 		global.LOG.Error("get device err: " + err.Error())
 		return
@@ -43,7 +42,7 @@ func ListDevices(c *gin.Context) {
 func GetDevice(c *gin.Context) {
 	deviceId := c.Param("deviceId")
 	var device models.Device
-	if middlewares.TenantDB(c).First(&device, "id = ?", deviceId).Error != nil {
+	if internal.TenantDB(c).First(&device, "id = ?", deviceId).Error != nil {
 		c.Status(http.StatusNotFound)
 		return
 	}
@@ -60,7 +59,7 @@ func GetDevice(c *gin.Context) {
 //	@Success		200
 //	@Router			/accounts/admin/{tenant}/devices [post]
 func NewDevice(c *gin.Context) {
-	tenant := middlewares.GetTenant(c)
+	tenant := internal.GetTenant(c)
 	var device models.Device
 	if err := c.BindJSON(&device); err != nil {
 		internal.ErrReqPara(c, err)
@@ -88,7 +87,7 @@ func NewDevice(c *gin.Context) {
 func UpdateDevice(c *gin.Context) {
 	deviceId := c.Param("deviceId")
 	var device models.Device
-	if middlewares.TenantDB(c).First(&device, "id = ?", deviceId).Error != nil {
+	if internal.TenantDB(c).First(&device, "id = ?", deviceId).Error != nil {
 		c.Status(http.StatusNotFound)
 		return
 	}
@@ -119,7 +118,7 @@ func UpdateDevice(c *gin.Context) {
 func DeleteDevice(c *gin.Context) {
 	deviceId := c.Param("deviceId")
 	var device models.Device
-	if middlewares.TenantDB(c).First(&device, "id = ?", deviceId).Error != nil {
+	if internal.TenantDB(c).First(&device, "id = ?", deviceId).Error != nil {
 		c.Status(http.StatusNotFound)
 		return
 	}
@@ -144,12 +143,12 @@ func DeleteDevice(c *gin.Context) {
 func ListDeviceSecret(c *gin.Context) {
 	deviceId := c.Param("deviceId")
 	var device models.Device
-	if middlewares.TenantDB(c).First(&device, "id = ?", deviceId).Error != nil {
+	if internal.TenantDB(c).First(&device, "id = ?", deviceId).Error != nil {
 		c.Status(http.StatusNotFound)
 		return
 	}
 	var secrets []models.DeviceSecret
-	if err := middlewares.TenantDB(c).Find(&secrets, "device_id = ?", device.Id).Error; err != nil {
+	if err := internal.TenantDB(c).Find(&secrets, "device_id = ?", device.Id).Error; err != nil {
 		c.Status(http.StatusInternalServerError)
 		global.LOG.Error("get device secret err: " + err.Error())
 		return
@@ -170,7 +169,7 @@ func ListDeviceSecret(c *gin.Context) {
 func NewDeviceSecret(c *gin.Context) {
 	deviceId := c.Param("deviceId")
 	var device models.Device
-	if middlewares.TenantDB(c).First(&device, "id = ?", deviceId).Error != nil {
+	if internal.TenantDB(c).First(&device, "id = ?", deviceId).Error != nil {
 		c.Status(http.StatusNotFound)
 		return
 	}
@@ -203,9 +202,9 @@ func NewDeviceSecret(c *gin.Context) {
 func DeleteDeviceSecret(c *gin.Context) {
 	deviceId := c.Param("deviceId")
 	secretId := c.Param("secretId")
-	tenant := middlewares.GetTenant(c)
+	tenant := internal.GetTenant(c)
 	var secret models.DeviceSecret
-	if middlewares.TenantDB(c).First(&secret, "tenant_id = ? AND device_id = ? AND id = ?", tenant.Id, deviceId, secretId).Error != nil {
+	if internal.TenantDB(c).First(&secret, "tenant_id = ? AND device_id = ? AND id = ?", tenant.Id, deviceId, secretId).Error != nil {
 		c.Status(http.StatusNotFound)
 		return
 	}
@@ -232,7 +231,7 @@ func DeleteDeviceSecret(c *gin.Context) {
 func GetDeviceGroups(c *gin.Context) {
 	deviceId := c.Param("deviceId")
 	var device models.Device
-	if middlewares.TenantDB(c).First(&device, "id = ?", deviceId).Error != nil {
+	if internal.TenantDB(c).First(&device, "id = ?", deviceId).Error != nil {
 		c.Status(http.StatusNotFound)
 		return
 	}
@@ -271,7 +270,7 @@ func NewDeviceGroup(c *gin.Context) {
 	}
 
 	var device models.Device
-	if middlewares.TenantDB(c).First(&device, "id = ?", deviceId).Error != nil {
+	if internal.TenantDB(c).First(&device, "id = ?", deviceId).Error != nil {
 		c.Status(http.StatusNotFound)
 		return
 	}
@@ -301,25 +300,25 @@ func NewDeviceGroup(c *gin.Context) {
 func UpdateDeviceGroup(c *gin.Context) {
 	deviceId := c.Param("deviceId")
 	var device models.Device
-	if middlewares.TenantDB(c).First(&device, "id = ?", deviceId).Error != nil {
+	if internal.TenantDB(c).First(&device, "id = ?", deviceId).Error != nil {
 		c.Status(http.StatusNotFound)
 		return
 	}
 	groupId := c.Param("groupId")
 	var group models.Group
-	if middlewares.TenantDB(c).First(&group, "id = ?", groupId).Error != nil {
+	if internal.TenantDB(c).First(&group, "id = ?", groupId).Error != nil {
 		c.Status(http.StatusNotFound)
 		return
 	}
 	var groupDevice models.GroupDevice
-	if middlewares.TenantDB(c).First(groupDevice, "group_id = ? AND device_id = ?", group.Id, device.Id).Error != nil {
+	if internal.TenantDB(c).First(groupDevice, "group_id = ? AND device_id = ?", group.Id, device.Id).Error != nil {
 		// Not found, create one.
 		groupDevice.DeviceId = device.Id
 		groupDevice.GroupId = group.Id
 		groupDevice.TenantId = device.TenantId
 	} else {
 		// Found, update it.
-		if err := middlewares.TenantDB(c).Save(&groupDevice).Error; err != nil {
+		if err := internal.TenantDB(c).Save(&groupDevice).Error; err != nil {
 			c.Status(http.StatusInternalServerError)
 			global.LOG.Error("get device group err: " + err.Error())
 			return
@@ -342,17 +341,17 @@ func UpdateDeviceGroup(c *gin.Context) {
 func DeleteDeviceGroup(c *gin.Context) {
 	deviceId := c.Param("deviceId")
 	var device models.Device
-	if middlewares.TenantDB(c).First(&device, "id = ?", deviceId).Error != nil {
+	if internal.TenantDB(c).First(&device, "id = ?", deviceId).Error != nil {
 		c.Status(http.StatusNotFound)
 		return
 	}
 	groupId := c.Param("groupId")
 	var groupDevice models.GroupDevice
-	if middlewares.TenantDB(c).First(&groupDevice, "device_id = ? AND group_id = ?", device.Id, groupId).Error != nil {
+	if internal.TenantDB(c).First(&groupDevice, "device_id = ? AND group_id = ?", device.Id, groupId).Error != nil {
 		c.Status(http.StatusNotFound)
 		return
 	}
-	if err := middlewares.TenantDB(c).Delete(&groupDevice).Error; err != nil {
+	if err := internal.TenantDB(c).Delete(&groupDevice).Error; err != nil {
 		c.Status(http.StatusInternalServerError)
 		global.LOG.Error("delete device group err: " + err.Error())
 		return

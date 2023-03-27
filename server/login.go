@@ -1,10 +1,10 @@
-package router
+package server
 
 import (
 	"accounts/auth"
 	"accounts/global"
-	"accounts/middlewares"
 	"accounts/models"
+	"accounts/server/internal"
 	"accounts/utils"
 	"fmt"
 	"github.com/gin-contrib/sessions"
@@ -45,7 +45,7 @@ func Login(c *gin.Context) {
 		return
 	}
 
-	tenant := middlewares.GetTenant(c)
+	tenant := internal.GetTenant(c)
 
 	var user models.User
 	if err := global.DB.First(&user, "tenant_id = ? AND username = ?", tenant.Id, login).Error; err != nil {
@@ -89,7 +89,7 @@ func Login(c *gin.Context) {
 //	@Success		302
 //	@Router			/accounts/{tenant}/login/{provider} [get]
 func LoginToProvider(c *gin.Context) {
-	tenant := middlewares.GetTenant(c)
+	tenant := internal.GetTenant(c)
 	providerName := c.Param("provider")
 	authProvider, err := auth.GetAuthProvider(tenant.Id, providerName)
 	if err != nil {
@@ -125,7 +125,7 @@ func LoginToProvider(c *gin.Context) {
 //	@Router			/accounts/{tenant}/login/providers [get]
 func ListProviders(c *gin.Context) {
 	var providers []models.Provider
-	if err := middlewares.TenantDB(c).Find(&providers).Error; err != nil {
+	if err := internal.TenantDB(c).Find(&providers).Error; err != nil {
 		c.Status(http.StatusInternalServerError)
 		global.LOG.Error("get provider list err: " + err.Error())
 		return
@@ -146,7 +146,7 @@ func ListProviders(c *gin.Context) {
 func GetProvider(c *gin.Context) {
 	providerName := c.Param("provider")
 	var provider models.Provider
-	if err := middlewares.TenantDB(c).First(&provider, "name = ?", providerName).Error; err != nil {
+	if err := internal.TenantDB(c).First(&provider, "name = ?", providerName).Error; err != nil {
 		c.Status(http.StatusNotFound)
 		global.LOG.Error("get provider err: " + err.Error())
 		return
@@ -166,7 +166,7 @@ func GetProvider(c *gin.Context) {
 //	@Success		200
 //	@Router			/accounts/{tenant}/register [post]
 func Register(c *gin.Context) {
-	tenant := middlewares.GetTenant(c)
+	tenant := internal.GetTenant(c)
 	login := c.PostForm("login")
 	password := c.PostForm("password")
 	var user models.User
@@ -233,7 +233,7 @@ func Logout(c *gin.Context) {
 func ProviderCallback(c *gin.Context) {
 	providerName := c.Param("provider")
 	var provider models.Provider
-	if middlewares.TenantDB(c).First(&provider, "name = ?", providerName).Error != nil {
+	if internal.TenantDB(c).First(&provider, "name = ?", providerName).Error != nil {
 		c.Status(http.StatusNotFound)
 		return
 	}
@@ -250,10 +250,10 @@ func ProviderCallback(c *gin.Context) {
 
 	var providerUser models.ProviderUser
 	existingUser := &models.User{}
-	if middlewares.TenantDB(c).First(&providerUser, "provider_id = ? AND name = ?", provider.Id, userInfo.Sub).Error != nil {
+	if internal.TenantDB(c).First(&providerUser, "provider_id = ? AND name = ?", provider.Id, userInfo.Sub).Error != nil {
 		// Current bind not found.
 		// If logged in, bind to current user.
-		user, err := middlewares.GetUserStandalone(c)
+		user, err := internal.GetUserStandalone(c)
 		if err != nil {
 			// If not logged in, create new user.
 			newUser := models.User{
@@ -286,13 +286,13 @@ func ProviderCallback(c *gin.Context) {
 		}
 		existingUser = user
 	} else {
-		if err := middlewares.TenantDB(c).First(existingUser, "id = ?", providerUser.UserId).Error; err != nil {
+		if err := internal.TenantDB(c).First(existingUser, "id = ?", providerUser.UserId).Error; err != nil {
 			c.Status(http.StatusInternalServerError)
 			return
 		}
 	}
 	session := sessions.Default(c)
-	tenant := middlewares.GetTenant(c)
+	tenant := internal.GetTenant(c)
 	session.Set("tenant", tenant.Name)
 	session.Set("user", existingUser.Username)
 	next := utils.GetString(session.Get("next"))
@@ -311,7 +311,7 @@ func addLoginRoutes(rg *gin.RouterGroup) {
 	rg.GET("/login/:provider", LoginToProvider)
 	rg.GET("/providers", ListProviders)
 	rg.GET("/providers/:provider", GetProvider)
-	rg.GET("/logout", middlewares.Authorized(false), Logout)
+	rg.GET("/logout", internal.Authorized(false), Logout)
 	rg.POST("/register", Register)
 	rg.GET("/logged-in/:provider", ProviderCallback)
 }

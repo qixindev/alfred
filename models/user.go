@@ -1,6 +1,8 @@
 package models
 
-import "accounts/models/dto"
+import (
+	"accounts/models/dto"
+)
 
 type User struct {
 	Id               uint   `gorm:"primaryKey;autoIncrement;not null" json:"id"`

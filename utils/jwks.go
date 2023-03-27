@@ -7,11 +7,12 @@ import (
 	"crypto/x509"
 	"encoding/json"
 	"encoding/pem"
+	"errors"
 	"fmt"
 	"github.com/go-jose/go-jose/v3"
 	"github.com/golang-jwt/jwt"
 	"github.com/google/uuid"
-	"k8s.io/apimachinery/pkg/api/errors"
+	k8sErr "k8s.io/apimachinery/pkg/api/errors"
 	"os"
 	"strings"
 )
@@ -20,6 +21,10 @@ func LoadRsaPrivateKeys(tenant string) (map[string]*rsa.PrivateKey, error) {
 	res, err := GetJWKs(tenant)
 	if err != nil {
 		return nil, err
+	}
+
+	if len(res) == 0 {
+		return nil, errors.New("jwk is nil")
 	}
 
 	keys := make(map[string]*rsa.PrivateKey)
@@ -78,9 +83,9 @@ func GenerateKey(tenant string) (map[string][]byte, error) {
 
 	key := uuid.New().String()
 	if env.GetDeployType() == "k8s" {
-		err = setJWKSConfigMap(tenant, key, payload)
+		err = SetJWKSConfigMap(tenant, key, payload)
 	} else {
-		err = setJWKSFile(tenant, key, payload)
+		err = SetJWKSFile(tenant, key, payload)
 	}
 
 	return map[string][]byte{key: payload}, err
@@ -96,14 +101,14 @@ func GetJWKs(tenant string) (res map[string][]byte, err error) {
 	return res, err
 }
 
-func setJWKSConfigMap(tenant string, key string, value []byte) error {
+func SetJWKSConfigMap(tenant string, key string, value []byte) error {
 	sClient, err := GetK8sClient()
 	if err != nil {
 		return err
 	}
 
 	cm, err := GetConfigMap(sClient, env.DefaultCmJWKS)
-	if errors.IsNotFound(err) {
+	if k8sErr.IsNotFound(err) {
 		if cm, err = CreateConfigMap(sClient, env.DefaultCmJWKS, map[string]string{tenant: "{}"}); err != nil {
 			return err
 		}
@@ -118,7 +123,13 @@ func setJWKSConfigMap(tenant string, key string, value []byte) error {
 	if err = json.Unmarshal([]byte(cm.Data[tenant]), &res); err != nil {
 		return err
 	}
-	res[key] = value
+
+	if len(value) == 0 {
+		delete(res, key)
+	} else {
+		res[key] = value
+	}
+
 	marshal, err := json.Marshal(res)
 	if err != nil {
 		return err
@@ -151,22 +162,23 @@ func getJWKSConfigMap(tenant string) (map[string][]byte, error) {
 	return res, nil
 }
 
-func setJWKSFile(tenant string, key string, value []byte) error {
+func SetJWKSFile(tenant string, key string, value []byte) error {
 	path := "data/jwks/" + tenant
-	if _, err := os.ReadDir(path); err == nil {
-		return nil
+	if _, err := os.ReadDir(path); err != nil {
+		if err = os.MkdirAll(path, 0700); err != nil {
+			return err
+		}
 	}
 
-	if err := os.MkdirAll(path, 0700); err != nil {
-		return err
-	}
-
+	var err error
 	writeFile := fmt.Sprintf("%s/%s.key", path, key)
-	if err := os.WriteFile(writeFile, value, 0400); err != nil {
-		return err
+	if len(value) == 0 {
+		err = os.Remove(writeFile)
+	} else {
+		err = os.WriteFile(writeFile, value, 0400)
 	}
 
-	return nil
+	return err
 }
 
 func getJWKSFile(tenant string) (map[string][]byte, error) {
