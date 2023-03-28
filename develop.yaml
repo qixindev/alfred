@@ -30,15 +30,15 @@ spec:
       containers:
         - env:
             - name: CONFIG_PATH
-              value: "config.dev.yml"
+              value: "config.dev.yaml"
             - name: DEPLOY_TYPE
               value: "k8s"
             - name: SERVICE_CONFIG_MAP
               value: "service-config"
             - name: NANE_SPACE
               value: "default"
-            - name: dsn
-              value: "host=143.64.18.19 port=5432 dbname=accounts user=qixin password=at9z9?gntsLPv/_Jk/,pyIrX"
+            - name: RELEASE_TYPE
+              value: "dev"
           image: qixindev.azurecr.io/iot/accounts:develop-20230321.1
           name: account
           ports:

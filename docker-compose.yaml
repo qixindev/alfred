@@ -7,8 +7,6 @@ services:
     container_name: accounts
     ports:
       - "8086:8086"
-    env_file:
-      - accounts.env
     networks:
       - qixin
 

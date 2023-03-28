@@ -15,20 +15,6 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
-        "/accounts/.well-known/jwks.json": {
-            "get": {
-                "description": "jwk",
-                "tags": [
-                    "oauth2"
-                ],
-                "summary": "jwk",
-                "responses": {
-                    "200": {
-                        "description": "OK"
-                    }
-                }
-            }
-        },
         "/accounts/admin/tenants": {
             "get": {
                 "description": "list tenants",
@@ -159,6 +145,36 @@ const docTemplate = `{
                 }
             }
         },
+        "/accounts/admin/tenants/{tenantId}/secrets/{secretId}": {
+            "delete": {
+                "description": "delete tenants",
+                "tags": [
+                    "admin-tenants"
+                ],
+                "summary": "tenants",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "tenant",
+                        "name": "tenant",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "tenant",
+                        "name": "tenantId",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
         "/accounts/admin/{tenant}/clients": {
             "get": {
                 "description": "get client list",
@@ -203,29 +219,6 @@ const docTemplate = `{
                         "schema": {
                             "type": "object"
                         }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK"
-                    }
-                }
-            }
-        },
-        "/accounts/admin/{tenant}/clients/:clientId/redirect-uris": {
-            "post": {
-                "description": "new client redirect uri",
-                "tags": [
-                    "client"
-                ],
-                "summary": "new client redirect uri",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "tenant",
-                        "name": "tenant",
-                        "in": "path",
-                        "required": true
                     }
                 ],
                 "responses": {
@@ -340,6 +333,27 @@ const docTemplate = `{
                         "type": "integer",
                         "description": "tenant",
                         "name": "clientId",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            },
+            "post": {
+                "description": "new client redirect uri",
+                "tags": [
+                    "client"
+                ],
+                "summary": "new client redirect uri",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "tenant",
+                        "name": "tenant",
                         "in": "path",
                         "required": true
                     }
@@ -702,7 +716,7 @@ const docTemplate = `{
             }
         },
         "/accounts/admin/{tenant}/devices/{deviceId}/groups/{groupId}": {
-            "get": {
+            "put": {
                 "description": "update device groups",
                 "tags": [
                     "device"
@@ -762,6 +776,101 @@ const docTemplate = `{
                         "type": "integer",
                         "description": "tenant",
                         "name": "groupId",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/accounts/admin/{tenant}/devices/{deviceId}/secrets": {
+            "get": {
+                "description": "get client secrets",
+                "tags": [
+                    "client"
+                ],
+                "summary": "get client secrets",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "tenant",
+                        "name": "tenant",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "tenant",
+                        "name": "clientId",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            },
+            "post": {
+                "description": "get client secrets",
+                "tags": [
+                    "client"
+                ],
+                "summary": "get client secrets",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "tenant",
+                        "name": "tenant",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "tenant",
+                        "name": "clientId",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/accounts/admin/{tenant}/devices/{deviceId}/secrets/{secretId}": {
+            "delete": {
+                "description": "get client secrets",
+                "tags": [
+                    "client"
+                ],
+                "summary": "get client secrets",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "tenant",
+                        "name": "tenant",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "tenant",
+                        "name": "clientId",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "tenant",
+                        "name": "secretId",
                         "in": "path",
                         "required": true
                     }
@@ -1323,6 +1432,29 @@ const docTemplate = `{
                 }
             }
         },
+        "/accounts/{tenant}/.well-known/jwks.json": {
+            "get": {
+                "description": "jwk",
+                "tags": [
+                    "oauth2"
+                ],
+                "summary": "jwk",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "tenant",
+                        "name": "tenant",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
         "/accounts/{tenant}/.well-known/openid-configuration": {
             "get": {
                 "description": "openid configuration",
@@ -1330,6 +1462,15 @@ const docTemplate = `{
                     "oauth2"
                 ],
                 "summary": "openid configuration",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "tenant",
+                        "name": "tenant",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "OK"
@@ -2473,7 +2614,7 @@ const docTemplate = `{
             }
         },
         "/accounts/{tenant}/oauth2/token": {
-            "post": {
+            "get": {
                 "description": "oauth2 token",
                 "tags": [
                     "oauth2"
@@ -2491,55 +2632,46 @@ const docTemplate = `{
                         "type": "string",
                         "description": "client_id",
                         "name": "client_id",
-                        "in": "formData",
+                        "in": "query",
                         "required": true
                     },
                     {
                         "type": "string",
                         "description": "client_secret",
                         "name": "client_secret",
-                        "in": "formData",
+                        "in": "query",
                         "required": true
                     },
                     {
                         "type": "string",
                         "description": "code",
                         "name": "code",
-                        "in": "formData",
-                        "required": true
-                    },
-                    {
-                        "type": "string",
-                        "description": "scope",
-                        "name": "scope",
-                        "in": "formData",
-                        "required": true
+                        "in": "query"
                     },
                     {
                         "type": "string",
                         "description": "grant_type",
                         "name": "grant_type",
-                        "in": "formData",
+                        "in": "query",
                         "required": true
                     },
                     {
                         "type": "string",
                         "description": "redirect_uri",
                         "name": "redirect_uri",
-                        "in": "formData",
-                        "required": true
+                        "in": "query"
                     },
                     {
                         "type": "string",
                         "description": "state",
                         "name": "state",
-                        "in": "formData"
+                        "in": "query"
                     },
                     {
                         "type": "string",
                         "description": "nonce",
                         "name": "nonce",
-                        "in": "formData"
+                        "in": "query"
                     }
                 ],
                 "responses": {

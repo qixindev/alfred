@@ -56,9 +56,15 @@ definitions:
 info:
   contact: {}
 paths:
-  /accounts/.well-known/jwks.json:
+  /accounts/{tenant}/.well-known/jwks.json:
     get:
       description: jwk
+      parameters:
+      - description: tenant
+        in: path
+        name: tenant
+        required: true
+        type: string
       responses:
         "200":
           description: OK
@@ -68,6 +74,12 @@ paths:
   /accounts/{tenant}/.well-known/openid-configuration:
     get:
       description: openid configuration
+      parameters:
+      - description: tenant
+        in: path
+        name: tenant
+        required: true
+        type: string
       responses:
         "200":
           description: OK
@@ -845,7 +857,7 @@ paths:
       tags:
       - oauth2
   /accounts/{tenant}/oauth2/token:
-    post:
+    get:
       description: oauth2 token
       parameters:
       - description: tenant
@@ -854,41 +866,34 @@ paths:
         required: true
         type: string
       - description: client_id
-        in: formData
+        in: query
         name: client_id
         required: true
         type: string
       - description: client_secret
-        in: formData
+        in: query
         name: client_secret
         required: true
         type: string
       - description: code
-        in: formData
+        in: query
         name: code
-        required: true
-        type: string
-      - description: scope
-        in: formData
-        name: scope
-        required: true
         type: string
       - description: grant_type
-        in: formData
+        in: query
         name: grant_type
         required: true
         type: string
       - description: redirect_uri
-        in: formData
+        in: query
         name: redirect_uri
-        required: true
         type: string
       - description: state
-        in: formData
+        in: query
         name: state
         type: string
       - description: nonce
-        in: formData
+        in: query
         name: nonce
         type: string
       responses:
@@ -957,21 +962,6 @@ paths:
         "200":
           description: OK
       summary: new client
-      tags:
-      - client
-  /accounts/admin/{tenant}/clients/:clientId/redirect-uris:
-    post:
-      description: new client redirect uri
-      parameters:
-      - description: tenant
-        in: path
-        name: tenant
-        required: true
-        type: string
-      responses:
-        "200":
-          description: OK
-      summary: new client redirect uri
       tags:
       - client
   /accounts/admin/{tenant}/clients/{clientId}:
@@ -1050,6 +1040,20 @@ paths:
         "200":
           description: OK
       summary: get client redirect uris
+      tags:
+      - client
+    post:
+      description: new client redirect uri
+      parameters:
+      - description: tenant
+        in: path
+        name: tenant
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+      summary: new client redirect uri
       tags:
       - client
   /accounts/admin/{tenant}/clients/{clientId}/redirect-uris/{uriId}:
@@ -1312,7 +1316,7 @@ paths:
       summary: device groups
       tags:
       - device
-    get:
+    put:
       description: update device groups
       parameters:
       - description: tenant
@@ -1336,6 +1340,70 @@ paths:
       summary: device groups
       tags:
       - device
+  /accounts/admin/{tenant}/devices/{deviceId}/secrets:
+    get:
+      description: get client secrets
+      parameters:
+      - description: tenant
+        in: path
+        name: tenant
+        required: true
+        type: string
+      - description: tenant
+        in: path
+        name: clientId
+        required: true
+        type: integer
+      responses:
+        "200":
+          description: OK
+      summary: get client secrets
+      tags:
+      - client
+    post:
+      description: get client secrets
+      parameters:
+      - description: tenant
+        in: path
+        name: tenant
+        required: true
+        type: string
+      - description: tenant
+        in: path
+        name: clientId
+        required: true
+        type: integer
+      responses:
+        "200":
+          description: OK
+      summary: get client secrets
+      tags:
+      - client
+  /accounts/admin/{tenant}/devices/{deviceId}/secrets/{secretId}:
+    delete:
+      description: get client secrets
+      parameters:
+      - description: tenant
+        in: path
+        name: tenant
+        required: true
+        type: string
+      - description: tenant
+        in: path
+        name: clientId
+        required: true
+        type: integer
+      - description: tenant
+        in: path
+        name: secretId
+        required: true
+        type: integer
+      responses:
+        "200":
+          description: OK
+      summary: get client secrets
+      tags:
+      - client
   /accounts/admin/{tenant}/groups:
     get:
       description: list groups
@@ -1775,6 +1843,26 @@ paths:
       - admin-tenants
     put:
       description: update tenants
+      parameters:
+      - description: tenant
+        in: path
+        name: tenant
+        required: true
+        type: string
+      - description: tenant
+        in: path
+        name: tenantId
+        required: true
+        type: integer
+      responses:
+        "200":
+          description: OK
+      summary: tenants
+      tags:
+      - admin-tenants
+  /accounts/admin/tenants/{tenantId}/secrets/{secretId}:
+    delete:
+      description: delete tenants
       parameters:
       - description: tenant
         in: path
