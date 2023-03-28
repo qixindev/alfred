@@ -6,6 +6,7 @@ import (
 	"accounts/initial"
 	"accounts/server"
 	"accounts/utils"
+	"errors"
 	"fmt"
 	"github.com/gin-contrib/cors"
 	"github.com/gin-contrib/sessions"
@@ -27,6 +28,11 @@ func InitSystem() error {
 	// 初始化日志
 	global.LOG = initial.Zap()
 	zap.ReplaceGlobals(global.LOG)
+	if global.LOG == nil {
+		fmt.Println("init zap log err: zap log is nil")
+		return errors.New("init zap log err")
+	}
+
 	if err = initial.InitDB(); err != nil {
 		fmt.Println("Init DB error: ", err)
 		return err
@@ -48,7 +54,7 @@ func main() {
 		return
 	}
 
-	fmt.Printf("### %s: %v\n", env.GetDeployType(), utils.StructToString(global.CONFIG))
+	global.LOG.Error(fmt.Sprintf("### %s: %v\n", env.GetDeployType(), utils.StructToString(global.CONFIG)))
 
 	r := gin.Default()
 	r.Use(cors.Default())

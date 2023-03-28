@@ -1,6 +1,7 @@
 package admin
 
 import (
+	"accounts/config/env"
 	"accounts/global"
 	"accounts/models"
 	"accounts/server/internal"
@@ -127,10 +128,44 @@ func DeleteTenant(c *gin.Context) {
 	c.Status(http.StatusNoContent)
 }
 
+// DeleteTenantSecret godoc
+//
+//	@Summary	tenants
+//	@Schemes
+//	@Description	delete tenants
+//	@Tags			admin-tenants
+//	@Param			tenant		path	string	true	"tenant"
+//	@Param			tenantId	path	integer	true	"tenant"
+//	@Success		200
+//	@Router			/accounts/admin/tenants/{tenantId}/secrets/{secretId} [delete]
+func DeleteTenantSecret(c *gin.Context) {
+	tenantId := c.Param("tenantId")
+	var tenant models.Tenant
+	if global.DB.First(&tenant, "id = ?", tenantId).Error != nil {
+		c.Status(http.StatusNotFound)
+		return
+	}
+
+	var err error
+	if env.GetDeployType() == "k8s" {
+		err = utils.SetJWKSConfigMap(tenant.Name, c.Param("secretId"), nil)
+	} else {
+		err = utils.SetJWKSFile(tenant.Name, c.Param("secretId"), nil)
+	}
+
+	if err != nil {
+		c.String(http.StatusInternalServerError, "delete failed")
+		global.LOG.Error("delete tenant secret err: " + err.Error())
+	}
+
+	c.Status(http.StatusNoContent)
+}
+
 func AddAdminTenantsRoutes(rg *gin.RouterGroup) {
 	rg.GET("/tenants", ListTenants)
 	rg.GET("/tenants/:tenantId", GetTenant)
 	rg.POST("/tenants", NewTenant)
 	rg.PUT("/tenants/:tenantId", UpdateTenant)
 	rg.DELETE("/tenants/:tenantId", DeleteTenant)
+	rg.DELETE("/tenants/:tenantId/secrets/:secretId", DeleteTenantSecret)
 }

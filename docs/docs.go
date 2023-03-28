@@ -145,6 +145,36 @@ const docTemplate = `{
                 }
             }
         },
+        "/accounts/admin/tenants/{tenantId}/secrets/{secretId}": {
+            "delete": {
+                "description": "delete tenants",
+                "tags": [
+                    "admin-tenants"
+                ],
+                "summary": "tenants",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "tenant",
+                        "name": "tenant",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "tenant",
+                        "name": "tenantId",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
         "/accounts/admin/{tenant}/clients": {
             "get": {
                 "description": "get client list",

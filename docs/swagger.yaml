@@ -1860,4 +1860,24 @@ paths:
       summary: tenants
       tags:
       - admin-tenants
+  /accounts/admin/tenants/{tenantId}/secrets/{secretId}:
+    delete:
+      description: delete tenants
+      parameters:
+      - description: tenant
+        in: path
+        name: tenant
+        required: true
+        type: string
+      - description: tenant
+        in: path
+        name: tenantId
+        required: true
+        type: integer
+      responses:
+        "200":
+          description: OK
+      summary: tenants
+      tags:
+      - admin-tenants
 swagger: "2.0"
