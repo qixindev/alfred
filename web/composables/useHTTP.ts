@@ -10,16 +10,13 @@ export interface ResOptions {
 export type HttpOption = UseFetchOptions<ResOptions>
 
 const fetch = (url: string , option: HttpOption) => {
-  const auth = useCookie('QixinAuth')
   const baseUrl = import.meta.env.VITE_APP_BASE_API
   url = baseUrl + url
-  if (auth) {
-    option = mergeObj(option,{
-      headers: {
-        'Authorization': auth.value as string,
-      }
-    })
-  }
+  //   option = mergeObj(option,{
+  //     headers: {
+  //       'Authorization': auth.value as string,
+  //     }
+  //   })
 
   return new Promise((resolve, reject) => {
     useFetch(url, {
