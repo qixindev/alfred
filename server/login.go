@@ -3,6 +3,7 @@ package server
 import (
 	"accounts/auth"
 	"accounts/global"
+	"accounts/middlewares"
 	"accounts/models"
 	"accounts/server/internal"
 	"accounts/utils"
@@ -253,7 +254,7 @@ func ProviderCallback(c *gin.Context) {
 	if internal.TenantDB(c).First(&providerUser, "provider_id = ? AND name = ?", provider.Id, userInfo.Sub).Error != nil {
 		// Current bind not found.
 		// If logged in, bind to current user.
-		user, err := internal.GetUserStandalone(c)
+		user, err := middlewares.GetUserStandalone(c)
 		if err != nil {
 			// If not logged in, create new user.
 			newUser := models.User{
@@ -311,7 +312,7 @@ func addLoginRoutes(rg *gin.RouterGroup) {
 	rg.GET("/login/:provider", LoginToProvider)
 	rg.GET("/providers", ListProviders)
 	rg.GET("/providers/:provider", GetProvider)
-	rg.GET("/logout", internal.Authorized(false), Logout)
+	rg.GET("/logout", middlewares.Authorized(false), Logout)
 	rg.POST("/register", Register)
 	rg.GET("/logged-in/:provider", ProviderCallback)
 }

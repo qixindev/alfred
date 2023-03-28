@@ -1,4 +1,4 @@
-package internal
+package middlewares
 
 import (
 	"accounts/global"
@@ -13,6 +13,10 @@ import (
 	"net/http"
 	"net/url"
 )
+
+func getTenant(c *gin.Context) *models.Tenant {
+	return c.MustGet("tenant").(*models.Tenant)
+}
 
 func MultiTenancy(c *gin.Context) {
 	tenantName := c.Param("tenant")
@@ -40,7 +44,7 @@ func MultiTenancy(c *gin.Context) {
 }
 
 func GetUserStandalone(c *gin.Context) (*models.User, error) {
-	tenant := GetTenant(c)
+	tenant := getTenant(c)
 	session := sessions.Default(c)
 	tenantName := session.Get("tenant")
 	if tenant.Name != tenantName {
@@ -78,8 +82,7 @@ func AuthorizedAdmin(c *gin.Context) {
 
 func AuthAccessToken(c *gin.Context) {
 	tokenString := c.GetHeader("Authorization")
-	t := GetTenant(c)
-	keys, err := utils.LoadRsaPrivateKeys(t.Name)
+	keys, err := utils.LoadRsaPrivateKeys("default")
 	if err != nil {
 		c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"message": "load key err"})
 		global.LOG.Error("get private key err")
@@ -96,7 +99,7 @@ func AuthAccessToken(c *gin.Context) {
 		if err == nil && token.Valid {
 			return
 		}
-		global.LOG.Warn(fmt.Sprintf("%s token valid err: %s", t.Name, err))
+		global.LOG.Warn(fmt.Sprintf("%s token valid err: %s", "default", err))
 	}
 
 	c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"message": "token invalidate"})
@@ -107,7 +110,7 @@ func Authorized(redirectToLogin bool) gin.HandlerFunc {
 		user, err := GetUserStandalone(c)
 		if err != nil {
 			if redirectToLogin {
-				t := GetTenant(c)
+				t := getTenant(c)
 				h := utils.GetHostWithScheme(c)
 				base := fmt.Sprintf("%s/%s", h, t.Name)
 				next := fmt.Sprintf("%s/oauth2/auth", base)

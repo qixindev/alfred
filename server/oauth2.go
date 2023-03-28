@@ -2,6 +2,7 @@ package server
 
 import (
 	"accounts/global"
+	"accounts/middlewares"
 	"accounts/models"
 	"accounts/models/dto"
 	"accounts/server/internal"
@@ -331,7 +332,7 @@ func GetJwks(c *gin.Context) {
 }
 
 func addOAuth2Routes(rg *gin.RouterGroup) {
-	rg.GET("/oauth2/auth", internal.Authorized(true), GetAuthCode)
+	rg.GET("/oauth2/auth", middlewares.Authorized(true), GetAuthCode)
 	rg.GET("/oauth2/token", GetToken)
 	rg.GET("/.well-known/openid-configuration", GetOpenidConfiguration)
 	rg.GET("/.well-known/jwks.json", GetJwks)
