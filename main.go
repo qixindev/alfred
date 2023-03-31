@@ -16,8 +16,6 @@ import (
 	"time"
 )
 
-var secret = []byte("secret")
-
 func InitSystem() error {
 	var err error
 	if err = initial.InitConfig(); err != nil { // 初始化配置
@@ -54,11 +52,12 @@ func main() {
 		return
 	}
 
-	global.LOG.Error(fmt.Sprintf("### %s: %v\n", env.GetDeployType(), utils.StructToString(global.CONFIG)))
+	global.LOG.Info(fmt.Sprintf("### %s: %v\n", env.GetDeployType(), utils.StructToString(global.CONFIG)))
 
 	r := gin.Default()
 	r.Use(cors.Default())
-	r.Use(sessions.Sessions("QixinAuth", cookie.NewStore(secret)))
+	cookieSecret := initial.GetSessionSecret()
+	r.Use(sessions.Sessions("QixinAuth", cookie.NewStore(cookieSecret)))
 	server.AddRoutes(r)
 
 	if err = r.Run(":8086"); err != nil {

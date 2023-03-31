@@ -82,13 +82,22 @@ func GenerateKey(tenant string) (map[string][]byte, error) {
 	})
 
 	key := uuid.New().String()
+	if err = SetJWKS(tenant, key, payload); err != nil {
+		return nil, err
+	}
+
+	return map[string][]byte{key: payload}, err
+}
+
+func SetJWKS(tenant string, key string, payload []byte) error {
+	var err error
 	if env.GetDeployType() == "k8s" {
 		err = SetJWKSConfigMap(tenant, key, payload)
 	} else {
 		err = SetJWKSFile(tenant, key, payload)
 	}
 
-	return map[string][]byte{key: payload}, err
+	return err
 }
 
 func GetJWKs(tenant string) (res map[string][]byte, err error) {
