@@ -281,13 +281,13 @@ func ProviderCallback(c *gin.Context) {
 		providerUser.ProviderId = provider.Id
 		providerUser.UserId = user.Id
 		providerUser.Name = userInfo.Sub
-		if err := global.DB.Create(&providerUser).Error; err != nil {
+		if err = global.DB.Create(&providerUser).Error; err != nil {
 			c.Status(http.StatusInternalServerError)
 			return
 		}
 		existingUser = user
 	} else {
-		if err := internal.TenantDB(c).First(existingUser, "id = ?", providerUser.UserId).Error; err != nil {
+		if err = internal.TenantDB(c).First(existingUser, "id = ?", providerUser.UserId).Error; err != nil {
 			c.Status(http.StatusInternalServerError)
 			return
 		}
@@ -298,7 +298,7 @@ func ProviderCallback(c *gin.Context) {
 	session.Set("user", existingUser.Username)
 	next := utils.GetString(session.Get("next"))
 	session.Delete("next")
-	if err := session.Save(); err != nil {
+	if err = session.Save(); err != nil {
 		c.JSON(http.StatusInternalServerError, err)
 	}
 	if next != "" {

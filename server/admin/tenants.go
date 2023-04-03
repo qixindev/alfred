@@ -68,6 +68,7 @@ func NewTenant(c *gin.Context) {
 		global.LOG.Error("new tenants err: " + err.Error())
 		return
 	}
+
 	c.JSON(http.StatusOK, tenant.Dto())
 }
 

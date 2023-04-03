@@ -62,7 +62,7 @@ func getAccessToken(c *gin.Context, client *models.Client) (string, error) {
 		clientUser.ClientId = client.Id
 		clientUser.UserId = user.Id
 		clientUser.Sub = uuid.NewString()
-		if err := global.DB.Create(&clientUser).Error; err != nil {
+		if err = global.DB.Create(&clientUser).Error; err != nil {
 			return "", err
 		}
 	}
@@ -121,7 +121,7 @@ func getAccessCode(c *gin.Context, client *models.Client) (string, error) {
 		ClientId:  client.Id,
 		TenantId:  client.TenantId,
 	}
-	if err := global.DB.Create(&tokenCode).Error; err != nil {
+	if err = global.DB.Create(&tokenCode).Error; err != nil {
 		return "", err
 	}
 	return code, nil
@@ -152,10 +152,10 @@ func GetAuthCode(c *gin.Context) {
 	redirectUri := c.Query("redirect_uri")
 	state := strings.TrimSpace(c.Query("state"))
 	nonce := c.Query("nonce")
-
 	tenant := internal.GetTenant(c)
+
 	var client models.Client
-	if err := global.DB.First(&client, "tenant_id = ? AND client_id = ?", tenant.Id, clientId).Error; err != nil {
+	if err := global.DB.First(&client, "tenant_id = ? AND cli_id = ?", tenant.Id, clientId).Error; err != nil {
 		c.JSON(http.StatusForbidden, gin.H{"message": "Invalid client_id."})
 		global.LOG.Error("get client err: " + err.Error())
 		return
@@ -166,6 +166,7 @@ func GetAuthCode(c *gin.Context) {
 		global.LOG.Error("get redirect uri err: " + err.Error())
 		return
 	}
+
 	if responseType == "code" {
 		code, err := getAccessCode(c, &client)
 		if err != nil {
@@ -181,9 +182,7 @@ func GetAuthCode(c *gin.Context) {
 		location := fmt.Sprintf("%s?%s", redirectUri, query.Encode())
 		c.Redirect(http.StatusFound, location)
 		return
-	}
-
-	if responseType == "token" {
+	} else if responseType == "token" {
 		token, err := getAccessToken(c, &client)
 		if err != nil {
 			c.Status(http.StatusInternalServerError)
@@ -199,6 +198,7 @@ func GetAuthCode(c *gin.Context) {
 		c.Redirect(http.StatusFound, location)
 		return
 	}
+
 	c.String(http.StatusBadRequest, "Invalid response_type.")
 	fmt.Println(clientId, scope, responseType, redirectUri, state, nonce)
 }
@@ -231,7 +231,7 @@ func GetToken(c *gin.Context) {
 	if grantType == "authorization_code" {
 		tenant := internal.GetTenant(c)
 		var client models.Client
-		if err := global.DB.First(&client, "tenant_id = ? AND client_id = ?", tenant.Id, clientId).Error; err != nil {
+		if err := global.DB.First(&client, "tenant_id = ? AND id = ?", tenant.Id, clientId).Error; err != nil {
 			c.JSON(http.StatusForbidden, gin.H{"message": "Invalid client_id."})
 			global.LOG.Error("get client err: " + err.Error())
 			return

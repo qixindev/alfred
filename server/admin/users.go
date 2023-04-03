@@ -295,6 +295,7 @@ func AddAdminUsersRoutes(rg *gin.RouterGroup) {
 	rg.POST("/users", NewUser)
 	rg.PUT("/users/:userId", UpdateUser)
 	rg.DELETE("/users/:userId", DeleteUser)
+
 	rg.GET("/users/:userId/groups", GetUserGroups)
 	rg.POST("/users/:userId/groups", NewUserGroup)
 	rg.PUT("/users/:userId/groups/:groupId", UpdateUserGroup)

@@ -48,6 +48,24 @@ func GetClient(c *gin.Context) {
 	c.JSON(http.StatusOK, client.Dto())
 }
 
+// GetDefaultClient godoc
+//
+//	@Summary	client
+//	@Schemes
+//	@Description	get client
+//	@Tags			client
+//	@Param			tenant		path		string	true	"tenant"
+//	@Success		200
+//	@Router			/accounts/admin/{tenant}/clients/default [get]
+func GetDefaultClient(c *gin.Context) {
+	var client models.Client
+	if internal.TenantDB(c).First(&client, "name = ?", "default").Error != nil {
+		c.Status(http.StatusNotFound)
+		return
+	}
+	c.JSON(http.StatusOK, client.Dto())
+}
+
 // NewClient godoc
 //
 //	@Summary	new client
@@ -330,6 +348,7 @@ func ListClientUsers(c *gin.Context) {
 func AddAdminClientsRoutes(rg *gin.RouterGroup) {
 	rg.GET("/clients", ListClients)
 	rg.GET("/clients/:clientId", GetClient)
+	rg.GET("/clients/default", GetDefaultClient)
 	rg.POST("/clients", NewClient)
 	rg.PUT("/clients/:clientId", UpdateClient)
 	rg.DELETE("/clients/:clientId", DeleteClient)
