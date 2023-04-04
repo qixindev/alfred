@@ -2,6 +2,7 @@ package utils
 
 import (
 	"accounts/config/env"
+	"accounts/global"
 	"crypto/rand"
 	"crypto/rsa"
 	"crypto/x509"
@@ -42,12 +43,14 @@ func LoadRsaPrivateKeys(tenant string) (map[string]*rsa.PrivateKey, error) {
 func LoadRsaPublicKeys(tenant string) (*jose.JSONWebKeySet, error) {
 	var err error
 	res := map[string][]byte{}
-	if res, err = GetJWKs(tenant); err != nil {
+	if res, err = GetJWKs(tenant); err != nil || len(res) == 0 {
+		global.LOG.Error("get jwks err: " + err.Error())
 		if res, err = GenerateKey(tenant); err != nil {
 			return nil, err
 		}
 	}
 
+	global.LOG.Info(StructToString(res))
 	var jwkSet jose.JSONWebKeySet
 	var key *rsa.PrivateKey
 	for k, v := range res {
