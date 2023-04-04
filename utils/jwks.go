@@ -44,7 +44,6 @@ func LoadRsaPublicKeys(tenant string) (*jose.JSONWebKeySet, error) {
 	var err error
 	res := map[string][]byte{}
 	if res, err = GetJWKs(tenant); err != nil || len(res) == 0 {
-		global.LOG.Error("get jwks err: " + err.Error())
 		if res, err = GenerateKey(tenant); err != nil {
 			return nil, err
 		}
