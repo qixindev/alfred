@@ -42,8 +42,9 @@ func ListGroups(c *gin.Context) {
 func GetGroup(c *gin.Context) {
 	groupId := c.Param("groupId")
 	var group models.Group
-	if internal.TenantDB(c).First(&group, "id = ?", groupId).Error != nil {
+	if err := internal.TenantDB(c).First(&group, "id = ?", groupId).Error; err != nil {
 		c.Status(http.StatusNotFound)
+		global.LOG.Error("get group err: " + err.Error())
 		return
 	}
 	c.JSON(http.StatusOK, group.Dto())
@@ -87,8 +88,9 @@ func NewGroup(c *gin.Context) {
 func UpdateGroup(c *gin.Context) {
 	groupId := c.Param("groupId")
 	var group models.Group
-	if internal.TenantDB(c).First(&group, "id = ?", groupId).Error != nil {
+	if err := internal.TenantDB(c).First(&group, "id = ?", groupId).Error; err != nil {
 		c.Status(http.StatusNotFound)
+		global.LOG.Error("get group err: " + err.Error())
 		return
 	}
 	var g models.Group
@@ -119,8 +121,9 @@ func UpdateGroup(c *gin.Context) {
 func DeleteGroup(c *gin.Context) {
 	groupId := c.Param("groupId")
 	var group models.Group
-	if internal.TenantDB(c).First(&group, "id = ?", groupId).Error != nil {
+	if err := internal.TenantDB(c).First(&group, "id = ?", groupId).Error; err != nil {
 		c.Status(http.StatusNotFound)
+		global.LOG.Error("get group err: " + err.Error())
 		return
 	}
 	if err := global.DB.Delete(&group).Error; err != nil {
@@ -144,13 +147,13 @@ func DeleteGroup(c *gin.Context) {
 func GetGroupMembers(c *gin.Context) {
 	groupId := c.Param("groupId")
 	var group models.Group
-	if internal.TenantDB(c).First(&group, "id = ?", groupId).Error != nil {
+	if err := internal.TenantDB(c).First(&group, "id = ?", groupId).Error; err != nil {
 		c.Status(http.StatusNotFound)
+		global.LOG.Error("get group err: " + err.Error())
 		return
 	}
 
 	var members []dto.GroupMemberDto
-
 	var groups []models.Group
 	if err := internal.TenantDB(c).Find(&groups, "parent_id = ?", group.Id).Error; err != nil {
 		c.Status(http.StatusInternalServerError)

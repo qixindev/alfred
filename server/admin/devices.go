@@ -42,8 +42,9 @@ func ListDevices(c *gin.Context) {
 func GetDevice(c *gin.Context) {
 	deviceId := c.Param("deviceId")
 	var device models.Device
-	if internal.TenantDB(c).First(&device, "id = ?", deviceId).Error != nil {
+	if err := internal.TenantDB(c).First(&device, "id = ?", deviceId).Error; err != nil {
 		c.Status(http.StatusNotFound)
+		global.LOG.Error("get device err: " + err.Error())
 		return
 	}
 	c.JSON(http.StatusOK, device.Dto())
@@ -87,8 +88,9 @@ func NewDevice(c *gin.Context) {
 func UpdateDevice(c *gin.Context) {
 	deviceId := c.Param("deviceId")
 	var device models.Device
-	if internal.TenantDB(c).First(&device, "id = ?", deviceId).Error != nil {
+	if err := internal.TenantDB(c).First(&device, "id = ?", deviceId).Error; err != nil {
 		c.Status(http.StatusNotFound)
+		global.LOG.Error("get device err: " + err.Error())
 		return
 	}
 	var d models.Device
@@ -118,8 +120,9 @@ func UpdateDevice(c *gin.Context) {
 func DeleteDevice(c *gin.Context) {
 	deviceId := c.Param("deviceId")
 	var device models.Device
-	if internal.TenantDB(c).First(&device, "id = ?", deviceId).Error != nil {
+	if err := internal.TenantDB(c).First(&device, "id = ?", deviceId).Error; err != nil {
 		c.Status(http.StatusNotFound)
+		global.LOG.Error("get device err: " + err.Error())
 		return
 	}
 	if err := global.DB.Delete(&device).Error; err != nil {
@@ -143,8 +146,9 @@ func DeleteDevice(c *gin.Context) {
 func ListDeviceSecret(c *gin.Context) {
 	deviceId := c.Param("deviceId")
 	var device models.Device
-	if internal.TenantDB(c).First(&device, "id = ?", deviceId).Error != nil {
+	if err := internal.TenantDB(c).First(&device, "id = ?", deviceId).Error; err != nil {
 		c.Status(http.StatusNotFound)
+		global.LOG.Error("get device err: " + err.Error())
 		return
 	}
 	var secrets []models.DeviceSecret
@@ -169,8 +173,9 @@ func ListDeviceSecret(c *gin.Context) {
 func NewDeviceSecret(c *gin.Context) {
 	deviceId := c.Param("deviceId")
 	var device models.Device
-	if internal.TenantDB(c).First(&device, "id = ?", deviceId).Error != nil {
+	if err := internal.TenantDB(c).First(&device, "id = ?", deviceId).Error; err != nil {
 		c.Status(http.StatusNotFound)
+		global.LOG.Error("get device err: " + err.Error())
 		return
 	}
 	var secret models.DeviceSecret
@@ -204,8 +209,9 @@ func DeleteDeviceSecret(c *gin.Context) {
 	secretId := c.Param("secretId")
 	tenant := internal.GetTenant(c)
 	var secret models.DeviceSecret
-	if internal.TenantDB(c).First(&secret, "tenant_id = ? AND device_id = ? AND id = ?", tenant.Id, deviceId, secretId).Error != nil {
+	if err := internal.TenantDB(c).First(&secret, "tenant_id = ? AND device_id = ? AND id = ?", tenant.Id, deviceId, secretId).Error; err != nil {
 		c.Status(http.StatusNotFound)
+		global.LOG.Error("get device secret err: " + err.Error())
 		return
 	}
 
@@ -231,8 +237,9 @@ func DeleteDeviceSecret(c *gin.Context) {
 func GetDeviceGroups(c *gin.Context) {
 	deviceId := c.Param("deviceId")
 	var device models.Device
-	if internal.TenantDB(c).First(&device, "id = ?", deviceId).Error != nil {
+	if err := internal.TenantDB(c).First(&device, "id = ?", deviceId).Error; err != nil {
 		c.Status(http.StatusNotFound)
+		global.LOG.Error("get device err: " + err.Error())
 		return
 	}
 	var groupDevices []models.GroupDevice
@@ -270,8 +277,9 @@ func NewDeviceGroup(c *gin.Context) {
 	}
 
 	var device models.Device
-	if internal.TenantDB(c).First(&device, "id = ?", deviceId).Error != nil {
+	if err := internal.TenantDB(c).First(&device, "id = ?", deviceId).Error; err != nil {
 		c.Status(http.StatusNotFound)
+		global.LOG.Error("get device err: " + err.Error())
 		return
 	}
 
@@ -300,18 +308,23 @@ func NewDeviceGroup(c *gin.Context) {
 func UpdateDeviceGroup(c *gin.Context) {
 	deviceId := c.Param("deviceId")
 	var device models.Device
-	if internal.TenantDB(c).First(&device, "id = ?", deviceId).Error != nil {
+	if err := internal.TenantDB(c).First(&device, "id = ?", deviceId).Error; err != nil {
 		c.Status(http.StatusNotFound)
+		global.LOG.Error("get device err: " + err.Error())
 		return
 	}
+
 	groupId := c.Param("groupId")
 	var group models.Group
-	if internal.TenantDB(c).First(&group, "id = ?", groupId).Error != nil {
+	if err := internal.TenantDB(c).First(&group, "id = ?", groupId).Error; err != nil {
 		c.Status(http.StatusNotFound)
+		global.LOG.Error("get group err: " + err.Error())
 		return
 	}
+
 	var groupDevice models.GroupDevice
-	if internal.TenantDB(c).First(groupDevice, "group_id = ? AND device_id = ?", group.Id, device.Id).Error != nil {
+	if err := internal.TenantDB(c).First(groupDevice, "group_id = ? AND device_id = ?", group.Id, device.Id).Error; err != nil {
+		global.LOG.Error("get group device err: " + err.Error())
 		// Not found, create one.
 		groupDevice.DeviceId = device.Id
 		groupDevice.GroupId = group.Id
@@ -341,16 +354,20 @@ func UpdateDeviceGroup(c *gin.Context) {
 func DeleteDeviceGroup(c *gin.Context) {
 	deviceId := c.Param("deviceId")
 	var device models.Device
-	if internal.TenantDB(c).First(&device, "id = ?", deviceId).Error != nil {
+	if err := internal.TenantDB(c).First(&device, "id = ?", deviceId).Error; err != nil {
 		c.Status(http.StatusNotFound)
+		global.LOG.Error("get device err: " + err.Error())
 		return
 	}
+
 	groupId := c.Param("groupId")
 	var groupDevice models.GroupDevice
-	if internal.TenantDB(c).First(&groupDevice, "device_id = ? AND group_id = ?", device.Id, groupId).Error != nil {
+	if err := internal.TenantDB(c).First(&groupDevice, "device_id = ? AND group_id = ?", device.Id, groupId).Error; err != nil {
 		c.Status(http.StatusNotFound)
+		global.LOG.Error("get group device err: " + err.Error())
 		return
 	}
+
 	if err := internal.TenantDB(c).Delete(&groupDevice).Error; err != nil {
 		c.Status(http.StatusInternalServerError)
 		global.LOG.Error("delete device group err: " + err.Error())
