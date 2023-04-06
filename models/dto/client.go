@@ -1,7 +1,7 @@
 package dto
 
 type ClientDto struct {
-	Id       uint   `json:"id"`
+	Id       string `json:"id"`
 	Name     string `json:"name"`
 	ClientId string `json:"clientId"`
 }

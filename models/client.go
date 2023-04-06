@@ -5,9 +5,8 @@ import (
 )
 
 type Client struct {
-	Id    uint   `gorm:"primaryKey;autoIncrement" json:"id"`
-	Name  string `json:"name"`
-	CliId string `json:"clientId"`
+	Id   string `gorm:"primaryKey" json:"id"`
+	Name string `json:"name"`
 
 	TenantId uint `gorm:"primaryKey"`
 	Tenant   Tenant
@@ -15,7 +14,7 @@ type Client struct {
 
 type RedirectUri struct {
 	Id          uint   `gorm:"primaryKey;autoIncrement" json:"id"`
-	ClientId    uint   `json:"clientId"`
+	ClientId    string `json:"clientId"`
 	Client      Client `gorm:"foreignKey:ClientId, TenantId" json:"client"`
 	RedirectUri string `json:"redirectUri"`
 
@@ -25,7 +24,7 @@ type RedirectUri struct {
 type ClientSecret struct {
 	Id       uint   `gorm:"primaryKey;autoIncrement" json:"id"`
 	Name     string `json:"name"`
-	ClientId uint   `json:"clientId"`
+	ClientId string `json:"clientId"`
 	Client   Client `gorm:"foreignKey:ClientId, TenantId" json:"client"`
 	Secret   string `json:"secret"`
 
@@ -34,9 +33,8 @@ type ClientSecret struct {
 
 func (c *Client) Dto() dto.ClientDto {
 	return dto.ClientDto{
-		Id:       c.Id,
-		Name:     c.Name,
-		ClientId: c.CliId,
+		Id:   c.Id,
+		Name: c.Name,
 	}
 }
 

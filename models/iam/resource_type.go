@@ -5,7 +5,7 @@ import (
 	"accounts/models"
 )
 
-func ListResourceTypes(tenantId, clientId uint) ([]models.ResourceType, error) {
+func ListResourceTypes(tenantId uint, clientId string) ([]models.ResourceType, error) {
 	var resourceTypes []models.ResourceType
 	if err := global.WithTenant(tenantId).Find(&resourceTypes, "client_id = ?", clientId).Error; err != nil {
 		return nil, err
@@ -21,7 +21,7 @@ func GetResourceType(tenantId, typeId uint) (*models.ResourceType, error) {
 	return &resourceType, nil
 }
 
-func CreateResourceType(tenantId, clientId uint, resourceType *models.ResourceType) (*models.ResourceType, error) {
+func CreateResourceType(tenantId uint, clientId string, resourceType *models.ResourceType) (*models.ResourceType, error) {
 	resourceType.TenantId = tenantId
 	resourceType.ClientId = clientId
 	if err := global.WithTenant(tenantId).Create(resourceType).Error; err != nil {

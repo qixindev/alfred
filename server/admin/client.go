@@ -86,8 +86,8 @@ func NewClient(c *gin.Context) {
 		return
 	}
 	client.TenantId = tenant.Id
-	if client.CliId == "" {
-		client.CliId = uuid.NewString()
+	if client.Id == "" {
+		client.Id = uuid.NewString()
 	}
 
 	if err := global.DB.Create(&client).Error; err != nil {

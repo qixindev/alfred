@@ -9,7 +9,7 @@ import (
 func GetClientFromCid(c *gin.Context) (*models.Client, error) {
 	cid := c.Param("client")
 	var client models.Client
-	if err := internal.TenantDB(c).First(&client, "cli_id = ?", cid).Error; err != nil {
+	if err := internal.TenantDB(c).First(&client, "id = ?", cid).Error; err != nil {
 		return nil, err
 	}
 	return &client, nil
