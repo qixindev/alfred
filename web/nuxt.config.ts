@@ -16,18 +16,18 @@ export default defineNuxtConfig({
   },
   css: ['element-plus/dist/index.css',"~/assets/css/main.scss"],
   vite: {
-    // server: {
-    //   proxy: {
-    //     '/accounts': {
-    //       target: 'http://10.1.0.57:8086',  //这里是接口地址
-    //       changeOrigin: true
-    //     },
-    //     '/v1': {
-    //       target: 'http://10.1.0.212:8085',
-    //       changeOrigin: true,
-    //     }
-    //   }
-    // },
+    server: {
+      proxy: {
+        '/accounts': {
+          target: 'http://163.228.231.43:8086',  //这里是接口地址
+          changeOrigin: true
+        },
+        '/v1': {
+          target: 'http://10.1.0.212:8085',
+          changeOrigin: true,
+        }
+      }
+    },
 
     plugins: [
       createSvgIconsPlugin({

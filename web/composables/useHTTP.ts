@@ -9,14 +9,16 @@ export interface ResOptions {
 }
 export type HttpOption = UseFetchOptions<ResOptions>
 
+const defaultOption = {
+  // 默认request header配置
+}
+
 const fetch = (url: string , option: HttpOption) => {
   const baseUrl = import.meta.env.VITE_APP_BASE_API
   url = baseUrl + url
-  //   option = mergeObj(option,{
-  //     headers: {
-  //       'Authorization': auth.value as string,
-  //     }
-  //   })
+  option = mergeObj(option,{
+    defaultOption
+  })
 
   return new Promise((resolve, reject) => {
     useFetch(url, {
@@ -76,8 +78,6 @@ export const useHttp = {
   },
 
   post: (url: string, body?: any, option?: HttpOption) => {
-    console.log(option);
-    
     return fetch(url, { method: 'post', body, ...option })
   },
 
