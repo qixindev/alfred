@@ -1,6 +1,4 @@
 <script setup lang="ts">
-console.log(useRuntimeConfig());
-
 const auth = useCookie('QixinAuth')
 auth.value && useGetUserInfo()
 </script>

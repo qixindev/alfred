@@ -1,7 +1,9 @@
 <script setup lang="ts">
 // TODO: 与login功能重复，待封装优化
 import type { FormInstance, FormRules } from 'element-plus'
-import { login, auth} from '~/api/user';
+import { login } from '~/api/user';
+
+const VITE_APP_BASE_API = import.meta.env.VITE_APP_BASE_API
 
 const phoneForm = reactive({
   phone: '',
@@ -59,15 +61,7 @@ const submit = async (formEl: FormInstance) => {
       const route = useRoute()
       await login(formData)
       const { redirect_uri, client_id } = route.query
-
-      const redirectUrl = await auth({
-        client_id: client_id,
-        scope: 'profileOpenId',
-        response_type: 'code',
-        redirect_uri: redirect_uri
-      }) as string
-      const { code } = useGetQuery(redirectUrl)
-      navigateTo(`${route.query.redirect_uri}?code=${code}&type=qixin`,{ external: true })
+      navigateTo(`${location.origin}${VITE_APP_BASE_API}/default/oauth2/auth?client_id=${client_id}&scope=profileOpenId&response_type=code&redirect_uri=${redirect_uri}`,{ external: true })
     }
   })
 }
