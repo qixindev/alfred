@@ -8,7 +8,7 @@ const (
 	DefaultServiceConfigMap = "service-config"
 	DefaultConfigPath       = "config.dev.yaml"
 	DefaultDeployType       = "local"
-	DefaultReleaseType      = "first"
+	DefaultReleaseType      = "pro"
 	DefaultCmJWKS           = "accounts.jwks"
 )
 
