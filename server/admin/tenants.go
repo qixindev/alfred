@@ -41,8 +41,9 @@ func ListTenants(c *gin.Context) {
 func GetTenant(c *gin.Context) {
 	tenantId := c.Param("tenantId")
 	var tenant models.Tenant
-	if global.DB.First(&tenant, "id = ?", tenantId).Error != nil {
+	if err := global.DB.First(&tenant, "id = ?", tenantId).Error; err != nil {
 		c.Status(http.StatusNotFound)
+		global.LOG.Error("get tenant err: " + err.Error())
 		return
 	}
 	c.JSON(http.StatusOK, tenant.Dto())
@@ -85,8 +86,9 @@ func NewTenant(c *gin.Context) {
 func UpdateTenant(c *gin.Context) {
 	tenantId := c.Param("tenantId")
 	var tenant models.Tenant
-	if global.DB.First(&tenant, "id = ?", tenantId).Error != nil {
+	if err := global.DB.First(&tenant, "id = ?", tenantId).Error; err != nil {
 		c.Status(http.StatusNotFound)
+		global.LOG.Error("get tenant err: " + err.Error())
 		return
 	}
 	var t models.Tenant
@@ -116,8 +118,9 @@ func UpdateTenant(c *gin.Context) {
 func DeleteTenant(c *gin.Context) {
 	tenantId := c.Param("tenantId")
 	var tenant models.Tenant
-	if global.DB.First(&tenant, "id = ?", tenantId).Error != nil {
+	if err := global.DB.First(&tenant, "id = ?", tenantId).Error; err != nil {
 		c.Status(http.StatusNotFound)
+		global.LOG.Error("get tenant err: " + err.Error())
 		return
 	}
 	if err := global.DB.Delete(&tenant).Error; err != nil {
@@ -141,8 +144,9 @@ func DeleteTenant(c *gin.Context) {
 func DeleteTenantSecret(c *gin.Context) {
 	tenantId := c.Param("tenantId")
 	var tenant models.Tenant
-	if global.DB.First(&tenant, "id = ?", tenantId).Error != nil {
+	if err := global.DB.First(&tenant, "id = ?", tenantId).Error; err != nil {
 		c.Status(http.StatusNotFound)
+		global.LOG.Error("get tenant err: " + err.Error())
 		return
 	}
 
@@ -167,8 +171,9 @@ func DeleteTenantSecret(c *gin.Context) {
 func NewTenantSecret(c *gin.Context) {
 	tenantId := c.Param("tenantId")
 	var tenant models.Tenant
-	if global.DB.First(&tenant, "id = ?", tenantId).Error != nil {
+	if err := global.DB.First(&tenant, "id = ?", tenantId).Error; err != nil {
 		c.Status(http.StatusNotFound)
+		global.LOG.Error("get tenant err: " + err.Error())
 		return
 	}
 

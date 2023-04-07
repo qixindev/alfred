@@ -41,8 +41,9 @@ func ListProviders(c *gin.Context) {
 func GetProvider(c *gin.Context) {
 	providerId := c.Param("providerId")
 	var provider models.Provider
-	if internal.TenantDB(c).First(&provider, "id = ?", providerId).Error != nil {
+	if err := internal.TenantDB(c).First(&provider, "id = ?", providerId).Error; err != nil {
 		c.Status(http.StatusNotFound)
+		global.LOG.Error("get provider err: " + err.Error())
 		return
 	}
 	c.JSON(http.StatusOK, provider.Dto())
@@ -86,8 +87,9 @@ func NewProvider(c *gin.Context) {
 func UpdateProvider(c *gin.Context) {
 	providerId := c.Param("providerId")
 	var provider models.Provider
-	if internal.TenantDB(c).First(&provider, "id = ?", providerId).Error != nil {
+	if err := internal.TenantDB(c).First(&provider, "id = ?", providerId).Error; err != nil {
 		c.Status(http.StatusNotFound)
+		global.LOG.Error("get provider err: " + err.Error())
 		return
 	}
 	var p models.Provider
@@ -117,8 +119,9 @@ func UpdateProvider(c *gin.Context) {
 func DeleteProvider(c *gin.Context) {
 	providerId := c.Param("providerId")
 	var provider models.Provider
-	if internal.TenantDB(c).First(&provider, "id = ?", providerId).Error != nil {
+	if err := internal.TenantDB(c).First(&provider, "id = ?", providerId).Error; err != nil {
 		c.Status(http.StatusNotFound)
+		global.LOG.Error("get provider err: " + err.Error())
 		return
 	}
 	if err := global.DB.Delete(&provider).Error; err != nil {

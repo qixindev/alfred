@@ -26,8 +26,8 @@ func getClientAccessToken(c *gin.Context, client *models.Client) (string, error)
 	token := jwt.New(jwt.SigningMethodRS256)
 	claims := token.Claims.(jwt.MapClaims)
 	claims["iss"] = iss
-	claims["aud"] = []string{client.CliId}
-	claims["azp"] = client.CliId
+	claims["aud"] = []string{client.Id}
+	claims["azp"] = client.Id
 	claims["exp"] = now.Add(24 * time.Hour).Unix()
 	claims["iat"] = now.Unix()
 	claims["scope"] = scope
@@ -73,8 +73,8 @@ func getAccessToken(c *gin.Context, client *models.Client) (string, error) {
 	claims := token.Claims.(jwt.MapClaims)
 	claims["iss"] = iss
 	claims["sub"] = clientUser.Sub
-	claims["aud"] = []string{client.CliId}
-	claims["azp"] = client.CliId
+	claims["aud"] = []string{client.Id}
+	claims["azp"] = client.Id
 	claims["exp"] = now.Add(24 * time.Hour).Unix()
 	claims["iat"] = now.Unix()
 	claims["name"] = user.Name()
@@ -155,7 +155,7 @@ func GetAuthCode(c *gin.Context) {
 	tenant := internal.GetTenant(c)
 
 	var client models.Client
-	if err := global.DB.First(&client, "tenant_id = ? AND cli_id = ?", tenant.Id, clientId).Error; err != nil {
+	if err := global.DB.First(&client, "tenant_id = ? AND id = ?", tenant.Id, clientId).Error; err != nil {
 		c.JSON(http.StatusForbidden, gin.H{"message": "Invalid client_id."})
 		global.LOG.Error("get client err: " + err.Error())
 		return
@@ -256,7 +256,7 @@ func GetToken(c *gin.Context) {
 	} else if grantType == "client_credential" {
 		tenant := internal.GetTenant(c)
 		var client models.Client
-		if err := global.DB.First(&client, "tenant_id = ? AND cli_id = ?", tenant.Id, clientId).Error; err != nil {
+		if err := global.DB.First(&client, "tenant_id = ? AND id = ?", tenant.Id, clientId).Error; err != nil {
 			c.JSON(http.StatusForbidden, gin.H{"message": "Invalid client_id."})
 			global.LOG.Error("get client err: " + err.Error())
 			return

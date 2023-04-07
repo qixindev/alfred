@@ -10,7 +10,7 @@ type TokenCode struct {
 	Code      string    `json:"code"`
 	CreatedAt time.Time `json:"createdAt"`
 
-	ClientId uint   `json:"clientId"`
+	ClientId string `json:"clientId"`
 	Client   Client `gorm:"foreignKey:ClientId, TenantId" json:"client"`
 	TenantId uint   `json:"tenantId"`
 }

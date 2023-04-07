@@ -7,7 +7,7 @@ import (
 type ResourceType struct {
 	Id       uint   `gorm:"primaryKey" json:"id"`
 	Name     string `json:"name"`
-	ClientId uint   `json:"clientId"`
+	ClientId string `json:"clientId"`
 	Client   Client `gorm:"foreignKey:ClientId, TenantId" json:"client"`
 	TenantId uint   `gorm:"primaryKey"`
 }

@@ -234,8 +234,9 @@ func Logout(c *gin.Context) {
 func ProviderCallback(c *gin.Context) {
 	providerName := c.Param("provider")
 	var provider models.Provider
-	if internal.TenantDB(c).First(&provider, "name = ?", providerName).Error != nil {
+	if err := internal.TenantDB(c).First(&provider, "name = ?", providerName).Error; err != nil {
 		c.Status(http.StatusNotFound)
+		global.LOG.Error("get provider err: " + err.Error())
 		return
 	}
 
@@ -251,7 +252,8 @@ func ProviderCallback(c *gin.Context) {
 
 	var providerUser models.ProviderUser
 	existingUser := &models.User{}
-	if internal.TenantDB(c).First(&providerUser, "provider_id = ? AND name = ?", provider.Id, userInfo.Sub).Error != nil {
+	if err = internal.TenantDB(c).First(&providerUser, "provider_id = ? AND name = ?", provider.Id, userInfo.Sub).Error; err != nil {
+		global.LOG.Error("get user err: " + err.Error())
 		// Current bind not found.
 		// If logged in, bind to current user.
 		user, err := middlewares.GetUserStandalone(c)
@@ -270,8 +272,9 @@ func ProviderCallback(c *gin.Context) {
 				Disabled:         false,
 				TenantId:         provider.TenantId,
 			}
-			if global.DB.Create(&newUser).Error != nil {
+			if err = global.DB.Create(&newUser).Error; err != nil {
 				c.Status(http.StatusConflict)
+				global.LOG.Error("create user err: " + err.Error())
 				return
 			}
 			user = &newUser
