@@ -40,8 +40,7 @@ func GetUserDetail(c *gin.Context) {
 func UpdateUserDetail(c *gin.Context) {
 	user := GetUser(c)
 	var u dto.UserDto
-	err := c.BindJSON(&u)
-	if err != nil {
+	if err := c.BindJSON(&u); err != nil {
 		user.FirstName = u.FirstName
 		user.LastName = u.DisplayName
 		user.DisplayName = u.DisplayName

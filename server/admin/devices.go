@@ -376,12 +376,34 @@ func DeleteDeviceGroup(c *gin.Context) {
 	c.Status(http.StatusNoContent)
 }
 
+// VerifyDeviceCode godoc
+//
+//	@Summary	device code
+//	@Schemes
+//	@Description	delete device groups
+//	@Tags			device
+//	@Param			tenant		path	string	true	"tenant"
+//	@Param			userCode	path	string	true	"tenant"
+//	@Success		200
+//	@Router			/accounts/admin/{tenant}/devices/code/{userCode} [post]
+func VerifyDeviceCode(c *gin.Context) {
+	userCode := c.Param("userCode")
+	if err := internal.TenantDB(c).Set("status", "Verified").Where("user_code = ?", userCode).Error; err != nil {
+		c.String(http.StatusInternalServerError, "failed to verify user code")
+		global.LOG.Error("")
+		return
+	}
+
+	c.Status(http.StatusNoContent)
+}
+
 func AddAdminDevicesRoutes(rg *gin.RouterGroup) {
 	rg.GET("/devices", ListDevices)
 	rg.GET("/devices/:deviceId", GetDevice)
 	rg.POST("/devices", NewDevice)
 	rg.PUT("/devices/:deviceId", UpdateDevice)
 	rg.DELETE("/devices/:deviceId", DeleteDevice)
+
 	rg.GET("/devices/:deviceId/secrets", ListDeviceSecret)
 	rg.POST("/devices/:deviceId/secrets", NewDeviceSecret)
 	rg.DELETE("/devices/:deviceId/secret/:secretId", DeleteDeviceSecret)
@@ -390,4 +412,6 @@ func AddAdminDevicesRoutes(rg *gin.RouterGroup) {
 	rg.POST("/devices/:deviceId/groups", NewDeviceGroup)
 	rg.PUT("/devices/:deviceId/groups/:groupId", UpdateDeviceGroup)
 	rg.DELETE("/devices/:deviceId/groups/:groupId", DeleteDeviceGroup)
+
+	rg.POST("/device/code/:userCode", VerifyDeviceCode)
 }

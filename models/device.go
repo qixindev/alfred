@@ -2,6 +2,7 @@ package models
 
 import (
 	"accounts/models/dto"
+	"time"
 )
 
 type Device struct {
@@ -42,4 +43,14 @@ func (d *DeviceSecret) Dto() dto.DeviceSecretDto {
 
 func DeviceSecret2Dto(s DeviceSecret) dto.DeviceSecretDto {
 	return s.Dto()
+}
+
+type DeviceCode struct {
+	Id        uint      `json:"id"`
+	TenantId  uint      `json:"tenantId"`
+	Tenant    Tenant    `gorm:"foreignKey:TenantId" json:"tenant"`
+	Code      string    `json:"code" gorm:"uniqueIndex"`
+	UserCode  string    `json:"userCode" gorm:"uniqueIndex"`
+	Status    string    `json:"status"`
+	CreatedAt time.Time `json:"createdAt"`
 }
