@@ -5,9 +5,11 @@ import (
 	"accounts/models"
 	"accounts/models/dto"
 	"accounts/server/internal"
+	"accounts/server/service"
 	"accounts/utils"
 	"github.com/gin-gonic/gin"
 	"net/http"
+	"time"
 )
 
 // ListDevices godoc
@@ -388,9 +390,21 @@ func DeleteDeviceGroup(c *gin.Context) {
 //	@Router			/accounts/admin/{tenant}/devices/code/{userCode} [post]
 func VerifyDeviceCode(c *gin.Context) {
 	userCode := c.Param("userCode")
-	if err := internal.TenantDB(c).Set("status", "Verified").Where("user_code = ?", userCode).Error; err != nil {
+	deviceCode := models.DeviceCode{}
+	if err := internal.TenantDB(c).Where("user_code = ?", userCode).First(&deviceCode).Error; err != nil {
+		c.String(http.StatusInternalServerError, "failed to get user code")
+		global.LOG.Error("set device code err: " + err.Error())
+		return
+	}
+
+	if deviceCode.CreatedAt.Add(2 * time.Minute).Before(time.Now()) {
+		c.String(http.StatusGone, "user code expired")
+		service.ClearDeviceCode(userCode)
+		return
+	}
+	if err := internal.TenantDB(c).Table("device_codes").Where("user_code = ?", userCode).Update("status", "verified").Error; err != nil {
 		c.String(http.StatusInternalServerError, "failed to verify user code")
-		global.LOG.Error("")
+		global.LOG.Error("set device code err: " + err.Error())
 		return
 	}
 
@@ -413,5 +427,5 @@ func AddAdminDevicesRoutes(rg *gin.RouterGroup) {
 	rg.PUT("/devices/:deviceId/groups/:groupId", UpdateDeviceGroup)
 	rg.DELETE("/devices/:deviceId/groups/:groupId", DeleteDeviceGroup)
 
-	rg.POST("/device/code/:userCode", VerifyDeviceCode)
+	rg.POST("/devices/code/:userCode", VerifyDeviceCode)
 }

@@ -14,9 +14,9 @@ type GroupDto struct {
 }
 
 type GroupDeviceDto struct {
-	Id       uint `json:"id"`
-	GroupId  uint `json:"name"`
-	DeviceId uint `json:"deviceId"`
+	Id       uint   `json:"id"`
+	GroupId  uint   `json:"name"`
+	DeviceId string `json:"deviceId"`
 }
 
 type GroupUserDto struct {

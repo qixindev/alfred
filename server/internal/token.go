@@ -60,6 +60,23 @@ func GetAccessToken(c *gin.Context, client *models.Client) (string, error) {
 	return getToken(tenant.Name, token)
 }
 
+func GetDeviceToken(c *gin.Context, device *models.Device) (string, error) {
+	tenant := GetTenant(c)
+	scope := c.Query("scope")
+	iss := fmt.Sprintf("%s/%s", utils.GetHostWithScheme(c), tenant.Name)
+	now := time.Now()
+	token := jwt.New(jwt.SigningMethodRS256)
+	claims := token.Claims.(jwt.MapClaims)
+	claims["iss"] = iss
+	claims["aud"] = []string{device.Id}
+	claims["azp"] = device.Id
+	claims["exp"] = now.Add(24 * time.Hour).Unix()
+	claims["iat"] = now.Unix()
+	claims["scope"] = scope
+
+	return getToken(tenant.Name, token)
+}
+
 func getToken(tenant string, token *jwt.Token) (string, error) {
 	keys, err := utils.LoadRsaPrivateKeys(tenant)
 	if err != nil {

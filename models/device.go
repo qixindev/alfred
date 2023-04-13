@@ -6,7 +6,7 @@ import (
 )
 
 type Device struct {
-	Id   uint   `gorm:"primaryKey;autoIncrement" json:"id"`
+	Id   string `gorm:"primaryKey;autoIncrement" json:"id"`
 	Name string `json:"name"`
 
 	TenantId uint `gorm:"primaryKey"`
@@ -27,7 +27,7 @@ func (d *Device) Dto() dto.DeviceDto {
 type DeviceSecret struct {
 	Id       uint   `gorm:"primaryKey;autoIncrement" json:"id"`
 	Name     string `json:"name"`
-	DeviceId uint   `json:"deviceId"`
+	DeviceId string `json:"deviceId"`
 	Device   Device `gorm:"foreignKey:DeviceId, TenantId" json:"device"`
 	Secret   string `json:"secret"`
 	TenantId uint   `gorm:"primaryKey" json:"tenantId"`

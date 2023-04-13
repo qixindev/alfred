@@ -36,6 +36,10 @@ func InitSystem() error {
 		return err
 	}
 
+	if err = initial.CheckFirstRun(); err != nil {
+		fmt.Println("first run err: ", err)
+		return err
+	}
 	return nil
 }
 

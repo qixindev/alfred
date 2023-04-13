@@ -856,6 +856,26 @@ paths:
       summary: oauth2 authorize
       tags:
       - oauth2
+  /accounts/{tenant}/oauth2/device/code:
+    post:
+      description: delete device groups
+      parameters:
+      - description: tenant
+        in: path
+        name: tenant
+        required: true
+        type: string
+      - description: tenant
+        in: query
+        name: client_id
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+      summary: device code
+      tags:
+      - oauth2
   /accounts/{tenant}/oauth2/token:
     get:
       description: oauth2 token
@@ -873,7 +893,6 @@ paths:
       - description: client_secret
         in: query
         name: client_secret
-        required: true
         type: string
       - description: code
         in: query
@@ -1165,6 +1184,21 @@ paths:
       summary: client user
       tags:
       - client
+  /accounts/admin/{tenant}/clients/default:
+    get:
+      description: get client
+      parameters:
+      - description: tenant
+        in: path
+        name: tenant
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+      summary: client
+      tags:
+      - client
   /accounts/admin/{tenant}/devices:
     get:
       description: list device
@@ -1404,6 +1438,26 @@ paths:
       summary: get client secrets
       tags:
       - client
+  /accounts/admin/{tenant}/devices/code/{userCode}:
+    post:
+      description: delete device groups
+      parameters:
+      - description: tenant
+        in: path
+        name: tenant
+        required: true
+        type: string
+      - description: tenant
+        in: path
+        name: userCode
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+      summary: device code
+      tags:
+      - device
   /accounts/admin/{tenant}/groups:
     get:
       description: list groups
@@ -1843,6 +1897,26 @@ paths:
       - admin-tenants
     put:
       description: update tenants
+      parameters:
+      - description: tenant
+        in: path
+        name: tenant
+        required: true
+        type: string
+      - description: tenant
+        in: path
+        name: tenantId
+        required: true
+        type: integer
+      responses:
+        "200":
+          description: OK
+      summary: tenants
+      tags:
+      - admin-tenants
+  /accounts/admin/tenants/{tenantId}/secrets:
+    post:
+      description: delete tenants
       parameters:
       - description: tenant
         in: path

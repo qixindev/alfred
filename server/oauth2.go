@@ -6,6 +6,7 @@ import (
 	"accounts/models"
 	"accounts/models/dto"
 	"accounts/server/internal"
+	"accounts/server/service"
 	"accounts/utils"
 	"fmt"
 	"github.com/gin-gonic/gin"
@@ -116,10 +117,11 @@ func GetAuthCode(c *gin.Context) {
 //	@Summary	device code
 //	@Schemes
 //	@Description	delete device groups
-//	@Tags			device
+//	@Tags			oauth2
 //	@Param			tenant		path	string	true	"tenant"
+//	@Param			client_id	query	string	true	"tenant"
 //	@Success		200
-//	@Router			/accounts/admin/{tenant}/devices/code [post]
+//	@Router			/accounts/{tenant}/oauth2/device/code [post]
 func GetDeviceCode(c *gin.Context) {
 	clientId := c.Query("client_id")
 	scope := c.Query("scope")
@@ -164,7 +166,7 @@ func GetDeviceCode(c *gin.Context) {
 //	@Tags			oauth2
 //	@Param			tenant			path		string	true	"tenant"
 //	@Param			client_id		query		string	true	"client_id"
-//	@Param			client_secret	query		string	true	"client_secret"
+//	@Param			client_secret	query		string	false	"client_secret"
 //	@Param			code			query		string	false	"code"
 //	@Param			grant_type		query		string	true	"grant_type"
 //	@Param			redirect_uri	query		string	false	"redirect_uri"
@@ -202,7 +204,7 @@ func GetToken(c *gin.Context) {
 			global.LOG.Error("get token code err: " + err.Error())
 			return
 		}
-		internal.ClearTokenCode(tokenCode.Code)
+		service.ClearTokenCode(tokenCode.Code)
 		accessToken := dto.AccessTokenDto{AccessToken: tokenCode.Token}
 		c.JSON(http.StatusOK, accessToken)
 		return
@@ -229,7 +231,7 @@ func GetToken(c *gin.Context) {
 		}
 		c.JSON(http.StatusOK, dto.AccessTokenDto{AccessToken: token})
 		return
-	} else if grantType == "device_code" {
+	} else if grantType == "urn:ietf:params:oauth:grant-type:device_code" {
 		tenant := internal.GetTenant(c)
 		var client models.Client
 		if err := global.DB.First(&client, "tenant_id = ? AND id = ?", tenant.Id, clientId).Error; err != nil {
@@ -239,8 +241,9 @@ func GetToken(c *gin.Context) {
 		}
 
 		var deviceCode models.DeviceCode
-		if err := global.DB.First(&deviceCode, "tenant_id = ? AND user_code = ?", tenant.Id, code); err != nil {
+		if err := global.DB.First(&deviceCode, "tenant_id = ? AND user_code = ?", tenant.Id, code).Error; err != nil {
 			c.JSON(http.StatusForbidden, gin.H{"message": "Invalid user code."})
+			global.LOG.Error("get device code err: " + err.Error())
 			return
 		}
 		if deviceCode.Status != "verified" {
@@ -248,8 +251,34 @@ func GetToken(c *gin.Context) {
 			return
 		}
 
-		internal.ClearDeviceCode(deviceCode.UserCode)
 		token, err := internal.GetClientAccessToken(c, &client)
+		if err != nil {
+			global.LOG.Error("get accessToken err: " + err.Error())
+			c.JSON(http.StatusInternalServerError, gin.H{"message": "generate token err"})
+			return
+		}
+
+		service.ClearDeviceCode(deviceCode.UserCode)
+		c.JSON(http.StatusOK, dto.AccessTokenDto{AccessToken: token})
+		return
+	} else if grantType == "device_credential" {
+		id := c.Param("device_id")
+		secret := c.Param("device_secret")
+		var device models.Device
+		if err := internal.TenantDB(c).Where("id = ?", id).First(&device).Error; err != nil {
+			c.String(http.StatusUnauthorized, "invalidate device id")
+			global.LOG.Error("get device id err: " + err.Error())
+			return
+		}
+
+		var deviceSecret models.DeviceSecret
+		if err := internal.TenantDB(c).Where("device_id = ? AND secret = ?", id, secret).First(&deviceSecret).Error; err != nil {
+			c.String(http.StatusUnauthorized, "invalidate device secret")
+			global.LOG.Error("get device secret err: " + err.Error())
+			return
+		}
+
+		token, err := internal.GetDeviceToken(c, &device)
 		if err != nil {
 			global.LOG.Error("get accessToken err: " + err.Error())
 			c.JSON(http.StatusInternalServerError, gin.H{"message": "generate token err"})
