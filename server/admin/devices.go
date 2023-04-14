@@ -8,6 +8,7 @@ import (
 	"accounts/server/service"
 	"accounts/utils"
 	"github.com/gin-gonic/gin"
+	"github.com/google/uuid"
 	"net/http"
 	"time"
 )
@@ -74,7 +75,23 @@ func NewDevice(c *gin.Context) {
 		global.LOG.Error("new device err: " + err.Error())
 		return
 	}
-	c.JSON(http.StatusOK, device.Dto())
+
+	secret := models.DeviceSecret{
+		Name:     "default",
+		Secret:   uuid.NewString(),
+		TenantId: tenant.Id,
+	}
+	if err := internal.TenantDB(c).Create(&secret).Error; err != nil {
+		c.Status(http.StatusConflict)
+		global.LOG.Error("new device secret err: " + err.Error())
+		return
+	}
+	c.JSON(http.StatusOK, &gin.H{
+		"id":                 device.Id,
+		"device_name":        device.Name,
+		"device_secret":      secret.Secret,
+		"device_secret_name": secret.Name,
+	})
 }
 
 // UpdateDevice godoc
