@@ -6,7 +6,7 @@ import (
 )
 
 type Device struct {
-	Id   string `gorm:"primaryKey" json:"id"`
+	Id   string `gorm:"primaryKey;not null" json:"id"`
 	Name string `json:"name"`
 
 	TenantId uint `gorm:"primaryKey"`
