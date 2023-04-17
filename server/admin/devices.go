@@ -80,6 +80,7 @@ func NewDevice(c *gin.Context) {
 	}
 
 	secret := models.DeviceSecret{
+		DeviceId: device.Id,
 		Name:     "default",
 		Secret:   uuid.NewString(),
 		TenantId: tenant.Id,
@@ -147,6 +148,13 @@ func DeleteDevice(c *gin.Context) {
 		global.LOG.Error("get device err: " + err.Error())
 		return
 	}
+	if err := global.DB.Where("device_id = ?", deviceId).
+		Delete(&models.DeviceSecret{}).Error; err != nil {
+		c.Status(http.StatusInternalServerError)
+		global.LOG.Error("delete device err: " + err.Error())
+		return
+	}
+
 	if err := global.DB.Delete(&device).Error; err != nil {
 		c.Status(http.StatusInternalServerError)
 		global.LOG.Error("delete device err: " + err.Error())
