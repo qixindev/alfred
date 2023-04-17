@@ -69,6 +69,9 @@ func NewDevice(c *gin.Context) {
 		internal.ErrReqPara(c, err)
 		return
 	}
+	if device.Id == "" {
+		device.Id = uuid.NewString()
+	}
 	device.TenantId = tenant.Id
 	if err := global.DB.Create(&device).Error; err != nil {
 		c.Status(http.StatusConflict)

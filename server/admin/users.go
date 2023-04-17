@@ -108,6 +108,7 @@ func UpdateUser(c *gin.Context) {
 	user.PhoneVerified = u.PhoneVerified
 	user.TwoFactorEnabled = u.TwoFactorEnabled
 	user.Disabled = u.Disabled
+	user.Role = u.Role
 	if err := global.DB.Save(&user).Error; err != nil {
 		c.Status(http.StatusInternalServerError)
 		global.LOG.Error("update tenant user err: " + err.Error())
