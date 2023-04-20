@@ -65,7 +65,6 @@ func main() {
 	store.Options(sessions.Options{
 		Secure:   true,
 		HttpOnly: true,
-		SameSite: 4,
 		MaxAge:   60 * 60 * 24,
 	})
 	r.Use(sessions.Sessions("QixinAuth", store))
