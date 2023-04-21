@@ -62,7 +62,10 @@ func main() {
 	r.Use(cors.Default())
 	cookieSecret := initial.GetSessionSecret()
 	store := cookie.NewStore(cookieSecret)
-	store.Options(sessions.Options{MaxAge: 60 * 60 * 24})
+	store.Options(sessions.Options{
+		MaxAge: 60 * 60 * 24,
+		Path:   "/",
+	})
 	r.Use(sessions.Sessions("QixinAuth", store))
 	server.AddRoutes(r)
 
