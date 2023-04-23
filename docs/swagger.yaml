@@ -1177,7 +1177,32 @@ paths:
         in: path
         name: clientId
         required: true
-        type: integer
+        type: string
+      responses:
+        "200":
+          description: OK
+      summary: client user
+      tags:
+      - client
+  /accounts/admin/{tenant}/clients/{clientId}/users/{subId}:
+    get:
+      description: get client user list
+      parameters:
+      - description: tenant
+        in: path
+        name: tenant
+        required: true
+        type: string
+      - description: tenant
+        in: path
+        name: clientId
+        required: true
+        type: string
+      - description: tenant
+        in: path
+        name: subId
+        required: true
+        type: string
       responses:
         "200":
           description: OK

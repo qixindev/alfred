@@ -262,8 +262,8 @@ func GetToken(c *gin.Context) {
 		c.JSON(http.StatusOK, dto.AccessTokenDto{AccessToken: token})
 		return
 	} else if grantType == "device_credential" {
-		id := c.Param("device_id")
-		secret := c.Param("device_secret")
+		id := c.Query("device_id")
+		secret := c.Query("device_secret")
 		var device models.Device
 		if err := internal.TenantDB(c).Where("id = ?", id).First(&device).Error; err != nil {
 			c.String(http.StatusUnauthorized, "invalidate device id")

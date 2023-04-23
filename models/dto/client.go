@@ -17,6 +17,12 @@ type ClientSecretDto struct {
 	Secret string `json:"secret"`
 }
 
+type ClientUserDto struct {
+	Sub      string `json:"sub"`
+	ClientId string `json:"clientId"`
+	UserName string `json:"userName"`
+}
+
 type AccessTokenDto struct {
 	AccessToken string `json:"access_token"`
 }

@@ -1,5 +1,7 @@
 package models
 
+import "accounts/models/dto"
+
 type ClientUser struct {
 	Id       uint   `gorm:"primaryKey;autoIncrement" json:"id"`
 	ClientId string `json:"clientId"`
@@ -7,6 +9,20 @@ type ClientUser struct {
 	UserId   uint   `json:"userId"`
 	User     User   `gorm:"foreignKey:UserId, TenantId" json:"user"`
 	Sub      string `json:"sub"`
+	UserName string `json:"userName" gorm:"<-:false;-:migration"`
+	Phone    string `json:"phone" gorm:"<-:false;-:migration"`
 
 	TenantId uint `gorm:"primaryKey"`
+}
+
+func (c *ClientUser) Dto() dto.ClientUserDto {
+	return dto.ClientUserDto{
+		Sub:      c.Sub,
+		ClientId: c.ClientId,
+		UserName: c.UserName,
+	}
+}
+
+func ClientUserDto(c ClientUser) dto.ClientUserDto {
+	return c.Dto()
 }
