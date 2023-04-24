@@ -4,7 +4,6 @@ import (
 	"accounts/global"
 	"accounts/models"
 	"errors"
-	"gorm.io/gorm"
 )
 
 func CreateProviderConfig(p models.Provider) error {
@@ -76,24 +75,25 @@ func UpdateProviderConfig(p models.Provider) error {
 	return nil
 }
 
-func GetProvider(tenantId uint, providerId uint, t string) (map[string]any, error) {
-	var tx *gorm.DB
-	var res map[string]any
+func GetProvider(tenantId uint, providerId uint, t string) (any, error) {
+	tx := global.DB.Where("tenant_id = ? AND provider_id = ?", tenantId, providerId)
+	var err error
+	oauth2, ding, wecom := models.ProviderOAuth2{}, models.ProviderDingTalk{}, models.ProviderWeCom{}
 	switch t {
 	case "oauth2":
-		tx = global.DB.Model(models.ProviderOAuth2{})
+		err = tx.Model(oauth2).Preload("Provider").First(&oauth2).Error
+		return oauth2, err
 	case "dingtalk":
-		tx = global.DB.Model(models.ProviderDingTalk{})
+		err = tx.Model(ding).Preload("Provider").First(&ding).Error
+		return ding, err
 	case "wecom":
-		tx = global.DB.Model(models.ProviderWeCom{})
-	default:
-		return nil, errors.New("no such provider type")
+		err = tx.Model(wecom).Preload("Provider").First(&wecom).Error
+		return wecom, err
 	}
 
-	if err := tx.Where("tenant_id = ? AND provider_id = ?", tenantId, providerId).
-		Preload("Provider").First(&res).Error; err != nil {
-		return nil, err
-	}
+	return nil, errors.New("no such provider type")
+}
 
-	return res, nil
+func IsValidType(t string) bool {
+	return t == "oauth2" || t == "dingtalk" || t == "wecom"
 }

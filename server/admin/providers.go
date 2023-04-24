@@ -76,6 +76,11 @@ func NewProvider(c *gin.Context) {
 		internal.ErrReqPara(c, err)
 		return
 	}
+
+	if !service.IsValidType(provider.Type) {
+		c.JSON(http.StatusBadRequest, &gin.H{"message": "invalid type"})
+		return
+	}
 	provider.TenantId = tenant.Id
 	if err := global.DB.Create(&provider).Error; err != nil {
 		c.Status(http.StatusConflict)
@@ -110,6 +115,11 @@ func UpdateProvider(c *gin.Context) {
 	}
 
 	name := p.Name
+	if !service.IsValidType(p.Type) {
+		c.JSON(http.StatusBadRequest, &gin.H{"message": "invalid type"})
+		return
+	}
+
 	if err := internal.TenantDB(c).First(&p, "id = ?", providerId).Error; err != nil {
 		c.Status(http.StatusNotFound)
 		global.LOG.Error("get provider err: " + err.Error())
