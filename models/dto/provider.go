@@ -5,3 +5,11 @@ type ProviderDto struct {
 	Name string `json:"name"`
 	Type string `json:"type"`
 }
+
+type ProviderConfigDto struct {
+	ProviderId   uint   `json:"providerId"`
+	Type         string `json:"type"`
+	AgentId      string `json:"agentId"`
+	ClientId     string `json:"clientId"`
+	ClientSecret string `json:"clientSecret"`
+}

@@ -1197,6 +1197,15 @@ const docTemplate = `{
                         "name": "tenant",
                         "in": "path",
                         "required": true
+                    },
+                    {
+                        "description": "body",
+                        "name": "req",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "object"
+                        }
                     }
                 ],
                 "responses": {
@@ -2470,35 +2479,6 @@ const docTemplate = `{
                 }
             }
         },
-        "/accounts/{tenant}/login/providers": {
-            "get": {
-                "description": "list login providers",
-                "tags": [
-                    "login"
-                ],
-                "summary": "List all providers",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "tenant",
-                        "name": "tenant",
-                        "in": "path",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "type": "array",
-                            "items": {
-                                "$ref": "#/definitions/dto.ProviderDto"
-                            }
-                        }
-                    }
-                }
-            }
-        },
         "/accounts/{tenant}/login/providers/{provider}": {
             "get": {
                 "description": "get a login provider",
@@ -2828,6 +2808,35 @@ const docTemplate = `{
                         "description": "OK",
                         "schema": {
                             "$ref": "#/definitions/dto.AccessTokenDto"
+                        }
+                    }
+                }
+            }
+        },
+        "/accounts/{tenant}/providers": {
+            "get": {
+                "description": "list login providers",
+                "tags": [
+                    "login"
+                ],
+                "summary": "List all providers",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "tenant",
+                        "name": "tenant",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/dto.ProviderDto"
+                            }
                         }
                     }
                 }

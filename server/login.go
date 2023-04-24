@@ -112,7 +112,7 @@ func LoginToProvider(c *gin.Context) {
 //	@Tags			login
 //	@Param			tenant	path		string	true	"tenant"
 //	@Success		200		{object}	[]dto.ProviderDto
-//	@Router			/accounts/{tenant}/login/providers [get]
+//	@Router			/accounts/{tenant}/providers [get]
 func ListProviders(c *gin.Context) {
 	var providers []models.Provider
 	if err := internal.TenantDB(c).Find(&providers).Error; err != nil {
@@ -232,6 +232,7 @@ func ProviderCallback(c *gin.Context) {
 	authProvider, err := auth.GetAuthProvider(provider.TenantId, provider.Name)
 	if err != nil {
 		c.String(http.StatusNotFound, "provider not found")
+		return
 	}
 	userInfo, err := authProvider.Login(c)
 	if err != nil {
