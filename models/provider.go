@@ -24,22 +24,8 @@ func (p *Provider) Dto() dto.ProviderDto {
 	}
 }
 
-func (p *Provider) ConfigDto() dto.ProviderConfigDto {
-	return dto.ProviderConfigDto{
-		ProviderId:   p.Id,
-		Type:         p.Type,
-		AgentId:      p.AgentId,
-		ClientId:     p.ClientId,
-		ClientSecret: p.ClientSecret,
-	}
-}
-
 func Provider2Dto(p Provider) dto.ProviderDto {
 	return p.Dto()
-}
-
-func ProviderConfig2Dto(p Provider) dto.ProviderConfigDto {
-	return p.ConfigDto()
 }
 
 type ProviderUser struct {
