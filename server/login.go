@@ -132,7 +132,7 @@ func ListProviders(c *gin.Context) {
 //	@Param			tenant		path		string	true	"tenant"
 //	@Param			provider	path		string	true	"provider"
 //	@Success		200			{object}	dto.ProviderDto
-//	@Router			/accounts/{tenant}/login/providers/{provider} [get]
+//	@Router			/accounts/{tenant}/providers/{provider} [get]
 func GetProvider(c *gin.Context) {
 	tenant := internal.GetTenant(c)
 	providerName := c.Param("provider")
