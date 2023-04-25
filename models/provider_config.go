@@ -1,6 +1,14 @@
 package models
 
-import "accounts/models/dto"
+import (
+	"accounts/server/types"
+	"github.com/gin-gonic/gin"
+)
+
+type ItfProvider interface {
+	Dto() any
+	Save(types.ReqProvider) any
+}
 
 type ProviderAzureAd struct {
 	Id         uint     `gorm:"primaryKey;autoIncrement" json:"id"`
@@ -22,14 +30,23 @@ type ProviderDingTalk struct {
 	TenantId uint `json:"tenantId" gorm:"primaryKey"`
 }
 
-func (p *ProviderDingTalk) Dto() dto.ProviderConfigDto {
-	return dto.ProviderConfigDto{
-		ProviderId:   p.ProviderId,
-		Name:         p.Provider.Name,
-		Type:         p.Provider.Type,
-		AgentId:      p.AgentId,
-		ClientId:     p.AppKey,
-		ClientSecret: p.AppSecret,
+func (p *ProviderDingTalk) Dto() any {
+	return &gin.H{
+		"providerId": p.ProviderId,
+		"name":       p.Provider.Name,
+		"type":       p.Provider.Type,
+		"agentId":    p.AgentId,
+		"appKey":     p.AppKey,
+		"appSecret":  p.AppSecret,
+	}
+}
+func (p *ProviderDingTalk) Save(r types.ReqProvider) any {
+	return &ProviderDingTalk{
+		ProviderId: r.ProviderId,
+		TenantId:   r.TenantId,
+		AgentId:    r.AgentId,
+		AppKey:     r.AppKey,
+		AppSecret:  r.AppSecret,
 	}
 }
 
@@ -49,13 +66,29 @@ type ProviderOAuth2 struct {
 	TenantId uint `json:"tenantId" gorm:"primaryKey"`
 }
 
-func (p *ProviderOAuth2) Dto() dto.ProviderConfigDto {
-	return dto.ProviderConfigDto{
-		ProviderId:   p.ProviderId,
-		Name:         p.Provider.Name,
-		Type:         p.Provider.Type,
-		ClientId:     p.ClientId,
-		ClientSecret: p.ClientSecret,
+func (p *ProviderOAuth2) Dto() any {
+	return &gin.H{
+		"providerId":        p.ProviderId,
+		"name":              p.Provider.Name,
+		"type":              p.Provider.Type,
+		"clientId":          p.ClientId,
+		"scope":             p.Scope,
+		"responseType":      p.ResponseType,
+		"authorizeEndpoint": p.AuthorizeEndpoint,
+		"userInfoEndpoint":  p.UserinfoEndpoint,
+		"tokenEndpoint":     p.TokenEndpoint,
+	}
+}
+func (p *ProviderOAuth2) Save(r types.ReqProvider) any {
+	return &ProviderOAuth2{
+		ProviderId:        r.ProviderId,
+		TenantId:          r.TenantId,
+		ClientId:          r.ClientId,
+		ClientSecret:      r.ClientSecret,
+		AuthorizeEndpoint: r.AuthorizeEndpoint,
+		UserinfoEndpoint:  r.UserinfoEndpoint,
+		TokenEndpoint:     r.TokenEndpoint,
+		ResponseType:      r.ResponseType,
 	}
 }
 
@@ -71,14 +104,23 @@ type ProviderWeCom struct {
 	TenantId uint `json:"tenantId" gorm:"primaryKey"`
 }
 
-func (p *ProviderWeCom) Dto() dto.ProviderConfigDto {
-	return dto.ProviderConfigDto{
-		ProviderId:   p.ProviderId,
-		Name:         p.Provider.Name,
-		Type:         p.Provider.Type,
-		AgentId:      p.CorpId,
-		ClientId:     p.AgentId,
-		ClientSecret: p.AppSecret,
+func (p *ProviderWeCom) Dto() any {
+	return &gin.H{
+		"providerId": p.ProviderId,
+		"name":       p.Provider.Name,
+		"type":       p.Provider.Type,
+		"corpId":     p.CorpId,
+		"agentId":    p.AgentId,
+		"appSecret":  p.AppSecret,
+	}
+}
+func (p *ProviderWeCom) Save(r types.ReqProvider) any {
+	return &ProviderWeCom{
+		ProviderId: r.ProviderId,
+		TenantId:   r.TenantId,
+		CorpId:     r.CorpId,
+		AgentId:    r.AgentId,
+		AppSecret:  r.AppSecret,
 	}
 }
 
@@ -89,4 +131,17 @@ type ProviderSms struct {
 	SmsConnectorId uint         `json:"smsConnectorId"`
 	SmsConnector   SmsConnector `gorm:"foreignKey:SmsConnectorId, TenantId"`
 	TenantId       uint         `gorm:"primaryKey;autoIncrement" json:"tenantId"`
+}
+
+func (p *ProviderSms) Dto() any {
+	return &gin.H{
+		"providerId": p.ProviderId,
+		"name":       p.Provider.Name,
+		"type":       p.Provider.Type,
+	}
+}
+func (p *ProviderSms) Save(r types.ReqProvider) any {
+	return &ProviderSms{
+		ProviderId: r.ProviderId,
+	}
 }

@@ -5,6 +5,7 @@ import (
 	"errors"
 	"math/rand"
 	"os"
+	"strconv"
 	"time"
 )
 
@@ -44,4 +45,9 @@ func GetDeviceUserCode() string {
 		b[i] = charset[seededRand.Intn(len(charset))]
 	}
 	return string(b)
+}
+
+func StrToUint(obj string) uint {
+	res, _ := strconv.Atoi(obj)
+	return uint(res)
 }

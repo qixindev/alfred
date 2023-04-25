@@ -5,6 +5,7 @@ import (
 	"accounts/models"
 	"accounts/server/internal"
 	"accounts/server/service"
+	"accounts/server/types"
 	"accounts/utils"
 	"github.com/gin-gonic/gin"
 	"net/http"
@@ -71,23 +72,14 @@ func GetProvider(c *gin.Context) {
 //	@Router			/accounts/admin/{tenant}/providers [post]
 func NewProvider(c *gin.Context) {
 	tenant := internal.GetTenant(c)
-	var provider models.Provider
+	var provider types.ReqProvider
 	if err := c.BindJSON(&provider); err != nil {
 		internal.ErrReqPara(c, err)
 		return
 	}
 
-	if !service.IsValidType(provider.Type) {
-		c.JSON(http.StatusBadRequest, &gin.H{"message": "invalid type"})
-		return
-	}
+	provider.Id = 0
 	provider.TenantId = tenant.Id
-	if err := global.DB.Create(&provider).Error; err != nil {
-		c.Status(http.StatusConflict)
-		global.LOG.Error("new provider err: " + err.Error())
-		return
-	}
-
 	if err := service.CreateProviderConfig(provider); err != nil {
 		c.JSON(http.StatusInternalServerError, &gin.H{"message": "failed to create provider config"})
 		global.LOG.Error("create provider config err: " + err.Error())
@@ -107,32 +99,16 @@ func NewProvider(c *gin.Context) {
 //	@Success		200
 //	@Router			/accounts/admin/{tenant}/providers/{providerId} [put]
 func UpdateProvider(c *gin.Context) {
+	tenant := internal.GetTenant(c)
 	providerId := c.Param("providerId")
-	var p models.Provider
+	var p types.ReqProvider
 	if err := c.BindJSON(&p); err != nil {
 		internal.ErrReqPara(c, err)
 		return
 	}
 
-	name := p.Name
-	if !service.IsValidType(p.Type) {
-		c.JSON(http.StatusBadRequest, &gin.H{"message": "invalid type"})
-		return
-	}
-
-	if err := internal.TenantDB(c).First(&p, "id = ?", providerId).Error; err != nil {
-		c.Status(http.StatusNotFound)
-		global.LOG.Error("get provider err: " + err.Error())
-		return
-	}
-
-	p.Name = name
-	if err := global.DB.Save(&p).Error; err != nil {
-		c.Status(http.StatusInternalServerError)
-		global.LOG.Error("update provider err: " + err.Error())
-		return
-	}
-
+	p.TenantId = tenant.Id
+	p.ProviderId = utils.StrToUint(providerId)
 	if err := service.UpdateProviderConfig(p); err != nil {
 		c.Status(http.StatusInternalServerError)
 		global.LOG.Error("update provider config err: " + err.Error())
