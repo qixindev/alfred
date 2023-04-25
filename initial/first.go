@@ -20,6 +20,9 @@ func CheckFirstRun() error {
 		if err := global.DB.First(&tenant, "name = ?", DefaultTenant).Error; err != nil {
 			return initFirstRun()
 		}
+		if err := migrateDB(); err != nil {
+			return err
+		}
 	}
 
 	return nil

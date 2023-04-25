@@ -1,11 +1,13 @@
 package models
 
+import "accounts/models/dto"
+
 type ProviderAzureAd struct {
 	Id         uint     `gorm:"primaryKey;autoIncrement" json:"id"`
 	ProviderId uint     `json:"providerId"`
 	Provider   Provider `gorm:"foreignKey:ProviderId, TenantId" json:"provider"`
 
-	TenantId uint `gorm:"primaryKey"`
+	TenantId uint `json:"tenantId" gorm:"primaryKey"`
 }
 
 type ProviderDingTalk struct {
@@ -13,11 +15,22 @@ type ProviderDingTalk struct {
 	ProviderId uint     `json:"providerId"`
 	Provider   Provider `gorm:"foreignKey:ProviderId, TenantId" json:"provider"`
 
-	AgentId   string
-	AppKey    string
-	AppSecret string
+	AgentId   string `json:"agentId"`
+	AppKey    string `json:"appKey"`
+	AppSecret string `json:"appSecret"`
 
-	TenantId uint `gorm:"primaryKey"`
+	TenantId uint `json:"tenantId" gorm:"primaryKey"`
+}
+
+func (p *ProviderDingTalk) Dto() dto.ProviderConfigDto {
+	return dto.ProviderConfigDto{
+		ProviderId:   p.ProviderId,
+		Name:         p.Provider.Name,
+		Type:         p.Provider.Type,
+		AgentId:      p.AgentId,
+		ClientId:     p.AppKey,
+		ClientSecret: p.AppSecret,
+	}
 }
 
 type ProviderOAuth2 struct {
@@ -33,7 +46,17 @@ type ProviderOAuth2 struct {
 	Scope             string `json:"scope"`
 	ResponseType      string `json:"responseType"`
 
-	TenantId uint `gorm:"primaryKey"`
+	TenantId uint `json:"tenantId" gorm:"primaryKey"`
+}
+
+func (p *ProviderOAuth2) Dto() dto.ProviderConfigDto {
+	return dto.ProviderConfigDto{
+		ProviderId:   p.ProviderId,
+		Name:         p.Provider.Name,
+		Type:         p.Provider.Type,
+		ClientId:     p.ClientId,
+		ClientSecret: p.ClientSecret,
+	}
 }
 
 type ProviderWeCom struct {
@@ -45,7 +68,18 @@ type ProviderWeCom struct {
 	AgentId   string `json:"agentId"`
 	AppSecret string `json:"appSecret"`
 
-	TenantId uint `gorm:"primaryKey"`
+	TenantId uint `json:"tenantId" gorm:"primaryKey"`
+}
+
+func (p *ProviderWeCom) Dto() dto.ProviderConfigDto {
+	return dto.ProviderConfigDto{
+		ProviderId:   p.ProviderId,
+		Name:         p.Provider.Name,
+		Type:         p.Provider.Type,
+		AgentId:      p.CorpId,
+		ClientId:     p.AgentId,
+		ClientSecret: p.AppSecret,
+	}
 }
 
 type ProviderSms struct {

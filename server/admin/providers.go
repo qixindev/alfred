@@ -160,11 +160,19 @@ func DeleteProvider(c *gin.Context) {
 		global.LOG.Error("get provider err: " + err.Error())
 		return
 	}
-	if err := global.DB.Delete(&provider).Error; err != nil {
+
+	if err := service.DeleteProviderConfig(provider); err != nil {
+		c.Status(http.StatusInternalServerError)
+		global.LOG.Error("delete provider config err: " + err.Error())
+		return
+	}
+
+	if err := internal.TenantDB(c).Where("id = ?", providerId).Delete(&provider).Error; err != nil {
 		c.Status(http.StatusInternalServerError)
 		global.LOG.Error("delete provider err: " + err.Error())
 		return
 	}
+
 	c.Status(http.StatusNoContent)
 }
 

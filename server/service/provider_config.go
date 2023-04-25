@@ -82,13 +82,13 @@ func GetProvider(tenantId uint, providerId uint, t string) (any, error) {
 	switch t {
 	case "oauth2":
 		err = tx.Model(oauth2).Preload("Provider").First(&oauth2).Error
-		return oauth2, err
+		return oauth2.Dto(), err
 	case "dingtalk":
 		err = tx.Model(ding).Preload("Provider").First(&ding).Error
-		return ding, err
+		return ding.Dto(), err
 	case "wecom":
 		err = tx.Model(wecom).Preload("Provider").First(&wecom).Error
-		return wecom, err
+		return wecom.Dto(), err
 	}
 
 	return nil, errors.New("no such provider type")
@@ -96,4 +96,20 @@ func GetProvider(tenantId uint, providerId uint, t string) (any, error) {
 
 func IsValidType(t string) bool {
 	return t == "oauth2" || t == "dingtalk" || t == "wecom"
+}
+
+func DeleteProviderConfig(p models.Provider) error {
+	var err error
+	tx := global.DB.Where("tenant_id = ? AND provider_id = ?", p.TenantId, p.Id)
+	switch p.Type {
+	case "oauth2":
+		err = tx.Delete(models.ProviderOAuth2{}).Error
+	case "dingtalk":
+		err = tx.Delete(models.ProviderDingTalk{}).Error
+	case "wecom":
+		err = tx.Delete(models.ProviderWeCom{}).Error
+	default:
+		return errors.New("no such type")
+	}
+	return err
 }
