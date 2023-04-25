@@ -82,8 +82,8 @@ const dingLogin = () => {
 }
 
 const thirdLogin = (params: any) => {
-  console.log(params)
-  const redirect_uri = location.origin
+  const route = useRoute()
+  const { redirect_uri } = route.query
   let appId;
   switch (params.type) {
     case 'dingtalk':
