@@ -12,6 +12,7 @@ import (
 	"github.com/golang-jwt/jwt"
 	"net/http"
 	"net/url"
+	"strings"
 )
 
 func getTenant(c *gin.Context) *models.Tenant {
@@ -20,6 +21,11 @@ func getTenant(c *gin.Context) *models.Tenant {
 
 func MultiTenancy(c *gin.Context) {
 	tenantName := c.Param("tenant")
+	fmt.Println(c.Request.URL.String())
+	if tenantName == "" && !strings.HasPrefix(c.Request.URL.String(), "/accounts/admin/tenants") {
+		c.AbortWithStatusJSON(http.StatusBadRequest, &gin.H{"message": "tenant should not be null"})
+	}
+
 	var tenant models.Tenant
 	if global.DB.First(&tenant, "name = ?", tenantName).Error == nil {
 		c.Set("tenant", &tenant)

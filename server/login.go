@@ -11,20 +11,9 @@ import (
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
-	"golang.org/x/crypto/bcrypt"
 	"net/http"
 	"strings"
 )
-
-func hashPassword(password string) (string, error) {
-	bytes, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
-	return string(bytes), err
-}
-
-func checkPasswordHash(password string, hash string) bool {
-	err := bcrypt.CompareHashAndPassword([]byte(hash), []byte(password))
-	return err == nil
-}
 
 // Login godoc
 //
@@ -55,7 +44,7 @@ func Login(c *gin.Context) {
 		return
 	}
 
-	if checkPasswordHash(password, user.PasswordHash) == false {
+	if utils.CheckPasswordHash(password, user.PasswordHash) == false {
 		c.Status(http.StatusUnauthorized)
 		global.LOG.Error("incorrect password")
 		return
@@ -123,7 +112,7 @@ func LoginToProvider(c *gin.Context) {
 //	@Tags			login
 //	@Param			tenant	path		string	true	"tenant"
 //	@Success		200		{object}	[]dto.ProviderDto
-//	@Router			/accounts/{tenant}/login/providers [get]
+//	@Router			/accounts/{tenant}/providers [get]
 func ListProviders(c *gin.Context) {
 	var providers []models.Provider
 	if err := internal.TenantDB(c).Find(&providers).Error; err != nil {
@@ -177,7 +166,7 @@ func Register(c *gin.Context) {
 		return
 	}
 
-	hash, err := hashPassword(password)
+	hash, err := utils.HashPassword(password)
 	if err != nil {
 		c.Status(http.StatusInternalServerError)
 		global.LOG.Error("hashPassword err: " + err.Error())
@@ -243,6 +232,7 @@ func ProviderCallback(c *gin.Context) {
 	authProvider, err := auth.GetAuthProvider(provider.TenantId, provider.Name)
 	if err != nil {
 		c.String(http.StatusNotFound, "provider not found")
+		return
 	}
 	userInfo, err := authProvider.Login(c)
 	if err != nil {

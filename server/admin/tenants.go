@@ -167,7 +167,7 @@ func DeleteTenantSecret(c *gin.Context) {
 //	@Param			tenant		path	string	true	"tenant"
 //	@Param			tenantId	path	integer	true	"tenant"
 //	@Success		200
-//	@Router			/accounts/admin/tenants/{tenantId}/secrets/{secretId} [delete]
+//	@Router			/accounts/admin/tenants/{tenantId}/secrets [post]
 func NewTenantSecret(c *gin.Context) {
 	tenantId := c.Param("tenantId")
 	var tenant models.Tenant

@@ -145,6 +145,36 @@ const docTemplate = `{
                 }
             }
         },
+        "/accounts/admin/tenants/{tenantId}/secrets": {
+            "post": {
+                "description": "delete tenants",
+                "tags": [
+                    "admin-tenants"
+                ],
+                "summary": "tenants",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "tenant",
+                        "name": "tenant",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "tenant",
+                        "name": "tenantId",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
         "/accounts/admin/tenants/{tenantId}/secrets/{secretId}": {
             "delete": {
                 "description": "delete tenants",
@@ -219,6 +249,29 @@ const docTemplate = `{
                         "schema": {
                             "type": "object"
                         }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/accounts/admin/{tenant}/clients/default": {
+            "get": {
+                "description": "get client",
+                "tags": [
+                    "client"
+                ],
+                "summary": "client",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "tenant",
+                        "name": "tenant",
+                        "in": "path",
+                        "required": true
                     }
                 ],
                 "responses": {
@@ -513,9 +566,46 @@ const docTemplate = `{
                         "required": true
                     },
                     {
-                        "type": "integer",
+                        "type": "string",
                         "description": "tenant",
                         "name": "clientId",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/accounts/admin/{tenant}/clients/{clientId}/users/{subId}": {
+            "get": {
+                "description": "get client user list",
+                "tags": [
+                    "client"
+                ],
+                "summary": "client user",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "tenant",
+                        "name": "tenant",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "tenant",
+                        "name": "clientId",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "tenant",
+                        "name": "subId",
                         "in": "path",
                         "required": true
                     }
@@ -560,6 +650,36 @@ const docTemplate = `{
                         "type": "string",
                         "description": "tenant",
                         "name": "tenant",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/accounts/admin/{tenant}/devices/code/{userCode}": {
+            "post": {
+                "description": "delete device groups",
+                "tags": [
+                    "device"
+                ],
+                "summary": "device code",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "tenant",
+                        "name": "tenant",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "tenant",
+                        "name": "userCode",
                         "in": "path",
                         "required": true
                     }
@@ -1077,6 +1197,15 @@ const docTemplate = `{
                         "name": "tenant",
                         "in": "path",
                         "required": true
+                    },
+                    {
+                        "description": "body",
+                        "name": "req",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "object"
+                        }
                     }
                 ],
                 "responses": {
@@ -2350,35 +2479,6 @@ const docTemplate = `{
                 }
             }
         },
-        "/accounts/{tenant}/login/providers": {
-            "get": {
-                "description": "list login providers",
-                "tags": [
-                    "login"
-                ],
-                "summary": "List all providers",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "tenant",
-                        "name": "tenant",
-                        "in": "path",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "type": "array",
-                            "items": {
-                                "$ref": "#/definitions/dto.ProviderDto"
-                            }
-                        }
-                    }
-                }
-            }
-        },
         "/accounts/{tenant}/login/providers/{provider}": {
             "get": {
                 "description": "get a login provider",
@@ -2613,6 +2713,36 @@ const docTemplate = `{
                 }
             }
         },
+        "/accounts/{tenant}/oauth2/device/code": {
+            "post": {
+                "description": "delete device groups",
+                "tags": [
+                    "oauth2"
+                ],
+                "summary": "device code",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "tenant",
+                        "name": "tenant",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "tenant",
+                        "name": "client_id",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
         "/accounts/{tenant}/oauth2/token": {
             "get": {
                 "description": "oauth2 token",
@@ -2639,8 +2769,7 @@ const docTemplate = `{
                         "type": "string",
                         "description": "client_secret",
                         "name": "client_secret",
-                        "in": "query",
-                        "required": true
+                        "in": "query"
                     },
                     {
                         "type": "string",
@@ -2679,6 +2808,35 @@ const docTemplate = `{
                         "description": "OK",
                         "schema": {
                             "$ref": "#/definitions/dto.AccessTokenDto"
+                        }
+                    }
+                }
+            }
+        },
+        "/accounts/{tenant}/providers": {
+            "get": {
+                "description": "list login providers",
+                "tags": [
+                    "login"
+                ],
+                "summary": "List all providers",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "tenant",
+                        "name": "tenant",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/dto.ProviderDto"
+                            }
                         }
                     }
                 }

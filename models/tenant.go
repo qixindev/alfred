@@ -6,7 +6,7 @@ import (
 
 type Tenant struct {
 	Id   uint   `gorm:"primaryKey;autoIncrement" json:"id"`
-	Name string `json:"name"`
+	Name string `json:"name" gorm:"uniqueIndex"`
 }
 
 func (t *Tenant) Dto() dto.TenantDto {

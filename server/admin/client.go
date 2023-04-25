@@ -345,17 +345,52 @@ func DeleteClientSecret(c *gin.Context) {
 //	@Description	get client user list
 //	@Tags			client
 //	@Param			tenant		path	string	true	"tenant"
-//	@Param			clientId	path	integer	true	"tenant"
+//	@Param			clientId	path	string	true	"tenant"
 //	@Success		200
 //	@Router			/accounts/admin/{tenant}/clients/{clientId}/users [get]
 func ListClientUsers(c *gin.Context) {
 	var clientUser []models.ClientUser
 	clientId := c.Param("clientId")
-	if err := internal.TenantDB(c).Find(&clientUser, "client_id = ?", clientId).Error; err != nil {
+	if err := global.DB.Table("client_users cu").Select("cu.sub sub, cu.client_id, u.username user_name").
+		Joins("LEFT JOIN users u ON u.id = cu.user_id").
+		Where("cu.tenant_id = ? AND cu.client_id = ?", internal.GetTenant(c).Id, clientId).
+		Find(&clientUser).Error; err != nil {
 		c.Status(http.StatusInternalServerError)
 		global.LOG.Error("get client user err: " + err.Error())
 		return
 	}
+	c.JSON(http.StatusOK, utils.Filter(clientUser, models.ClientUserDto))
+}
+
+// GetClientUsers godoc
+//
+//	@Summary		client user
+//	@Schemes
+//	@Description	get client user list
+//	@Tags			client
+//	@Param			tenant		path	string	true	"tenant"
+//	@Param			clientId	path	string	true	"tenant"
+//	@Param			subId		path	string	true	"tenant"
+//	@Success		200
+//	@Router			/accounts/admin/{tenant}/clients/{clientId}/users/{subId} [get]
+func GetClientUsers(c *gin.Context) {
+	var clientUser struct {
+		Sub      string `json:"sub"`
+		ClientId string `json:"clientId"`
+		models.User
+	}
+	clientId := c.Param("clientId")
+	subId := c.Param("subId")
+	if err := global.DB.Table("client_users cu").
+		Select("cu.sub sub, cu.client_id, u.username user_name, u.phone, u.email, u.first_name, u.last_name, u.display_name, u.role").
+		Joins("LEFT JOIN users u ON u.id = cu.user_id").
+		Where("cu.tenant_id = ? AND cu.client_id = ? AND cu.sub = ?", internal.GetTenant(c).Id, clientId, subId).
+		Find(&clientUser).Error; err != nil {
+		c.Status(http.StatusInternalServerError)
+		global.LOG.Error("get client user err: " + err.Error())
+		return
+	}
+
 	c.JSON(http.StatusOK, clientUser)
 }
 
@@ -373,4 +408,5 @@ func AddAdminClientsRoutes(rg *gin.RouterGroup) {
 	rg.POST("/clients/:clientId/secrets", NewClientSecret)
 	rg.DELETE("/clients/:clientId/secret/:secretId", DeleteClientSecret)
 	rg.GET("/clients/:clientId/users", ListClientUsers)
+	rg.GET("/clients/:clientId/users/:subId", GetClientUsers)
 }

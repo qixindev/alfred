@@ -37,7 +37,7 @@ type GroupDevice struct {
 	Id       uint   `gorm:"primaryKey;autoIncrement" json:"id"`
 	GroupId  uint   `json:"groupId"`
 	Group    Group  `gorm:"foreignKey:GroupId, TenantId" json:"group"`
-	DeviceId uint   `json:"deviceId"`
+	DeviceId string `json:"deviceId"`
 	Device   Device `gorm:"foreignKey:DeviceId, TenantId" json:"device"`
 
 	TenantId uint `gorm:"primaryKey"`

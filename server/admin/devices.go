@@ -5,9 +5,12 @@ import (
 	"accounts/models"
 	"accounts/models/dto"
 	"accounts/server/internal"
+	"accounts/server/service"
 	"accounts/utils"
 	"github.com/gin-gonic/gin"
+	"github.com/google/uuid"
 	"net/http"
+	"time"
 )
 
 // ListDevices godoc
@@ -66,13 +69,33 @@ func NewDevice(c *gin.Context) {
 		internal.ErrReqPara(c, err)
 		return
 	}
+	if device.Id == "" {
+		device.Id = uuid.NewString()
+	}
 	device.TenantId = tenant.Id
 	if err := global.DB.Create(&device).Error; err != nil {
 		c.Status(http.StatusConflict)
 		global.LOG.Error("new device err: " + err.Error())
 		return
 	}
-	c.JSON(http.StatusOK, device.Dto())
+
+	secret := models.DeviceSecret{
+		DeviceId: device.Id,
+		Name:     "default",
+		Secret:   uuid.NewString(),
+		TenantId: tenant.Id,
+	}
+	if err := internal.TenantDB(c).Create(&secret).Error; err != nil {
+		c.Status(http.StatusConflict)
+		global.LOG.Error("new device secret err: " + err.Error())
+		return
+	}
+	c.JSON(http.StatusOK, &gin.H{
+		"id":                 device.Id,
+		"device_name":        device.Name,
+		"device_secret":      secret.Secret,
+		"device_secret_name": secret.Name,
+	})
 }
 
 // UpdateDevice godoc
@@ -125,6 +148,13 @@ func DeleteDevice(c *gin.Context) {
 		global.LOG.Error("get device err: " + err.Error())
 		return
 	}
+	if err := global.DB.Where("device_id = ?", deviceId).
+		Delete(&models.DeviceSecret{}).Error; err != nil {
+		c.Status(http.StatusInternalServerError)
+		global.LOG.Error("delete device err: " + err.Error())
+		return
+	}
+
 	if err := global.DB.Delete(&device).Error; err != nil {
 		c.Status(http.StatusInternalServerError)
 		global.LOG.Error("delete device err: " + err.Error())
@@ -376,12 +406,46 @@ func DeleteDeviceGroup(c *gin.Context) {
 	c.Status(http.StatusNoContent)
 }
 
+// VerifyDeviceCode godoc
+//
+//	@Summary	device code
+//	@Schemes
+//	@Description	delete device groups
+//	@Tags			device
+//	@Param			tenant		path	string	true	"tenant"
+//	@Param			userCode	path	string	true	"tenant"
+//	@Success		200
+//	@Router			/accounts/admin/{tenant}/devices/code/{userCode} [post]
+func VerifyDeviceCode(c *gin.Context) {
+	userCode := c.Param("userCode")
+	deviceCode := models.DeviceCode{}
+	if err := internal.TenantDB(c).Where("user_code = ?", userCode).First(&deviceCode).Error; err != nil {
+		c.String(http.StatusInternalServerError, "failed to get user code")
+		global.LOG.Error("set device code err: " + err.Error())
+		return
+	}
+
+	if deviceCode.CreatedAt.Add(2 * time.Minute).Before(time.Now()) {
+		c.String(http.StatusGone, "user code expired")
+		service.ClearDeviceCode(userCode)
+		return
+	}
+	if err := internal.TenantDB(c).Table("device_codes").Where("user_code = ?", userCode).Update("status", "verified").Error; err != nil {
+		c.String(http.StatusInternalServerError, "failed to verify user code")
+		global.LOG.Error("set device code err: " + err.Error())
+		return
+	}
+
+	c.Status(http.StatusNoContent)
+}
+
 func AddAdminDevicesRoutes(rg *gin.RouterGroup) {
 	rg.GET("/devices", ListDevices)
 	rg.GET("/devices/:deviceId", GetDevice)
 	rg.POST("/devices", NewDevice)
 	rg.PUT("/devices/:deviceId", UpdateDevice)
 	rg.DELETE("/devices/:deviceId", DeleteDevice)
+
 	rg.GET("/devices/:deviceId/secrets", ListDeviceSecret)
 	rg.POST("/devices/:deviceId/secrets", NewDeviceSecret)
 	rg.DELETE("/devices/:deviceId/secret/:secretId", DeleteDeviceSecret)
@@ -390,4 +454,6 @@ func AddAdminDevicesRoutes(rg *gin.RouterGroup) {
 	rg.POST("/devices/:deviceId/groups", NewDeviceGroup)
 	rg.PUT("/devices/:deviceId/groups/:groupId", UpdateDeviceGroup)
 	rg.DELETE("/devices/:deviceId/groups/:groupId", DeleteDeviceGroup)
+
+	rg.POST("/devices/code/:userCode", VerifyDeviceCode)
 }

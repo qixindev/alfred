@@ -3,8 +3,14 @@ package utils
 import (
 	"encoding/json"
 	"errors"
+	"math/rand"
 	"os"
+	"time"
 )
+
+const charset = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+
+var seededRand = rand.New(rand.NewSource(time.Now().UnixNano()))
 
 func StructToString(obj any) string {
 	res, err := make([]byte, 0), errors.New("")
@@ -26,4 +32,16 @@ func PathExists(path string) (bool, error) {
 		return false, nil
 	}
 	return false, err
+}
+
+func GetDeviceUserCode() string {
+	b := make([]byte, 9)
+	for i := 0; i < 9; i++ {
+		if i == 4 {
+			b[i] = byte('-')
+			i++
+		}
+		b[i] = charset[seededRand.Intn(len(charset))]
+	}
+	return string(b)
 }

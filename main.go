@@ -36,6 +36,10 @@ func InitSystem() error {
 		return err
 	}
 
+	if err = initial.CheckFirstRun(); err != nil {
+		fmt.Println("first run err: ", err)
+		return err
+	}
 	return nil
 }
 
@@ -57,7 +61,12 @@ func main() {
 	r := gin.Default()
 	r.Use(cors.Default())
 	cookieSecret := initial.GetSessionSecret()
-	r.Use(sessions.Sessions("QixinAuth", cookie.NewStore(cookieSecret)))
+	store := cookie.NewStore(cookieSecret)
+	store.Options(sessions.Options{
+		MaxAge: 60 * 60 * 24,
+		Path:   "/",
+	})
+	r.Use(sessions.Sessions("QixinAuth", store))
 	server.AddRoutes(r)
 
 	if err = r.Run(":8086"); err != nil {
