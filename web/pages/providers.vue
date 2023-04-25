@@ -27,7 +27,23 @@
           <el-input v-model="form.name" placeholder="请输入name" />
         </el-form-item>
         <el-form-item label="type" prop="type">
-          <el-input v-model="form.type" placeholder="请输入type" />
+          <el-select v-model="form.type" placeholder="请选择type">
+            <el-option
+              v-for="item in typeOptions"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
+            />
+          </el-select>
+        </el-form-item>
+        <el-form-item label="agentId" prop="agentId">
+          <el-input v-model="form.agentId" placeholder="请输入agentId" />
+        </el-form-item>
+        <el-form-item label="clientId" prop="clientId">
+          <el-input v-model="form.clientId" placeholder="请输入clientId" />
+        </el-form-item>
+        <el-form-item label="clientSecret" prop="clientSecret">
+          <el-input v-model="form.clientSecret" placeholder="请输入clientSecret" />
         </el-form-item>
       </el-form>
       <template #footer>
@@ -42,12 +58,15 @@
 <script lang="ts" setup name="Users">
 import { ElForm, ElInput, ElMessage, ElMessageBox } from 'element-plus';
 
-import { getProviders, saveProvider, updateProvider, delProvider } from '~/api/providers'
+import { getProviders, saveProvider, updateProvider, delProvider, getProvider } from '~/api/providers'
 
 interface Form {
   id: undefined | Number,
   name: undefined | string,
-  type: undefined | string
+  type: undefined | string,
+  agentId?: undefined | string,
+  clientSecret?: undefined | string,
+  clientId?: undefined | string
 }
 
 enum Status {
@@ -66,17 +85,40 @@ const state = reactive({
   form: {
     id: undefined,
     name: undefined,
+    agentId: undefined,
+    clientSecret: undefined,
+    clientId: undefined
   } as Form,
   // 表单校验
   rules: {
     name: [
-      { required: true, message: 'client name 不能为空', trigger: 'blur' }
+      { required: true, message: 'name 不能为空', trigger: 'blur' }
     ],
     type: [
-      { required: true, message: 'type name 不能为空', trigger: 'blur' }
+      { required: true, message: 'type 不能为空', trigger: 'change' }
+    ],
+    agentId: [
+      { required: true, message: 'agentId 不能为空', trigger: 'blur' }
+    ],
+    clientSecret: [
+      { required: true, message: 'clientSecret 不能为空', trigger: 'blur' }
+    ],
+    clientId: [
+      { required: true, message: 'clientId 不能为空', trigger: 'blur' }
     ]
   }
 })
+
+const typeOptions = ref([
+  {
+    label: 'dingtalk',
+    value: 'dingtalk'
+  },
+  {
+    label: 'wecom',
+    value: 'wecom'
+  },
+])
 
 const {
   loading,
@@ -125,15 +167,22 @@ function handleAdd() {
 }
 /** 修改按钮操作 */
 function handleUpdate(row: any) {
-  const {id, name, type } = row
-  state.open = Status.EDIT
-  nextTick(()=>{
-    state.form = {
-      id,
-      name,
-      type
-    }
+  getProvider(row.id).then((res: any) => {
+    const {providerId: id, name, type,agentId, clientId, clientSecret } = res
+    state.open = Status.EDIT
+
+    nextTick(()=>{
+      state.form = {
+        id,
+        name,
+        type,
+        agentId, 
+        clientId, 
+        clientSecret
+      }
+    })
   })
+
 }
 
 let updateLoading = ref(false);
@@ -142,9 +191,9 @@ function submitForm() {
   formRef.value.validate((valid: boolean) => {
     if (valid) {
       updateLoading.value = true
-      let { id, name, type } = state.form
+      let { id, name, type, clientId, agentId, clientSecret } = state.form
 
-      const params = { name, type }
+      const params = { name, type, clientId, agentId, clientSecret }
 
       if (state.open === Status.EDIT) {
         updateProvider(id as number, params).then(() => {

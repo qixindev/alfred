@@ -1,5 +1,9 @@
 const tenant =  import.meta.env.VITE_APP_TENANT
 
+export const getProvider = async (id: number) => {
+  return await useHttp.get(`/admin/${tenant}/providers/${id}`)
+}
+
 export const getProviders = async () => {
   return await useHttp.get(`/admin/${tenant}/providers`)
 }
