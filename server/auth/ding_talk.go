@@ -99,5 +99,6 @@ func (p ProviderDingTalk) LoginConfig() *gin.H {
 	return &gin.H{
 		"providerId": p.Config.ProviderId,
 		"appKey":     p.Config.AppKey,
+		"type":       p.Config.Provider.Type,
 	}
 }

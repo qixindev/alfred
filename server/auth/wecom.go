@@ -94,5 +94,6 @@ func (p ProviderWeCom) LoginConfig() *gin.H {
 		"providerId": p.Config.ProviderId,
 		"corpId":     p.Config.CorpId,
 		"agentId":    p.Config.AgentId,
+		"type":       p.Config.Provider.Type,
 	}
 }

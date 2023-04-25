@@ -77,6 +77,7 @@ func (p ProviderOAuth2) Login(c *gin.Context) (*models.UserInfo, error) {
 
 func (p ProviderOAuth2) LoginConfig() *gin.H {
 	return &gin.H{
+		"type":         p.Config.Provider.Type,
 		"providerId":   p.Config.ProviderId,
 		"clientId":     p.Config.ClientId,
 		"responseType": p.Config.ResponseType,
