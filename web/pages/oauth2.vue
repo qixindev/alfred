@@ -1,7 +1,7 @@
 <script setup lang="ts">
 // TODO: 与login功能重复，待封装优化
 import type { FormInstance, FormRules } from 'element-plus'
-import { login } from '~/api/user';
+import { login, getThirdLoginConfig } from '~/api/user';
 
 const VITE_APP_BASE_API = import.meta.env.VITE_APP_BASE_API
 
@@ -14,6 +14,8 @@ const accountForm = reactive({
   login: '',
   password: ''
 })
+
+let thirdLoginTypes= ref<any>([])
 
 const phoneRuleFormRef = ref<FormInstance>()
 const accountRuleFormRef = ref<FormInstance>()
@@ -47,7 +49,7 @@ const accountRules = reactive<FormRules>({
 })
 
 const state = reactive({
-  activeName: 'phone'
+  activeName: 'login'
 })
 
 const {
@@ -79,6 +81,28 @@ const dingLogin = () => {
   navigateTo(`https://login.dingtalk.com/oauth2/auth?redirect_uri=${url}&response_type=code&client_id=${appid}&scope=openid&prompt=consent&state=ding`, { external: true})
 }
 
+const thirdLogin = (params: any) => {
+  console.log(params)
+  const redirect_uri = location.origin
+  let appId;
+  switch (params.type) {
+    case 'dingtalk':
+      appId = 'dingazsvs4mwmo7cc2vb'
+      navigateTo(`https://login.dingtalk.com/oauth2/auth?redirect_uri=${redirect_uri}&response_type=code&client_id=${appId}&scope=openid&prompt=consent&state=ding`, { external: true})
+      break;
+  
+    default:
+      break;
+  }
+}
+
+const getLoginConfig  = async () => {
+  thirdLoginTypes.value = await getThirdLoginConfig()
+  
+}
+
+getLoginConfig()
+
 definePageMeta({
   layout: false
 })
@@ -90,7 +114,7 @@ definePageMeta({
     <div class="login-box">
       <div class="title">登录</div>
       <el-tabs v-model="activeName" @tab-click="handleClick">
-        <el-tab-pane label="手机号登录" name="phone">
+        <!-- <el-tab-pane label="手机号登录" name="phone">
           <el-form ref="phoneRuleFormRef" :model="phoneForm" :rules="phoneRules">
             <el-form-item prop="phone">
               <el-input v-model="phoneForm.phone" placeholder="手机号">
@@ -114,7 +138,7 @@ definePageMeta({
 
           <el-button class="submit-btn" type="primary" @click="submit(phoneRuleFormRef as FormInstance)">登 录/注 册</el-button>
 
-        </el-tab-pane>
+        </el-tab-pane> -->
         <el-tab-pane label="账户密码登录" name="login">
           <el-form ref="accountRuleFormRef" :model="accountForm" :rules="accountRules">
             <el-form-item prop="login">
@@ -140,12 +164,13 @@ definePageMeta({
       
       <div class="option">
         <div class="other-login">其它方式登录： 
-          <svg-icon name="ding" size="1.5em" @click="dingLogin"></svg-icon>
-          <svg-icon name="wechat" size="1.5em"></svg-icon>
+          <svg-icon v-for="item in thirdLoginTypes" :name="item.type" @click="thirdLogin(item)" size="1.5em"></svg-icon>
+          <!-- <svg-icon name="ding" size="1.5em" @click="dingLogin"></svg-icon> -->
+          <!-- <svg-icon name="wecom" size="1.5em"></svg-icon> -->
         </div>
-        <nuxt-link to="/register" >
+        <!-- <nuxt-link to="/register" >
           <span>注册账户</span>
-        </nuxt-link>
+        </nuxt-link> -->
       </div>
     </div>
   </div>
