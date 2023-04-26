@@ -36,19 +36,20 @@ func (p ProviderWeCom) Login(c *gin.Context) (*models.UserInfo, error) {
 	query := url.Values{}
 	query.Set("corpid", p.Config.CorpId)
 	query.Set("corpsecret", p.Config.AppSecret)
-
 	resp, err := http.Get(fmt.Sprintf("%s?%s", "https://qyapi.weixin.qq.com/cgi-bin/gettoken", query.Encode()))
 	if err != nil {
 		return nil, err
 	}
+
 	defer resp.Body.Close()
 	var result map[string]any
-	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
+	if err = json.NewDecoder(resp.Body).Decode(&result); err != nil {
 		return nil, err
 	}
+
 	accessToken := utils.GetString(result["access_token"])
 	if accessToken == "" {
-		return nil, err
+		return nil, errors.New("failed to get ding token")
 	}
 
 	// Basic info.
@@ -60,30 +61,34 @@ func (p ProviderWeCom) Login(c *gin.Context) (*models.UserInfo, error) {
 	if err != nil {
 		return nil, err
 	}
+
 	defer resp.Body.Close()
-	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
+	if err = json.NewDecoder(resp.Body).Decode(&result); err != nil {
 		return nil, err
 	}
+
 	userId := utils.GetString(result["userid"])
 	if userId == "" {
 		return nil, err
 	}
+
 	var userInfo models.UserInfo
 	userInfo.Sub = userId
 	userInfo.DisplayName = utils.GetString(result["userid"])
-
 	detailInfoUrl := "https://qyapi.weixin.qq.com/cgi-bin/user/get"
 	detailInfoQuery := url.Values{}
 	detailInfoQuery.Set("access_token", accessToken)
 	detailInfoQuery.Set("userid", userId)
 	resp, err = http.Get(fmt.Sprintf("%s?%s", detailInfoUrl, detailInfoQuery.Encode()))
 	if err != nil {
-		return &userInfo, nil
+		return nil, err
 	}
+
 	defer resp.Body.Close()
-	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
-		return &userInfo, nil
+	if err = json.NewDecoder(resp.Body).Decode(&result); err != nil {
+		return nil, err
 	}
+
 	userInfo.DisplayName = utils.GetString(result["name"])
 
 	return &userInfo, nil

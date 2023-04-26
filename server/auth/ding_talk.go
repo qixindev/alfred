@@ -51,37 +51,41 @@ func (p ProviderDingTalk) Login(c *gin.Context) (*models.UserInfo, error) {
 	if err != nil {
 		return nil, err
 	}
-	resp, err := http.Post("https://api.dingtalk.com//v1.0/oauth2/userAccessToken", "application/json", bytes.NewReader(body))
+	
+	resp, err := http.Post("https://api.dingtalk.com/v1.0/oauth2/userAccessToken", "application/json", bytes.NewReader(body))
 	if err != nil {
 		return nil, err
 	}
+
 	defer resp.Body.Close()
 	var result map[string]any
-	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
+	if err = json.NewDecoder(resp.Body).Decode(&result); err != nil {
 		return nil, err
 	}
 	accessToken := utils.GetString(result["accessToken"])
 	if accessToken == "" {
-		return nil, err
+		return nil, errors.New("failed to get ding token")
 	}
 
 	// Get Profile.
-	url := "https://api.dingtalk.com/v1.0/contact/users/me"
 	client := http.Client{}
-	req, err := http.NewRequest("GET", url, nil)
+	req, err := http.NewRequest("GET", "https://api.dingtalk.com/v1.0/contact/users/me", nil)
 	if err != nil {
 		return nil, err
 	}
+
 	req.Header.Set("Content-Type", "application/json")
 	req.Header.Set("x-acs-dingtalk-access-token", accessToken)
 	res, err := client.Do(req)
 	if err != nil {
 		return nil, err
 	}
+
 	var profile map[string]any
-	if err := json.NewDecoder(res.Body).Decode(&profile); err != nil {
+	if err = json.NewDecoder(res.Body).Decode(&profile); err != nil {
 		return nil, err
 	}
+
 	if utils.GetString(profile["openId"]) == "" {
 		return nil, errors.New("get userinfo failed")
 	}

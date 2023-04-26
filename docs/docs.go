@@ -419,6 +419,27 @@ const docTemplate = `{
             }
         },
         "/accounts/admin/{tenant}/clients/{clientId}/redirect-uris/{uriId}": {
+            "post": {
+                "description": "new client redirect uri",
+                "tags": [
+                    "client"
+                ],
+                "summary": "new client redirect uri",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "tenant",
+                        "name": "tenant",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            },
             "delete": {
                 "description": "delete client redirect uris",
                 "tags": [
