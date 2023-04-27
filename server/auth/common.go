@@ -13,6 +13,8 @@ type Provider interface {
 
 	// Login Callback when auth completed.
 	Login(*gin.Context) (*models.UserInfo, error)
+
+	LoginConfig() *gin.H
 }
 
 func GetAuthProvider(tenantId uint, providerName string) (Provider, error) {
@@ -25,6 +27,8 @@ func GetAuthProvider(tenantId uint, providerName string) (Provider, error) {
 		if err := global.DB.First(&config, "tenant_id = ? AND provider_id = ?", tenantId, provider.Id).Error; err != nil {
 			return nil, err
 		}
+		config.Provider.Name = provider.Name
+		config.Provider.Type = provider.Type
 		p := ProviderOAuth2{Config: config}
 		return p, nil
 	}
@@ -33,6 +37,8 @@ func GetAuthProvider(tenantId uint, providerName string) (Provider, error) {
 		if err := global.DB.First(&config, "tenant_id = ? AND provider_id = ?", tenantId, provider.Id).Error; err != nil {
 			return nil, err
 		}
+		config.Provider.Name = provider.Name
+		config.Provider.Type = provider.Type
 		p := ProviderDingTalk{Config: config}
 		return p, nil
 	}
@@ -41,6 +47,8 @@ func GetAuthProvider(tenantId uint, providerName string) (Provider, error) {
 		if err := global.DB.First(&config, "tenant_id = ? AND provider_id = ?", tenantId, provider.Id).Error; err != nil {
 			return nil, err
 		}
+		config.Provider.Name = provider.Name
+		config.Provider.Type = provider.Type
 		p := ProviderWeCom{Config: config}
 		return p, nil
 	}

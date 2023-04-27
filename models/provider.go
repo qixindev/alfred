@@ -5,14 +5,10 @@ import (
 )
 
 type Provider struct {
-	Id           uint   `gorm:"primaryKey;autoIncrement" json:"id"`
-	Name         string `json:"name"`
-	Type         string `json:"type" gorm:"not null"`
-	AgentId      string `json:"agentId" gorm:"<-:false;-:migration"`
-	ClientId     string `json:"clientId" gorm:"<-:false;-:migration"`
-	ClientSecret string `json:"clientSecret" gorm:"<-:false;-:migration"`
-
-	TenantId uint `gorm:"primaryKey"`
+	Id       uint   `gorm:"primaryKey;autoIncrement" json:"id"`
+	Name     string `json:"name"`
+	Type     string `json:"type" gorm:"not null"`
+	TenantId uint   `gorm:"primaryKey"`
 	Tenant   Tenant
 }
 

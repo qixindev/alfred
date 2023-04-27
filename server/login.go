@@ -1,10 +1,10 @@
 package server
 
 import (
-	"accounts/auth"
 	"accounts/global"
 	"accounts/middlewares"
 	"accounts/models"
+	"accounts/server/auth"
 	"accounts/server/internal"
 	"accounts/utils"
 	"fmt"
@@ -132,16 +132,18 @@ func ListProviders(c *gin.Context) {
 //	@Param			tenant		path		string	true	"tenant"
 //	@Param			provider	path		string	true	"provider"
 //	@Success		200			{object}	dto.ProviderDto
-//	@Router			/accounts/{tenant}/login/providers/{provider} [get]
+//	@Router			/accounts/{tenant}/providers/{provider} [get]
 func GetProvider(c *gin.Context) {
+	tenant := internal.GetTenant(c)
 	providerName := c.Param("provider")
-	var provider models.Provider
-	if err := internal.TenantDB(c).First(&provider, "name = ?", providerName).Error; err != nil {
+	authProvider, err := auth.GetAuthProvider(tenant.Id, providerName)
+	if err != nil {
 		c.Status(http.StatusNotFound)
 		global.LOG.Error("get provider err: " + err.Error())
 		return
 	}
-	c.JSON(http.StatusOK, provider.Dto())
+
+	c.JSON(http.StatusOK, authProvider.LoginConfig())
 }
 
 // Register godoc

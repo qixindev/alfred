@@ -705,28 +705,6 @@ paths:
       summary: login via a provider
       tags:
       - login
-  /accounts/{tenant}/login/providers/{provider}:
-    get:
-      description: get a login provider
-      parameters:
-      - description: tenant
-        in: path
-        name: tenant
-        required: true
-        type: string
-      - description: provider
-        in: path
-        name: provider
-        required: true
-        type: string
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/dto.ProviderDto'
-      summary: get a provider
-      tags:
-      - login
   /accounts/{tenant}/logout:
     get:
       description: logout current user
@@ -923,6 +901,28 @@ paths:
       summary: List all providers
       tags:
       - login
+  /accounts/{tenant}/providers/{provider}:
+    get:
+      description: get a login provider
+      parameters:
+      - description: tenant
+        in: path
+        name: tenant
+        required: true
+        type: string
+      - description: provider
+        in: path
+        name: provider
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.ProviderDto'
+      summary: get a provider
+      tags:
+      - login
   /accounts/{tenant}/register:
     post:
       description: register using username and password
@@ -1098,6 +1098,20 @@ paths:
         "200":
           description: OK
       summary: delete client redirect uris
+      tags:
+      - client
+    post:
+      description: new client redirect uri
+      parameters:
+      - description: tenant
+        in: path
+        name: tenant
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+      summary: new client redirect uri
       tags:
       - client
   /accounts/admin/{tenant}/clients/{clientId}/secret/{secretId}:

@@ -216,6 +216,40 @@ func NewClientRedirectUri(c *gin.Context) {
 	c.JSON(http.StatusOK, uri.Dto())
 }
 
+// UpdateClientRedirectUri godoc
+//
+//	@Summary	new client redirect uri
+//	@Schemes
+//	@Description	new client redirect uri
+//	@Tags			client
+//	@Param			tenant	path	string	true	"tenant"
+//	@Success		200
+//	@Router			/accounts/admin/{tenant}/clients/{clientId}/redirect-uris/{uriId} [post]
+func UpdateClientRedirectUri(c *gin.Context) {
+	clientId := c.Param("clientId")
+	uriId := c.Param("uriId")
+	var newUri models.RedirectUri
+	if err := c.BindJSON(&newUri); err != nil {
+		internal.ErrReqPara(c, err)
+		return
+	}
+
+	var uri models.RedirectUri
+	if err := internal.TenantDB(c).First(&uri, "client_id = ? AND id = ?", clientId, uriId).Error; err != nil {
+		c.Status(http.StatusNotFound)
+		global.LOG.Error("get client err: " + err.Error())
+		return
+	}
+
+	uri.RedirectUri = newUri.RedirectUri
+	if err := internal.TenantDB(c).Updates(&uri).Error; err != nil {
+		c.Status(http.StatusConflict)
+		return
+	}
+
+	c.JSON(http.StatusOK, newUri.Dto())
+}
+
 // DeleteClientRedirectUri godoc
 //
 //	@Summary	delete client redirect uris
@@ -403,6 +437,7 @@ func AddAdminClientsRoutes(rg *gin.RouterGroup) {
 	rg.DELETE("/clients/:clientId", DeleteClient)
 	rg.GET("/clients/:clientId/redirect-uris", ListClientRedirectUri)
 	rg.POST("/clients/:clientId/redirect-uris", NewClientRedirectUri)
+	rg.PUT("/clients/:clientId/redirect-uris/:uriId", UpdateClientRedirectUri)
 	rg.DELETE("/clients/:clientId/redirect-uris/:uriId", DeleteClientRedirectUri)
 	rg.GET("/clients/:clientId/secrets", ListClientSecret)
 	rg.POST("/clients/:clientId/secrets", NewClientSecret)

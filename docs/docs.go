@@ -419,6 +419,27 @@ const docTemplate = `{
             }
         },
         "/accounts/admin/{tenant}/clients/{clientId}/redirect-uris/{uriId}": {
+            "post": {
+                "description": "new client redirect uri",
+                "tags": [
+                    "client"
+                ],
+                "summary": "new client redirect uri",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "tenant",
+                        "name": "tenant",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            },
             "delete": {
                 "description": "delete client redirect uris",
                 "tags": [
@@ -2479,39 +2500,6 @@ const docTemplate = `{
                 }
             }
         },
-        "/accounts/{tenant}/login/providers/{provider}": {
-            "get": {
-                "description": "get a login provider",
-                "tags": [
-                    "login"
-                ],
-                "summary": "get a provider",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "tenant",
-                        "name": "tenant",
-                        "in": "path",
-                        "required": true
-                    },
-                    {
-                        "type": "string",
-                        "description": "provider",
-                        "name": "provider",
-                        "in": "path",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/dto.ProviderDto"
-                        }
-                    }
-                }
-            }
-        },
         "/accounts/{tenant}/login/{provider}": {
             "get": {
                 "description": "login via a provider",
@@ -2837,6 +2825,39 @@ const docTemplate = `{
                             "items": {
                                 "$ref": "#/definitions/dto.ProviderDto"
                             }
+                        }
+                    }
+                }
+            }
+        },
+        "/accounts/{tenant}/providers/{provider}": {
+            "get": {
+                "description": "get a login provider",
+                "tags": [
+                    "login"
+                ],
+                "summary": "get a provider",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "tenant",
+                        "name": "tenant",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "provider",
+                        "name": "provider",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/dto.ProviderDto"
                         }
                     }
                 }

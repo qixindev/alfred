@@ -3,72 +3,54 @@ package service
 import (
 	"accounts/global"
 	"accounts/models"
+	"accounts/server/types"
 	"errors"
 )
 
-func CreateProviderConfig(p models.Provider) error {
-	var err error
-	switch p.Type {
+func GetProviderModel(t string) (models.ItfProvider, error) {
+	switch t {
 	case "oauth2":
-		err = global.DB.Create(&models.ProviderOAuth2{
-			ProviderId:   p.Id,
-			TenantId:     p.TenantId,
-			ClientId:     p.ClientId,
-			ClientSecret: p.ClientSecret,
-		}).Error
+		return &models.ProviderOAuth2{}, nil
 	case "dingtalk":
-		err = global.DB.Create(&models.ProviderDingTalk{
-			ProviderId: p.Id,
-			TenantId:   p.TenantId,
-			AgentId:    p.AgentId,
-			AppKey:     p.ClientId,
-			AppSecret:  p.ClientSecret,
-		}).Error
+		return &models.ProviderDingTalk{}, nil
 	case "wecom":
-		err = global.DB.Create(&models.ProviderWeCom{
-			ProviderId: p.Id,
-			TenantId:   p.TenantId,
-			CorpId:     p.AgentId,
-			AgentId:    p.ClientId,
-			AppSecret:  p.ClientSecret,
-		}).Error
-	default:
-		return errors.New("no such provider type")
+		return &models.ProviderWeCom{}, nil
 	}
-	return err
+	return nil, errors.New("no such type")
 }
 
-func UpdateProviderConfig(p models.Provider) error {
-	tx := global.DB.Debug().Where("tenant_id = ? AND provider_id = ?", p.TenantId, p.Id)
-	switch p.Type {
-	case "oauth2":
-		tx.Updates(&models.ProviderOAuth2{
-			ProviderId:   p.Id,
-			TenantId:     p.TenantId,
-			ClientId:     p.ClientId,
-			ClientSecret: p.ClientSecret,
-		})
-	case "dingtalk":
-		tx.Updates(&models.ProviderDingTalk{
-			ProviderId: p.Id,
-			TenantId:   p.TenantId,
-			AgentId:    p.AgentId,
-			AppKey:     p.ClientId,
-			AppSecret:  p.ClientSecret,
-		})
-	case "wecom":
-		tx.Updates(&models.ProviderWeCom{
-			ProviderId: p.Id,
-			TenantId:   p.TenantId,
-			CorpId:     p.AgentId,
-			AgentId:    p.ClientId,
-			AppSecret:  p.ClientSecret,
-		})
-	default:
-		return errors.New("no such provider type")
+func CreateProviderConfig(p types.ReqProvider) error {
+	it, err := GetProviderModel(p.Type)
+	if err != nil {
+		return err
 	}
 
-	if err := tx.Error; err != nil {
+	provider := models.Provider{Name: p.Name, Type: p.Type, TenantId: p.TenantId}
+	if err = global.DB.Create(&provider).Error; err != nil {
+		return err
+	}
+
+	p.ProviderId = provider.Id
+	if err = global.DB.Create(it.Save(p)).Error; err != nil {
+		return err
+	}
+	return nil
+}
+
+func UpdateProviderConfig(p types.ReqProvider) error {
+	it, err := GetProviderModel(p.Type)
+	if err != nil {
+		return err
+	}
+
+	provider := models.Provider{Name: p.Name, Type: p.Type}
+	if err = global.DB.Where("tenant_id = ? AND id = ? AND type = ?", p.TenantId, p.ProviderId, p.Type).
+		Updates(&provider).Error; err != nil {
+		return err
+	}
+
+	if err = global.DB.Where("tenant_id = ? AND provider_id = ?", p.TenantId, p.ProviderId).
+		Updates(it.Save(p)).Error; err != nil {
 		return err
 	}
 
@@ -76,40 +58,28 @@ func UpdateProviderConfig(p models.Provider) error {
 }
 
 func GetProvider(tenantId uint, providerId uint, t string) (any, error) {
-	tx := global.DB.Where("tenant_id = ? AND provider_id = ?", tenantId, providerId)
-	var err error
-	oauth2, ding, wecom := models.ProviderOAuth2{}, models.ProviderDingTalk{}, models.ProviderWeCom{}
-	switch t {
-	case "oauth2":
-		err = tx.Model(oauth2).Preload("Provider").First(&oauth2).Error
-		return oauth2.Dto(), err
-	case "dingtalk":
-		err = tx.Model(ding).Preload("Provider").First(&ding).Error
-		return ding.Dto(), err
-	case "wecom":
-		err = tx.Model(wecom).Preload("Provider").First(&wecom).Error
-		return wecom.Dto(), err
+	pr, err := GetProviderModel(t)
+	if err != nil {
+		return nil, err
 	}
 
-	return nil, errors.New("no such provider type")
-}
+	if err = global.DB.Model(pr).Where("tenant_id = ? AND provider_id = ?", tenantId, providerId).
+		Preload("Provider").First(pr).Error; err != nil {
+		return nil, err
+	}
 
-func IsValidType(t string) bool {
-	return t == "oauth2" || t == "dingtalk" || t == "wecom"
+	return pr.Dto(), nil
 }
 
 func DeleteProviderConfig(p models.Provider) error {
-	var err error
-	tx := global.DB.Where("tenant_id = ? AND provider_id = ?", p.TenantId, p.Id)
-	switch p.Type {
-	case "oauth2":
-		err = tx.Delete(models.ProviderOAuth2{}).Error
-	case "dingtalk":
-		err = tx.Delete(models.ProviderDingTalk{}).Error
-	case "wecom":
-		err = tx.Delete(models.ProviderWeCom{}).Error
-	default:
-		return errors.New("no such type")
+	pr, err := GetProviderModel(p.Type)
+	if err != nil {
+		return err
 	}
-	return err
+	if err = global.DB.Where("tenant_id = ? AND provider_id = ?", p.TenantId, p.Id).
+		Delete(pr).Error; err != nil {
+		return err
+	}
+
+	return nil
 }
