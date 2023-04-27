@@ -161,9 +161,9 @@ definePageMeta({
         <div class="other-login">其它方式登录： 
           <svg-icon v-for="item in thirdLoginTypes" :name="item.type" @click="thirdLogin(item)" size="1.5em"></svg-icon>
         </div>
-        <!-- <nuxt-link to="/register" >
+        <nuxt-link to="/register" >
           <span>注册账户</span>
-        </nuxt-link> -->
+        </nuxt-link>
       </div>
     </div>
   </div>
