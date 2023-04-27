@@ -1,7 +1,7 @@
 <script setup lang="ts">
 // TODO: 与login功能重复，待封装优化
 import type { FormInstance, FormRules } from 'element-plus'
-import { login, getThirdLoginConfig } from '~/api/user';
+import { login, getThirdLoginConfigs, getThirdLoginConfigByName } from '~/api/user';
 
 const VITE_APP_BASE_API = import.meta.env.VITE_APP_BASE_API
 
@@ -81,15 +81,23 @@ const dingLogin = () => {
   navigateTo(`https://login.dingtalk.com/oauth2/auth?redirect_uri=${url}&response_type=code&client_id=${appid}&scope=openid&prompt=consent&state=ding`, { external: true})
 }
 
-const thirdLogin = (params: any) => {
+const thirdLogin = async (thirdInfo: any) => {
   const route = useRoute()
-  const { redirect_uri } = route.query
-  let appId;
-  switch (params.type) {
+  const query = route.query
+  const redirect_uri  = location.origin
+  const config = await getThirdLoginConfigByName(thirdInfo.name)
+  const params = { 
+    redirect_uri: query.redirect_uri, 
+    type: thirdInfo.name,
+    client_id:query.client_id
+  }
+  switch (thirdInfo.type) {
     case 'dingtalk':
-      appId = 'dingazsvs4mwmo7cc2vb'
-      navigateTo(`https://login.dingtalk.com/oauth2/auth?redirect_uri=${redirect_uri}&response_type=code&client_id=${appId}&scope=openid&prompt=consent&state=ding`, { external: true})
+      navigateTo(`https://login.dingtalk.com/oauth2/auth?redirect_uri=${redirect_uri}&response_type=code&client_id=${config.appKey}&scope=openid&prompt=consent&state=${encodeURI(JSON.stringify(params))}`, { external: true})
       break;
+    // case 'wecom':
+    //   navigateTo(`https://open.weixin.qq.com/connect/oauth2/authorize?appid=${config.corpId}&redirect_uri=${redirect_uri}&response_type=code&scope=snsapi_base&state=${redirect_uri}&agentid=${config.agentId}#wechat_redirect`, { external: true})
+    //   break;
   
     default:
       break;
@@ -97,8 +105,7 @@ const thirdLogin = (params: any) => {
 }
 
 const getLoginConfig  = async () => {
-  thirdLoginTypes.value = await getThirdLoginConfig()
-  
+  thirdLoginTypes.value = await getThirdLoginConfigs()
 }
 
 getLoginConfig()
@@ -165,8 +172,6 @@ definePageMeta({
       <div class="option">
         <div class="other-login">其它方式登录： 
           <svg-icon v-for="item in thirdLoginTypes" :name="item.type" @click="thirdLogin(item)" size="1.5em"></svg-icon>
-          <!-- <svg-icon name="ding" size="1.5em" @click="dingLogin"></svg-icon> -->
-          <!-- <svg-icon name="wecom" size="1.5em"></svg-icon> -->
         </div>
         <!-- <nuxt-link to="/register" >
           <span>注册账户</span>

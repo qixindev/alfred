@@ -3,6 +3,7 @@ import { login, getUserInfo, auth, getToken, thirdLogin } from '~/api/user';
 import { useGetQuery } from './useUtil'
 
 export const useUser = () => useState("user", () => null);
+const VITE_APP_BASE_API = import.meta.env.VITE_APP_BASE_API
 
 export async function useLogin(params: any) {
   await login(params)
@@ -56,9 +57,9 @@ export async function useGetToken(code: string) {
 }
 
 /**
- * 第三方登录
+ * 获取第三方登录配置
  */
-export async function useThirdLogin(type: string, code: string) {
+export async function getThirdLoginConfig(type: string, code: string) {
   const params = {
     code: code,
   }
@@ -67,7 +68,30 @@ export async function useThirdLogin(type: string, code: string) {
   // code使用完后删除url参数
   const route = useRoute()  
   navigateTo(route.query.from as string || '/', { replace: true })
-  
+}
+
+/**
+ * 第三方登录
+ */
+export async function useThirdLogin(state: string, code: string) {
+  const params = {
+    code: code,
+  }
+  if (isJsonString(state)) {
+    const {redirect_uri, client_id, type } = JSON.parse(state)
+    await thirdLogin(type, params)
+      
+    navigateTo(`${location.origin}${VITE_APP_BASE_API}/default/oauth2/auth?client_id=${client_id}&scope=profileOpenId&response_type=code&redirect_uri=${redirect_uri}`,{ external: true })
+  }else {
+    const params = {
+      code: code,
+    }
+    await thirdLogin(state, params)
+    await useGetUserInfo()
+    // code使用完后删除url参数
+    const route = useRoute()  
+    navigateTo(route.query.from as string || '/', { replace: true })
+  }
 }
 
 /**

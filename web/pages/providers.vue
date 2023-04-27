@@ -39,12 +39,20 @@
         <el-form-item label="agentId" prop="agentId">
           <el-input v-model="form.agentId" placeholder="请输入agentId" />
         </el-form-item>
-        <el-form-item label="clientId" prop="clientId">
-          <el-input v-model="form.clientId" placeholder="请输入clientId" />
+        <el-form-item label="appSecret" prop="appSecret">
+          <el-input v-model="form.appSecret" placeholder="请输入appSecret" />
         </el-form-item>
-        <el-form-item label="clientSecret" prop="clientSecret">
-          <el-input v-model="form.clientSecret" placeholder="请输入clientSecret" />
+
+        <!-- 钉钉参数 -->
+        <el-form-item label="appKey" prop="appKey" v-if="form.type === 'dingtalk'">
+          <el-input v-model="form.appKey" placeholder="请输入appKey" />
         </el-form-item>
+
+        <!-- 企微参数 -->
+        <el-form-item label="corpId" prop="corpId" v-if="form.type === 'wecom'">
+          <el-input v-model="form.corpId" placeholder="请输入corpId" />
+        </el-form-item>
+
       </el-form>
       <template #footer>
         <el-button type="primary" @click="submitForm" :loading="updateLoading">确 定</el-button>
@@ -64,9 +72,10 @@ interface Form {
   id: undefined | Number,
   name: undefined | string,
   type: undefined | string,
-  agentId?: undefined | string,
-  clientSecret?: undefined | string,
-  clientId?: undefined | string
+  agentId: undefined | string,
+  appSecret: undefined | string,
+  corpId?: undefined | string,
+  appKey?: undefined | string
 }
 
 enum Status {
@@ -85,9 +94,11 @@ const state = reactive({
   form: {
     id: undefined,
     name: undefined,
+    type: undefined,
     agentId: undefined,
-    clientSecret: undefined,
-    clientId: undefined
+    appSecret: undefined,
+    corpId: undefined,
+    appKey: undefined
   } as Form,
   // 表单校验
   rules: {
@@ -100,12 +111,15 @@ const state = reactive({
     agentId: [
       { required: true, message: 'agentId 不能为空', trigger: 'blur' }
     ],
-    clientSecret: [
-      { required: true, message: 'clientSecret 不能为空', trigger: 'blur' }
+    appSecret: [
+      { required: true, message: 'appSecret 不能为空', trigger: 'blur' }
     ],
-    clientId: [
-      { required: true, message: 'clientId 不能为空', trigger: 'blur' }
-    ]
+    appKey: [
+      { required: true, message: 'appKey 不能为空', trigger: 'blur' }
+    ],
+    corpId: [
+      { required: true, message: 'corpId 不能为空', trigger: 'blur' }
+    ],
   }
 })
 
@@ -151,7 +165,11 @@ function resetForm() {
   state.form = {
     id: undefined,
     name: undefined,
-    type: undefined
+    type: undefined,
+    appSecret: undefined,
+    agentId: undefined,
+    appKey: undefined,
+    corpId: undefined,
   }
   formRef.value.resetFields()
 }
@@ -168,18 +186,29 @@ function handleAdd() {
 /** 修改按钮操作 */
 function handleUpdate(row: any) {
   getProvider(row.id).then((res: any) => {
-    const {providerId: id, name, type,agentId, clientId, clientSecret } = res
+    const {providerId: id, name, type,agentId, appSecret } = res
+    switch (row.type) {
+      case 'dingtalk':
+        const { appKey } = res
+        state.form.appKey = appKey
+        break;
+    
+      case 'wecom':
+        const { corpId } = res
+        state.form.corpId = corpId
+        break;
+    
+      default:
+        break;
+    }
     state.open = Status.EDIT
 
     nextTick(()=>{
-      state.form = {
-        id,
-        name,
-        type,
-        agentId, 
-        clientId, 
-        clientSecret
-      }
+      state.form.id = id
+      state.form.name = name
+      state.form.type = type
+      state.form.agentId = agentId
+      state.form.appSecret = appSecret
     })
   })
 
@@ -191,9 +220,22 @@ function submitForm() {
   formRef.value.validate((valid: boolean) => {
     if (valid) {
       updateLoading.value = true
-      let { id, name, type, clientId, agentId, clientSecret } = state.form
-
-      const params = { name, type, clientId, agentId, clientSecret }
+      let { id, name, type, agentId, appSecret } = state.form
+      let params;
+      switch (type) {
+        case 'dingtalk':
+          const { appKey } = state.form
+          params = { name, type, agentId, appSecret, appKey }
+          break;
+      
+        case 'wecom':
+          const { corpId } = state.form
+          params = { name, type, agentId, appSecret, corpId }
+          break;
+      
+        default:
+          break;
+      }
 
       if (state.open === Status.EDIT) {
         updateProvider(id as number, params).then(() => {

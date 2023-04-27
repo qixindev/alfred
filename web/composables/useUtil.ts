@@ -30,3 +30,19 @@ export function mergeObj(from: any, to: any) {
   }
   return to
 }
+
+/**
+ * 判断字符串是否为Json字符串
+ */
+export function isJsonString(str: string) {
+  if (typeof str == 'string') {
+      try {
+          if (typeof JSON.parse(str) == "object") {
+              return true;
+          }
+      } catch (e) {
+          return false;
+      }
+  }
+  return false;
+}

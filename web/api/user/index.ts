@@ -40,8 +40,12 @@ export const getProvidersById = async (providers: string) => {
   return await useHttp.get(`/${tenant}/providers/${providers}`)
 }
 
-export const getThirdLoginConfig = async () => {
+export const getThirdLoginConfigs = async () => {
   return await useHttp.get(`/${tenant}/providers`)
+}
+
+export const getThirdLoginConfigByName = async (providerName: string) => {
+  return await useHttp.get(`/${tenant}/providers/${providerName}`)
 }
 
 export const thirdLogin = async (providerName: string, data: any) => {
