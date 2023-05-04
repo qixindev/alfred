@@ -295,6 +295,7 @@ func ProviderCallback(c *gin.Context) {
 	session.Delete("next")
 	if err = session.Save(); err != nil {
 		c.JSON(http.StatusInternalServerError, err)
+		return
 	}
 	if next != "" {
 		c.Redirect(http.StatusFound, next)

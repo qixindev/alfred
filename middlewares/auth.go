@@ -21,7 +21,6 @@ func getTenant(c *gin.Context) *models.Tenant {
 
 func MultiTenancy(c *gin.Context) {
 	tenantName := c.Param("tenant")
-	fmt.Println(c.Request.URL.String())
 	if tenantName == "" && !strings.HasPrefix(c.Request.URL.String(), "/accounts/admin/tenants") {
 		c.AbortWithStatusJSON(http.StatusBadRequest, &gin.H{"message": "tenant should not be null"})
 	}
@@ -122,9 +121,9 @@ func Authorized(redirectToLogin bool) gin.HandlerFunc {
 				next := fmt.Sprintf("%s/oauth2/auth", base)
 				location := fmt.Sprintf("%s/login?next=%s", base, url.QueryEscape(next))
 				c.Redirect(http.StatusFound, location)
+				c.Abort()
 			} else {
 				c.AbortWithStatus(http.StatusUnauthorized)
-				c.Abort()
 			}
 			return
 		}
