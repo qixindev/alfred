@@ -66,8 +66,21 @@ func NewUser(c *gin.Context) {
 		internal.ErrReqPara(c, err)
 		return
 	}
+	if user.PasswordHash == "" {
+		c.String(http.StatusBadRequest, "password should not be null")
+		return
+	}
+
+	hash, err := utils.HashPassword(user.PasswordHash)
+	if err != nil {
+		c.Status(http.StatusInternalServerError)
+		global.LOG.Error("hashPassword err: " + err.Error())
+		return
+	}
+
 	user.TenantId = tenant.Id
-	if err := global.DB.Create(&user).Error; err != nil {
+	user.PasswordHash = hash
+	if err = global.DB.Create(&user).Error; err != nil {
 		c.Status(http.StatusConflict)
 		global.LOG.Error("new tenant user err: " + err.Error())
 		return
