@@ -148,6 +148,12 @@ func DeleteUser(c *gin.Context) {
 		global.LOG.Error("get user err: " + err.Error())
 		return
 	}
+
+	if err := global.DB.Where("user_id = ?", userId).Delete(&models.ClientUser{}).Error; err != nil {
+		c.Status(http.StatusInternalServerError)
+		global.LOG.Error("delete client user err: " + err.Error())
+		return
+	}
 	if err := global.DB.Delete(&user).Error; err != nil {
 		c.Status(http.StatusInternalServerError)
 		global.LOG.Error("delete tenant user err: " + err.Error())
