@@ -128,8 +128,11 @@ func SetJWKSConfigMap(tenant string, key string, value []byte) error {
 		return err
 	}
 
-	if cm.Data == nil || cm.Data[tenant] == "" {
-		cm.Data = map[string]string{tenant: "{}"}
+	if cm.Data == nil {
+		cm.Data = make(map[string]string)
+	}
+	if cm.Data[tenant] == "" {
+		cm.Data[tenant] = "{}"
 	}
 	res := map[string][]byte{}
 	if err = json.Unmarshal([]byte(cm.Data[tenant]), &res); err != nil {
