@@ -91,10 +91,17 @@ func NewClient(c *gin.Context) {
 	}
 
 	if err := global.DB.Create(&client).Error; err != nil {
-		c.Status(http.StatusConflict)
+		c.String(http.StatusConflict, "failed to create client")
 		global.LOG.Error("create client err: " + err.Error())
 		return
 	}
+
+	if err := global.DB.Create(&models.ClientSecret{ClientId: client.Id, Name: client.Name, Secret: uuid.NewString()}).Error; err != nil {
+		c.String(http.StatusConflict, "failed to create client secret")
+		global.LOG.Error("create client secret err: " + err.Error())
+		return
+	}
+
 	c.JSON(http.StatusOK, client.Dto())
 }
 
