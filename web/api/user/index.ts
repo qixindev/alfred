@@ -1,19 +1,20 @@
-const tenant =  import.meta.env.VITE_APP_TENANT
+const tenant =  import.meta.env.VITE_APP_TENANT as string
 
 export const getUserInfo = async () => {
   return await useHttp.get(`/${tenant}/me`)
 }
 
-export const login = async (data: any) => {
-  return await useHttp.post(`/${tenant}/login`, data, {
+export const login = async (data: any, curTenant: string = tenant) => {
+  return await useHttp.post(`/${curTenant}/login`, data, {
     headers: {
       'Content-Type': 'application/x-www-form-urlencoded'
     }
   })
 }
 
-export const register = async (data: any) => {
-  return await useHttp.post(`/${tenant}/register`, data, {
+export const register = async (data: any, curTenant: string = tenant) => {
+  console.log(curTenant)
+  return await useHttp.post(`/${curTenant}/register`, data, {
     headers: {
       'Content-Type': 'application/x-www-form-urlencoded'
     }

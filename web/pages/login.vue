@@ -83,9 +83,9 @@ const thirdLogin = async (params: any) => {
     case 'dingtalk':
       navigateTo(`https://login.dingtalk.com/oauth2/auth?redirect_uri=${redirect_uri}&response_type=code&client_id=${config.appKey}&scope=openid&prompt=consent&state=${params.name}`, { external: true})
       break;
-    // case 'wecom':
-    //   navigateTo(`https://open.weixin.qq.com/connect/oauth2/authorize?appid=${config.corpId}&redirect_uri=${redirect_uri}&response_type=code&scope=snsapi_base&state=${params.name}&agentid=${config.agentId}#wechat_redirect`, { external: true})
-    //   break;
+      case 'wecom':
+      navigateTo(`https://login.work.weixin.qq.com/wwlogin/sso/login?appid=${config.corpId}&redirect_uri=${redirect_uri}&state=${encodeURI(JSON.stringify(params))}&agentid=${config.agentId}`, { external: true})
+      break;
   
     default:
       break;

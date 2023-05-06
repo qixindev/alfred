@@ -15,7 +15,19 @@ const accountForm = reactive({
   password: ''
 })
 
-let thirdLoginTypes= ref<any>([])
+
+const hasRegister = computed(() => {
+  const route = useRoute()
+  return route.query?.platform === 'tenant'
+})
+
+interface ThirdLoginType {
+  id: number,
+  name: string,
+  tyep: string
+}
+
+let thirdLoginTypes= ref<ThirdLoginType[]>([])
 
 const phoneRuleFormRef = ref<FormInstance>()
 const accountRuleFormRef = ref<FormInstance>()
@@ -61,9 +73,10 @@ const submit = async (formEl: FormInstance) => {
     if (valid) {
       let formData = new URLSearchParams(accountForm)
       const route = useRoute()
-      await login(formData)
-      const { redirect_uri, client_id } = route.query
-      navigateTo(`${location.origin}${VITE_APP_BASE_API}/default/oauth2/auth?client_id=${client_id}&scope=profileOpenId&response_type=code&redirect_uri=${redirect_uri}`,{ external: true })
+      const { redirect_uri, client_id, state: tenant } = route.query
+      await login(formData,tenant as string)
+      console.log(`${location.origin}${VITE_APP_BASE_API}/${tenant}/oauth2/auth?client_id=${client_id}&scope=profileOpenId&response_type=code&redirect_uri=${redirect_uri}`)
+      navigateTo(`${location.origin}${VITE_APP_BASE_API}/${tenant}/oauth2/auth?client_id=${client_id}&scope=profileOpenId&response_type=code&redirect_uri=${redirect_uri}`,{ external: true })
     }
   })
 }
@@ -71,14 +84,12 @@ const submit = async (formEl: FormInstance) => {
 const handleClick = () => {
 }
 
-const navigate = async () => {
-  navigateTo('/tenant')
-}
-
-const dingLogin = () => {
-  const url = 'http://10.1.0.135:3002'
-  const appid = 'dingazsvs4mwmo7cc2vb'
-  navigateTo(`https://login.dingtalk.com/oauth2/auth?redirect_uri=${url}&response_type=code&client_id=${appid}&scope=openid&prompt=consent&state=ding`, { external: true})
+const navigateToRegister = async () => {
+  const route = useRoute()
+  navigateTo({
+    path: '/oauth2Register',
+    query: route.query
+  })
 }
 
 const thirdLogin = async (thirdInfo: any) => {
@@ -91,13 +102,14 @@ const thirdLogin = async (thirdInfo: any) => {
     type: thirdInfo.name,
     client_id:query.client_id
   }
+
   switch (thirdInfo.type) {
     case 'dingtalk':
       navigateTo(`https://login.dingtalk.com/oauth2/auth?redirect_uri=${redirect_uri}&response_type=code&client_id=${config.appKey}&scope=openid&prompt=consent&state=${encodeURI(JSON.stringify(params))}`, { external: true})
       break;
-    // case 'wecom':
-    //   navigateTo(`https://open.weixin.qq.com/connect/oauth2/authorize?appid=${config.corpId}&redirect_uri=${redirect_uri}&response_type=code&scope=snsapi_base&state=${redirect_uri}&agentid=${config.agentId}#wechat_redirect`, { external: true})
-    //   break;
+    case 'wecom':
+      navigateTo(`https://login.work.weixin.qq.com/wwlogin/sso/login?appid=${config.corpId}&redirect_uri=${redirect_uri}&state=${encodeURI(JSON.stringify(params))}&agentid=${config.agentId}`, { external: true})
+      break;
   
     default:
       break;
@@ -105,7 +117,7 @@ const thirdLogin = async (thirdInfo: any) => {
 }
 
 const getLoginConfig  = async () => {
-  thirdLoginTypes.value = await getThirdLoginConfigs()
+  thirdLoginTypes.value = await getThirdLoginConfigs() as ThirdLoginType[]
 }
 
 getLoginConfig()
@@ -173,9 +185,7 @@ definePageMeta({
         <div class="other-login">其它方式登录： 
           <svg-icon v-for="item in thirdLoginTypes" :name="item.type" @click="thirdLogin(item)" size="1.5em"></svg-icon>
         </div>
-        <!-- <nuxt-link to="/register" >
-          <span>注册账户</span>
-        </nuxt-link> -->
+        <span v-if="hasRegister" @click="navigateToRegister">注册账户</span>
       </div>
     </div>
   </div>
