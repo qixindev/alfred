@@ -96,7 +96,9 @@ func NewClient(c *gin.Context) {
 		return
 	}
 
-	if err := global.DB.Create(&models.ClientSecret{ClientId: client.Id, Name: client.Name, Secret: uuid.NewString()}).Error; err != nil {
+	if err := global.DB.Create(&models.ClientSecret{
+		ClientId: client.Id, Name: client.Name, Secret: uuid.NewString(), TenantId: tenant.Id,
+	}).Error; err != nil {
 		c.String(http.StatusConflict, "failed to create client secret")
 		global.LOG.Error("create client secret err: " + err.Error())
 		return
