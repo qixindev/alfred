@@ -14,7 +14,7 @@ func CopyUser(sub string) error {
 	sql := `INSERT INTO users (username, first_name, last_name, display_name, email, email_verified,
                    password_hash, phone, phone_verified, two_factor_enabled, disabled, tenant_id, role)
 			SELECT username, first_name, last_name, display_name, email, email_verified,
-       				password_hash, phone, phone_verified, two_factor_enabled, disabled, ? as tenant_id, role 
+       				password_hash, phone, phone_verified, two_factor_enabled, disabled, ? as tenant_id, 'owner' as role 
 			FROM users WHERE id = ?;`
 	if err := global.DB.Exec(sql, clientUser.TenantId, clientUser.UserId).Error; err != nil {
 		return err
