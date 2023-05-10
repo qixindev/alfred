@@ -76,7 +76,7 @@ func NewTenant(c *gin.Context) {
 		return
 	}
 
-	if err := service.CopyUser(tenant.Sub); err != nil {
+	if err := service.CopyUser(tenant.Sub, tenant.Id); err != nil {
 		c.Status(http.StatusInternalServerError)
 		global.LOG.Error("new tenants user err: " + err.Error())
 		return
