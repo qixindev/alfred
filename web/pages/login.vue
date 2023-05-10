@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import type { FormInstance, FormRules } from 'element-plus'
-import { getThirdLoginConfigs, getThirdLoginConfigByName } from '~/api/user';
+import { ElMessage } from 'element-plus'
+import { login, getThirdLoginConfigs, getThirdLoginConfigByName } from '~/api/user';
+
 
 const phoneForm = reactive({
   phone: '',
@@ -58,7 +60,17 @@ const submit = async (formEl: FormInstance) => {
     if (valid) {
       //TODO: 处理登录
       let formData = new URLSearchParams(accountForm)
-      useLogin(formData)
+      login(formData).then(res => {
+        if (res == 10000) {
+          ElMessage({
+            message: '账号或密码错误',
+            type: 'error'
+          })
+        } else {
+          const route = useRoute()
+          navigateTo(route.query.from as string || '/', { replace: true })
+        }
+      })
     }
   })
 }

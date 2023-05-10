@@ -1,21 +1,10 @@
 //用户状态信息模块
-import { login, getUserInfo, auth, getToken, thirdLogin } from '~/api/user';
+import { getUserInfo, auth, getToken, thirdLogin } from '~/api/user';
 import { useGetQuery } from './useUtil'
 
 export const useUser = () => useState("user", () => null);
 const VITE_APP_BASE_API = import.meta.env.VITE_APP_BASE_API
 
-export async function useLogin(params: any) {
-  await login(params)
-  // await auth({
-  //   client_id: '1',
-  //   scope: 'profileOpenId',
-  //   response_type: 'code',
-  //   redirect_uri: 'http://10.1.0.135:3002'
-  // })
-  const route = useRoute()
-  navigateTo(route.query.from as string || '/', { replace: true })
-}
 
 /**
  *  获取用户信息（昵称、头像、角色集合、权限集合）

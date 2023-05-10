@@ -40,7 +40,12 @@ const fetch = (url: string , option: HttpOption) => {
           resolve(data)
         }
         else if ( status === 401 ) {
-          navigateTo('/login')
+          // TODO: 临时处理 拦截登录账号密码错误
+          if (response.url.includes('/login')) {
+            resolve(10000)
+          } else {
+            navigateTo('/login')
+          }
         }
         // console.log(response)
         // const { code, msg } = response._data;

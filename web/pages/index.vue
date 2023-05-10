@@ -1,6 +1,8 @@
 <script setup lang="ts">
-console.log(useRuntimeConfig());
 
+definePageMeta({
+    middleware: ["login"]
+})
 </script>
 
 <template>

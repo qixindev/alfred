@@ -1,6 +1,8 @@
 <script setup lang="ts">
 // TODO: 与login功能重复，待封装优化
 import type { FormInstance, FormRules } from 'element-plus'
+import  { ElMessage } from 'element-plus'
+
 import { login, getThirdLoginConfigs, getThirdLoginConfigByName } from '~/api/user';
 
 const VITE_APP_BASE_API = import.meta.env.VITE_APP_BASE_API
@@ -24,7 +26,7 @@ const hasRegister = computed(() => {
 interface ThirdLoginType {
   id: number,
   name: string,
-  tyep: string
+  type: string
 }
 
 let thirdLoginTypes= ref<ThirdLoginType[]>([])
@@ -74,9 +76,18 @@ const submit = async (formEl: FormInstance) => {
       let formData = new URLSearchParams(accountForm)
       const route = useRoute()
       const { redirect_uri, client_id, state: tenant } = route.query
-      await login(formData,tenant as string)
+      login(formData,tenant as string).then(res => {
+        // 401 返回10000
+        if (res == 10000) {
+          ElMessage({
+            message: '账号或密码错误',
+            type: 'error'
+          })
+        } else {
+          navigateTo(`${location.origin}${VITE_APP_BASE_API}/${tenant}/oauth2/auth?client_id=${client_id}&scope=profileOpenId&response_type=code&redirect_uri=${redirect_uri}`,{ external: true })
+        }
+      })
       console.log(`${location.origin}${VITE_APP_BASE_API}/${tenant}/oauth2/auth?client_id=${client_id}&scope=profileOpenId&response_type=code&redirect_uri=${redirect_uri}`)
-      navigateTo(`${location.origin}${VITE_APP_BASE_API}/${tenant}/oauth2/auth?client_id=${client_id}&scope=profileOpenId&response_type=code&redirect_uri=${redirect_uri}`,{ external: true })
     }
   })
 }
