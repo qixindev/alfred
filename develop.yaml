@@ -6,7 +6,7 @@ metadata:
   name: account
 spec:
   ports:
-    - port: 8086
+    - port: 80
   selector:
     app: account
   type: LoadBalancer
@@ -42,7 +42,7 @@ spec:
           image: qixindev.azurecr.io/iot/accounts:develop-20230321.1
           name: account
           ports:
-            - containerPort: 8080
+            - containerPort: 80
           volumeMounts:
             - mountPath: /root/.kube
               name: kubeconfig

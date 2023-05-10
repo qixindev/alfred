@@ -69,7 +69,7 @@ func main() {
 	r.Use(sessions.Sessions("QixinAuth", store))
 	server.AddRoutes(r)
 
-	if err = r.Run(":8086"); err != nil {
+	if err = r.Run(":80"); err != nil {
 		fmt.Println("server run err: ", err)
 		return
 	}

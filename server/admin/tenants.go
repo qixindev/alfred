@@ -4,6 +4,7 @@ import (
 	"accounts/global"
 	"accounts/models"
 	"accounts/server/internal"
+	"accounts/server/service"
 	"accounts/utils"
 	"github.com/gin-gonic/gin"
 	"net/http"
@@ -64,9 +65,20 @@ func NewTenant(c *gin.Context) {
 		internal.ErrReqPara(c, err)
 		return
 	}
+	if tenant.Sub == "" {
+		internal.ErrReqParaCustom(c, "sub should not be null")
+		return
+	}
+
 	if err := global.DB.Create(&tenant).Error; err != nil {
 		c.Status(http.StatusConflict)
 		global.LOG.Error("new tenants err: " + err.Error())
+		return
+	}
+
+	if err := service.CopyUser(tenant.Sub, tenant.Id); err != nil {
+		c.Status(http.StatusInternalServerError)
+		global.LOG.Error("new tenants user err: " + err.Error())
 		return
 	}
 
