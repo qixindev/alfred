@@ -74,7 +74,7 @@ func LoadRsaPublicKeys(tenant string) (*jose.JSONWebKeySet, error) {
 }
 
 func GenerateKey(tenant string) (map[string][]byte, error) {
-	privateKey, err := rsa.GenerateKey(rand.Reader, 4096)
+	privateKey, err := rsa.GenerateKey(rand.Reader, 2048)
 	if err != nil {
 		return nil, err
 	}
