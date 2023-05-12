@@ -394,7 +394,7 @@ func DeleteClientSecret(c *gin.Context) {
 func ListClientUsers(c *gin.Context) {
 	var clientUser []models.ClientUser
 	clientId := c.Param("clientId")
-	if err := global.DB.Table("client_users cu").
+	if err := global.DB.Debug().Table("client_users cu").
 		Select("cu.sub, cu.client_id, u.username user_name, u.phone, u.email").
 		Joins("LEFT JOIN users u ON u.id = cu.user_id").
 		Where("cu.tenant_id = ? AND cu.client_id = ?", internal.GetTenant(c).Id, clientId).
