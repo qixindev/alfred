@@ -22,3 +22,21 @@ func CopyUser(sub string, tenantId uint) error {
 
 	return nil
 }
+
+func DeleteUser(id uint) error {
+	var clientUser models.ClientUser
+	if err := global.DB.Model(clientUser).Where("user_id = ?", id).First(clientUser).Error; err != nil {
+		return err
+	}
+	delList := []any{
+		models.GroupUser{},
+		models.ProviderUser{},
+		models.ResourceRoleUser{},
+		models.ClientUser{},
+	}
+	if err := deleteSource(models.User{}, delList, id, "user_id"); err != nil {
+		return err
+	}
+
+	return nil
+}
