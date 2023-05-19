@@ -11,6 +11,7 @@ type ClientUser struct {
 	Sub      string `json:"sub"`
 	UserName string `json:"userName" gorm:"<-:false;-:migration"`
 	Phone    string `json:"phone" gorm:"<-:false;-:migration"`
+	Email    string `json:"email" gorm:"<-:false;-:migration"`
 
 	TenantId uint `gorm:"primaryKey"`
 }
@@ -20,6 +21,8 @@ func (c *ClientUser) Dto() dto.ClientUserDto {
 		Sub:      c.Sub,
 		ClientId: c.ClientId,
 		UserName: c.UserName,
+		Phone:    c.Phone,
+		Email:    c.Email,
 	}
 }
 

@@ -2,30 +2,30 @@ apiVersion: v1
 kind: Service
 metadata:
   labels:
-    app: account
-  name: account
+    app: accounts
+  name: accounts
 spec:
   ports:
     - port: 80
   selector:
-    app: account
-  type: LoadBalancer
+    app: accounts
+  type: ClusterIP
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
-    app: account
-  name: account
+    app: accounts
+  name: accounts
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: account
+      app: accounts
   template:
     metadata:
       labels:
-        app: account
+        app: accounts
     spec:
       containers:
         - env:
@@ -40,7 +40,7 @@ spec:
             - name: RELEASE_TYPE
               value: "first"
           image: qixindev.azurecr.io/iot/accounts:develop-20230321.1
-          name: account
+          name: accounts
           ports:
             - containerPort: 80
           volumeMounts:

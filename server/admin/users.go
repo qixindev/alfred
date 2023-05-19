@@ -5,6 +5,7 @@ import (
 	"accounts/models"
 	"accounts/models/dto"
 	"accounts/server/internal"
+	"accounts/server/service"
 	"accounts/utils"
 	"github.com/gin-gonic/gin"
 	"net/http"
@@ -149,12 +150,7 @@ func DeleteUser(c *gin.Context) {
 		return
 	}
 
-	if err := global.DB.Where("user_id = ?", userId).Delete(&models.ClientUser{}).Error; err != nil {
-		c.Status(http.StatusInternalServerError)
-		global.LOG.Error("delete client user err: " + err.Error())
-		return
-	}
-	if err := global.DB.Delete(&user).Error; err != nil {
+	if err := service.DeleteUser(user.Id); err != nil {
 		c.Status(http.StatusInternalServerError)
 		global.LOG.Error("delete tenant user err: " + err.Error())
 		return

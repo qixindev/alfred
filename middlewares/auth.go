@@ -21,24 +21,16 @@ func getTenant(c *gin.Context) *models.Tenant {
 
 func MultiTenancy(c *gin.Context) {
 	tenantName := c.Param("tenant")
-	if tenantName == "" && !strings.HasPrefix(c.Request.URL.String(), "/accounts/admin/tenants") {
+	if strings.HasPrefix(c.Request.URL.String(), "/accounts/admin/tenants") {
+		tenantName = "default"
+	}
+	if tenantName == "" {
 		c.AbortWithStatusJSON(http.StatusBadRequest, &gin.H{"message": "tenant should not be null"})
+		return
 	}
 
 	var tenant models.Tenant
 	if global.DB.First(&tenant, "name = ?", tenantName).Error == nil {
-		c.Set("tenant", &tenant)
-		c.Next()
-		return
-	}
-	tenantName = c.Request.Host
-	if global.DB.First(&tenant, "name = ?", tenantName).Error == nil {
-		c.Set("tenant", &tenant)
-		c.Next()
-		return
-	}
-
-	if global.DB.First(&tenant, "name = ?", "default").Error == nil {
 		c.Set("tenant", &tenant)
 		c.Next()
 		return
