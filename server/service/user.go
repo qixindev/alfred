@@ -28,13 +28,22 @@ func DeleteUser(id uint) error {
 	if err := global.DB.Model(clientUser).Where("user_id = ?", id).First(clientUser).Error; err != nil {
 		return err
 	}
-	delList := []any{
-		models.GroupUser{},
-		models.ProviderUser{},
-		models.ResourceRoleUser{},
-		models.ClientUser{},
+
+	if err := global.DB.Where("user_id = ?", id).Delete(&models.GroupUser{}).Error; err != nil {
+		return err
 	}
-	if err := deleteSource(models.User{}, delList, id, "user_id"); err != nil {
+	if err := global.DB.Where("user_id = ?", id).Delete(&models.ProviderUser{}).Error; err != nil {
+		return err
+	}
+	if err := global.DB.Where("client_user_id = ?", clientUser.UserId).
+		Delete(models.ResourceRoleUser{}).Error; err != nil {
+		return err
+	}
+
+	if err := global.DB.Where("user_id = ?", clientUser.UserId).Delete(&clientUser).Error; err != nil {
+		return err
+	}
+	if err := global.DB.Where("id = ?", id).Delete(&models.User{}).Error; err != nil {
 		return err
 	}
 

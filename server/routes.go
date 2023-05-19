@@ -14,6 +14,7 @@ import (
 func AddRoutes(r *gin.Engine) {
 	AddWebRoutes(r)
 	r.Use(middlewares.AccessJsMiddleware())
+	r.Use(middlewares.WecomDomainCheck())
 	r.GET("/accounts/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
 	tenantApi := r.RouterGroup.Group("/accounts/:tenant", middlewares.MultiTenancy)
