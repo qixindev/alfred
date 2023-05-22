@@ -1,8 +1,10 @@
 package service
 
 import (
+	"accounts/global"
 	"accounts/models"
 	"errors"
+	"net/url"
 )
 
 func DeleteClient(clientId string) error {
@@ -25,5 +27,19 @@ func DeleteClient(clientId string) error {
 	if err := deleteSource(models.Client{}, delList, clientId, "client_id"); err != nil {
 		return err
 	}
+	return nil
+}
+
+func IsValidateUri(tenantId uint, clientId, uri string) error {
+	parsedURL, err := url.Parse(uri)
+	if err != nil {
+		return err
+	}
+
+	host := parsedURL.Host
+	if err = global.DB.First(&models.RedirectUri{}, "tenant_id = ? AND client_id = ? AND redirect_uri = ?", tenantId, clientId, host).Error; err != nil {
+		return err
+	}
+
 	return nil
 }

@@ -69,8 +69,7 @@ func GetAuthCode(c *gin.Context) {
 		global.LOG.Error("get client err: " + err.Error())
 		return
 	}
-	var uri models.RedirectUri
-	if err := global.DB.First(&uri, "tenant_id = ? AND client_id = ? AND redirect_uri = ?", tenant.Id, client.Id, redirectUri).Error; err != nil {
+	if err := service.IsValidateUri(tenant.Id, client.Id, redirectUri); err != nil {
 		c.JSON(http.StatusForbidden, gin.H{"message": "Invalid redirect_uri."})
 		global.LOG.Error("get redirect uri err: " + err.Error())
 		return
