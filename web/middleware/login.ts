@@ -5,7 +5,6 @@ export default defineNuxtRouteMiddleware((to, from) => {
   const auth = useCookie('QixinAuth')
     
   if (!auth.value) {
-    ElMessage.warning('请先登录')
     return navigateTo("/login?from=" + route.fullPath);
   }
 })
