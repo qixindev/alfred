@@ -1,10 +1,12 @@
 //用户状态信息模块
-import { getUserInfo, auth, getToken, thirdLogin } from '~/api/user';
-import { useGetQuery } from './useUtil'
+import { getUserInfo, getToken, thirdLogin } from '~/api/user';
 
-export const useUser = () => useState("user", () => null);
+export interface User {
+  username: string
+}
+
+export const useUser = () => useState<User | undefined>("user", () => undefined);
 const VITE_APP_BASE_API = import.meta.env.VITE_APP_BASE_API
-
 
 /**
  *  获取用户信息（昵称、头像、角色集合、权限集合）
@@ -21,7 +23,7 @@ export async function useGetUserInfo() {
  */
 export async function useLogout() {
   useRemoveToken()
-  navigateTo('/')
+  navigateTo('/login')
 }
 
 /**

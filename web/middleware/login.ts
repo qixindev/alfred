@@ -1,5 +1,3 @@
-import { ElMessage } from 'element-plus'
-
 export default defineNuxtRouteMiddleware((to, from) => {
   const route = useRoute()
   const auth = useCookie('QixinAuth')

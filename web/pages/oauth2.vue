@@ -1,5 +1,4 @@
 <script setup lang="ts">
-// TODO: 与login功能重复，待封装优化
 import type { FormInstance, FormRules } from 'element-plus'
 import  { ElMessage } from 'element-plus'
 
@@ -75,7 +74,7 @@ const submit = async (formEl: FormInstance) => {
     if (valid) {
       let formData = new URLSearchParams(accountForm)
       const route = useRoute()
-      const { redirect_uri, client_id, state: tenant } = route.query
+      let { redirect_uri, client_id, state: tenant } = route.query
       login(formData,tenant as string).then(res => {
         // 401 返回10000
         if (res == 10000) {
@@ -106,7 +105,7 @@ const navigateToRegister = async () => {
 const thirdLogin = async (thirdInfo: any) => {
   const route = useRoute()
   const query = route.query
-  const redirect_uri  = location.origin
+  const redirect_uri  = location.origin + '/redirect'
   const config = await getThirdLoginConfigByName(thirdInfo.name)
   const params = { 
     redirect_uri: query.redirect_uri, 

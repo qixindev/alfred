@@ -1,7 +1,8 @@
 <script setup lang="ts">
+import type { User } from '~~/composables/useUser'
 const loginVisible: Ref<boolean> = useState('loginVisible')
 
-const user = useState('user')
+const user = useState<User>('user')
 
 const showLogin = () => {
   navigateTo('/login')
@@ -36,9 +37,9 @@ const logout = () => {
 
           <template #dropdown>
             <el-dropdown-menu>
-              <nuxt-link to="/profile">
+              <!-- <nuxt-link to="/profile">
                 <el-dropdown-item>个人中心</el-dropdown-item>
-              </nuxt-link>
+              </nuxt-link> -->
               <el-dropdown-item @click="logout">
                 退出
               </el-dropdown-item>

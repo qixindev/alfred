@@ -3,6 +3,11 @@ import type { FormInstance, FormRules } from 'element-plus'
 import { ElMessage } from 'element-plus'
 import { login, getThirdLoginConfigs, getThirdLoginConfigByName } from '~/api/user';
 
+interface ThirdLoginType {
+  id: number,
+  name: string,
+  type: string
+}
 
 const phoneForm = reactive({
   phone: '',
@@ -14,7 +19,7 @@ const accountForm = reactive({
   password: ''
 })
 
-let thirdLoginTypes= ref<any>([])
+let thirdLoginTypes= ref<ThirdLoginType[]>([])
 
 const phoneRuleFormRef = ref<FormInstance>()
 const accountRuleFormRef = ref<FormInstance>()
@@ -58,7 +63,6 @@ const {
 const submit = async (formEl: FormInstance) => {
   await formEl.validate(async (valid) => {
     if (valid) {
-      //TODO: 处理登录
       let formData = new URLSearchParams(accountForm)
       login(formData).then(res => {
         if (res == 10000) {
@@ -78,19 +82,9 @@ const submit = async (formEl: FormInstance) => {
 const handleClick = () => {
 }
 
-const navigate = async () => {
-  navigateTo('/tenant')
-}
-
-const dingLogin = () => {
-  const url = location.origin
-  const appid = 'dingazsvs4mwmo7cc2vb'
-  navigateTo(`https://login.dingtalk.com/oauth2/auth?redirect_uri=${url}&response_type=code&client_id=${appid}&scope=openid&prompt=consent&state=ding`, { external: true})
-}
-
 const thirdLogin = async (params: any) => {
   const config = await getThirdLoginConfigByName(params.name)
-  const redirect_uri  = location.origin
+  const redirect_uri  = location.origin + '/redirect'
   switch (params.type) {
     case 'dingtalk':
       navigateTo(`https://login.dingtalk.com/oauth2/auth?redirect_uri=${redirect_uri}&response_type=code&client_id=${config.appKey}&scope=openid&prompt=consent&state=${params.name}`, { external: true})
@@ -105,7 +99,7 @@ const thirdLogin = async (params: any) => {
 }
 
 const getLoginConfig  = async () => {
-  thirdLoginTypes.value = await getThirdLoginConfigs()
+  thirdLoginTypes.value = await getThirdLoginConfigs() as ThirdLoginType[]
 }
 
 getLoginConfig()
