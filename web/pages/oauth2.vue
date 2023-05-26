@@ -195,7 +195,7 @@ definePageMeta({
         <div class="other-login">其它方式登录： 
           <svg-icon v-for="item in thirdLoginTypes" :name="item.type" @click="thirdLogin(item)" size="1.5em"></svg-icon>
         </div>
-        <span v-if="hasRegister" @click="navigateToRegister">注册账户</span>
+        <span class="register-btn" v-if="hasRegister" @click="navigateToRegister">注册账户</span>
       </div>
     </div>
   </div>
@@ -242,6 +242,10 @@ definePageMeta({
           margin-right: 10px;
           cursor: pointer;
         }
+      }
+
+      .register-btn {
+        cursor: pointer;
       }
     }
   }

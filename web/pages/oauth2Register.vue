@@ -97,14 +97,14 @@ definePageMeta({
           </el-input>
         </el-form-item> -->
         <el-form-item prop="password">
-          <el-input v-model="form.password" placeholder="6 - 16位密码，区分大小写">
+          <el-input v-model="form.password"  type="password" placeholder="6 - 16位密码，区分大小写">
             <template #prefix>
               <svg-icon name="password"></svg-icon>
             </template>
           </el-input>
         </el-form-item>
         <el-form-item prop="copyPassword">
-          <el-input v-model="form.copyPassword" placeholder="确认密码">
+          <el-input v-model="form.copyPassword"  type="password" placeholder="确认密码">
             <template #prefix>
               <svg-icon name="password"></svg-icon>
             </template>

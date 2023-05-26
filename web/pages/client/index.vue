@@ -5,9 +5,8 @@
     </div>
     <el-card>
       <el-table v-loading="loading" stripe :data="dataList">
-        <el-table-column label="ID" width="80px" align="center" prop="id"/>
+        <el-table-column label="ID" minWidth="80px" align="center" prop="id"/>
         <el-table-column label="name" align="center" prop="name" />
-        <el-table-column label="clientId" align="center" prop="clientId" />
         <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
           <template #default="{ row }">
             <el-button size="small" type="primary" link icon="Edit" @click="viewSecrets(row)">secrets管理
@@ -200,7 +199,7 @@ function viewRedirectUri(row: any) {
 }
 
 function viewResourceTypes(row: any) {
-  navigateTo(`/client/${row.clientId}/resource-types`)
+  navigateTo(`/client/${row.id}/resource-types`)
 }
 
 function viewSecrets(row: any) {
