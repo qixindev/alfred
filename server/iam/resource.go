@@ -9,7 +9,7 @@ import (
 	"net/http"
 )
 
-// ListIamResourceType godoc
+// ListIamType godoc
 //
 //	@Summary	iam resource type
 //	@Schemes
@@ -19,7 +19,7 @@ import (
 //	@Param			client		path	string	true	"tenant"
 //	@Success		200
 //	@Router			/accounts/{tenant}/iam/clients/{client}/types [get]
-func ListIamResourceType(c *gin.Context) {
+func ListIamType(c *gin.Context) {
 	client, err := GetClientFromCid(c)
 	if err != nil {
 		c.Status(http.StatusBadRequest)
@@ -35,7 +35,7 @@ func ListIamResourceType(c *gin.Context) {
 	c.JSON(http.StatusOK, types)
 }
 
-// NewIamResourceType godoc
+// NewIamType godoc
 //
 //	@Summary	iam resource type
 //	@Schemes
@@ -45,7 +45,7 @@ func ListIamResourceType(c *gin.Context) {
 //	@Param			client		path	string	true	"tenant"
 //	@Success		200
 //	@Router			/accounts/{tenant}/iam/clients/{client}/types [post]
-func NewIamResourceType(c *gin.Context) {
+func NewIamType(c *gin.Context) {
 	var typ models.ResourceType
 	if err := c.BindJSON(&typ); err != nil {
 		internal.ErrReqPara(c, err)
@@ -66,7 +66,7 @@ func NewIamResourceType(c *gin.Context) {
 	c.JSON(http.StatusOK, t)
 }
 
-// DeleteIamResourceType godoc
+// DeleteIamType godoc
 //
 //	@Summary	iam resource type
 //	@Schemes
@@ -77,7 +77,7 @@ func NewIamResourceType(c *gin.Context) {
 //	@Param			type		path	string	true	"tenant"
 //	@Success		200
 //	@Router			/accounts/{tenant}/iam/clients/{client}/types/{type} [delete]
-func DeleteIamResourceType(c *gin.Context) {
+func DeleteIamType(c *gin.Context) {
 	client, err := GetClientFromCid(c)
 	if err != nil {
 		c.Status(http.StatusBadRequest)

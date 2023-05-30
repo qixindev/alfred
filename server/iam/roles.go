@@ -157,7 +157,11 @@ func NewIamResourceRole(c *gin.Context) {
 		global.LOG.Error("get resource and role err: " + err.Error())
 		return
 	}
-	ru, err := iam.CreateResourceRoleUser(resource.TenantId, resource.Id, role.Id, &roleUser)
+
+	roleUser.RoleId = role.Id
+	roleUser.TenantId = resource.TenantId
+	roleUser.ResourceId = resource.Id
+	ru, err := iam.CreateResourceRoleUser(resource.TenantId, &roleUser)
 	if err != nil {
 		c.Status(http.StatusBadRequest)
 		global.LOG.Error("create resource role user err: " + err.Error())
