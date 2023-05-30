@@ -18,6 +18,7 @@ type ClientSecretDto struct {
 }
 
 type ClientUserDto struct {
+	Id       uint   `json:"id"`
 	Sub      string `json:"sub"`
 	ClientId string `json:"clientId"`
 	UserName string `json:"userName"`

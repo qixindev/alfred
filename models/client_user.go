@@ -18,6 +18,7 @@ type ClientUser struct {
 
 func (c *ClientUser) Dto() dto.ClientUserDto {
 	return dto.ClientUserDto{
+		Id:       c.Id,
 		Sub:      c.Sub,
 		ClientId: c.ClientId,
 		UserName: c.UserName,
