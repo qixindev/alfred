@@ -206,7 +206,7 @@ func DeleteIamResourceRole(c *gin.Context) {
 		return
 	}
 	var roleUser models.ResourceRoleUser
-	if err = internal.TenantDB(c).First(&roleUser, "resource_id = ? AND role_id = ? and client_user_id", resource.Id, role.Id, clientUser.Id).Error; err != nil {
+	if err = internal.TenantDB(c).First(&roleUser, "resource_id = ? AND role_id = ? and client_user_id = ?", resource.Id, role.Id, clientUser.Id).Error; err != nil {
 		c.Status(http.StatusBadRequest)
 		global.LOG.Error("get resource role user err: " + err.Error())
 		return

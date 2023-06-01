@@ -66,4 +66,5 @@ type ResourceRoleUser struct {
 	ClientUserId uint             `json:"userId"`
 	ClientUser   ClientUser       `gorm:"foreignKey:ClientUserId, TenantId" json:"user"`
 	TenantId     uint             `gorm:"primaryKey"`
+	Sub          string           `json:"sub" gorm:"<-:false;-:migration"`
 }
