@@ -65,6 +65,8 @@ export async function getThirdLoginConfig(type: string, code: string) {
  * 第三方登录
  */
 export async function useThirdLogin(state: string, code: string) {
+  // 处理cookie冲突
+  useRemoveToken()
   const params = {
     code: code,
   }
@@ -91,9 +93,6 @@ export async function useRemoveToken() {
   // 清除cookie
   const auth = useCookie('QixinAuth')
   auth.value = null
-
-  // const token = useCookie('token')
-  // token.value = null
 
   // 重置用户信息
   const user = useState('user')
