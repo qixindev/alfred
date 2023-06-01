@@ -41,15 +41,15 @@ export const getProvidersById = async (providers: string) => {
   return await useHttp.get(`/${tenant}/providers/${providers}`)
 }
 
-export const getThirdLoginConfigs = async () => {
-  return await useHttp.get(`/${tenant}/providers`)
+export const getThirdLoginConfigs = async (currentTenant = tenant) => {
+  return await useHttp.get(`/${currentTenant}/providers`)
 }
 
-export const getThirdLoginConfigByName = async (providerName: string) => {
-  return await useHttp.get(`/${tenant}/providers/${providerName}`)
+export const getThirdLoginConfigByName = async (providerName: string, currentTenant = tenant) => {
+  return await useHttp.get(`/${currentTenant}/providers/${providerName}`)
 }
 
-export const thirdLogin = async (providerName: string, data: any) => {
-  return await useHttp.get(`/${tenant}/logged-in/${providerName}`, data)
+export const thirdLogin = async (providerName: string, data: any, currentTenant=tenant) => {
+  return await useHttp.get(`/${currentTenant}/logged-in/${providerName}`, data)
 }
 
