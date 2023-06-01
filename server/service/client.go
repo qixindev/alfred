@@ -36,7 +36,7 @@ func IsValidateUri(tenantId uint, clientId, uri string) error {
 		return err
 	}
 
-	host := parsedURL.Host
+	host := parsedURL.Scheme + "://" + parsedURL.Host
 	if err = global.DB.First(&models.RedirectUri{}, "tenant_id = ? AND client_id = ? AND redirect_uri = ?", tenantId, clientId, host).Error; err != nil {
 		return err
 	}
