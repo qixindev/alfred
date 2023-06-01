@@ -106,11 +106,12 @@ const thirdLogin = async (thirdInfo: any) => {
   const route = useRoute()
   const query = route.query
   const redirect_uri  = location.origin + '/redirect'
-  const config = await getThirdLoginConfigByName(thirdInfo.name)
+  const config = await getThirdLoginConfigByName(thirdInfo.name, query.state as string)
   const params = { 
     redirect_uri: query.redirect_uri, 
     type: thirdInfo.name,
-    client_id:query.client_id
+    client_id:query.client_id,
+    tenant: query.state
   }
 
   switch (thirdInfo.type) {
@@ -127,7 +128,9 @@ const thirdLogin = async (thirdInfo: any) => {
 }
 
 const getLoginConfig  = async () => {
-  thirdLoginTypes.value = await getThirdLoginConfigs() as ThirdLoginType[]
+  const route = useRoute()
+  const { state } = route.query as any
+  thirdLoginTypes.value = await getThirdLoginConfigs(state) as ThirdLoginType[]
 }
 
 getLoginConfig()

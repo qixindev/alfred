@@ -69,10 +69,9 @@ export async function useThirdLogin(state: string, code: string) {
     code: code,
   }
   if (isJsonString(state)) {
-    const {redirect_uri, client_id, type } = JSON.parse(state)
-    await thirdLogin(type, params)
-      
-    navigateTo(`${location.origin}${VITE_APP_BASE_API}/default/oauth2/auth?client_id=${client_id}&scope=profileOpenId&response_type=code&redirect_uri=${redirect_uri}`,{ external: true })
+    const {redirect_uri, client_id, type, tenant } = JSON.parse(state)
+    await thirdLogin(type, params, tenant)
+    navigateTo(`${location.origin}${VITE_APP_BASE_API}/${tenant}/oauth2/auth?client_id=${client_id}&scope=profileOpenId&response_type=code&redirect_uri=${redirect_uri}`,{ external: true })
   }else {
     const params = {
       code: code,
