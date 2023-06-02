@@ -9,9 +9,7 @@
         <el-table-column label="name" align="center" prop="name" />
         <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
           <template #default="{ row }">
-            <el-button size="small" type="primary" link icon="Edit" @click="viewRoles(row)">角色管理
-            </el-button>
-            <el-button size="small" type="primary" link icon="Edit" @click="viewAction(row)">action管理
+            <el-button size="small" type="primary" link icon="Edit" @click="viewRoles(row)">角色分配
             </el-button>
             <!-- <el-button size="small" type="primary" link icon="Edit" @click="handleUpdate(row)">修改
             </el-button> -->
@@ -45,7 +43,7 @@ import { ElForm, ElInput, ElMessage, ElMessageBox } from 'element-plus';
 import { getResources, saveResource, updateResource, delResource } from '~/api/client/resource-type/resource'
 
 const route = useRoute()
-const { clientId, type, resource } = route.params
+const { clientId, type } = route.params as any
 
 interface Form {
   id: undefined | Number,
@@ -196,11 +194,7 @@ function handleDelete(row: any) {
 }
 
 function viewRoles(row: any) {
-  navigateTo(`/client/${clientId}/resource-types/${type}/resources/${row.name}/roles`)
-}
-
-function viewAction(row: any) {
-  navigateTo(`/client/${clientId}/resource-types/${type}/resources/${row.name}/actions`)
+  navigateTo(`/client/${clientId}/resource-types/${type}/resources/${row.name}/roles-permision`)
 }
 
 onMounted(() => {
