@@ -24,13 +24,15 @@ func GetResourceTypeRoleAction(tenantId, roleActionId uint) (*models.ResourceTyp
 	return &resourceTypeRoleAction, nil
 }
 
-func CreateResourceTypeRoleAction(tenantId, roleId uint, roleAction *models.ResourceTypeRoleAction) (*models.ResourceTypeRoleAction, error) {
-	roleAction.TenantId = tenantId
-	roleAction.RoleId = roleId
-	if err := global.WithTenant(tenantId).Create(roleAction).Error; err != nil {
-		return nil, err
+func CreateResourceTypeRoleAction(tenantId, roleId uint, roleAction []models.ResourceTypeRoleAction) error {
+	for i := 0; i < len(roleAction); i++ {
+		roleAction[i].TenantId = tenantId
+		roleAction[i].RoleId = roleId
 	}
-	return roleAction, nil
+	if err := global.WithTenant(tenantId).Create(roleAction).Error; err != nil {
+		return err
+	}
+	return nil
 }
 
 func UpdateResourceTypeRoleAction(tenantId, roleActionId uint, roleAction *models.ResourceTypeRoleAction) (*models.ResourceTypeRoleAction, error) {
