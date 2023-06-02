@@ -59,6 +59,36 @@ const docTemplate = `{
                 }
             }
         },
+        "/accounts/admin/tenants/users/{user}": {
+            "get": {
+                "description": "list tenants",
+                "tags": [
+                    "admin-tenants"
+                ],
+                "summary": "tenants",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "tenant",
+                        "name": "tenant",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "tenant",
+                        "name": "userId",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
         "/accounts/admin/tenants/{tenantId}": {
             "get": {
                 "description": "get tenants",
@@ -1828,6 +1858,57 @@ const docTemplate = `{
                         "type": "string",
                         "description": "tenant",
                         "name": "action",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/accounts/{tenant}/iam/clients/{client}/types/{type}/actions/{action}/users/{user}/resources": {
+            "get": {
+                "description": "get iam action user",
+                "tags": [
+                    "iam-action"
+                ],
+                "summary": "iam users roles",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "tenant",
+                        "name": "tenant",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "tenant",
+                        "name": "client",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "tenant",
+                        "name": "type",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "tenant",
+                        "name": "action",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "tenant",
+                        "name": "user",
                         "in": "path",
                         "required": true
                     }

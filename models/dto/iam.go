@@ -7,3 +7,9 @@ type ResourceTypeRoleActionDto struct {
 	ActionId   uint   `json:"actionId"`
 	ActionName string `json:"actionName"`
 }
+
+type ResourceRoleUserDto struct {
+	ResourceName string `json:"resourceName"`
+	Role         string `json:"role"`
+	Sub          string `json:"sub"`
+}

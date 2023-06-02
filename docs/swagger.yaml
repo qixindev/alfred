@@ -229,6 +229,41 @@ paths:
       summary: iam action
       tags:
       - iam-action
+  /accounts/{tenant}/iam/clients/{client}/types/{type}/actions/{action}/users/{user}/resources:
+    get:
+      description: get iam action user
+      parameters:
+      - description: tenant
+        in: path
+        name: tenant
+        required: true
+        type: string
+      - description: tenant
+        in: path
+        name: client
+        required: true
+        type: string
+      - description: tenant
+        in: path
+        name: type
+        required: true
+        type: string
+      - description: tenant
+        in: path
+        name: action
+        required: true
+        type: string
+      - description: tenant
+        in: path
+        name: user
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+      summary: iam users roles
+      tags:
+      - iam-action
   /accounts/{tenant}/iam/clients/{client}/types/{type}/resources:
     get:
       description: get iam resource list
@@ -1993,6 +2028,26 @@ paths:
         name: tenantId
         required: true
         type: integer
+      responses:
+        "200":
+          description: OK
+      summary: tenants
+      tags:
+      - admin-tenants
+  /accounts/admin/tenants/users/{user}:
+    get:
+      description: list tenants
+      parameters:
+      - description: tenant
+        in: path
+        name: tenant
+        required: true
+        type: string
+      - description: tenant
+        in: path
+        name: userId
+        required: true
+        type: string
       responses:
         "200":
           description: OK

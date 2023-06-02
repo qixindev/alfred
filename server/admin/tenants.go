@@ -29,6 +29,27 @@ func ListTenants(c *gin.Context) {
 	c.JSON(http.StatusOK, utils.Filter(tenants, models.Tenant2Dto))
 }
 
+// ListUserTenants godoc
+//
+//	@Summary	tenants
+//	@Schemes
+//	@Description	list tenants
+//	@Tags			admin-tenants
+//	@Param			tenant	path	string	true	"tenant"
+//	@Param			userId	path	string	true	"tenant"
+//	@Success		200
+//	@Router			/accounts/admin/tenants/users/{user} [get]
+func ListUserTenants(c *gin.Context) {
+	userId := c.Param("user")
+	var tenants []models.Tenant
+	if err := global.DB.Where("sub = ?", userId).Find(&tenants).Error; err != nil {
+		c.Status(http.StatusInternalServerError)
+		global.LOG.Error("get tenants err: " + err.Error())
+		return
+	}
+	c.JSON(http.StatusOK, utils.Filter(tenants, models.Tenant2Dto))
+}
+
 // GetTenant godoc
 //
 //	@Summary	tenants
@@ -207,6 +228,7 @@ func NewTenantSecret(c *gin.Context) {
 
 func AddAdminTenantsRoutes(rg *gin.RouterGroup) {
 	rg.GET("/tenants", ListTenants)
+	rg.GET("/tenants/users/:user", ListUserTenants)
 	rg.GET("/tenants/:tenantId", GetTenant)
 	rg.POST("/tenants", NewTenant)
 	rg.PUT("/tenants/:tenantId", UpdateTenant)
