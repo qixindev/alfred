@@ -156,7 +156,7 @@ function submitForm() {
       updateLoading.value = true
       let { id, actionId } = state.form
 
-      const params = { actionId }
+      const params = [{ actionId }]
 
       if (state.open === Status.EDIT) {
         updateRoleAction(clientId, type, roleName, id as number, params).then(() => {
