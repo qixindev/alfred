@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="option">
-      <el-button type="primary" icon="Plus" @click="handleAdd">新增Type</el-button>
+      <el-button type="primary" icon="Plus" @click="handleAdd">新增Device</el-button>
     </div>
     <el-card>
       <el-table v-loading="loading" stripe :data="dataList">
@@ -9,14 +9,10 @@
         <el-table-column label="name" align="center" prop="name" />
         <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
           <template #default="{ row }">
-            <el-button size="small" type="primary" link icon="Edit" @click="viewActions(row)">action管理
+            <el-button size="small" type="primary" link icon="Edit" @click="viewGroups(row)">groups管理
             </el-button>
-            <el-button size="small" type="primary" link icon="Edit" @click="viewResourecs(row)">资源管理
+            <el-button size="small" type="primary" link icon="Edit" @click="handleUpdate(row)">修改
             </el-button>
-            <el-button size="small" type="primary" link icon="Edit" @click="viewRoles(row)">角色管理
-            </el-button>
-            <!-- <el-button size="small" type="primary" link icon="Edit" @click="handleUpdate(row)">修改
-            </el-button> -->
             <el-button size="small" type="primary" link icon="Delete" @click="handleDelete(row)" :loading="row.deleteLoading">删除
             </el-button>
           </template>
@@ -24,12 +20,12 @@
       </el-table>
     </el-card>
 
-    <!-- 添加或修改岗位对话框 -->
+    <!-- 添加或修改对话框 -->
     <el-dialog :title="`${open === Status.ADD ? '新增' : '修改'}`" titleIcon="modify" v-model="visible" width="500px" append-to-body
       :before-close="cancel">
       <el-form ref="formRef" :model="form" :rules="rules" label-width="100px">
         <el-form-item label="name" prop="name">
-          <el-input v-model="form.name" placeholder="请输入 name" />
+          <el-input v-model="form.name" placeholder="请输入name" />
         </el-form-item>
       </el-form>
       <template #footer>
@@ -44,11 +40,9 @@
 <script lang="ts" setup name="Users">
 import { ElForm, ElInput, ElMessage, ElMessageBox } from 'element-plus';
 
-import { getTypes, saveType, updateType, delType } from '~/api/client/resource-type/types'
-
-const route = useRoute()
-const { clientId } = route.params
-
+import { getDevices, saveDevice, updateDevice, delDevice } from '~/api/devices'
+import { Tenant} from '~~/composables/useUser'
+const tenant = useState<Tenant>('tenant')
 interface Form {
   id: undefined | Number,
   name: undefined | string
@@ -98,7 +92,7 @@ const viewDialogVisible = ref(false)
 /** 查询列表 */
 function getList() {
   state.loading = true
-  getTypes(clientId).then((res:any) => {
+  getDevices().then((res:any) => {
     state.dataList = res
   }).finally(() => {
     state.loading = false
@@ -109,7 +103,7 @@ function getList() {
 function resetForm() {
   state.form = {
     id: undefined,
-    name: undefined,
+    name: undefined
   }
   formRef.value.resetFields()
 }
@@ -130,7 +124,7 @@ function handleUpdate(row: any) {
   nextTick(()=>{
     state.form = {
       id,
-      name,
+      name
     }
   })
 }
@@ -146,7 +140,7 @@ function submitForm() {
       const params = { name }
 
       if (state.open === Status.EDIT) {
-        updateType(clientId, id as number, params).then(() => {
+        updateDevice(id as number, params).then(() => {
           ElMessage({
             showClose: true,
             message: '修改成功',
@@ -158,7 +152,7 @@ function submitForm() {
           updateLoading.value = false
         })
       } else {
-        saveType(clientId, params).then(() => {
+        saveDevice(params).then(() => {
           ElMessage({
             showClose: true,
             message: '创建成功',
@@ -185,7 +179,7 @@ function handleDelete(row: any) {
     }
   ).then(async function () {
     row.deleteLoading = true
-    await delType(clientId, row.name)
+    await delDevice(row.id)
     row.deleteLoading = false
     getList()
     ElMessage({
@@ -197,16 +191,8 @@ function handleDelete(row: any) {
   })
 }
 
-function viewRoles(row: any) {
-  navigateTo(`/client/${clientId}/resource-types/${row.name}/roles`)
-}
-
-function viewResourecs(row: any) {
-  navigateTo(`/client/${clientId}/resource-types/${row.name}/resources`)
-}
-
-function viewActions(row: any) {
-  navigateTo(`/client/${clientId}/resource-types/${row.name}/actions`)
+function viewGroups(row: any) {
+  navigateTo(`/${tenant.value}/device/${row.id}/groups`)
 }
 
 onMounted(() => {

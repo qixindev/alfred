@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="option">
-      <el-button type="primary" icon="Plus" @click="handleAdd">新增Device</el-button>
+      <el-button type="primary" icon="Plus" @click="handleAdd">新增Tenant</el-button>
     </div>
     <el-card>
       <el-table v-loading="loading" stripe :data="dataList">
@@ -9,7 +9,7 @@
         <el-table-column label="name" align="center" prop="name" />
         <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
           <template #default="{ row }">
-            <el-button size="small" type="primary" link icon="Edit" @click="viewGroups(row)">groups管理
+            <el-button size="small" type="primary" link icon="Edit" @click="viewDevices(row)">device管理
             </el-button>
             <el-button size="small" type="primary" link icon="Edit" @click="handleUpdate(row)">修改
             </el-button>
@@ -40,8 +40,9 @@
 <script lang="ts" setup name="Users">
 import { ElForm, ElInput, ElMessage, ElMessageBox } from 'element-plus';
 
-import { getDevices, saveDevice, updateDevice, delDevice } from '~/api/devices'
-
+import { getTenants, saveTenant, updateTenant, delTenant } from '~/api/tenant'
+import { Tenant} from '~~/composables/useUser'
+const tenant = useState<Tenant>('tenant')
 interface Form {
   id: undefined | Number,
   name: undefined | string
@@ -91,7 +92,7 @@ const viewDialogVisible = ref(false)
 /** 查询列表 */
 function getList() {
   state.loading = true
-  getDevices().then((res:any) => {
+  getTenants().then((res:any) => {
     state.dataList = res
   }).finally(() => {
     state.loading = false
@@ -139,7 +140,7 @@ function submitForm() {
       const params = { name }
 
       if (state.open === Status.EDIT) {
-        updateDevice(id as number, params).then(() => {
+        updateTenant(id as number, params).then(() => {
           ElMessage({
             showClose: true,
             message: '修改成功',
@@ -151,7 +152,7 @@ function submitForm() {
           updateLoading.value = false
         })
       } else {
-        saveDevice(params).then(() => {
+        saveTenant(params).then(() => {
           ElMessage({
             showClose: true,
             message: '创建成功',
@@ -178,7 +179,7 @@ function handleDelete(row: any) {
     }
   ).then(async function () {
     row.deleteLoading = true
-    await delDevice(row.id)
+    await delTenant(row.id)
     row.deleteLoading = false
     getList()
     ElMessage({
@@ -190,8 +191,8 @@ function handleDelete(row: any) {
   })
 }
 
-function viewGroups(row: any) {
-  navigateTo(`/device/${row.id}/groups`)
+function viewDevices(row: any) {
+  navigateTo(`/${tenant.value}/device/${row.id}/groups`)
 }
 
 onMounted(() => {

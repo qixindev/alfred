@@ -1,6 +1,8 @@
 <script setup lang="ts">
-const route = useRoute()
-
+import { Tenant, usePath } from '~~/composables/useUser'
+const route = useRoute();
+const tenant = useState<Tenant>('tenant')
+const routerTenant = useRouter()
 const router = ref([
   {
     label: '主页',
@@ -33,7 +35,7 @@ const router = ref([
     path: '/groups'
   },
   {
-    name: 'groups',
+    name: 'tenant',
     label: '租户管理',
     path: '/tenant'
   },
@@ -41,11 +43,31 @@ const router = ref([
 
 const currentIndex = ref(router.value.findIndex(item => item.path === route.path))
 
-const handleClick = (index: number) => {
+const handleClick = (index: number, item: any) => {
   currentIndex.value = index
-  navigateTo(router.value[index].path)
-}
+  if (index == 0) {
+    navigateTo(router.value[index].path)
+  } else {
+    navigateTo(`/${tenant.value}${item.path}`)
+  }
+  // navigateTo(router.value[index].path)
+  // 赋值
+  const path = usePath();
+  path.value = {
+    name:item.name,
+    path:item.path,
+    list:router.value
+  } 
 
+}
+// 监听当前路由
+watch(
+  () => routerTenant.currentRoute.value,
+  (newValue: any) => {
+    currentIndex.value = router.value.findIndex(item => item.name === newValue.fullPath.split('/')[2])
+  },
+  { immediate: true }
+)
 </script>
 
 <template>
@@ -56,13 +78,8 @@ const handleClick = (index: number) => {
       </nuxt-link>
     </div>
     <div class="menu">
-      <div 
-        class="menu-item" 
-        :class="{ 'active': currentIndex === index}" 
-        v-for="(item,index) in router" 
-        :key="item.name"
-        @click="handleClick(index)"
-        >
+      <div class="menu-item" :class="{ 'active': currentIndex === index }" v-for="(item, index) in router"
+        :key="item.name" @click="handleClick(index, item)">
         {{ item.label }}
       </div>
     </div>
@@ -73,18 +90,19 @@ const handleClick = (index: number) => {
 .sidebar {
   background-color: #FFF;
   min-height: 100vh;
+
   .menu {
 
-  .menu-item {
-    height: 48px;
-    line-height: 48px;
-    cursor: pointer;
-    &.active {
-      background-color: #409EFF;
-      color: #FFF;
+    .menu-item {
+      height: 48px;
+      line-height: 48px;
+      cursor: pointer;
+
+      &.active {
+        background-color: #409EFF;
+        color: #FFF;
+      }
     }
   }
-  }
 }
-
 </style>
