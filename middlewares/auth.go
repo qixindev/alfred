@@ -61,7 +61,7 @@ func AuthorizedAdmin(c *gin.Context) {
 	username := sessions.Default(c).Get("user")
 	tenantName := c.Param("tenant")
 	if username == nil {
-		c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"message": "user not login"})
+		c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"code": "1000", "message": "user not login"})
 		return
 	}
 	if tenantName == "" {
