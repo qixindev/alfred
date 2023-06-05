@@ -6,6 +6,7 @@ import (
 	"accounts/server/internal"
 	"accounts/server/service"
 	"accounts/utils"
+	"github.com/gin-contrib/sessions"
 	"github.com/gin-gonic/gin"
 	"net/http"
 )
@@ -21,7 +22,11 @@ import (
 //	@Router			/accounts/admin/tenants [get]
 func ListTenants(c *gin.Context) {
 	var tenants []models.Tenant
-	if err := global.DB.Find(&tenants).Error; err != nil {
+	username := sessions.Default(c).Get("user")
+	if err := global.DB.Debug().Model(models.User{}).Select("t.id, t.name").
+		Joins("LEFT JOIN tenants as t ON t.id = users.tenant_id").
+		Where("users.username = ?", username).
+		Find(&tenants).Error; err != nil {
 		c.Status(http.StatusInternalServerError)
 		global.LOG.Error("get tenants err: " + err.Error())
 		return
