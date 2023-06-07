@@ -41,7 +41,7 @@
 import { ElForm, ElInput, ElMessage, ElMessageBox } from 'element-plus';
 
 import { getTenants, saveTenant, updateTenant, delTenant } from '~/api/tenant'
-
+const tenant =  useTenant()
 interface Form {
   id: undefined | Number,
   name: undefined | string
@@ -191,7 +191,7 @@ function handleDelete(row: any) {
 }
 
 function viewDevices(row: any) {
-  navigateTo(`/device/${row.id}/groups`)
+  navigateTo(`/${tenant.value}/device/${row.id}/groups`)
 }
 
 onMounted(() => {

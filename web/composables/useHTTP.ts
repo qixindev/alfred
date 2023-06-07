@@ -43,7 +43,7 @@ const fetch = (url: string , option: HttpOption) => {
           // TODO: 临时处理 拦截登录账号密码错误
           if (response.url.includes('/login')) {
             resolve(10000)
-          } else {
+          } else if(data.code=='1000'){
             navigateTo('/login')
           }
         }

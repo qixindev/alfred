@@ -1,16 +1,22 @@
 <template>
   <div>
     <div class="option">
-      <el-button type="primary" icon="Plus" @click="handleAdd">新增Action</el-button>
+      <el-button type="primary" icon="Plus" @click="handleAdd">新增client</el-button>
     </div>
     <el-card>
       <el-table v-loading="loading" stripe :data="dataList">
-        <el-table-column label="ID" width="80px" align="center" prop="id"/>
+        <el-table-column label="ID" minWidth="80px" align="center" prop="id"/>
         <el-table-column label="name" align="center" prop="name" />
         <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
           <template #default="{ row }">
-            <!-- <el-button size="small" type="primary" link icon="Edit" @click="handleUpdate(row)">修改
-            </el-button> -->
+            <el-button size="small" type="primary" link icon="Edit" @click="viewSecrets(row)">secrets管理
+            </el-button>
+            <el-button size="small" type="primary" link icon="Edit" @click="viewRedirectUri(row)">Redirect-uris管理
+            </el-button>
+            <el-button size="small" type="primary" link icon="Edit" @click="viewResourceTypes(row)">ResourceTypes管理
+            </el-button>
+            <el-button size="small" type="primary" link icon="Edit" @click="handleUpdate(row)">修改
+            </el-button>
             <el-button size="small" type="primary" link icon="Delete" @click="handleDelete(row)" :loading="row.deleteLoading">删除
             </el-button>
           </template>
@@ -19,11 +25,11 @@
     </el-card>
 
     <!-- 添加或修改岗位对话框 -->
-    <el-dialog :title="`${open === Status.ADD ? '新增' : '修改'}`" titleIcon="modify" v-model="visible" width="500px" append-to-body
+    <el-dialog :title="`${open === Status.ADD ? '新增' : '修改'}client`" titleIcon="modify" v-model="visible" width="500px" append-to-body
       :before-close="cancel">
       <el-form ref="formRef" :model="form" :rules="rules" label-width="100px">
         <el-form-item label="name" prop="name">
-          <el-input v-model="form.name" placeholder="请输入 name" />
+          <el-input v-model="form.name" placeholder="请输入client name" />
         </el-form-item>
       </el-form>
       <template #footer>
@@ -38,11 +44,8 @@
 <script lang="ts" setup name="Users">
 import { ElForm, ElInput, ElMessage, ElMessageBox } from 'element-plus';
 
-import { getActions, saveAction, updateAction, delAction } from '~/api/client/resource-type/action'
-
-const route = useRoute()
-const { clientId, type } = route.params
-
+import { getClient, saveClient, updateClient, delClient } from '~/api/client'
+const tenant =  useTenant()
 interface Form {
   id: undefined | Number,
   name: undefined | string
@@ -68,7 +71,7 @@ const state = reactive({
   // 表单校验
   rules: {
     name: [
-      { required: true, message: 'name 不能为空', trigger: 'blur' }
+      { required: true, message: 'client name 不能为空', trigger: 'blur' }
     ]
   }
 })
@@ -92,7 +95,7 @@ const viewDialogVisible = ref(false)
 /** 查询列表 */
 function getList() {
   state.loading = true
-  getActions(clientId, type).then((res:any) => {
+  getClient().then((res:any) => {
     state.dataList = res
   }).finally(() => {
     state.loading = false
@@ -140,7 +143,7 @@ function submitForm() {
       const params = { name }
 
       if (state.open === Status.EDIT) {
-        updateAction(clientId, id as number,type,  params).then(() => {
+        updateClient(id as number, params).then(() => {
           ElMessage({
             showClose: true,
             message: '修改成功',
@@ -152,10 +155,10 @@ function submitForm() {
           updateLoading.value = false
         })
       } else {
-        saveAction(clientId, type, params).then(() => {
+        saveClient(params).then(() => {
           ElMessage({
             showClose: true,
-            message: '创建成功',
+            message: '创建client成功',
             type: 'success',
           })
           cancel()
@@ -179,7 +182,7 @@ function handleDelete(row: any) {
     }
   ).then(async function () {
     row.deleteLoading = true
-    await delAction(clientId, type, row.name)
+    await delClient(row.id)
     row.deleteLoading = false
     getList()
     ElMessage({
@@ -189,6 +192,18 @@ function handleDelete(row: any) {
     })
   }).catch(() => {
   })
+}
+
+function viewRedirectUri(row: any) {
+  navigateTo(`/${tenant.value}/client/${row.id}/redirect-uris`)
+}
+
+function viewResourceTypes(row: any) {
+  navigateTo(`/${tenant.value}/client/${row.id}/resource-types`)
+}
+
+function viewSecrets(row: any) {
+  navigateTo(`/${tenant.value}/client/${row.id}/secrets`)
 }
 
 onMounted(() => {

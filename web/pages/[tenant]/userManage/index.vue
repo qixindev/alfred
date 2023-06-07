@@ -77,7 +77,7 @@
 import { ElForm, ElInput, ElMessage, ElMessageBox } from 'element-plus';
 
 import { getUsers, saveUser, updateUser, delUser } from '~/api/userManage'
-
+const tenant =  useTenant()
 interface Form {
   id: undefined | Number,
   username: undefined | string,
@@ -299,7 +299,7 @@ function handleDelete(row: any) {
 }
 
 function viewGroups(row: any) {
-  navigateTo(`/userManage/${row.id}/groups`)
+  navigateTo(`/${tenant.value}/userManage/${row.id}/groups`)
 }
 
 onMounted(() => {
