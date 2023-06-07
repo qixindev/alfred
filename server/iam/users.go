@@ -77,7 +77,7 @@ func IsUserActionPermission(c *gin.Context) {
 func GetIamActionResource(c *gin.Context) {
 	typ, err := getType(c)
 	if err != nil {
-		internal.ErrorSqlResponse("failed to get type")
+		internal.ErrorSqlResponse(c, "failed to get type")
 		global.LOG.Error("get type err: " + err.Error())
 		return
 	}
@@ -93,7 +93,7 @@ func GetIamActionResource(c *gin.Context) {
 		Joins("LEFT JOIN client_users cu ON cu.id = rru.client_user_id").
 		Where("rru.tenant_id = ? AND rru.client_user_id = ? AND r.type_id = ? AND a.name = ?",
 			tenant.Id, c.Param("user"), typ.Id, c.Param("action")).Find(&res).Error; err != nil {
-		internal.ErrorSqlResponse("failed to get user's resources")
+		internal.ErrorSqlResponse(c, "failed to get user's resources")
 		global.LOG.Error("get resource err: " + err.Error())
 		return
 	}

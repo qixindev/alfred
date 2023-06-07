@@ -3,6 +3,7 @@ package iam
 import (
 	"accounts/global"
 	"accounts/models"
+	"errors"
 )
 
 func ListResourceTypeRoleActions(tenantId, roleId uint) ([]models.ResourceTypeRoleAction, error) {
@@ -26,6 +27,9 @@ func GetResourceTypeRoleAction(tenantId, roleActionId uint) (*models.ResourceTyp
 
 func CreateResourceTypeRoleAction(tenantId, roleId uint, roleAction []models.ResourceTypeRoleAction) error {
 	for i := 0; i < len(roleAction); i++ {
+		if roleAction[i].ActionId == 0 {
+			return errors.New("actionId should not be empty")
+		}
 		roleAction[i].TenantId = tenantId
 		roleAction[i].RoleId = roleId
 	}

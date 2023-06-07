@@ -73,6 +73,7 @@ type ResourceRoleUser struct {
 
 func (r *ResourceRoleUser) Dto() *dto.ResourceRoleUserDto {
 	return &dto.ResourceRoleUserDto{
+		Id:           r.Id,
 		ResourceName: r.ResourceName,
 		Role:         r.RoleName,
 		Sub:          r.Sub,

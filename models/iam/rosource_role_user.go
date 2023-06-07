@@ -8,8 +8,10 @@ import (
 func ListResourcesRoleUsers(tenantId, resourceId, roleId uint) ([]models.ResourceRoleUser, error) {
 	var resourceRoleUsers []models.ResourceRoleUser
 	if err := global.DB.Table("resource_role_users as rru").
-		Select("rru.id, rru.resource_id, rru.role_id, rru.client_user_id, rru.tenant_id, cu.sub").
+		Select("rru.id, r.name resource_name, rr.name role_name, rru.client_user_id, cu.sub").
 		Joins("LEFT JOIN client_users as cu ON cu.id = rru.client_user_id").
+		Joins("LEFT JOIN resources as r ON r.id = rru.resource_id").
+		Joins("LEFT JOIN resource_type_roles as rr ON rr.id = rru.role_id").
 		Find(&resourceRoleUsers, "rru.tenant_id = ? AND resource_id = ? AND role_id = ?", tenantId, resourceId, roleId).
 		Error; err != nil {
 		return nil, err

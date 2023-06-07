@@ -144,7 +144,7 @@ func ListIamRoleAction(c *gin.Context) {
 func NewIamRoleAction(c *gin.Context) {
 	role, err := getRole(c)
 	if err != nil {
-		c.Status(http.StatusBadRequest)
+		internal.ErrorSqlResponse(c, "failed to get role")
 		global.LOG.Error("get role err: " + err.Error())
 		return
 	}
