@@ -1,8 +1,10 @@
-const tenant =  import.meta.env.VITE_APP_TENANT
+// const tenant =  import.meta.env.VITE_APP_TENANT
 
+const tenant = computed(() => useTenant().value) ||localStorage.getItem('tenantValue')
 export const getClient = async () => {
+  // console.log(tenant,useTenant().value,"接口tenant111",localStorage.getItem('tenantValue'));
   console.log(import.meta)
-  return await useHttp.get(`/admin/${tenant}/clients`)
+  return await useHttp.get(`/admin/${tenant.value}/clients`)
 }
 
 export const saveClient = async (data: any) => {

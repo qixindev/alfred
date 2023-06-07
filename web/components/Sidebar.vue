@@ -1,7 +1,9 @@
 <script setup lang="ts">
-import { Tenant, usePath } from '~~/composables/useUser'
+// import { Tenant, usePath } from '~~/composables/useUser'
 const route = useRoute();
-const tenant = useState<Tenant>('tenant')
+
+const tenant =  useTenant()
+// const tenant = useState<Tenant>('tenant')
 const routerTenant = useRouter()
 const router = ref([
   {
@@ -52,18 +54,20 @@ const handleClick = (index: number, item: any) => {
   }
   // navigateTo(router.value[index].path)
   // 赋值
-  const path = usePath();
-  path.value = {
-    name:item.name,
-    path:item.path,
-    list:router.value
-  } 
+  // const path = usePath();
+  // path.value = {
+  //   name:item.name,
+  //   path:item.path,
+  //   list:router.value
+  // } 
 
 }
 // 监听当前路由
 watch(
   () => routerTenant.currentRoute.value,
   (newValue: any) => {
+    // console.log(newValue,"newValue");
+    
     currentIndex.value = router.value.findIndex(item => item.name === newValue.fullPath.split('/')[2])
   },
   { immediate: true }

@@ -45,8 +45,7 @@
 import { ElForm, ElInput, ElMessage, ElMessageBox } from 'element-plus';
 
 import { getTypes, saveType, updateType, delType } from '~/api/client/resource-type/types'
-import { Tenant} from '~~/composables/useUser'
-const tenant = useState<Tenant>('tenant')
+const tenant =  useTenant()
 const route = useRoute()
 const { clientId } = route.params
 

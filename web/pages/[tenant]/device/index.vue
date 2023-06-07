@@ -41,8 +41,7 @@
 import { ElForm, ElInput, ElMessage, ElMessageBox } from 'element-plus';
 
 import { getDevices, saveDevice, updateDevice, delDevice } from '~/api/devices'
-import { Tenant} from '~~/composables/useUser'
-const tenant = useState<Tenant>('tenant')
+const tenant =  useTenant()
 interface Form {
   id: undefined | Number,
   name: undefined | string

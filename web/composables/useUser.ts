@@ -1,12 +1,12 @@
 //用户状态信息模块
-import { getUserInfo, getToken, thirdLogin } from '~/api/user';
+import { getUserInfo, thirdLogin } from '~/api/user';
 
 export interface User {
   username: string
 }
-export interface Tenant {
-  name: string
-}
+// export interface Tenant {
+//   // name: string
+// }
 export interface Path {
   name: string,
   path:string,
@@ -19,8 +19,7 @@ interface SelectOption {
 }
 
 export const useUser = () => useState<User | undefined>("user", () => undefined);
-export const useTenant = () => useState<Tenant | undefined>("tenant", () => undefined);
-export const usePath = () => useState<Path | undefined>("path", () => undefined);
+export const useTenant = () => useState<String>("tenant", () => localStorage.getItem('tenantValue'));
 const VITE_APP_BASE_API = import.meta.env.VITE_APP_BASE_API
 
 /**
@@ -52,14 +51,14 @@ export async function useGetToken(code: string) {
     grant_type: 'authorization_code',
     client_secret: 'abcdefg'
   }
-  getToken(params).then((res: any) => {
-    const token = useCookie('token')
-    token.value = res.access_token
-    useGetUserInfo()
-    // 处理登录成功后页面跳转
-    const route = useRoute()
-    navigateTo(route.query.from as string || '/', { replace: true })
-  })
+  // getToken(params).then((res: any) => {
+  //   const token = useCookie('token')
+  //   token.value = res.access_token
+  //   useGetUserInfo()
+  //   // 处理登录成功后页面跳转
+  //   const route = useRoute()
+  //   navigateTo(route.query.from as string || '/', { replace: true })
+  // })
 }
 
 /**
@@ -108,7 +107,9 @@ export async function useRemoveToken() {
   // 清除cookie
   const auth = useCookie('QixinAuth')
   auth.value = null
-
+  localStorage.removeItem('tenantValue')
+  const tenant = useTenant()
+  tenant.value = ''
   // 重置用户信息
   const user = useState('user')
   user.value = null

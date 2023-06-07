@@ -1,10 +1,14 @@
 <script setup lang="ts">
-import { User, useTenant, Path } from '~~/composables/useUser'
+import { User, useTenant } from '~~/composables/useUser'
 import { getUser } from '~/api/common'
+import { ref} from 'vue'
+const popoverRef = ref(null);
+const activeUser = ref(null);
 const loginVisible: Ref<boolean> = useState('loginVisible')
+const route = useRoute();
+const routerTenant = useRouter()
 //获取
 const user = useState<User>('user')
-const path = useState<Path>('path')
 interface SelectOption {
   name: string,
   id: number,
@@ -24,27 +28,43 @@ const tenant = useTenant();
 function getList() {
   getUser().then((res: any) => {
     state.dataList = res
-    tenant.value = state.dataList[0].name,
-      console.log(res, "res");
+    //默认第一个
+    tenant.value = localStorage.getItem('tenantValue') ? localStorage.getItem('tenantValue') : state.dataList[0].name;
+    localStorage.setItem("tenantValue", tenant.value)
+    // 高亮
+    activeUser.value = route.params?.value?.tenant;
+    console.log(res, "res", tenant.value, localStorage.getItem('tenantValue'));
   }).finally(() => {
   })
 }
-// 切换列表
+// 切换列表c
 function clickUser(row: any) {
-
+  popoverRef.value.hide()
   tenant.value = row.name;
-  if (path.value.path == '/') {
-    navigateTo(`${path.value.path}`)
+  localStorage.setItem("tenantValue", tenant.value)
+  let arr = route.path.split('/')
+  arr.splice(1, 1, tenant.value);
+  arr.join("/")
+  if (route.path == '/') {
+    navigateTo('/')
   } else {
-    navigateTo(`/${row.name}${path.value.path}`)
+    navigateTo(arr.join("/"))
   }
-}
+};
 
 onMounted(() => {
   getList()
-
-
 })
+// 监听当前路由
+watch(
+  () => routerTenant.currentRoute.value,
+  (newValue: any) => {
+    // console.log(newValue, "newValueNavBar");
+    // 高亮
+    activeUser.value = newValue.params.tenant
+  },
+  { immediate: true }
+)
 // const avatar = ref('https://07akioni.oss-cn-beijing.aliyuncs.com/07akioni.jpeg')
 </script>
 
@@ -58,39 +78,55 @@ onMounted(() => {
       </div>
       <div class="center"></div>
       <div class="right">
+        <!-- <el-dropdown class="avatar-container right-menu-item hover-effect" trigger="click" v-if="user">
+            <div class="avatar-wrapper">
+              {{ user.username }}
+            </div>
 
+            <template #dropdown>
+              <el-dropdown-menu> -->
+        <!-- <nuxt-link to="/profile">
+                                  <el-dropdown-item>个人中心</el-dropdown-item>
+                                </nuxt-link> -->
+        <!-- <el-dropdown-item>
+                  用户
+                  <el-menu default-active="2" class="el-menu-vertical-demo">
+                    <el-menu-item v-for="(item, index) in state.dataList" :index="index" @click="clickUser(item)">
+                      <el-icon><icon-menu /></el-icon>
+                      <span>{{ item.name }}</span>
+                    </el-menu-item>
+                  </el-menu>
+                </el-dropdown-item>
 
-        <el-dropdown class="avatar-container right-menu-item hover-effect" trigger="click" v-if="user">
-          <div class="avatar-wrapper">
-            <!-- <img v-if="avatar" :src="avatar" class="user-avatar" /> -->
-            {{ user.username }}
+                <el-dropdown-item @click="logout">
+                  退出
+                </el-dropdown-item>
+              </el-dropdown-menu>
+            </template>
+          </el-dropdown> -->
+          <!-- <el-button v-else @click="showLogin">登录</el-button> -->
+        <el-dropdown trigger="click" v-if="user">
+          <div>
+            <span>{{ user.username }}</span>
           </div>
-
           <template #dropdown>
-            <el-menu default-active="2" class="el-menu-vertical-demo">
-              <el-menu-item v-for="(item, index) in state.dataList" :index="index" @click="clickUser(item)">
-                <el-icon><icon-menu /></el-icon>
-                <span>{{ item.name }}</span>
-              </el-menu-item>
-            </el-menu>
             <el-dropdown-menu>
-              <!-- <nuxt-link to="/profile">
-                        <el-dropdown-item>个人中心</el-dropdown-item>
-                      </nuxt-link> -->
-
               <el-dropdown-item>
-                用户
+                <el-popover ref="popoverRef" :hide-after="0" placement="left-start" trigger="hover" :offset="15">
+                  <template #reference>
+                    <span>个人中心</span>
+                  </template>
+                  <el-menu mode="vertical" :default-active="activeUser" >
+                    <el-menu-item v-for="(item, index) in state.dataList" :index="item.name"  @click="clickUser(item)">{{
+                      item.name }}</el-menu-item>
+                  </el-menu>
+                </el-popover>
               </el-dropdown-item>
-
-              <el-dropdown-item @click="logout">
-                退出
-              </el-dropdown-item>
+              <el-dropdown-item @click="logout">退出</el-dropdown-item>
             </el-dropdown-menu>
           </template>
         </el-dropdown>
         <el-button v-else @click="showLogin">登录</el-button>
-
-
       </div>
     </div>
   </div>
@@ -168,8 +204,9 @@ onMounted(() => {
     }
   }
 
-  .el-scrollbar {
+  :deep .el-scrollbar {
     overflow: auto;
+
     :deep(.el-menu-vertical-demo) {
       position: absolute;
       top: 61px;

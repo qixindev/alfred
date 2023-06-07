@@ -77,8 +77,7 @@
 import { ElForm, ElInput, ElMessage, ElMessageBox } from 'element-plus';
 
 import { getUsers, saveUser, updateUser, delUser } from '~/api/userManage'
-import { Tenant} from '~~/composables/useUser'
-const tenant = useState<Tenant>('tenant')
+const tenant =  useTenant()
 interface Form {
   id: undefined | Number,
   username: undefined | string,

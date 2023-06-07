@@ -1,17 +1,17 @@
-const tenant =  import.meta.env.VITE_APP_TENANT
-
+// const tenant =  import.meta.env.VITE_APP_TENANT
+const tenant = computed(() => useTenant().value)
 export const getGroups = async (userId: number) => {
-  return await useHttp.get(`/admin/${tenant}/users/${userId}/groups`)
+  return await useHttp.get(`/admin/${tenant.value}/users/${userId}/groups`)
 }
 
 export const saveGroup = async (userId: number, data: any) => {
-  return await useHttp.post(`/admin/${tenant}/users/${userId}/groups`, data)
+  return await useHttp.post(`/admin/${tenant.value}/users/${userId}/groups`, data)
 }
 
 export const updateGroup = async (userId: number, groupId: number, data: any) => {
-  return await useHttp.put(`/admin/${tenant}/users/${userId}/groups/${groupId}`, data)
+  return await useHttp.put(`/admin/${tenant.value}/users/${userId}/groups/${groupId}`, data)
 }
 
 export const delGroup = async (userId: number, groupId: number,) => {
-  return await useHttp.delete(`/admin/${tenant}/users/${userId}/groups/${groupId}`)
+  return await useHttp.delete(`/admin/${tenant.value}/users/${userId}/groups/${groupId}`)
 }
