@@ -32,13 +32,13 @@ function getList() {
     tenant.value = localStorage.getItem('tenantValue') ? localStorage.getItem('tenantValue') : state.dataList[0].name;
     localStorage.setItem("tenantValue", tenant.value)
     // 高亮
-    activeUser.value = route.params?.value?.tenant;
-    console.log(res, "res", tenant.value, localStorage.getItem('tenantValue'));
+    activeUser.value = localStorage.getItem('tenantValue');
   }).finally(() => {
   })
 }
-// 切换列表c
+// 切换列表
 function clickUser(row: any) {
+  //点击用户关闭
   popoverRef.value.hide()
   tenant.value = row.name;
   localStorage.setItem("tenantValue", tenant.value)
@@ -47,11 +47,10 @@ function clickUser(row: any) {
   arr.join("/")
   if (route.path == '/') {
     navigateTo('/')
-  } else {
+  } else { //非主页
     navigateTo(arr.join("/"))
   }
 };
-
 onMounted(() => {
   getList()
 })
@@ -59,9 +58,8 @@ onMounted(() => {
 watch(
   () => routerTenant.currentRoute.value,
   (newValue: any) => {
-    // console.log(newValue, "newValueNavBar");
     // 高亮
-    activeUser.value = newValue.params.tenant
+    activeUser.value = localStorage.getItem('tenantValue');
   },
   { immediate: true }
 )
@@ -78,33 +76,6 @@ watch(
       </div>
       <div class="center"></div>
       <div class="right">
-        <!-- <el-dropdown class="avatar-container right-menu-item hover-effect" trigger="click" v-if="user">
-            <div class="avatar-wrapper">
-              {{ user.username }}
-            </div>
-
-            <template #dropdown>
-              <el-dropdown-menu> -->
-        <!-- <nuxt-link to="/profile">
-                                  <el-dropdown-item>个人中心</el-dropdown-item>
-                                </nuxt-link> -->
-        <!-- <el-dropdown-item>
-                  用户
-                  <el-menu default-active="2" class="el-menu-vertical-demo">
-                    <el-menu-item v-for="(item, index) in state.dataList" :index="index" @click="clickUser(item)">
-                      <el-icon><icon-menu /></el-icon>
-                      <span>{{ item.name }}</span>
-                    </el-menu-item>
-                  </el-menu>
-                </el-dropdown-item>
-
-                <el-dropdown-item @click="logout">
-                  退出
-                </el-dropdown-item>
-              </el-dropdown-menu>
-            </template>
-          </el-dropdown> -->
-          <!-- <el-button v-else @click="showLogin">登录</el-button> -->
         <el-dropdown trigger="click" v-if="user">
           <div>
             <span>{{ user.username }}</span>
@@ -114,7 +85,7 @@ watch(
               <el-dropdown-item>
                 <el-popover ref="popoverRef" :hide-after="0" placement="left-start" trigger="hover" :offset="15">
                   <template #reference>
-                    <span>个人中心</span>
+                    <span>用户</span>
                   </template>
                   <el-menu mode="vertical" :default-active="activeUser" >
                     <el-menu-item v-for="(item, index) in state.dataList" :index="item.name"  @click="clickUser(item)">{{
@@ -202,17 +173,6 @@ watch(
         }
       }
     }
-  }
-
-  :deep .el-scrollbar {
-    overflow: auto;
-
-    :deep(.el-menu-vertical-demo) {
-      position: absolute;
-      top: 61px;
-      right: 112px;
-    }
-
   }
 }
 </style>

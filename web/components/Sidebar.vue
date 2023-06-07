@@ -49,25 +49,15 @@ const handleClick = (index: number, item: any) => {
   currentIndex.value = index
   if (index == 0) {
     navigateTo(router.value[index].path)
-  } else {
+  } else {//非主页
     navigateTo(`/${tenant.value}${item.path}`)
   }
   // navigateTo(router.value[index].path)
-  // 赋值
-  // const path = usePath();
-  // path.value = {
-  //   name:item.name,
-  //   path:item.path,
-  //   list:router.value
-  // } 
-
 }
 // 监听当前路由
 watch(
   () => routerTenant.currentRoute.value,
   (newValue: any) => {
-    // console.log(newValue,"newValue");
-    
     currentIndex.value = router.value.findIndex(item => item.name === newValue.fullPath.split('/')[2])
   },
   { immediate: true }
