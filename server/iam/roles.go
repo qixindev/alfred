@@ -147,7 +147,7 @@ func ListIamResourceRole(c *gin.Context) {
 //	@Success		200
 //	@Router			/accounts/{tenant}/iam/clients/{client}/types/{type}/resources/{resource}/roles/{role}/users [post]
 func NewIamResourceRole(c *gin.Context) {
-	var roleUser models.ResourceRoleUser
+	var roleUser []models.ResourceRoleUser
 	if err := c.BindJSON(&roleUser); err != nil {
 		internal.ErrReqPara(c, err)
 		return
@@ -159,16 +159,21 @@ func NewIamResourceRole(c *gin.Context) {
 		return
 	}
 
-	roleUser.RoleId = role.Id
-	roleUser.TenantId = resource.TenantId
-	roleUser.ResourceId = resource.Id
-	ru, err := iam.CreateResourceRoleUser(resource.TenantId, &roleUser)
-	if err != nil {
+	for i := 0; i < len(roleUser); i++ {
+		if roleUser[i].ClientUserId == 0 {
+			internal.ErrReqParaCustom(c, "client user id should not be empty")
+			return
+		}
+		roleUser[i].RoleId = role.Id
+		roleUser[i].TenantId = resource.TenantId
+		roleUser[i].ResourceId = resource.Id
+	}
+	if err = iam.CreateResourceRoleUser(resource.TenantId, roleUser); err != nil {
 		c.Status(http.StatusBadRequest)
 		global.LOG.Error("create resource role user err: " + err.Error())
 		return
 	}
-	c.JSON(http.StatusOK, ru)
+	c.Status(http.StatusOK)
 }
 
 // DeleteIamResourceRole godoc
