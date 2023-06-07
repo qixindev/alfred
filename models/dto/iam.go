@@ -11,6 +11,7 @@ type ResourceTypeRoleActionDto struct {
 type ResourceRoleUserDto struct {
 	Id           uint   `json:"id"`
 	ResourceName string `json:"resourceName"`
-	Role         string `json:"role"`
+	RoleName     string `json:"roleName"`
+	DisplayName  string `json:"userName"`
 	Sub          string `json:"sub"`
 }

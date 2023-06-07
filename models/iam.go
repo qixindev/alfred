@@ -69,14 +69,16 @@ type ResourceRoleUser struct {
 	ClientUser   ClientUser       `gorm:"foreignKey:ClientUserId, TenantId" json:"user"`
 	TenantId     uint             `gorm:"primaryKey"`
 	Sub          string           `json:"sub" gorm:"<-:false;-:migration"`
+	DisplayName  string           `json:"displayName" gorm:"<-:false;-:migration"`
 }
 
 func (r *ResourceRoleUser) Dto() *dto.ResourceRoleUserDto {
 	return &dto.ResourceRoleUserDto{
 		Id:           r.Id,
 		ResourceName: r.ResourceName,
-		Role:         r.RoleName,
+		RoleName:     r.RoleName,
 		Sub:          r.Sub,
+		DisplayName:  r.DisplayName,
 	}
 }
 
