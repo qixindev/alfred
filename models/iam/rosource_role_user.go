@@ -28,11 +28,11 @@ func GetResourceRoleUser(tenantId, roleUserId uint) (*models.ResourceRoleUser, e
 	return &resourceRoleUser, nil
 }
 
-func CreateResourceRoleUser(tenantId uint, roleUser *models.ResourceRoleUser) (*models.ResourceRoleUser, error) {
+func CreateResourceRoleUser(tenantId uint, roleUser []models.ResourceRoleUser) error {
 	if err := global.WithTenant(tenantId).Create(roleUser).Error; err != nil {
-		return nil, err
+		return err
 	}
-	return roleUser, nil
+	return nil
 }
 
 func UpdateResourceRoleUser(tenantId, roleUserId uint, roleUser *models.ResourceRoleUser) (*models.ResourceRoleUser, error) {

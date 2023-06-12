@@ -91,7 +91,7 @@ func GetIamActionResource(c *gin.Context) {
 		Joins("LEFT JOIN resource_type_actions a ON a.id = rtra.action_id").
 		Joins("LEFT JOIN resources r ON r.id = rru.resource_id").
 		Joins("LEFT JOIN client_users cu ON cu.id = rru.client_user_id").
-		Where("rru.tenant_id = ? AND rru.client_user_id = ? AND r.type_id = ? AND a.name = ?",
+		Where("rru.tenant_id = ? AND cu.sub = ? AND r.type_id = ? AND a.name = ?",
 			tenant.Id, c.Param("user"), typ.Id, c.Param("action")).Find(&res).Error; err != nil {
 		internal.ErrorSqlResponse(c, "failed to get user's resources")
 		global.LOG.Error("get resource err: " + err.Error())
