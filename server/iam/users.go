@@ -3,8 +3,8 @@ package iam
 import (
 	"accounts/global"
 	"accounts/models"
-	"accounts/models/iam"
 	"accounts/server/internal"
+	"accounts/server/service/iam"
 	"accounts/utils"
 	"github.com/gin-gonic/gin"
 	"net/http"

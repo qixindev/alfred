@@ -2,9 +2,9 @@ package dto
 
 type ResourceTypeRoleActionDto struct {
 	Id         uint   `json:"id"`
-	RoleId     uint   `json:"roleId"`
+	RoleId     string `json:"roleId"`
 	TenantId   uint   `json:"tenantId"`
-	ActionId   uint   `json:"actionId"`
+	ActionId   string `json:"actionId"`
 	ActionName string `json:"actionName"`
 }
 

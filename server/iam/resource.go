@@ -3,8 +3,8 @@ package iam
 import (
 	"accounts/global"
 	"accounts/models"
-	"accounts/models/iam"
 	"accounts/server/internal"
+	iam2 "accounts/server/service/iam"
 	"github.com/gin-gonic/gin"
 	"net/http"
 )
@@ -26,7 +26,7 @@ func ListIamType(c *gin.Context) {
 		global.LOG.Error("get client from cid err: " + err.Error())
 		return
 	}
-	types, err := iam.ListResourceTypes(client.TenantId, client.Id)
+	types, err := iam2.ListResourceTypes(client.TenantId, client.Id)
 	if err != nil {
 		c.Status(http.StatusBadRequest)
 		global.LOG.Error("list resource types err: " + err.Error())
@@ -57,7 +57,7 @@ func NewIamType(c *gin.Context) {
 		global.LOG.Error("get client from cid err: " + err.Error())
 		return
 	}
-	t, err := iam.CreateResourceType(client.TenantId, client.Id, &typ)
+	t, err := iam2.CreateResourceType(client.TenantId, client.Id, &typ)
 	if err != nil {
 		c.Status(http.StatusBadRequest)
 		global.LOG.Error("create resource type err: " + err.Error())
@@ -91,7 +91,7 @@ func DeleteIamType(c *gin.Context) {
 		global.LOG.Error("get resource type err: " + err.Error())
 		return
 	}
-	if err = iam.DeleteResourceType(client.TenantId, typ.Id); err != nil {
+	if err = iam2.DeleteResourceType(client.TenantId, typ.Id); err != nil {
 		c.Status(http.StatusBadRequest)
 		global.LOG.Error("delete resource type err: " + err.Error())
 		return
@@ -117,7 +117,7 @@ func ListIamResource(c *gin.Context) {
 		global.LOG.Error("get type err: " + err.Error())
 		return
 	}
-	resources, err := iam.ListResources(typ.TenantId, typ.Id)
+	resources, err := iam2.ListResources(typ.TenantId, typ.Id)
 	if err != nil {
 		c.Status(http.StatusBadRequest)
 		global.LOG.Error("list resource err: " + err.Error())
@@ -149,7 +149,7 @@ func NewIamResource(c *gin.Context) {
 		global.LOG.Error("get type err: " + err.Error())
 		return
 	}
-	r, err := iam.CreateResource(typ.TenantId, typ.Id, &resource)
+	r, err := iam2.CreateResource(typ.TenantId, typ.Id, &resource)
 	if err != nil {
 		c.Status(http.StatusBadRequest)
 		global.LOG.Error("create resource err: " + err.Error())
@@ -184,7 +184,7 @@ func DeleteIamResource(c *gin.Context) {
 		global.LOG.Error("get resource err: " + err.Error())
 		return
 	}
-	if err = iam.DeleteResource(typ.TenantId, resource.Id); err != nil {
+	if err = iam2.DeleteResource(typ.TenantId, resource.Id); err != nil {
 		c.Status(http.StatusBadRequest)
 		global.LOG.Error("delete resource type err: " + err.Error())
 		return

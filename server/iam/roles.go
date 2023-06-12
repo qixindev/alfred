@@ -3,8 +3,8 @@ package iam
 import (
 	"accounts/global"
 	"accounts/models"
-	"accounts/models/iam"
 	"accounts/server/internal"
+	iam2 "accounts/server/service/iam"
 	"accounts/utils"
 	"github.com/gin-gonic/gin"
 	"net/http"
@@ -28,7 +28,7 @@ func ListIamRole(c *gin.Context) {
 		global.LOG.Error("get type err: " + err.Error())
 		return
 	}
-	roles, err := iam.ListResourceTypeRoles(typ.TenantId, typ.Id)
+	roles, err := iam2.ListResourceTypeRoles(typ.TenantId, typ.Id)
 	if err != nil {
 		c.Status(http.StatusBadRequest)
 		global.LOG.Error("list resource type role err: " + err.Error())
@@ -60,7 +60,7 @@ func NewIamRole(c *gin.Context) {
 		global.LOG.Error("get type err: " + err.Error())
 		return
 	}
-	r, err := iam.CreateResourceTypeRole(typ.TenantId, typ.Id, &role)
+	r, err := iam2.CreateResourceTypeRole(typ.TenantId, typ.Id, &role)
 	if err != nil {
 		c.Status(http.StatusBadRequest)
 		global.LOG.Error("create resource type role err: " + err.Error())
@@ -95,7 +95,7 @@ func DeleteIamRole(c *gin.Context) {
 		global.LOG.Error("get resource type role err: " + err.Error())
 		return
 	}
-	if err = iam.DeleteResourceTypeRole(typ.TenantId, role.Id); err != nil {
+	if err = iam2.DeleteResourceTypeRole(typ.TenantId, role.Id); err != nil {
 		c.Status(http.StatusBadRequest)
 		global.LOG.Error("delete resource type role err: " + err.Error())
 		return
@@ -124,7 +124,7 @@ func ListIamResourceRole(c *gin.Context) {
 		return
 	}
 
-	roleUsers, err := iam.ListResourcesRoleUsers(resource.TenantId, resource.Id, role.Id)
+	roleUsers, err := iam2.ListResourcesRoleUsers(resource.TenantId, resource.Id, role.Id)
 	if err != nil {
 		c.Status(http.StatusBadRequest)
 		global.LOG.Error("list resource role users err: " + err.Error())
@@ -168,7 +168,7 @@ func NewIamResourceRole(c *gin.Context) {
 		roleUser[i].TenantId = resource.TenantId
 		roleUser[i].ResourceId = resource.Id
 	}
-	if err = iam.CreateResourceRoleUser(resource.TenantId, roleUser); err != nil {
+	if err = iam2.CreateResourceRoleUser(resource.TenantId, roleUser); err != nil {
 		c.Status(http.StatusBadRequest)
 		global.LOG.Error("create resource role user err: " + err.Error())
 		return
@@ -217,7 +217,7 @@ func DeleteIamResourceRole(c *gin.Context) {
 		global.LOG.Error("get resource role user err: " + err.Error())
 		return
 	}
-	if err = iam.DeleteResourceRoleUser(resource.TenantId, roleUser.Id); err != nil {
+	if err = iam2.DeleteResourceRoleUser(resource.TenantId, roleUser.Id); err != nil {
 		c.Status(http.StatusBadRequest)
 		global.LOG.Error("delete resource role user err: " + err.Error())
 		return

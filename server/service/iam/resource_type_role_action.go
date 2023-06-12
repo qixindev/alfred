@@ -6,7 +6,7 @@ import (
 	"errors"
 )
 
-func ListResourceTypeRoleActions(tenantId, roleId uint) ([]models.ResourceTypeRoleAction, error) {
+func ListResourceTypeRoleActions(tenantId uint, roleId string) ([]models.ResourceTypeRoleAction, error) {
 	var resourceTypeRoleActions []models.ResourceTypeRoleAction
 	if err := global.DB.Table("resource_type_role_actions ra").
 		Select("ra.id", "ra.role_id", "ra.action_id", "ra.tenant_id", "a.name action_name").
@@ -17,17 +17,9 @@ func ListResourceTypeRoleActions(tenantId, roleId uint) ([]models.ResourceTypeRo
 	return resourceTypeRoleActions, nil
 }
 
-func GetResourceTypeRoleAction(tenantId, roleActionId uint) (*models.ResourceTypeRoleAction, error) {
-	var resourceTypeRoleAction models.ResourceTypeRoleAction
-	if err := global.WithTenant(tenantId).Take(&resourceTypeRoleAction, "type_id = ? AND id = ?", roleActionId).Error; err != nil {
-		return nil, err
-	}
-	return &resourceTypeRoleAction, nil
-}
-
-func CreateResourceTypeRoleAction(tenantId, roleId uint, roleAction []models.ResourceTypeRoleAction) error {
+func CreateResourceTypeRoleAction(tenantId uint, roleId string, roleAction []models.ResourceTypeRoleAction) error {
 	for i := 0; i < len(roleAction); i++ {
-		if roleAction[i].ActionId == 0 {
+		if roleAction[i].ActionId == "" {
 			return errors.New("actionId should not be empty")
 		}
 		roleAction[i].TenantId = tenantId
@@ -37,15 +29,6 @@ func CreateResourceTypeRoleAction(tenantId, roleId uint, roleAction []models.Res
 		return err
 	}
 	return nil
-}
-
-func UpdateResourceTypeRoleAction(tenantId, roleActionId uint, roleAction *models.ResourceTypeRoleAction) (*models.ResourceTypeRoleAction, error) {
-	roleAction.TenantId = tenantId
-	roleAction.Id = roleActionId
-	if err := global.WithTenant(tenantId).Save(roleAction).Error; err != nil {
-		return nil, err
-	}
-	return roleAction, nil
 }
 
 func DeleteResourceTypeRoleAction(tenantId, roleActionId uint) error {

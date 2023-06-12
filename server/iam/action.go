@@ -3,8 +3,8 @@ package iam
 import (
 	"accounts/global"
 	"accounts/models"
-	"accounts/models/iam"
 	"accounts/server/internal"
+	iam2 "accounts/server/service/iam"
 	"github.com/gin-gonic/gin"
 	"net/http"
 )
@@ -27,7 +27,7 @@ func ListIamAction(c *gin.Context) {
 		global.LOG.Error("get iam type err: " + err.Error())
 		return
 	}
-	actions, err := iam.ListResourceTypeActions(typ.TenantId, typ.Id)
+	actions, err := iam2.ListResourceTypeActions(typ.TenantId, typ.Id)
 	if err != nil {
 		c.Status(http.StatusBadRequest)
 		global.LOG.Error("list resource type action err: " + err.Error())
@@ -59,7 +59,7 @@ func NewIamAction(c *gin.Context) {
 		global.LOG.Error("get iam type err: " + err.Error())
 		return
 	}
-	if err = iam.CreateResourceTypeAction(typ.TenantId, typ.Id, action); err != nil {
+	if err = iam2.CreateResourceTypeAction(typ.TenantId, typ.Id, action); err != nil {
 		c.Status(http.StatusBadRequest)
 		global.LOG.Error("CreateResourceTypeAction err: " + err.Error())
 		return
@@ -93,7 +93,7 @@ func DeleteIamAction(c *gin.Context) {
 		global.LOG.Error("get resource type action err: " + err.Error())
 		return
 	}
-	if err = iam.DeleteResourceTypeAction(typ.TenantId, action.Id); err != nil {
+	if err = iam2.DeleteResourceTypeAction(typ.TenantId, action.Id); err != nil {
 		c.Status(http.StatusBadRequest)
 		global.LOG.Error("delete resource type action err: " + err.Error())
 		return
@@ -120,7 +120,7 @@ func ListIamRoleAction(c *gin.Context) {
 		global.LOG.Error("get role err: " + err.Error())
 		return
 	}
-	roleActions, err := iam.ListResourceTypeRoleActions(role.TenantId, role.Id)
+	roleActions, err := iam2.ListResourceTypeRoleActions(role.TenantId, role.Id)
 	if err != nil {
 		c.Status(http.StatusInternalServerError)
 		global.LOG.Error("list resource type role action err: " + err.Error())
@@ -153,7 +153,7 @@ func NewIamRoleAction(c *gin.Context) {
 		internal.ErrReqPara(c, err)
 		return
 	}
-	if err = iam.CreateResourceTypeRoleAction(role.TenantId, role.Id, roleAction); err != nil {
+	if err = iam2.CreateResourceTypeRoleAction(role.TenantId, role.Id, roleAction); err != nil {
 		c.Status(http.StatusBadRequest)
 		global.LOG.Error("create resource type role action err: " + err.Error())
 		return
@@ -194,7 +194,7 @@ func DeleteIamRoleAction(c *gin.Context) {
 		global.LOG.Error("get resource type role action err: " + err.Error())
 		return
 	}
-	if iam.DeleteResourceTypeRoleAction(role.TenantId, roleAction.Id) != nil {
+	if iam2.DeleteResourceTypeRoleAction(role.TenantId, roleAction.Id) != nil {
 		c.Status(http.StatusBadRequest)
 		global.LOG.Error("delete resource type role action err: " + err.Error())
 		return
