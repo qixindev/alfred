@@ -21,13 +21,15 @@ func GetResourceTypeAction(tenantId, actionId uint) (*models.ResourceTypeAction,
 	return &resourceTypeAction, nil
 }
 
-func CreateResourceTypeAction(tenantId, typeId uint, action *models.ResourceTypeAction) (*models.ResourceTypeAction, error) {
-	action.TenantId = tenantId
-	action.TypeId = typeId
-	if err := global.WithTenant(tenantId).Create(action).Error; err != nil {
-		return nil, err
+func CreateResourceTypeAction(tenantId, typeId uint, action []models.ResourceTypeAction) error {
+	for i := 0; i < len(action); i++ {
+		action[i].TenantId = tenantId
+		action[i].TypeId = typeId
 	}
-	return action, nil
+	if err := global.WithTenant(tenantId).Create(action).Error; err != nil {
+		return err
+	}
+	return nil
 }
 
 func UpdateResourceTypeAction(tenantId, actionId uint, action *models.ResourceTypeAction) (*models.ResourceTypeAction, error) {

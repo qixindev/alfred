@@ -5,6 +5,7 @@ import (
 	"accounts/models"
 	"accounts/models/iam"
 	"accounts/server/internal"
+	"accounts/utils"
 	"github.com/gin-gonic/gin"
 	"net/http"
 )
@@ -60,7 +61,7 @@ func IsUserActionPermission(c *gin.Context) {
 	c.JSON(http.StatusOK, result)
 }
 
-// GetIamUserRoles godoc
+// GetIamActionResource godoc
 //
 //	@Summary		iam users roles
 //	@Schemes
@@ -72,26 +73,30 @@ func IsUserActionPermission(c *gin.Context) {
 //	@Param			action		path	string	true	"tenant"
 //	@Param			user		path	string	true	"tenant"
 //	@Success		200
-//	@Router			/accounts/{tenant}/iam/clients/{client}/types/:type/users/:user/roles [get]
-func GetIamUserRoles(c *gin.Context) {
+//	@Router			/accounts/{tenant}/iam/clients/{client}/types/{type}/actions/{action}/users/{user}/resources [get]
+func GetIamActionResource(c *gin.Context) {
 	typ, err := getType(c)
 	if err != nil {
-		c.Status(http.StatusInternalServerError)
+		internal.ErrorSqlResponse(c, "failed to get type")
 		global.LOG.Error("get type err: " + err.Error())
 		return
 	}
 
 	tenant := internal.GetTenant(c)
 	res := make([]models.ResourceRoleUser, 0)
-	if err = global.DB.Table("resource_role_users as ru").
-		Select("ru.id, ru.resource_id, ru.role_id, ru.client_user_id, ru.tenant_id").
-		Joins("LEFT JOIN resources r ON ru.resource_id = r.id").
-		Where("ru.tenant_id = ? AND ru.client_user_id = ? AND r.type_id = ?",
-			tenant.Id, c.Param("user"), typ.Id).Find(&res).Error; err != nil {
-		c.Status(http.StatusBadRequest)
+	if err = global.DB.Table("resource_role_users as rru").
+		Select("r.name resource_name, rr.name role_name, cu.sub").
+		Joins("LEFT JOIN resource_type_roles rr ON rr.id = rru.role_id").
+		Joins("LEFT JOIN resource_type_role_actions rtra ON rtra.role_id = rr.id").
+		Joins("LEFT JOIN resource_type_actions a ON a.id = rtra.action_id").
+		Joins("LEFT JOIN resources r ON r.id = rru.resource_id").
+		Joins("LEFT JOIN client_users cu ON cu.id = rru.client_user_id").
+		Where("rru.tenant_id = ? AND rru.client_user_id = ? AND r.type_id = ? AND a.name = ?",
+			tenant.Id, c.Param("user"), typ.Id, c.Param("action")).Find(&res).Error; err != nil {
+		internal.ErrorSqlResponse(c, "failed to get user's resources")
 		global.LOG.Error("get resource err: " + err.Error())
 		return
 	}
 
-	c.JSON(http.StatusOK, res)
+	c.JSON(http.StatusOK, utils.Filter(res, models.ResourceRoleUserDto))
 }

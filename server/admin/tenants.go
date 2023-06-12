@@ -6,6 +6,7 @@ import (
 	"accounts/server/internal"
 	"accounts/server/service"
 	"accounts/utils"
+	"github.com/gin-contrib/sessions"
 	"github.com/gin-gonic/gin"
 	"net/http"
 )
@@ -21,7 +22,32 @@ import (
 //	@Router			/accounts/admin/tenants [get]
 func ListTenants(c *gin.Context) {
 	var tenants []models.Tenant
-	if err := global.DB.Find(&tenants).Error; err != nil {
+	username := sessions.Default(c).Get("user")
+	if err := global.DB.Debug().Model(models.User{}).Select("t.id, t.name").
+		Joins("LEFT JOIN tenants as t ON t.id = users.tenant_id").
+		Where("users.username = ?", username).
+		Find(&tenants).Error; err != nil {
+		c.Status(http.StatusInternalServerError)
+		global.LOG.Error("get tenants err: " + err.Error())
+		return
+	}
+	c.JSON(http.StatusOK, utils.Filter(tenants, models.Tenant2Dto))
+}
+
+// ListUserTenants godoc
+//
+//	@Summary	tenants
+//	@Schemes
+//	@Description	list tenants
+//	@Tags			admin-tenants
+//	@Param			tenant	path	string	true	"tenant"
+//	@Param			userId	path	string	true	"tenant"
+//	@Success		200
+//	@Router			/accounts/admin/tenants/users/{user} [get]
+func ListUserTenants(c *gin.Context) {
+	userId := c.Param("user")
+	var tenants []models.Tenant
+	if err := global.DB.Where("sub = ?", userId).Find(&tenants).Error; err != nil {
 		c.Status(http.StatusInternalServerError)
 		global.LOG.Error("get tenants err: " + err.Error())
 		return
@@ -207,6 +233,7 @@ func NewTenantSecret(c *gin.Context) {
 
 func AddAdminTenantsRoutes(rg *gin.RouterGroup) {
 	rg.GET("/tenants", ListTenants)
+	rg.GET("/tenants/users/:user", ListUserTenants)
 	rg.GET("/tenants/:tenantId", GetTenant)
 	rg.POST("/tenants", NewTenant)
 	rg.PUT("/tenants/:tenantId", UpdateTenant)

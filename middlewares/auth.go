@@ -41,15 +41,9 @@ func MultiTenancy(c *gin.Context) {
 }
 
 func GetUserStandalone(c *gin.Context) (*models.User, error) {
+	var user models.User
 	tenant := getTenant(c)
 	session := sessions.Default(c)
-	tenantName := session.Get("tenant")
-	if tenant.Name != tenantName {
-		global.LOG.Error(fmt.Sprintf("tenant name err: %s %s", tenant.Name, tenantName))
-		return nil, errors.New("")
-	}
-
-	var user models.User
 	username := session.Get("user")
 	if err := global.DB.First(&user, "tenant_id = ? AND username = ?", tenant.Id, username).Error; err != nil {
 		global.LOG.Error("get tenant user err: " + err.Error())
@@ -64,17 +58,30 @@ func AuthorizedAdmin(c *gin.Context) {
 		return
 	}
 
-	user, err := GetUserStandalone(c)
-	if err != nil {
-		c.AbortWithStatusJSON(http.StatusUnauthorized, "用户与租户不匹配")
+	username := sessions.Default(c).Get("user")
+	tenantName := c.Param("tenant")
+	if username == nil {
+		c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"code": "1000", "message": "user not login"})
 		return
 	}
+	if tenantName == "" {
+		return
+	}
+
+	var user models.User
+	if err := global.DB.Table("users as u").Select("u.username, u.role, u.phone, u.email").
+		Joins("LEFT JOIN tenants as t ON t.id = u.tenant_id").
+		First(&user, "t.name = ? AND u.username = ?", tenantName, username).Error; err != nil {
+		c.AbortWithStatusJSON(http.StatusForbidden, gin.H{"message": "failed to get user"})
+		global.LOG.Error("get tenant user err: " + err.Error())
+		return
+	}
+
 	if user.Role != "owner" && user.Role != "admin" {
-		c.AbortWithStatusJSON(http.StatusUnauthorized, "非管理员无权访问")
+		c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"message": "非管理员无权访问"})
 		return
 	}
 	c.Set("user", user)
-	c.Next()
 }
 
 func AuthAccessToken(c *gin.Context) {

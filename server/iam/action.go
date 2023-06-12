@@ -48,7 +48,7 @@ func ListIamAction(c *gin.Context) {
 //	@Success		200
 //	@Router			/accounts/{tenant}/iam/clients/{client}/types/{type}/actions [post]
 func NewIamAction(c *gin.Context) {
-	var action models.ResourceTypeAction
+	var action []models.ResourceTypeAction
 	if err := c.BindJSON(&action); err != nil {
 		internal.ErrReqPara(c, err)
 		return
@@ -59,13 +59,12 @@ func NewIamAction(c *gin.Context) {
 		global.LOG.Error("get iam type err: " + err.Error())
 		return
 	}
-	a, err := iam.CreateResourceTypeAction(typ.TenantId, typ.Id, &action)
-	if err != nil {
+	if err = iam.CreateResourceTypeAction(typ.TenantId, typ.Id, action); err != nil {
 		c.Status(http.StatusBadRequest)
 		global.LOG.Error("CreateResourceTypeAction err: " + err.Error())
 		return
 	}
-	c.JSON(http.StatusOK, a)
+	c.Status(http.StatusOK)
 }
 
 // DeleteIamAction godoc
@@ -145,22 +144,21 @@ func ListIamRoleAction(c *gin.Context) {
 func NewIamRoleAction(c *gin.Context) {
 	role, err := getRole(c)
 	if err != nil {
-		c.Status(http.StatusBadRequest)
+		internal.ErrorSqlResponse(c, "failed to get role")
 		global.LOG.Error("get role err: " + err.Error())
 		return
 	}
-	var roleAction models.ResourceTypeRoleAction
+	var roleAction []models.ResourceTypeRoleAction
 	if err = c.BindJSON(&roleAction); err != nil {
 		internal.ErrReqPara(c, err)
 		return
 	}
-	ra, err := iam.CreateResourceTypeRoleAction(role.TenantId, role.Id, &roleAction)
-	if err != nil {
+	if err = iam.CreateResourceTypeRoleAction(role.TenantId, role.Id, roleAction); err != nil {
 		c.Status(http.StatusBadRequest)
 		global.LOG.Error("create resource type role action err: " + err.Error())
 		return
 	}
-	c.JSON(http.StatusOK, ra)
+	c.Status(http.StatusOK)
 }
 
 // DeleteIamRoleAction godoc

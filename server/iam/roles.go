@@ -5,6 +5,7 @@ import (
 	"accounts/models"
 	"accounts/models/iam"
 	"accounts/server/internal"
+	"accounts/utils"
 	"github.com/gin-gonic/gin"
 	"net/http"
 )
@@ -129,7 +130,7 @@ func ListIamResourceRole(c *gin.Context) {
 		global.LOG.Error("list resource role users err: " + err.Error())
 		return
 	}
-	c.JSON(http.StatusOK, roleUsers)
+	c.JSON(http.StatusOK, utils.Filter(roleUsers, models.ResourceRoleUserDto))
 }
 
 // NewIamResourceRole godoc

@@ -3,6 +3,7 @@ package iam
 import (
 	"accounts/global"
 	"accounts/models"
+	"errors"
 )
 
 func ListResourceTypeRoleActions(tenantId, roleId uint) ([]models.ResourceTypeRoleAction, error) {
@@ -24,13 +25,18 @@ func GetResourceTypeRoleAction(tenantId, roleActionId uint) (*models.ResourceTyp
 	return &resourceTypeRoleAction, nil
 }
 
-func CreateResourceTypeRoleAction(tenantId, roleId uint, roleAction *models.ResourceTypeRoleAction) (*models.ResourceTypeRoleAction, error) {
-	roleAction.TenantId = tenantId
-	roleAction.RoleId = roleId
-	if err := global.WithTenant(tenantId).Create(roleAction).Error; err != nil {
-		return nil, err
+func CreateResourceTypeRoleAction(tenantId, roleId uint, roleAction []models.ResourceTypeRoleAction) error {
+	for i := 0; i < len(roleAction); i++ {
+		if roleAction[i].ActionId == 0 {
+			return errors.New("actionId should not be empty")
+		}
+		roleAction[i].TenantId = tenantId
+		roleAction[i].RoleId = roleId
 	}
-	return roleAction, nil
+	if err := global.WithTenant(tenantId).Create(roleAction).Error; err != nil {
+		return err
+	}
+	return nil
 }
 
 func UpdateResourceTypeRoleAction(tenantId, roleActionId uint, roleAction *models.ResourceTypeRoleAction) (*models.ResourceTypeRoleAction, error) {
