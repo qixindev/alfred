@@ -1707,6 +1707,15 @@ const docTemplate = `{
                         "name": "client",
                         "in": "path",
                         "required": true
+                    },
+                    {
+                        "description": "tenant",
+                        "name": "iamBody",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/internal.IamNameRequest"
+                        }
                     }
                 ],
                 "responses": {
@@ -1716,7 +1725,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/accounts/{tenant}/iam/clients/{client}/types/{type}": {
+        "/accounts/{tenant}/iam/clients/{client}/types/{typeId}": {
             "delete": {
                 "description": "delete iam resource type",
                 "tags": [
@@ -1741,7 +1750,7 @@ const docTemplate = `{
                     {
                         "type": "string",
                         "description": "tenant",
-                        "name": "type",
+                        "name": "typeId",
                         "in": "path",
                         "required": true
                     }
@@ -1753,7 +1762,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/accounts/{tenant}/iam/clients/{client}/types/{type}/actions": {
+        "/accounts/{tenant}/iam/clients/{client}/types/{typeId}/actions": {
             "get": {
                 "description": "get iam action list",
                 "tags": [
@@ -1778,7 +1787,7 @@ const docTemplate = `{
                     {
                         "type": "string",
                         "description": "tenant",
-                        "name": "type",
+                        "name": "typeId",
                         "in": "path",
                         "required": true
                     }
@@ -1813,9 +1822,21 @@ const docTemplate = `{
                     {
                         "type": "string",
                         "description": "tenant",
-                        "name": "type",
+                        "name": "typeId",
                         "in": "path",
                         "required": true
+                    },
+                    {
+                        "description": "tenant",
+                        "name": "iamBody",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/internal.IamNameRequest"
+                            }
+                        }
                     }
                 ],
                 "responses": {
@@ -1825,7 +1846,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/accounts/{tenant}/iam/clients/{client}/types/{type}/actions/{action}": {
+        "/accounts/{tenant}/iam/clients/{client}/types/{typeId}/actions/{actionId}": {
             "delete": {
                 "description": "delete iam action",
                 "tags": [
@@ -1850,14 +1871,14 @@ const docTemplate = `{
                     {
                         "type": "string",
                         "description": "tenant",
-                        "name": "type",
+                        "name": "typeId",
                         "in": "path",
                         "required": true
                     },
                     {
                         "type": "string",
                         "description": "tenant",
-                        "name": "action",
+                        "name": "actionId",
                         "in": "path",
                         "required": true
                     }
@@ -1869,7 +1890,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/accounts/{tenant}/iam/clients/{client}/types/{type}/actions/{action}/users/{user}/resources": {
+        "/accounts/{tenant}/iam/clients/{client}/types/{typeId}/actions/{actionId}/users/{user}/resources": {
             "get": {
                 "description": "get iam action user",
                 "tags": [
@@ -1894,14 +1915,14 @@ const docTemplate = `{
                     {
                         "type": "string",
                         "description": "tenant",
-                        "name": "type",
+                        "name": "typeId",
                         "in": "path",
                         "required": true
                     },
                     {
                         "type": "string",
                         "description": "tenant",
-                        "name": "action",
+                        "name": "actionId",
                         "in": "path",
                         "required": true
                     },
@@ -1920,7 +1941,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/accounts/{tenant}/iam/clients/{client}/types/{type}/resources": {
+        "/accounts/{tenant}/iam/clients/{client}/types/{typeId}/resources": {
             "get": {
                 "description": "get iam resource list",
                 "tags": [
@@ -1945,7 +1966,7 @@ const docTemplate = `{
                     {
                         "type": "string",
                         "description": "tenant",
-                        "name": "type",
+                        "name": "typeId",
                         "in": "path",
                         "required": true
                     }
@@ -1980,9 +2001,18 @@ const docTemplate = `{
                     {
                         "type": "string",
                         "description": "tenant",
-                        "name": "type",
+                        "name": "typeId",
                         "in": "path",
                         "required": true
+                    },
+                    {
+                        "description": "tenant",
+                        "name": "iamBody",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/internal.IamNameRequest"
+                        }
                     }
                 ],
                 "responses": {
@@ -1992,7 +2022,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/accounts/{tenant}/iam/clients/{client}/types/{type}/resources/{resource}": {
+        "/accounts/{tenant}/iam/clients/{client}/types/{typeId}/resources/{resourceId}": {
             "delete": {
                 "description": "delete iam resource",
                 "tags": [
@@ -2017,14 +2047,14 @@ const docTemplate = `{
                     {
                         "type": "string",
                         "description": "tenant",
-                        "name": "type",
+                        "name": "typeId",
                         "in": "path",
                         "required": true
                     },
                     {
                         "type": "string",
                         "description": "tenant",
-                        "name": "resource",
+                        "name": "resourceId",
                         "in": "path",
                         "required": true
                     }
@@ -2036,7 +2066,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/accounts/{tenant}/iam/clients/{client}/types/{type}/resources/{resource}/actions/{action}/users/{user}": {
+        "/accounts/{tenant}/iam/clients/{client}/types/{typeId}/resources/{resourceId}/actions/{actionId}/users/{user}": {
             "get": {
                 "description": "get iam action user",
                 "tags": [
@@ -2061,14 +2091,21 @@ const docTemplate = `{
                     {
                         "type": "string",
                         "description": "tenant",
-                        "name": "type",
+                        "name": "typeId",
                         "in": "path",
                         "required": true
                     },
                     {
                         "type": "string",
                         "description": "tenant",
-                        "name": "action",
+                        "name": "resourceId",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "tenant",
+                        "name": "actionId",
                         "in": "path",
                         "required": true
                     },
@@ -2087,7 +2124,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/accounts/{tenant}/iam/clients/{client}/types/{type}/resources/{resource}/roles/{role}/users": {
+        "/accounts/{tenant}/iam/clients/{client}/types/{typeId}/resources/{resourceId}/roles/{roleId}/users": {
             "get": {
                 "description": "get iam resource role list",
                 "tags": [
@@ -2112,21 +2149,21 @@ const docTemplate = `{
                     {
                         "type": "string",
                         "description": "tenant",
-                        "name": "type",
+                        "name": "typeId",
                         "in": "path",
                         "required": true
                     },
                     {
                         "type": "string",
                         "description": "tenant",
-                        "name": "role",
+                        "name": "roleId",
                         "in": "path",
                         "required": true
                     },
                     {
                         "type": "string",
                         "description": "tenant",
-                        "name": "resource",
+                        "name": "resourceId",
                         "in": "path",
                         "required": true
                     }
@@ -2161,23 +2198,35 @@ const docTemplate = `{
                     {
                         "type": "string",
                         "description": "tenant",
-                        "name": "type",
+                        "name": "typeId",
                         "in": "path",
                         "required": true
                     },
                     {
                         "type": "string",
                         "description": "tenant",
-                        "name": "role",
+                        "name": "roleId",
                         "in": "path",
                         "required": true
                     },
                     {
                         "type": "string",
                         "description": "tenant",
-                        "name": "resource",
+                        "name": "resourceId",
                         "in": "path",
                         "required": true
+                    },
+                    {
+                        "description": "tenant",
+                        "name": "iamBody",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/internal.IamUserRequest"
+                            }
+                        }
                     }
                 ],
                 "responses": {
@@ -2187,7 +2236,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/accounts/{tenant}/iam/clients/{client}/types/{type}/resources/{resource}/roles/{role}/users/{user}": {
+        "/accounts/{tenant}/iam/clients/{client}/types/{typeId}/resources/{resourceId}/roles/{roleId}/users/{user}": {
             "delete": {
                 "description": "delete iam resource role",
                 "tags": [
@@ -2212,21 +2261,21 @@ const docTemplate = `{
                     {
                         "type": "string",
                         "description": "tenant",
-                        "name": "type",
+                        "name": "typeId",
                         "in": "path",
                         "required": true
                     },
                     {
                         "type": "string",
                         "description": "tenant",
-                        "name": "resource",
+                        "name": "resourceId",
                         "in": "path",
                         "required": true
                     },
                     {
                         "type": "string",
                         "description": "tenant",
-                        "name": "role",
+                        "name": "roleId",
                         "in": "path",
                         "required": true
                     },
@@ -2245,7 +2294,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/accounts/{tenant}/iam/clients/{client}/types/{type}/roles": {
+        "/accounts/{tenant}/iam/clients/{client}/types/{typeId}/roles": {
             "get": {
                 "description": "get iam role list",
                 "tags": [
@@ -2270,7 +2319,7 @@ const docTemplate = `{
                     {
                         "type": "string",
                         "description": "tenant",
-                        "name": "type",
+                        "name": "typeId",
                         "in": "path",
                         "required": true
                     }
@@ -2305,9 +2354,18 @@ const docTemplate = `{
                     {
                         "type": "string",
                         "description": "tenant",
-                        "name": "type",
+                        "name": "typeId",
                         "in": "path",
                         "required": true
+                    },
+                    {
+                        "description": "tenant",
+                        "name": "iamBody",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/internal.IamNameRequest"
+                        }
                     }
                 ],
                 "responses": {
@@ -2317,7 +2375,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/accounts/{tenant}/iam/clients/{client}/types/{type}/roles/{role}": {
+        "/accounts/{tenant}/iam/clients/{client}/types/{typeId}/roles/{roleId}": {
             "delete": {
                 "description": "delete iam role",
                 "tags": [
@@ -2342,14 +2400,14 @@ const docTemplate = `{
                     {
                         "type": "string",
                         "description": "tenant",
-                        "name": "type",
+                        "name": "typeId",
                         "in": "path",
                         "required": true
                     },
                     {
                         "type": "string",
                         "description": "tenant",
-                        "name": "role",
+                        "name": "roleId",
                         "in": "path",
                         "required": true
                     }
@@ -2361,7 +2419,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/accounts/{tenant}/iam/clients/{client}/types/{type}/roles/{role}/actions": {
+        "/accounts/{tenant}/iam/clients/{client}/types/{typeId}/roles/{roleId}/actions": {
             "get": {
                 "description": "get iam role action list",
                 "tags": [
@@ -2386,14 +2444,14 @@ const docTemplate = `{
                     {
                         "type": "string",
                         "description": "tenant",
-                        "name": "type",
+                        "name": "typeId",
                         "in": "path",
                         "required": true
                     },
                     {
                         "type": "string",
                         "description": "tenant",
-                        "name": "role",
+                        "name": "roleId",
                         "in": "path",
                         "required": true
                     }
@@ -2428,16 +2486,28 @@ const docTemplate = `{
                     {
                         "type": "string",
                         "description": "tenant",
-                        "name": "type",
+                        "name": "typeId",
                         "in": "path",
                         "required": true
                     },
                     {
                         "type": "string",
                         "description": "tenant",
-                        "name": "role",
+                        "name": "roleId",
                         "in": "path",
                         "required": true
+                    },
+                    {
+                        "description": "tenant",
+                        "name": "iamBody",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/internal.IamActionRequest"
+                            }
+                        }
                     }
                 ],
                 "responses": {
@@ -2447,7 +2517,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/accounts/{tenant}/iam/clients/{client}/types/{type}/roles/{role}/actions/{action}": {
+        "/accounts/{tenant}/iam/clients/{client}/types/{typeId}/roles/{roleId}/actions/{actionId}": {
             "delete": {
                 "description": "delete iam role action",
                 "tags": [
@@ -2472,21 +2542,21 @@ const docTemplate = `{
                     {
                         "type": "string",
                         "description": "tenant",
-                        "name": "type",
+                        "name": "typeId",
                         "in": "path",
                         "required": true
                     },
                     {
                         "type": "string",
                         "description": "tenant",
-                        "name": "role",
+                        "name": "roleId",
                         "in": "path",
                         "required": true
                     },
                     {
                         "type": "integer",
                         "description": "tenant",
-                        "name": "action",
+                        "name": "actionId",
                         "in": "path",
                         "required": true
                     }
@@ -3062,6 +3132,30 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "username": {
+                    "type": "string"
+                }
+            }
+        },
+        "internal.IamActionRequest": {
+            "type": "object",
+            "properties": {
+                "actionId": {
+                    "type": "string"
+                }
+            }
+        },
+        "internal.IamNameRequest": {
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string"
+                }
+            }
+        },
+        "internal.IamUserRequest": {
+            "type": "object",
+            "properties": {
+                "userId": {
                     "type": "string"
                 }
             }

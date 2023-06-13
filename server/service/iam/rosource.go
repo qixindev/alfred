@@ -3,6 +3,7 @@ package iam
 import (
 	"accounts/global"
 	"accounts/models"
+	"github.com/google/uuid"
 )
 
 func ListResources(tenantId uint, typeId string) ([]models.Resource, error) {
@@ -16,6 +17,7 @@ func ListResources(tenantId uint, typeId string) ([]models.Resource, error) {
 func CreateResource(tenantId uint, typeId string, resource *models.Resource) (*models.Resource, error) {
 	resource.TenantId = tenantId
 	resource.TypeId = typeId
+	resource.Id = uuid.NewString()
 	if err := global.WithTenant(tenantId).Create(resource).Error; err != nil {
 		return nil, err
 	}
@@ -23,7 +25,8 @@ func CreateResource(tenantId uint, typeId string, resource *models.Resource) (*m
 }
 
 func DeleteResource(tenantId uint, resourceId string) error {
-	if err := global.WithTenant(tenantId).Delete(&models.Resource{}, resourceId).Error; err != nil {
+	if err := global.DB.Where("tenant_id = ? AND id = ?", tenantId, resourceId).
+		Delete(&models.Resource{}).Error; err != nil {
 		return err
 	}
 	return nil

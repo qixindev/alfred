@@ -43,6 +43,7 @@ func ListIamRole(c *gin.Context) {
 //	@Param			tenant		path	string	true	"tenant"
 //	@Param			client		path	string	true	"tenant"
 //	@Param			typeId		path	string	true	"tenant"
+//	@Param			iamBody		body	internal.IamNameRequest	true	"tenant"
 //	@Success		200
 //	@Router			/accounts/{tenant}/iam/clients/{client}/types/{typeId}/roles [post]
 func NewIamRole(c *gin.Context) {
@@ -131,6 +132,7 @@ func ListIamResourceRole(c *gin.Context) {
 //	@Param			typeId		path	string	true	"tenant"
 //	@Param			roleId		path	string	true	"tenant"
 //	@Param			resourceId	path	string	true	"tenant"
+//	@Param			iamBody		body	[]internal.IamUserRequest	true	"tenant"
 //	@Success		200
 //	@Router			/accounts/{tenant}/iam/clients/{client}/types/{typeId}/resources/{resourceId}/roles/{roleId}/users [post]
 func NewIamResourceRole(c *gin.Context) {
@@ -161,7 +163,7 @@ func NewIamResourceRole(c *gin.Context) {
 	c.Status(http.StatusOK)
 }
 
-// DeleteIamResourceRole godoc
+// DeleteIamResourceRoleUser godoc
 //
 //	@Summary		iam resource role
 //	@Schemes
@@ -175,7 +177,7 @@ func NewIamResourceRole(c *gin.Context) {
 //	@Param			user		path	string	true	"tenant"
 //	@Success		200
 //	@Router			/accounts/{tenant}/iam/clients/{client}/types/{typeId}/resources/{resourceId}/roles/{roleId}/users/{user} [delete]
-func DeleteIamResourceRole(c *gin.Context) {
+func DeleteIamResourceRoleUser(c *gin.Context) {
 	resourceId := c.Param("resourceId")
 	roleId := c.Param("roleId")
 	userName := c.Param("user")

@@ -3,6 +3,7 @@ package iam
 import (
 	"accounts/global"
 	"accounts/models"
+	"github.com/google/uuid"
 )
 
 func ListResourceTypeRoles(tenantId uint, typeId string) ([]models.ResourceTypeRole, error) {
@@ -16,6 +17,7 @@ func ListResourceTypeRoles(tenantId uint, typeId string) ([]models.ResourceTypeR
 func CreateResourceTypeRole(tenantId uint, typeId string, role *models.ResourceTypeRole) (*models.ResourceTypeRole, error) {
 	role.TenantId = tenantId
 	role.TypeId = typeId
+	role.Id = uuid.NewString()
 	if err := global.WithTenant(tenantId).Create(role).Error; err != nil {
 		return nil, err
 	}
@@ -23,7 +25,8 @@ func CreateResourceTypeRole(tenantId uint, typeId string, role *models.ResourceT
 }
 
 func DeleteResourceTypeRole(tenantId uint, roleId string) error {
-	if err := global.WithTenant(tenantId).Delete(&models.ResourceTypeRole{}, roleId).Error; err != nil {
+	if err := global.DB.Where("tenant_id = ? AND id = ?", tenantId, roleId).
+		Delete(&models.ResourceTypeRole{}).Error; err != nil {
 		return err
 	}
 	return nil

@@ -45,5 +45,4 @@ func ErrReqParaCustom(c *gin.Context, err string) {
 		Message: "req para err",
 		Data:    struct{}{},
 	})
-	global.LOG.Error("req para err: " + err)
 }

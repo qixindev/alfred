@@ -28,7 +28,8 @@ func CreateResourceRoleUser(tenantId uint, roleUser []models.ResourceRoleUser) e
 }
 
 func DeleteResourceRoleUser(tenantId, roleUserId uint) error {
-	if err := global.WithTenant(tenantId).Delete(&models.ResourceRoleUser{}, roleUserId).Error; err != nil {
+	if err := global.DB.Where("tenant_id = ? AND id = ?", tenantId, roleUserId).
+		Delete(&models.ResourceRoleUser{}).Error; err != nil {
 		return err
 	}
 	return nil
