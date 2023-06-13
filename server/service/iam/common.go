@@ -52,3 +52,35 @@ func CheckPermission(tenantId, clientUserId uint, resourceId string, actionId st
 	}
 	return false, nil
 }
+
+func GetIamType(tenantId uint, typeId string) (*models.ResourceType, error) {
+	var typ models.ResourceType
+	if err := global.DB.First(&typ, "tenant_id = ? AND id = ?", tenantId, typeId).Error; err != nil {
+		return nil, err
+	}
+	return &typ, nil
+}
+
+func GetIamAction(tenantId uint, typeId, actionId string) (*models.ResourceTypeAction, error) {
+	var action models.ResourceTypeAction
+	if err := global.DB.First(&action, "tenant_id = ? AND type_id = ? AND id = ?", tenantId, typeId, actionId).Error; err != nil {
+		return nil, err
+	}
+	return &action, nil
+}
+
+func GetIamRole(tenantId uint, typeId, roleId string) (*models.ResourceTypeRole, error) {
+	var role models.ResourceTypeRole
+	if err := global.DB.First(&role, "tenant_id = ? AND type_id = ? AND id = ?", tenantId, typeId, roleId).Error; err != nil {
+		return nil, err
+	}
+	return &role, nil
+}
+
+func GetIamResource(tenantId uint, typeId, resourceId string) (*models.Resource, error) {
+	var resource models.Resource
+	if err := global.DB.First(&resource, "tenant_id = ? AND type_id = ? AND id = ?", tenantId, typeId, resourceId).Error; err != nil {
+		return nil, err
+	}
+	return &resource, nil
+}

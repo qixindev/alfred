@@ -7,6 +7,7 @@ import (
 	iam2 "accounts/server/service/iam"
 	"accounts/utils"
 	"github.com/gin-gonic/gin"
+	"go.uber.org/zap"
 	"net/http"
 )
 
@@ -18,19 +19,15 @@ import (
 //	@Tags			iam-role
 //	@Param			tenant		path	string	true	"tenant"
 //	@Param			client		path	string	true	"tenant"
-//	@Param			type		path	string	true	"tenant"
+//	@Param			typeId		path	string	true	"tenant"
 //	@Success		200
-//	@Router			/accounts/{tenant}/iam/clients/{client}/types/{type}/roles [get]
+//	@Router			/accounts/{tenant}/iam/clients/{client}/types/{typeId}/roles [get]
 func ListIamRole(c *gin.Context) {
-	typ, err := getType(c)
+	typeId := c.Param("typeId")
+	tenant := internal.GetTenant(c)
+	roles, err := iam2.ListResourceTypeRoles(tenant.Id, typeId)
 	if err != nil {
-		c.Status(http.StatusBadRequest)
-		global.LOG.Error("get type err: " + err.Error())
-		return
-	}
-	roles, err := iam2.ListResourceTypeRoles(typ.TenantId, typ.Id)
-	if err != nil {
-		c.Status(http.StatusBadRequest)
+		internal.ErrorSqlResponse(c, "failed to get resource type role list")
 		global.LOG.Error("list resource type role err: " + err.Error())
 		return
 	}
@@ -45,24 +42,21 @@ func ListIamRole(c *gin.Context) {
 //	@Tags			iam-role
 //	@Param			tenant		path	string	true	"tenant"
 //	@Param			client		path	string	true	"tenant"
-//	@Param			type		path	string	true	"tenant"
+//	@Param			typeId		path	string	true	"tenant"
 //	@Success		200
-//	@Router			/accounts/{tenant}/iam/clients/{client}/types/{type}/roles [post]
+//	@Router			/accounts/{tenant}/iam/clients/{client}/types/{typeId}/roles [post]
 func NewIamRole(c *gin.Context) {
 	var role models.ResourceTypeRole
 	if err := c.BindJSON(&role); err != nil {
 		internal.ErrReqPara(c, err)
 		return
 	}
-	typ, err := getType(c)
+
+	typeId := c.Param("typeId")
+	tenant := internal.GetTenant(c)
+	r, err := iam2.CreateResourceTypeRole(tenant.Id, typeId, &role)
 	if err != nil {
-		c.Status(http.StatusBadRequest)
-		global.LOG.Error("get type err: " + err.Error())
-		return
-	}
-	r, err := iam2.CreateResourceTypeRole(typ.TenantId, typ.Id, &role)
-	if err != nil {
-		c.Status(http.StatusBadRequest)
+		internal.ErrorSqlResponse(c, "failed to create resource role")
 		global.LOG.Error("create resource type role err: " + err.Error())
 		return
 	}
@@ -77,26 +71,23 @@ func NewIamRole(c *gin.Context) {
 //	@Tags			iam-role
 //	@Param			tenant		path	string	true	"tenant"
 //	@Param			client		path	string	true	"tenant"
-//	@Param			type		path	string	true	"tenant"
-//	@Param			role		path	string	true	"tenant"
+//	@Param			typeId		path	string	true	"tenant"
+//	@Param			roleId		path	string	true	"tenant"
 //	@Success		200
-//	@Router			/accounts/{tenant}/iam/clients/{client}/types/{type}/roles/{role} [delete]
+//	@Router			/accounts/{tenant}/iam/clients/{client}/types/{typeId}/roles/{roleId} [delete]
 func DeleteIamRole(c *gin.Context) {
-	typ, err := getType(c)
+	typeId := c.Param("typeId")
+	roleId := c.Param("roleId")
+	tenant := internal.GetTenant(c)
+	role, err := iam2.GetIamRole(tenant.Id, typeId, roleId)
 	if err != nil {
-		c.Status(http.StatusBadRequest)
-		global.LOG.Error("get type err: " + err.Error())
+		internal.ErrReqParaCustom(c, "no such role")
+		global.LOG.Error("get iam role err: ", zap.Error(err))
 		return
 	}
-	roleName := c.Param("role")
-	var role models.ResourceTypeRole
-	if err = internal.TenantDB(c).First(&role, "type_id = ? AND name = ?", typ.Id, roleName).Error; err != nil {
-		c.Status(http.StatusBadRequest)
-		global.LOG.Error("get resource type role err: " + err.Error())
-		return
-	}
-	if err = iam2.DeleteResourceTypeRole(typ.TenantId, role.Id); err != nil {
-		c.Status(http.StatusBadRequest)
+
+	if err = iam2.DeleteResourceTypeRole(tenant.Id, role.Id); err != nil {
+		internal.ErrorSqlResponse(c, "failed to delete resource role")
 		global.LOG.Error("delete resource type role err: " + err.Error())
 		return
 	}
@@ -111,22 +102,18 @@ func DeleteIamRole(c *gin.Context) {
 //	@Tags			iam-role
 //	@Param			tenant		path	string	true	"tenant"
 //	@Param			client		path	string	true	"tenant"
-//	@Param			type		path	string	true	"tenant"
-//	@Param			role		path	string	true	"tenant"
-//	@Param			resource	path	string	true	"tenant"
+//	@Param			typeId		path	string	true	"tenant"
+//	@Param			roleId		path	string	true	"tenant"
+//	@Param			resourceId	path	string	true	"tenant"
 //	@Success		200
-//	@Router			/accounts/{tenant}/iam/clients/{client}/types/{type}/resources/{resource}/roles/{role}/users [get]
+//	@Router			/accounts/{tenant}/iam/clients/{client}/types/{typeId}/resources/{resourceId}/roles/{roleId}/users [get]
 func ListIamResourceRole(c *gin.Context) {
-	resource, role, err := getResourceAndRole(c)
+	resourceId := c.Param("resourceId")
+	roleId := c.Param("typeId")
+	tenant := internal.GetTenant(c)
+	roleUsers, err := iam2.ListResourcesRoleUsers(tenant.Id, resourceId, roleId)
 	if err != nil {
-		c.Status(http.StatusBadRequest)
-		global.LOG.Error("get resource and role err: " + err.Error())
-		return
-	}
-
-	roleUsers, err := iam2.ListResourcesRoleUsers(resource.TenantId, resource.Id, role.Id)
-	if err != nil {
-		c.Status(http.StatusBadRequest)
+		internal.ErrorSqlResponse(c, "failed to get resources role user list")
 		global.LOG.Error("list resource role users err: " + err.Error())
 		return
 	}
@@ -141,35 +128,33 @@ func ListIamResourceRole(c *gin.Context) {
 //	@Tags			iam-role
 //	@Param			tenant		path	string	true	"tenant"
 //	@Param			client		path	string	true	"tenant"
-//	@Param			type		path	string	true	"tenant"
-//	@Param			role		path	string	true	"tenant"
-//	@Param			resource	path	string	true	"tenant"
+//	@Param			typeId		path	string	true	"tenant"
+//	@Param			roleId		path	string	true	"tenant"
+//	@Param			resourceId	path	string	true	"tenant"
 //	@Success		200
-//	@Router			/accounts/{tenant}/iam/clients/{client}/types/{type}/resources/{resource}/roles/{role}/users [post]
+//	@Router			/accounts/{tenant}/iam/clients/{client}/types/{typeId}/resources/{resourceId}/roles/{roleId}/users [post]
 func NewIamResourceRole(c *gin.Context) {
 	var roleUser []models.ResourceRoleUser
 	if err := c.BindJSON(&roleUser); err != nil {
 		internal.ErrReqPara(c, err)
 		return
 	}
-	resource, role, err := getResourceAndRole(c)
-	if err != nil {
-		c.Status(http.StatusBadRequest)
-		global.LOG.Error("get resource and role err: " + err.Error())
-		return
-	}
 
+	roleId := c.Param("roleId")
+	resourceId := c.Param("resourceId")
+	tenant := internal.GetTenant(c)
 	for i := 0; i < len(roleUser); i++ {
 		if roleUser[i].ClientUserId == 0 {
 			internal.ErrReqParaCustom(c, "client user id should not be empty")
 			return
 		}
-		roleUser[i].RoleId = role.Id
-		roleUser[i].TenantId = resource.TenantId
-		roleUser[i].ResourceId = resource.Id
+		roleUser[i].RoleId = roleId
+		roleUser[i].TenantId = tenant.Id
+		roleUser[i].ResourceId = resourceId
 	}
-	if err = iam2.CreateResourceRoleUser(resource.TenantId, roleUser); err != nil {
-		c.Status(http.StatusBadRequest)
+
+	if err := iam2.CreateResourceRoleUser(tenant.Id, roleUser); err != nil {
+		internal.ErrorSqlResponse(c, "failed to create resource role user")
 		global.LOG.Error("create resource role user err: " + err.Error())
 		return
 	}
@@ -184,41 +169,32 @@ func NewIamResourceRole(c *gin.Context) {
 //	@Tags			iam-role
 //	@Param			tenant		path	string	true	"tenant"
 //	@Param			client		path	string	true	"tenant"
-//	@Param			type		path	string	true	"tenant"
-//	@Param			resource	path	string	true	"tenant"
-//	@Param			role		path	string	true	"tenant"
+//	@Param			typeId		path	string	true	"tenant"
+//	@Param			resourceId	path	string	true	"tenant"
+//	@Param			roleId		path	string	true	"tenant"
 //	@Param			user		path	string	true	"tenant"
 //	@Success		200
-//	@Router			/accounts/{tenant}/iam/clients/{client}/types/{type}/resources/{resource}/roles/{role}/users/{user} [delete]
+//	@Router			/accounts/{tenant}/iam/clients/{client}/types/{typeId}/resources/{resourceId}/roles/{roleId}/users/{user} [delete]
 func DeleteIamResourceRole(c *gin.Context) {
-	resource, role, err := getResourceAndRole(c)
-	if err != nil {
-		c.Status(http.StatusBadRequest)
-		global.LOG.Error("get resource and role err: " + err.Error())
-		return
-	}
-	client, err := GetClientFromCid(c)
-	if err != nil {
-		c.Status(http.StatusBadRequest)
-		global.LOG.Error("get client from cid err: " + err.Error())
+	resourceId := c.Param("resourceId")
+	roleId := c.Param("roleId")
+	userName := c.Param("user")
+	clientId := c.Param("client")
+	tenant := internal.GetTenant(c)
+
+	var roleUser models.ResourceRoleUser
+	if err := global.DB.Table("resource_role_users as ru").
+		Joins("LEFT JOIN client_users as cu ON ru.client_user_id = cu.id").
+		Where("ru.tenant_id = ? AND cu.client_id = ? AND ru.resource_id = ? AND ru.role_id = ? AND cu.sub",
+			tenant.Id, clientId, resourceId, roleId, userName).
+		First(&roleUser).Error; err != nil {
+		internal.ErrReqParaCustom(c, "no such resource role user")
+		global.LOG.Error("delete resource role user err: " + err.Error())
 		return
 	}
 
-	userName := c.Param("user")
-	var clientUser models.ClientUser
-	if err = internal.TenantDB(c).First(&clientUser, "client_id = ? AND sub = ?", client.Id, userName).Error; err != nil {
-		c.Status(http.StatusBadRequest)
-		global.LOG.Error("get client user err: " + err.Error())
-		return
-	}
-	var roleUser models.ResourceRoleUser
-	if err = internal.TenantDB(c).First(&roleUser, "resource_id = ? AND role_id = ? and client_user_id = ?", resource.Id, role.Id, clientUser.Id).Error; err != nil {
-		c.Status(http.StatusBadRequest)
-		global.LOG.Error("get resource role user err: " + err.Error())
-		return
-	}
-	if err = iam2.DeleteResourceRoleUser(resource.TenantId, roleUser.Id); err != nil {
-		c.Status(http.StatusBadRequest)
+	if err := iam2.DeleteResourceRoleUser(tenant.Id, roleUser.Id); err != nil {
+		internal.ErrorSqlResponse(c, "failed to delete resource role user")
 		global.LOG.Error("delete resource role user err: " + err.Error())
 		return
 	}
