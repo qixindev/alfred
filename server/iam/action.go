@@ -172,7 +172,7 @@ func NewIamRoleAction(c *gin.Context) {
 //	@Param			client		path	string	true	"tenant"
 //	@Param			typeId		path	string	true	"tenant"
 //	@Param			roleId		path	string	true	"tenant"
-//	@Param			actionId	path	integer	true	"tenant"
+//	@Param			actionId	path	string	true	"tenant"
 //	@Success		200
 //	@Router			/accounts/{tenant}/iam/clients/{client}/types/{typeId}/roles/{roleId}/actions/{actionId} [delete]
 func DeleteIamRoleAction(c *gin.Context) {

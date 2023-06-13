@@ -68,8 +68,8 @@ func GetIamActionResource(c *gin.Context) {
 	tenant := internal.GetTenant(c)
 	res := make([]models.ResourceRoleUser, 0)
 
-	if err := global.DB.Table("resource_role_users as rru").
-		Select("r.name resource_name, rr.name role_name, cu.sub").
+	if err := global.DB.Debug().Table("resource_role_users as rru").
+		Select("rru.resource_id", "r.name resource_name", "rru.role_id", "rr.name role_name", "cu.sub").
 		Joins("LEFT JOIN resources r ON r.id = rru.resource_id").
 		Joins("LEFT JOIN resource_type_roles rr ON rr.id = rru.role_id").
 		Joins("LEFT JOIN client_users cu ON cu.id = rru.client_user_id").

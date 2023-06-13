@@ -9,8 +9,9 @@ import (
 func ListResourceTypeRoleActions(tenantId uint, roleId string) ([]models.ResourceTypeRoleAction, error) {
 	var resourceTypeRoleActions []models.ResourceTypeRoleAction
 	if err := global.DB.Table("resource_type_role_actions ra").
-		Select("ra.id", "ra.role_id", "ra.action_id", "ra.tenant_id", "a.name action_name").
-		Joins("LEFT JOIN resource_type_actions a ON ra.action_id = a.id AND ra.tenant_id = a.tenant_id").
+		Select("ra.id", "ra.role_id", "ra.action_id", "ra.tenant_id", "a.name action_name", "r.name role_name").
+		Joins("LEFT JOIN resource_type_actions a ON ra.action_id = a.id").
+		Joins("LEFT JOIN resource_type_roles r ON ra.role_id = r.id").
 		Find(&resourceTypeRoleActions, "role_id = ? AND ra.tenant_id = ?", roleId, tenantId).Error; err != nil {
 		return nil, err
 	}

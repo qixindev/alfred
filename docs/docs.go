@@ -2554,7 +2554,7 @@ const docTemplate = `{
                         "required": true
                     },
                     {
-                        "type": "integer",
+                        "type": "string",
                         "description": "tenant",
                         "name": "actionId",
                         "in": "path",

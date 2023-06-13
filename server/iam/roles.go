@@ -110,7 +110,7 @@ func DeleteIamRole(c *gin.Context) {
 //	@Router			/accounts/{tenant}/iam/clients/{client}/types/{typeId}/resources/{resourceId}/roles/{roleId}/users [get]
 func ListIamResourceRole(c *gin.Context) {
 	resourceId := c.Param("resourceId")
-	roleId := c.Param("typeId")
+	roleId := c.Param("roleId")
 	tenant := internal.GetTenant(c)
 	roleUsers, err := iam2.ListResourcesRoleUsers(tenant.Id, resourceId, roleId)
 	if err != nil {

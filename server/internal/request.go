@@ -9,5 +9,5 @@ type IamActionRequest struct {
 }
 
 type IamUserRequest struct {
-	UserId string `json:"userId"`
+	UserId uint `json:"userId"`
 }

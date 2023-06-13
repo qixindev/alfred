@@ -715,7 +715,7 @@ paths:
         in: path
         name: actionId
         required: true
-        type: integer
+        type: string
       responses:
         "200":
           description: OK
