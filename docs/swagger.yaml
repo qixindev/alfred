@@ -66,7 +66,7 @@ definitions:
   internal.IamUserRequest:
     properties:
       userId:
-        type: string
+        type: integer
     type: object
 info:
   contact: {}

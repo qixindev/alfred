@@ -3156,7 +3156,7 @@ const docTemplate = `{
             "type": "object",
             "properties": {
                 "userId": {
-                    "type": "string"
+                    "type": "integer"
                 }
             }
         }
