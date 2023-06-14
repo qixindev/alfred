@@ -18,7 +18,7 @@ func CreateResourceTypeRole(tenantId uint, typeId string, role *models.ResourceT
 	role.TenantId = tenantId
 	role.TypeId = typeId
 	role.Id = uuid.NewString()
-	if err := global.WithTenant(tenantId).Create(role).Error; err != nil {
+	if err := global.WithTenant(tenantId).Create(&role).Error; err != nil {
 		return nil, err
 	}
 	return role, nil

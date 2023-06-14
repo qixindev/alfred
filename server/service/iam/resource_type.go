@@ -18,7 +18,7 @@ func CreateResourceType(tenantId uint, clientId string, resourceType *models.Res
 	resourceType.TenantId = tenantId
 	resourceType.ClientId = clientId
 	resourceType.Id = uuid.NewString()
-	if err := global.WithTenant(tenantId).Create(resourceType).Error; err != nil {
+	if err := global.WithTenant(tenantId).Create(&resourceType).Error; err != nil {
 		return nil, err
 	}
 	return resourceType, nil

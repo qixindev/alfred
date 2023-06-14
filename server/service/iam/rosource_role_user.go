@@ -15,8 +15,7 @@ func ListResourcesRoleUsers(tenantId uint, resourceId string, roleId string) ([]
 		Joins("LEFT JOIN resources as r ON r.id = rru.resource_id").
 		Joins("LEFT JOIN resource_type_roles as rr ON rr.id = rru.role_id").
 		Find(&resourceRoleUsers, "rru.tenant_id = ? AND rru.resource_id = ? AND rru.role_id = ?",
-			tenantId, resourceId, roleId).
-		Error; err != nil {
+			tenantId, resourceId, roleId).Error; err != nil {
 		return nil, err
 	}
 	return resourceRoleUsers, nil
