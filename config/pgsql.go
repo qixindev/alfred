@@ -19,7 +19,7 @@ type Pgsql struct {
 
 // ConfigDsn 基于配置文件获取 dsn
 func (p *Pgsql) ConfigDsn() string {
-	return "host=" + "localhost" + " port=" + p.Port + " user=" + p.Username + " " + "password=" + p.Password + " dbname=accounts " + p.Config
+	return "host=" + p.Host + " port=" + p.Port + " user=" + p.Username + " " + "password=" + p.Password + " dbname=accounts " + p.Config
 }
 
 // DbNameDsn 根据 dbname 生成 dsn
