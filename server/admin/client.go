@@ -407,7 +407,7 @@ func ListClientUsers(c *gin.Context) {
 		global.LOG.Error("get client user err: " + err.Error())
 		return
 	}
-	c.JSON(http.StatusOK, models.ClientUserDto)
+	c.JSON(http.StatusOK, clientUser)
 }
 
 // GetClientUsers godoc
