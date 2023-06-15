@@ -45,7 +45,7 @@ func IsUserActionPermission(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, result)
+	c.JSON(http.StatusOK, gin.H{"permission": result})
 }
 
 // GetIamActionResource godoc
