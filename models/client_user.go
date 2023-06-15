@@ -3,16 +3,15 @@ package models
 import "accounts/models/dto"
 
 type ClientUser struct {
-	Id          uint   `gorm:"primaryKey;autoIncrement" json:"id"`
-	ClientId    string `json:"clientId"`
-	Client      Client `gorm:"foreignKey:ClientId, TenantId" json:"client"`
-	UserId      uint   `json:"userId"`
-	User        User   `gorm:"foreignKey:UserId, TenantId" json:"user"`
-	Sub         string `json:"sub"`
-	UserName    string `json:"userName" gorm:"<-:false;-:migration"`
-	DisplayName string `json:"displayName" gorm:"<-:false;-:migration"`
-	Phone       string `json:"phone" gorm:"<-:false;-:migration"`
-	Email       string `json:"email" gorm:"<-:false;-:migration"`
+	Id       uint   `gorm:"primaryKey;autoIncrement" json:"id"`
+	ClientId string `json:"clientId"`
+	Client   Client `gorm:"foreignKey:ClientId, TenantId" json:"client"`
+	UserId   uint   `json:"userId"`
+	User     User   `gorm:"foreignKey:UserId, TenantId" json:"user"`
+	Sub      string `json:"sub"`
+	UserName string `json:"userName" gorm:"<-:false;-:migration"`
+	Phone    string `json:"phone" gorm:"<-:false;-:migration"`
+	Email    string `json:"email" gorm:"<-:false;-:migration"`
 
 	TenantId uint `gorm:"primaryKey"`
 }
