@@ -398,7 +398,7 @@ func ListClientUsers(c *gin.Context) {
 		models.User
 	}
 	clientId := c.Param("clientId")
-	if err := global.DB.Debug().Table("client_users cu").
+	if err := global.DB.Table("client_users cu").
 		Select("cu.id, cu.sub sub, cu.client_id, u.username username, u.phone, u.email, u.first_name, u.last_name, u.display_name, u.role").
 		Joins("LEFT JOIN users u ON u.id = cu.user_id").
 		Where("cu.tenant_id = ? AND cu.client_id = ?", internal.GetTenant(c).Id, clientId).
@@ -429,7 +429,7 @@ func GetClientUsers(c *gin.Context) {
 	}
 	clientId := c.Param("clientId")
 	subId := c.Param("subId")
-	if err := global.DB.Debug().Table("client_users cu").
+	if err := global.DB.Table("client_users cu").
 		Select("cu.id, cu.sub sub, cu.client_id, u.username username, u.phone, u.email, u.first_name, u.last_name, u.display_name, u.role").
 		Joins("LEFT JOIN users u ON u.id = cu.user_id").
 		Where("cu.tenant_id = ? AND cu.client_id = ? AND cu.sub = ?", internal.GetTenant(c).Id, clientId, subId).
