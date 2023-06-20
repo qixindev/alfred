@@ -51,3 +51,16 @@ func StrToUint(obj string) uint {
 	res, _ := strconv.Atoi(obj)
 	return uint(res)
 }
+
+func MergeString(obj []string, s string) string {
+	if len(obj) == 0 {
+		return ""
+	}
+
+	res := ""
+	for _, v := range obj {
+		res += v + s
+	}
+
+	return res[:len(res)-len(s)]
+}
