@@ -21,6 +21,14 @@ func ErrorSqlResponse(c *gin.Context, msg string) {
 	})
 }
 
+func ErrorNotFound(c *gin.Context, msg string) {
+	c.JSON(http.StatusNotFound, Response{
+		Code:    http.StatusNotFound,
+		Message: msg,
+		Data:    struct{}{},
+	})
+}
+
 func ErrReqPara(c *gin.Context, err error) {
 	c.JSON(http.StatusBadRequest, Response{
 		Code:    http.StatusBadRequest,

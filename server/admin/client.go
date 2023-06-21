@@ -433,12 +433,16 @@ func GetClientUsers(c *gin.Context) {
 		Select("cu.id, cu.sub sub, cu.client_id, u.username username, u.phone, u.email, u.first_name, u.last_name, u.display_name, u.role").
 		Joins("LEFT JOIN users u ON u.id = cu.user_id").
 		Where("cu.tenant_id = ? AND cu.client_id = ? AND cu.sub = ?", internal.GetTenant(c).Id, clientId, subId).
-		First(&clientUser).Error; err != nil {
+		Find(&clientUser).Error; err != nil {
 		c.Status(http.StatusInternalServerError)
 		global.LOG.Error("get client user err: " + err.Error())
 		return
 	}
 
+	if clientUser.Username == "" {
+		internal.ErrorNotFound(c, "no such client user")
+		return
+	}
 	c.JSON(http.StatusOK, clientUser)
 }
 
