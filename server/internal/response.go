@@ -54,3 +54,11 @@ func ErrReqParaCustom(c *gin.Context, err string) {
 		Data:    struct{}{},
 	})
 }
+
+func Success(c *gin.Context) {
+	c.JSON(http.StatusOK, Response{
+		Code:    http.StatusOK,
+		Message: "",
+		Data:    struct{}{},
+	})
+}
