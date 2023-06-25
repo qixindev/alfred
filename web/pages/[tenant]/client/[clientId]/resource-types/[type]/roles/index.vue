@@ -41,7 +41,7 @@
 import { ElForm, ElInput, ElMessage, ElMessageBox } from 'element-plus';
 
 import { getRoles, saveRole, updateRole, delRole } from '~~/api/client/resource-type/roles'
-
+const tenant =  useTenant()
 const route = useRoute()
 const { clientId, type } = route.params
 
@@ -194,7 +194,7 @@ function handleDelete(row: any) {
 }
 
 function viewAction(row: any) {
-  navigateTo(`/client/${clientId}/resource-types/${type}/roles/${row.name}/actions`)
+  navigateTo(`/${tenant.value}/client/${clientId}/resource-types/${type}/roles/${row.name}/actions`)
 }
 
 onMounted(() => {
