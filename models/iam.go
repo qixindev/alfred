@@ -5,45 +5,46 @@ import (
 )
 
 type ResourceType struct {
-	Id       uint   `gorm:"primaryKey" json:"id"`
+	Id       string `gorm:"primaryKey" json:"id"`
 	Name     string `json:"name"`
 	ClientId string `json:"clientId"`
-	Client   Client `gorm:"foreignKey:ClientId, TenantId" json:"client"`
+	Client   Client `gorm:"foreignKey:ClientId, TenantId" json:"-"`
 	TenantId uint   `gorm:"primaryKey"`
 }
 
 type Resource struct {
-	Id       uint         `gorm:"primaryKey" json:"id"`
+	Id       string       `gorm:"primaryKey" json:"id"`
 	Name     string       `json:"name"`
-	TypeId   uint         `json:"typeId"`
-	Type     ResourceType `gorm:"foreignKey:TypeId, TenantId" json:"type"`
-	ParentId uint         `json:"parent"`
+	TypeId   string       `json:"typeId"`
+	Type     ResourceType `gorm:"foreignKey:TypeId, TenantId" json:"-"`
+	ParentId string       `json:"parent"`
 	TenantId uint         `gorm:"primaryKey"`
 }
 
 type ResourceTypeAction struct {
-	Id       uint         `gorm:"primaryKey" json:"id"`
+	Id       string       `gorm:"primaryKey" json:"id"`
 	Name     string       `json:"name"`
-	TypeId   uint         `json:"typeId"`
-	Type     ResourceType `gorm:"foreignKey:TypeId, TenantId" json:"type"`
+	TypeId   string       `json:"typeId"`
+	Type     ResourceType `gorm:"foreignKey:TypeId, TenantId" json:"-"`
 	TenantId uint         `gorm:"primaryKey"`
 }
 
 type ResourceTypeRole struct {
-	Id       uint         `gorm:"primaryKey" json:"id"`
+	Id       string       `gorm:"primaryKey" json:"id"`
 	Name     string       `json:"name"`
-	TypeId   uint         `json:"typeId"`
-	Type     ResourceType `gorm:"foreignKey:TypeId, TenantId" json:"type"`
+	TypeId   string       `json:"typeId"`
+	Type     ResourceType `gorm:"foreignKey:TypeId, TenantId" json:"-"`
 	TenantId uint         `gorm:"primaryKey"`
 }
 
 type ResourceTypeRoleAction struct {
 	Id         uint               `gorm:"primaryKey" json:"id"`
-	RoleId     uint               `json:"roleId"`
-	Role       ResourceTypeRole   `gorm:"foreignKey:RoleId, TenantId" json:"role"`
-	ActionId   uint               `json:"actionId"`
-	Action     ResourceTypeAction `gorm:"foreignKey:ActionId, TenantId" json:"action"`
+	RoleId     string             `json:"roleId"`
+	Role       ResourceTypeRole   `gorm:"foreignKey:RoleId, TenantId" json:"-"`
+	ActionId   string             `json:"actionId"`
+	Action     ResourceTypeAction `gorm:"foreignKey:ActionId, TenantId" json:"-"`
 	ActionName string             `gorm:"<-:false;-:migration" json:"actionName"`
+	RoleName   string             `gorm:"<-:false;-:migration" json:"roleName"`
 	TenantId   uint               `gorm:"primaryKey"`
 }
 
@@ -56,13 +57,16 @@ func (r *ResourceTypeRoleAction) Dto() *dto.ResourceTypeRoleActionDto {
 		ActionName: r.ActionName,
 	}
 }
+func ResourceRoleActionDto(r ResourceTypeRoleAction) *dto.ResourceTypeRoleActionDto {
+	return r.Dto()
+}
 
 type ResourceRoleUser struct {
 	Id           uint             `gorm:"primaryKey" json:"id"`
-	ResourceId   uint             `json:"resourceId"`
+	ResourceId   string           `json:"resourceId"`
 	Resource     Resource         `gorm:"foreignKey:ResourceId, TenantId" json:"resource"`
 	ResourceName string           `json:"resourceName" gorm:"<-:false;-:migration"`
-	RoleId       uint             `json:"roleId"`
+	RoleId       string           `json:"roleId"`
 	Role         ResourceTypeRole `gorm:"foreignKey:RoleId, TenantId" json:"role"`
 	RoleName     string           `json:"roleName" gorm:"<-:false;-:migration"`
 	ClientUserId uint             `json:"userId"`
@@ -75,7 +79,9 @@ type ResourceRoleUser struct {
 func (r *ResourceRoleUser) Dto() *dto.ResourceRoleUserDto {
 	return &dto.ResourceRoleUserDto{
 		Id:           r.Id,
+		ResourceId:   r.ResourceId,
 		ResourceName: r.ResourceName,
+		RoleId:       r.RoleId,
 		RoleName:     r.RoleName,
 		Sub:          r.Sub,
 		DisplayName:  r.DisplayName,

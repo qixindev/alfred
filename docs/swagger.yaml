@@ -53,6 +53,21 @@ definitions:
       username:
         type: string
     type: object
+  internal.IamActionRequest:
+    properties:
+      actionId:
+        type: string
+    type: object
+  internal.IamNameRequest:
+    properties:
+      name:
+        type: string
+    type: object
+  internal.IamUserRequest:
+    properties:
+      userId:
+        type: integer
+    type: object
 info:
   contact: {}
 paths:
@@ -119,13 +134,19 @@ paths:
         name: client
         required: true
         type: string
+      - description: tenant
+        in: body
+        name: iamBody
+        required: true
+        schema:
+          $ref: '#/definitions/internal.IamNameRequest'
       responses:
         "200":
           description: OK
       summary: iam resource type
       tags:
       - iam-resource
-  /accounts/{tenant}/iam/clients/{client}/types/{type}:
+  /accounts/{tenant}/iam/clients/{client}/types/{typeId}:
     delete:
       description: delete iam resource type
       parameters:
@@ -141,7 +162,7 @@ paths:
         type: string
       - description: tenant
         in: path
-        name: type
+        name: typeId
         required: true
         type: string
       responses:
@@ -150,7 +171,7 @@ paths:
       summary: iam resource type
       tags:
       - iam-resource
-  /accounts/{tenant}/iam/clients/{client}/types/{type}/actions:
+  /accounts/{tenant}/iam/clients/{client}/types/{typeId}/actions:
     get:
       description: get iam action list
       parameters:
@@ -166,7 +187,7 @@ paths:
         type: string
       - description: tenant
         in: path
-        name: type
+        name: typeId
         required: true
         type: string
       responses:
@@ -190,16 +211,24 @@ paths:
         type: string
       - description: tenant
         in: path
-        name: type
+        name: typeId
         required: true
         type: string
+      - description: tenant
+        in: body
+        name: iamBody
+        required: true
+        schema:
+          items:
+            $ref: '#/definitions/internal.IamNameRequest'
+          type: array
       responses:
         "200":
           description: OK
       summary: iam action
       tags:
       - iam-action
-  /accounts/{tenant}/iam/clients/{client}/types/{type}/actions/{action}:
+  /accounts/{tenant}/iam/clients/{client}/types/{typeId}/actions/{actionId}:
     delete:
       description: delete iam action
       parameters:
@@ -215,12 +244,12 @@ paths:
         type: string
       - description: tenant
         in: path
-        name: type
+        name: typeId
         required: true
         type: string
       - description: tenant
         in: path
-        name: action
+        name: actionId
         required: true
         type: string
       responses:
@@ -229,7 +258,7 @@ paths:
       summary: iam action
       tags:
       - iam-action
-  /accounts/{tenant}/iam/clients/{client}/types/{type}/actions/{action}/users/{user}/resources:
+  /accounts/{tenant}/iam/clients/{client}/types/{typeId}/actions/{actionId}/users/{user}/resources:
     get:
       description: get iam action user
       parameters:
@@ -245,12 +274,12 @@ paths:
         type: string
       - description: tenant
         in: path
-        name: type
+        name: typeId
         required: true
         type: string
       - description: tenant
         in: path
-        name: action
+        name: actionId
         required: true
         type: string
       - description: tenant
@@ -264,7 +293,7 @@ paths:
       summary: iam users roles
       tags:
       - iam-action
-  /accounts/{tenant}/iam/clients/{client}/types/{type}/resources:
+  /accounts/{tenant}/iam/clients/{client}/types/{typeId}/resources:
     get:
       description: get iam resource list
       parameters:
@@ -280,7 +309,7 @@ paths:
         type: string
       - description: tenant
         in: path
-        name: type
+        name: typeId
         required: true
         type: string
       responses:
@@ -304,16 +333,22 @@ paths:
         type: string
       - description: tenant
         in: path
-        name: type
+        name: typeId
         required: true
         type: string
+      - description: tenant
+        in: body
+        name: iamBody
+        required: true
+        schema:
+          $ref: '#/definitions/internal.IamNameRequest'
       responses:
         "200":
           description: OK
       summary: iam resource
       tags:
       - iam-resource
-  /accounts/{tenant}/iam/clients/{client}/types/{type}/resources/{resource}:
+  /accounts/{tenant}/iam/clients/{client}/types/{typeId}/resources/{resourceId}:
     delete:
       description: delete iam resource
       parameters:
@@ -329,12 +364,12 @@ paths:
         type: string
       - description: tenant
         in: path
-        name: type
+        name: typeId
         required: true
         type: string
       - description: tenant
         in: path
-        name: resource
+        name: resourceId
         required: true
         type: string
       responses:
@@ -343,7 +378,7 @@ paths:
       summary: iam resource
       tags:
       - iam-resource
-  /accounts/{tenant}/iam/clients/{client}/types/{type}/resources/{resource}/actions/{action}/users/{user}:
+  /accounts/{tenant}/iam/clients/{client}/types/{typeId}/resources/{resourceId}/actions/{actionId}/users/{user}:
     get:
       description: get iam action user
       parameters:
@@ -359,12 +394,17 @@ paths:
         type: string
       - description: tenant
         in: path
-        name: type
+        name: typeId
         required: true
         type: string
       - description: tenant
         in: path
-        name: action
+        name: resourceId
+        required: true
+        type: string
+      - description: tenant
+        in: path
+        name: actionId
         required: true
         type: string
       - description: tenant
@@ -378,7 +418,7 @@ paths:
       summary: iam action user
       tags:
       - iam-action
-  /accounts/{tenant}/iam/clients/{client}/types/{type}/resources/{resource}/roles/{role}/users:
+  /accounts/{tenant}/iam/clients/{client}/types/{typeId}/resources/{resourceId}/roles/{roleId}/users:
     get:
       description: get iam resource role list
       parameters:
@@ -394,17 +434,17 @@ paths:
         type: string
       - description: tenant
         in: path
-        name: type
+        name: typeId
         required: true
         type: string
       - description: tenant
         in: path
-        name: role
+        name: roleId
         required: true
         type: string
       - description: tenant
         in: path
-        name: resource
+        name: resourceId
         required: true
         type: string
       responses:
@@ -428,26 +468,34 @@ paths:
         type: string
       - description: tenant
         in: path
-        name: type
+        name: typeId
         required: true
         type: string
       - description: tenant
         in: path
-        name: role
+        name: roleId
         required: true
         type: string
       - description: tenant
         in: path
-        name: resource
+        name: resourceId
         required: true
         type: string
+      - description: tenant
+        in: body
+        name: iamBody
+        required: true
+        schema:
+          items:
+            $ref: '#/definitions/internal.IamUserRequest'
+          type: array
       responses:
         "200":
           description: OK
       summary: iam resource role
       tags:
       - iam-role
-  /accounts/{tenant}/iam/clients/{client}/types/{type}/resources/{resource}/roles/{role}/users/{user}:
+  /accounts/{tenant}/iam/clients/{client}/types/{typeId}/resources/{resourceId}/roles/{roleId}/users/{user}:
     delete:
       description: delete iam resource role
       parameters:
@@ -463,17 +511,17 @@ paths:
         type: string
       - description: tenant
         in: path
-        name: type
+        name: typeId
         required: true
         type: string
       - description: tenant
         in: path
-        name: resource
+        name: resourceId
         required: true
         type: string
       - description: tenant
         in: path
-        name: role
+        name: roleId
         required: true
         type: string
       - description: tenant
@@ -487,7 +535,7 @@ paths:
       summary: iam resource role
       tags:
       - iam-role
-  /accounts/{tenant}/iam/clients/{client}/types/{type}/roles:
+  /accounts/{tenant}/iam/clients/{client}/types/{typeId}/roles:
     get:
       description: get iam role list
       parameters:
@@ -503,7 +551,7 @@ paths:
         type: string
       - description: tenant
         in: path
-        name: type
+        name: typeId
         required: true
         type: string
       responses:
@@ -527,16 +575,22 @@ paths:
         type: string
       - description: tenant
         in: path
-        name: type
+        name: typeId
         required: true
         type: string
+      - description: tenant
+        in: body
+        name: iamBody
+        required: true
+        schema:
+          $ref: '#/definitions/internal.IamNameRequest'
       responses:
         "200":
           description: OK
       summary: iam role
       tags:
       - iam-role
-  /accounts/{tenant}/iam/clients/{client}/types/{type}/roles/{role}:
+  /accounts/{tenant}/iam/clients/{client}/types/{typeId}/roles/{roleId}:
     delete:
       description: delete iam role
       parameters:
@@ -552,12 +606,12 @@ paths:
         type: string
       - description: tenant
         in: path
-        name: type
+        name: typeId
         required: true
         type: string
       - description: tenant
         in: path
-        name: role
+        name: roleId
         required: true
         type: string
       responses:
@@ -566,7 +620,7 @@ paths:
       summary: iam role
       tags:
       - iam-role
-  /accounts/{tenant}/iam/clients/{client}/types/{type}/roles/{role}/actions:
+  /accounts/{tenant}/iam/clients/{client}/types/{typeId}/roles/{roleId}/actions:
     get:
       description: get iam role action list
       parameters:
@@ -582,12 +636,12 @@ paths:
         type: string
       - description: tenant
         in: path
-        name: type
+        name: typeId
         required: true
         type: string
       - description: tenant
         in: path
-        name: role
+        name: roleId
         required: true
         type: string
       responses:
@@ -611,21 +665,29 @@ paths:
         type: string
       - description: tenant
         in: path
-        name: type
+        name: typeId
         required: true
         type: string
       - description: tenant
         in: path
-        name: role
+        name: roleId
         required: true
         type: string
+      - description: tenant
+        in: body
+        name: iamBody
+        required: true
+        schema:
+          items:
+            $ref: '#/definitions/internal.IamActionRequest'
+          type: array
       responses:
         "200":
           description: OK
       summary: iam role action
       tags:
       - iam-action
-  /accounts/{tenant}/iam/clients/{client}/types/{type}/roles/{role}/actions/{action}:
+  /accounts/{tenant}/iam/clients/{client}/types/{typeId}/roles/{roleId}/actions/{actionId}:
     delete:
       description: delete iam role action
       parameters:
@@ -641,19 +703,19 @@ paths:
         type: string
       - description: tenant
         in: path
-        name: type
+        name: typeId
         required: true
         type: string
       - description: tenant
         in: path
-        name: role
+        name: roleId
         required: true
         type: string
       - description: tenant
         in: path
-        name: action
+        name: actionId
         required: true
-        type: integer
+        type: string
       responses:
         "200":
           description: OK

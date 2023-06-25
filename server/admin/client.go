@@ -392,10 +392,14 @@ func DeleteClientSecret(c *gin.Context) {
 //	@Success		200
 //	@Router			/accounts/admin/{tenant}/clients/{clientId}/users [get]
 func ListClientUsers(c *gin.Context) {
-	var clientUser []models.ClientUser
+	var clientUser []struct {
+		Sub      string `json:"sub"`
+		ClientId string `json:"clientId"`
+		models.User
+	}
 	clientId := c.Param("clientId")
-	if err := global.DB.Debug().Table("client_users cu").
-		Select("cu.id, cu.sub, cu.client_id, u.username user_name, u.phone, u.email").
+	if err := global.DB.Table("client_users cu").
+		Select("cu.id, cu.sub sub, cu.client_id, u.username username, u.phone, u.email, u.first_name, u.last_name, u.display_name, u.role").
 		Joins("LEFT JOIN users u ON u.id = cu.user_id").
 		Where("cu.tenant_id = ? AND cu.client_id = ?", internal.GetTenant(c).Id, clientId).
 		Find(&clientUser).Error; err != nil {
@@ -403,7 +407,7 @@ func ListClientUsers(c *gin.Context) {
 		global.LOG.Error("get client user err: " + err.Error())
 		return
 	}
-	c.JSON(http.StatusOK, utils.Filter(clientUser, models.ClientUserDto))
+	c.JSON(http.StatusOK, clientUser)
 }
 
 // GetClientUsers godoc
@@ -425,7 +429,7 @@ func GetClientUsers(c *gin.Context) {
 	}
 	clientId := c.Param("clientId")
 	subId := c.Param("subId")
-	if err := global.DB.Debug().Table("client_users cu").
+	if err := global.DB.Table("client_users cu").
 		Select("cu.id, cu.sub sub, cu.client_id, u.username username, u.phone, u.email, u.first_name, u.last_name, u.display_name, u.role").
 		Joins("LEFT JOIN users u ON u.id = cu.user_id").
 		Where("cu.tenant_id = ? AND cu.client_id = ? AND cu.sub = ?", internal.GetTenant(c).Id, clientId, subId).
@@ -435,6 +439,10 @@ func GetClientUsers(c *gin.Context) {
 		return
 	}
 
+	if clientUser.Username == "" {
+		internal.ErrorNotFound(c, "no such client user")
+		return
+	}
 	c.JSON(http.StatusOK, clientUser)
 }
 

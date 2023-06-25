@@ -3,9 +3,10 @@ package iam
 import (
 	"accounts/global"
 	"accounts/models"
-	"accounts/models/iam"
 	"accounts/server/internal"
+	iam2 "accounts/server/service/iam"
 	"github.com/gin-gonic/gin"
+	"go.uber.org/zap"
 	"net/http"
 )
 
@@ -17,19 +18,15 @@ import (
 //	@Tags			iam-action
 //	@Param			tenant		path	string	true	"tenant"
 //	@Param			client		path	string	true	"tenant"
-//	@Param			type		path	string	true	"tenant"
+//	@Param			typeId		path	string	true	"tenant"
 //	@Success		200
-//	@Router			/accounts/{tenant}/iam/clients/{client}/types/{type}/actions [get]
+//	@Router			/accounts/{tenant}/iam/clients/{client}/types/{typeId}/actions [get]
 func ListIamAction(c *gin.Context) {
-	typ, err := getType(c)
+	typeId := c.Param("typeId")
+	tenant := internal.GetTenant(c)
+	actions, err := iam2.ListResourceTypeActions(tenant.Id, typeId)
 	if err != nil {
-		c.Status(http.StatusBadRequest)
-		global.LOG.Error("get iam type err: " + err.Error())
-		return
-	}
-	actions, err := iam.ListResourceTypeActions(typ.TenantId, typ.Id)
-	if err != nil {
-		c.Status(http.StatusBadRequest)
+		internal.ErrorSqlResponse(c, "failed to get resource type action")
 		global.LOG.Error("list resource type action err: " + err.Error())
 		return
 	}
@@ -42,26 +39,31 @@ func ListIamAction(c *gin.Context) {
 //	@Schemes
 //	@Description	new iam action
 //	@Tags			iam-action
-//	@Param			tenant		path	string	true	"tenant"
-//	@Param			client		path	string	true	"tenant"
-//	@Param			type		path	string	true	"tenant"
+//	@Param			tenant		path	string		true	"tenant"
+//	@Param			client		path	string		true	"tenant"
+//	@Param			typeId		path	string		true	"tenant"
+//	@Param			iamBody		body	[]internal.IamNameRequest	true	"tenant"
 //	@Success		200
-//	@Router			/accounts/{tenant}/iam/clients/{client}/types/{type}/actions [post]
+//	@Router			/accounts/{tenant}/iam/clients/{client}/types/{typeId}/actions [post]
 func NewIamAction(c *gin.Context) {
 	var action []models.ResourceTypeAction
 	if err := c.BindJSON(&action); err != nil {
 		internal.ErrReqPara(c, err)
 		return
 	}
-	typ, err := getType(c)
+
+	typeId := c.Param("typeId")
+	tenant := internal.GetTenant(c)
+	typ, err := iam2.GetIamType(tenant.Id, typeId)
 	if err != nil {
-		c.Status(http.StatusBadRequest)
+		internal.ErrReqParaCustom(c, "no such iam resource type")
 		global.LOG.Error("get iam type err: " + err.Error())
 		return
 	}
-	if err = iam.CreateResourceTypeAction(typ.TenantId, typ.Id, action); err != nil {
-		c.Status(http.StatusBadRequest)
-		global.LOG.Error("CreateResourceTypeAction err: " + err.Error())
+
+	if err = iam2.CreateResourceTypeAction(tenant.Id, typ.Id, action); err != nil {
+		internal.ErrorSqlResponse(c, "failed to create resource type action")
+		global.LOG.Error("create resource type action err: " + err.Error())
 		return
 	}
 	c.Status(http.StatusOK)
@@ -75,26 +77,23 @@ func NewIamAction(c *gin.Context) {
 //	@Tags			iam-action
 //	@Param			tenant		path	string	true	"tenant"
 //	@Param			client		path	string	true	"tenant"
-//	@Param			type		path	string	true	"tenant"
-//	@Param			action		path	string	true	"tenant"
+//	@Param			typeId		path	string	true	"tenant"
+//	@Param			actionId	path	string	true	"tenant"
 //	@Success		200
-//	@Router			/accounts/{tenant}/iam/clients/{client}/types/{type}/actions/{action} [delete]
+//	@Router			/accounts/{tenant}/iam/clients/{client}/types/{typeId}/actions/{actionId} [delete]
 func DeleteIamAction(c *gin.Context) {
-	typ, err := getType(c)
+	actionId := c.Param("actionId")
+	typeId := c.Param("typeId")
+	tenant := internal.GetTenant(c)
+	action, err := iam2.GetIamAction(tenant.Id, typeId, actionId)
 	if err != nil {
-		c.Status(http.StatusBadRequest)
-		global.LOG.Error("getType err: " + err.Error())
+		internal.ErrReqParaCustom(c, "no such action")
+		global.LOG.Error("get iam action err: " + err.Error())
 		return
 	}
-	actionName := c.Param("action")
-	var action models.ResourceTypeAction
-	if err = internal.TenantDB(c).First(&action, "type_id = ? AND name = ?", typ.Id, actionName).Error; err != nil {
-		c.Status(http.StatusBadRequest)
-		global.LOG.Error("get resource type action err: " + err.Error())
-		return
-	}
-	if err = iam.DeleteResourceTypeAction(typ.TenantId, action.Id); err != nil {
-		c.Status(http.StatusBadRequest)
+
+	if err = iam2.DeleteResourceTypeAction(tenant.Id, action.Id); err != nil {
+		internal.ErrorSqlResponse(c, "failed to delete resource type action")
 		global.LOG.Error("delete resource type action err: " + err.Error())
 		return
 	}
@@ -109,20 +108,16 @@ func DeleteIamAction(c *gin.Context) {
 //	@Tags			iam-action
 //	@Param			tenant		path	string	true	"tenant"
 //	@Param			client		path	string	true	"tenant"
-//	@Param			type		path	string	true	"tenant"
-//	@Param			role		path	string	true	"tenant"
+//	@Param			typeId		path	string	true	"tenant"
+//	@Param			roleId		path	string	true	"tenant"
 //	@Success		200
-//	@Router			/accounts/{tenant}/iam/clients/{client}/types/{type}/roles/{role}/actions [get]
+//	@Router			/accounts/{tenant}/iam/clients/{client}/types/{typeId}/roles/{roleId}/actions [get]
 func ListIamRoleAction(c *gin.Context) {
-	role, err := getRole(c)
+	roleId := c.Param("roleId")
+	tenant := internal.GetTenant(c)
+	roleActions, err := iam2.ListResourceTypeRoleActions(tenant.Id, roleId)
 	if err != nil {
-		c.Status(http.StatusBadRequest)
-		global.LOG.Error("get role err: " + err.Error())
-		return
-	}
-	roleActions, err := iam.ListResourceTypeRoleActions(role.TenantId, role.Id)
-	if err != nil {
-		c.Status(http.StatusInternalServerError)
+		internal.ErrorSqlResponse(c, "failed to get resource type role action list")
 		global.LOG.Error("list resource type role action err: " + err.Error())
 		return
 	}
@@ -137,24 +132,30 @@ func ListIamRoleAction(c *gin.Context) {
 //	@Tags			iam-action
 //	@Param			tenant		path	string	true	"tenant"
 //	@Param			client		path	string	true	"tenant"
-//	@Param			type		path	string	true	"tenant"
-//	@Param			role		path	string	true	"tenant"
+//	@Param			typeId		path	string	true	"tenant"
+//	@Param			roleId		path	string	true	"tenant"
+//	@Param			iamBody		body	[]internal.IamActionRequest	true	"tenant"
 //	@Success		200
-//	@Router			/accounts/{tenant}/iam/clients/{client}/types/{type}/roles/{role}/actions [post]
+//	@Router			/accounts/{tenant}/iam/clients/{client}/types/{typeId}/roles/{roleId}/actions [post]
 func NewIamRoleAction(c *gin.Context) {
-	role, err := getRole(c)
-	if err != nil {
-		internal.ErrorSqlResponse(c, "failed to get role")
-		global.LOG.Error("get role err: " + err.Error())
-		return
-	}
 	var roleAction []models.ResourceTypeRoleAction
-	if err = c.BindJSON(&roleAction); err != nil {
+	if err := c.BindJSON(&roleAction); err != nil {
 		internal.ErrReqPara(c, err)
 		return
 	}
-	if err = iam.CreateResourceTypeRoleAction(role.TenantId, role.Id, roleAction); err != nil {
-		c.Status(http.StatusBadRequest)
+
+	roleId := c.Param("roleId")
+	typeId := c.Param("typeId")
+	tenant := internal.GetTenant(c)
+	role, err := iam2.GetIamRole(tenant.Id, typeId, roleId)
+	if err != nil {
+		internal.ErrReqParaCustom(c, "no such role")
+		global.LOG.Error("get iam role err: ", zap.Error(err))
+		return
+	}
+
+	if err = iam2.CreateResourceTypeRoleAction(tenant.Id, role.Id, roleAction); err != nil {
+		internal.ErrorSqlResponse(c, "failed to create role action")
 		global.LOG.Error("create resource type role action err: " + err.Error())
 		return
 	}
@@ -169,33 +170,22 @@ func NewIamRoleAction(c *gin.Context) {
 //	@Tags			iam-action
 //	@Param			tenant		path	string	true	"tenant"
 //	@Param			client		path	string	true	"tenant"
-//	@Param			type		path	string	true	"tenant"
-//	@Param			role		path	string	true	"tenant"
-//	@Param			action		path	integer	true	"tenant"
+//	@Param			typeId		path	string	true	"tenant"
+//	@Param			roleId		path	string	true	"tenant"
+//	@Param			actionId	path	string	true	"tenant"
 //	@Success		200
-//	@Router			/accounts/{tenant}/iam/clients/{client}/types/{type}/roles/{role}/actions/{action} [delete]
+//	@Router			/accounts/{tenant}/iam/clients/{client}/types/{typeId}/roles/{roleId}/actions/{actionId} [delete]
 func DeleteIamRoleAction(c *gin.Context) {
-	role, err := getRole(c)
-	if err != nil {
-		c.Status(http.StatusBadRequest)
-		global.LOG.Error("get role err: " + err.Error())
-		return
-	}
-	actionName := c.Param("action")
-	var action models.ResourceTypeAction
-	if err = internal.TenantDB(c).First(&action, "type_id = ? AND name = ?", role.TypeId, actionName).Error; err != nil {
-		c.Status(http.StatusBadRequest)
-		global.LOG.Error("get resource type action err: " + err.Error())
-		return
-	}
+	actionId := c.Param("actionId")
+	roleId := c.Param("roleId")
 	var roleAction models.ResourceTypeRoleAction
-	if err = internal.TenantDB(c).First(&roleAction, "role_id = ? AND action_id = ?", role.Id, action.Id).Error; err != nil {
-		c.Status(http.StatusBadRequest)
+	if err := internal.TenantDB(c).First(&roleAction, "role_id = ? AND action_id = ?", roleId, actionId).Error; err != nil {
+		internal.ErrReqParaCustom(c, "no such role action")
 		global.LOG.Error("get resource type role action err: " + err.Error())
 		return
 	}
-	if iam.DeleteResourceTypeRoleAction(role.TenantId, roleAction.Id) != nil {
-		c.Status(http.StatusBadRequest)
+	if err := iam2.DeleteResourceTypeRoleAction(roleAction.TenantId, roleAction.Id); err != nil {
+		internal.ErrorSqlResponse(c, "failed to delete resource role action")
 		global.LOG.Error("delete resource type role action err: " + err.Error())
 		return
 	}

@@ -33,3 +33,10 @@ func GetString(v interface{}) string {
 	}
 	return ""
 }
+
+// DeferErr 处理defer返回的错误警告
+func DeferErr(errFunc func() error) {
+	if err := errFunc(); err != nil {
+		fmt.Println("### Defer err: ", err)
+	}
+}
