@@ -4,7 +4,7 @@ import (
 	"accounts/global"
 	"accounts/models"
 	"accounts/server/internal"
-	iam2 "accounts/server/service/iam"
+	"accounts/server/service/iam"
 	"github.com/gin-gonic/gin"
 	"go.uber.org/zap"
 	"net/http"
@@ -24,7 +24,7 @@ import (
 func ListIamAction(c *gin.Context) {
 	typeId := c.Param("typeId")
 	tenant := internal.GetTenant(c)
-	actions, err := iam2.ListResourceTypeActions(tenant.Id, typeId)
+	actions, err := iam.ListResourceTypeActions(tenant.Id, typeId)
 	if err != nil {
 		internal.ErrorSqlResponse(c, "failed to get resource type action")
 		global.LOG.Error("list resource type action err: " + err.Error())
@@ -54,14 +54,14 @@ func NewIamAction(c *gin.Context) {
 
 	typeId := c.Param("typeId")
 	tenant := internal.GetTenant(c)
-	typ, err := iam2.GetIamType(tenant.Id, typeId)
+	typ, err := iam.GetIamType(tenant.Id, typeId)
 	if err != nil {
 		internal.ErrReqParaCustom(c, "no such iam resource type")
 		global.LOG.Error("get iam type err: " + err.Error())
 		return
 	}
 
-	if err = iam2.CreateResourceTypeAction(tenant.Id, typ.Id, action); err != nil {
+	if err = iam.CreateResourceTypeAction(tenant.Id, typ.Id, action); err != nil {
 		internal.ErrorSqlResponse(c, "failed to create resource type action")
 		global.LOG.Error("create resource type action err: " + err.Error())
 		return
@@ -85,14 +85,14 @@ func DeleteIamAction(c *gin.Context) {
 	actionId := c.Param("actionId")
 	typeId := c.Param("typeId")
 	tenant := internal.GetTenant(c)
-	action, err := iam2.GetIamAction(tenant.Id, typeId, actionId)
+	action, err := iam.GetIamAction(tenant.Id, typeId, actionId)
 	if err != nil {
 		internal.ErrReqParaCustom(c, "no such action")
 		global.LOG.Error("get iam action err: " + err.Error())
 		return
 	}
 
-	if err = iam2.DeleteResourceTypeAction(tenant.Id, action.Id); err != nil {
+	if err = iam.DeleteResourceTypeAction(tenant.Id, action.Id); err != nil {
 		internal.ErrorSqlResponse(c, "failed to delete resource type action")
 		global.LOG.Error("delete resource type action err: " + err.Error())
 		return
@@ -115,7 +115,7 @@ func DeleteIamAction(c *gin.Context) {
 func ListIamRoleAction(c *gin.Context) {
 	roleId := c.Param("roleId")
 	tenant := internal.GetTenant(c)
-	roleActions, err := iam2.ListResourceTypeRoleActions(tenant.Id, roleId)
+	roleActions, err := iam.ListResourceTypeRoleActions(tenant.Id, roleId)
 	if err != nil {
 		internal.ErrorSqlResponse(c, "failed to get resource type role action list")
 		global.LOG.Error("list resource type role action err: " + err.Error())
@@ -147,14 +147,14 @@ func NewIamRoleAction(c *gin.Context) {
 	roleId := c.Param("roleId")
 	typeId := c.Param("typeId")
 	tenant := internal.GetTenant(c)
-	role, err := iam2.GetIamRole(tenant.Id, typeId, roleId)
+	role, err := iam.GetIamRole(tenant.Id, typeId, roleId)
 	if err != nil {
 		internal.ErrReqParaCustom(c, "no such role")
 		global.LOG.Error("get iam role err: ", zap.Error(err))
 		return
 	}
 
-	if err = iam2.CreateResourceTypeRoleAction(tenant.Id, role.Id, roleAction); err != nil {
+	if err = iam.CreateResourceTypeRoleAction(tenant.Id, role.Id, roleAction); err != nil {
 		internal.ErrorSqlResponse(c, "failed to create role action")
 		global.LOG.Error("create resource type role action err: " + err.Error())
 		return
@@ -184,7 +184,7 @@ func DeleteIamRoleAction(c *gin.Context) {
 		global.LOG.Error("get resource type role action err: " + err.Error())
 		return
 	}
-	if err := iam2.DeleteResourceTypeRoleAction(roleAction.TenantId, roleAction.Id); err != nil {
+	if err := iam.DeleteResourceTypeRoleAction(roleAction.TenantId, roleAction.Id); err != nil {
 		internal.ErrorSqlResponse(c, "failed to delete resource role action")
 		global.LOG.Error("delete resource type role action err: " + err.Error())
 		return
