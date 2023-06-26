@@ -25,6 +25,11 @@ func CreateResource(tenantId uint, typeId string, resource *models.Resource) (*m
 }
 
 func DeleteResource(tenantId uint, resourceId string) error {
+	if err := global.DB.Where("tenant_id = ? AND resource_id = ?", tenantId, resourceId).
+		Delete(&models.ResourceRoleUser{}).Error; err != nil {
+		return err
+	}
+
 	if err := global.DB.Where("tenant_id = ? AND id = ?", tenantId, resourceId).
 		Delete(&models.Resource{}).Error; err != nil {
 		return err

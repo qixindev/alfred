@@ -4,7 +4,7 @@ import (
 	"accounts/global"
 	"accounts/models"
 	"accounts/server/internal"
-	iam2 "accounts/server/service/iam"
+	"accounts/server/service/iam"
 	"github.com/gin-gonic/gin"
 	"net/http"
 )
@@ -27,7 +27,7 @@ func ListIamType(c *gin.Context) {
 		return
 	}
 
-	types, err := iam2.ListResourceTypes(client.TenantId, client.Id)
+	types, err := iam.ListResourceTypes(client.TenantId, client.Id)
 	if err != nil {
 		internal.ErrorSqlResponse(c, "failed to get resource type list")
 		global.LOG.Error("list resource types err: " + err.Error())
@@ -60,7 +60,7 @@ func NewIamType(c *gin.Context) {
 		return
 	}
 
-	t, err := iam2.CreateResourceType(client.TenantId, client.Id, &typ)
+	t, err := iam.CreateResourceType(client.TenantId, client.Id, &typ)
 	if err != nil {
 		internal.ErrorSqlResponse(c, "failed to create resource type")
 		global.LOG.Error("create resource type err: " + err.Error())
@@ -91,7 +91,7 @@ func DeleteIamType(c *gin.Context) {
 		return
 	}
 
-	if err := iam2.DeleteResourceType(tenant.Id, typ.Id); err != nil {
+	if err := iam.DeleteResourceType(tenant.Id, typ.Id); err != nil {
 		internal.ErrorSqlResponse(c, "failed to delete resource type")
 		global.LOG.Error("delete resource type err: " + err.Error())
 		return
@@ -113,7 +113,7 @@ func DeleteIamType(c *gin.Context) {
 func ListIamResource(c *gin.Context) {
 	tenant := internal.GetTenant(c)
 	typeId := c.Param("typeId")
-	resources, err := iam2.ListResources(tenant.Id, typeId)
+	resources, err := iam.ListResources(tenant.Id, typeId)
 	if err != nil {
 		internal.ErrorSqlResponse(c, "failed to get resource list")
 		global.LOG.Error("list resource err: " + err.Error())
@@ -142,14 +142,14 @@ func NewIamResource(c *gin.Context) {
 	}
 	tenant := internal.GetTenant(c)
 	typeId := c.Param("typeId")
-	typ, err := iam2.GetIamType(tenant.Id, typeId)
+	typ, err := iam.GetIamType(tenant.Id, typeId)
 	if err != nil {
 		internal.ErrReqParaCustom(c, "no such resource type")
 		global.LOG.Error("create resource err: " + err.Error())
 		return
 	}
 
-	r, err := iam2.CreateResource(tenant.Id, typ.Id, &resource)
+	r, err := iam.CreateResource(tenant.Id, typ.Id, &resource)
 	if err != nil {
 		internal.ErrorSqlResponse(c, "failed to create resource")
 		global.LOG.Error("create resource err: " + err.Error())
@@ -174,12 +174,12 @@ func DeleteIamResource(c *gin.Context) {
 	tenant := internal.GetTenant(c)
 	typeId := c.Param("typeId")
 	resourceId := c.Param("resourceId")
-	resource, err := iam2.GetIamResource(tenant.Id, typeId, resourceId)
+	resource, err := iam.GetIamResource(tenant.Id, typeId, resourceId)
 	if err != nil {
 		internal.ErrReqParaCustom(c, "no such resource")
 		return
 	}
-	if err = iam2.DeleteResource(tenant.Id, resource.Id); err != nil {
+	if err = iam.DeleteResource(tenant.Id, resource.Id); err != nil {
 		internal.ErrorSqlResponse(c, "failed to delete resource")
 		global.LOG.Error("delete resource err: " + err.Error())
 		return
