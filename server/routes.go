@@ -22,6 +22,7 @@ func AddRoutes(r *gin.Engine) {
 		addLoginRoutes(tenantApi)
 		addUsersRoutes(tenantApi)
 		addOAuth2Routes(tenantApi)
+		AddMsgRouter(tenantApi)
 	}
 
 	adminApi := r.RouterGroup.Group("/accounts/admin/:tenant", middlewares.MultiTenancy, middlewares.AuthorizedAdmin)

@@ -32,7 +32,7 @@ func ErrorNotFound(c *gin.Context, msg string) {
 func ErrReqPara(c *gin.Context, err error) {
 	c.JSON(http.StatusBadRequest, Response{
 		Code:    http.StatusBadRequest,
-		Message: "req para err: failed to bind json",
+		Message: "req para err: failed to bind json, " + err.Error(),
 		Data:    struct{}{},
 	})
 	global.LOG.Error("req para err: " + err.Error())
@@ -50,7 +50,15 @@ func ErrReqParaWithMsg(c *gin.Context, err error, msg string) {
 func ErrReqParaCustom(c *gin.Context, err string) {
 	c.JSON(http.StatusBadRequest, Response{
 		Code:    http.StatusBadRequest,
-		Message: "req para err",
+		Message: "req para err: " + err,
+		Data:    struct{}{},
+	})
+}
+
+func Success(c *gin.Context) {
+	c.JSON(http.StatusOK, Response{
+		Code:    http.StatusOK,
+		Message: "",
 		Data:    struct{}{},
 	})
 }

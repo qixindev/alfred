@@ -2236,7 +2236,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/accounts/{tenant}/iam/clients/{client}/types/{typeId}/resources/{resourceId}/roles/{roleId}/users/{user}": {
+        "/accounts/{tenant}/iam/clients/{client}/types/{typeId}/resources/{resourceId}/roles/{roleId}/users/{userId}": {
             "delete": {
                 "description": "delete iam resource role",
                 "tags": [
@@ -2782,6 +2782,36 @@ const docTemplate = `{
                         "schema": {
                             "$ref": "#/definitions/dto.UserProfileDto"
                         }
+                    }
+                }
+            }
+        },
+        "/accounts/{tenant}/message/{providerId}": {
+            "get": {
+                "description": "send message",
+                "tags": [
+                    "msg"
+                ],
+                "summary": "send message",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "tenant name",
+                        "name": "tenant",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "provider id",
+                        "name": "providerId",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
                     }
                 }
             }
