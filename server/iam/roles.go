@@ -185,7 +185,7 @@ func DeleteIamResourceRoleUser(c *gin.Context) {
 	tenant := internal.GetTenant(c)
 
 	var roleUser models.ResourceRoleUser
-	if err := global.DB.Table("resource_role_users as ru").Select("id").
+	if err := global.DB.Table("resource_role_users as ru").Select("ru.id").
 		Joins("LEFT JOIN client_users as cu ON ru.client_user_id = cu.id").
 		Where("ru.tenant_id = ? AND cu.client_id = ? AND ru.resource_id = ? AND ru.role_id = ? AND cu.sub",
 			tenant.Id, clientId, resourceId, roleId, userName).
