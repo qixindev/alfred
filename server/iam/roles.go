@@ -176,19 +176,19 @@ func NewIamResourceRole(c *gin.Context) {
 //	@Param			roleId		path	string	true	"tenant"
 //	@Param			user		path	string	true	"tenant"
 //	@Success		200
-//	@Router			/accounts/{tenant}/iam/clients/{client}/types/{typeId}/resources/{resourceId}/roles/{roleId}/users/{user} [delete]
+//	@Router			/accounts/{tenant}/iam/clients/{client}/types/{typeId}/resources/{resourceId}/roles/{roleId}/users/{userId} [delete]
 func DeleteIamResourceRoleUser(c *gin.Context) {
 	resourceId := c.Param("resourceId")
 	roleId := c.Param("roleId")
-	userName := c.Param("user")
+	sub := c.Param("userId")
 	clientId := c.Param("client")
 	tenant := internal.GetTenant(c)
 
 	var roleUser models.ResourceRoleUser
 	if err := global.DB.Table("resource_role_users as ru").Select("ru.id").
 		Joins("LEFT JOIN client_users as cu ON ru.client_user_id = cu.id").
-		Where("ru.tenant_id = ? AND cu.client_id = ? AND ru.resource_id = ? AND ru.role_id = ? AND cu.sub",
-			tenant.Id, clientId, resourceId, roleId, userName).
+		Where("ru.tenant_id = ? AND cu.client_id = ? AND ru.resource_id = ? AND ru.role_id = ? AND cu.sub = ?",
+			tenant.Id, clientId, resourceId, roleId, sub).
 		First(&roleUser).Error; err != nil {
 		internal.ErrReqParaCustom(c, "no such resource role user")
 		global.LOG.Error("delete resource role user err: " + err.Error())

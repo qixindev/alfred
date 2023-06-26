@@ -495,7 +495,7 @@ paths:
       summary: iam resource role
       tags:
       - iam-role
-  /accounts/{tenant}/iam/clients/{client}/types/{typeId}/resources/{resourceId}/roles/{roleId}/users/{user}:
+  /accounts/{tenant}/iam/clients/{client}/types/{typeId}/resources/{resourceId}/roles/{roleId}/users/{userId}:
     delete:
       description: delete iam resource role
       parameters:
@@ -867,6 +867,26 @@ paths:
       summary: get user profile
       tags:
       - user
+  /accounts/{tenant}/message/{providerId}:
+    get:
+      description: send message
+      parameters:
+      - description: tenant name
+        in: path
+        name: tenant
+        required: true
+        type: string
+      - description: provider id
+        in: path
+        name: providerId
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+      summary: send message
+      tags:
+      - msg
   /accounts/{tenant}/oauth2/auth:
     get:
       description: oauth2 authorize
