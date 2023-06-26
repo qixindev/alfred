@@ -181,7 +181,7 @@ function handleDelete(row: any) {
     }
   ).then(async function () {
     row.deleteLoading = true
-    await delResource(clientId, type, row.name)
+    await delResource(clientId, type, row.id)
     row.deleteLoading = false
     getList()
     ElMessage({
@@ -194,7 +194,7 @@ function handleDelete(row: any) {
 }
 
 function viewRoles(row: any) {
-  navigateTo(`/${tenant.value}/client/${clientId}/resource-types/${type}/resources/${row.name}/roles-permision`)
+  navigateTo(`/${tenant.value}/client/${clientId}/resource-types/${type}/resources/${row.id}/roles-permision`)
 }
 
 onMounted(() => {

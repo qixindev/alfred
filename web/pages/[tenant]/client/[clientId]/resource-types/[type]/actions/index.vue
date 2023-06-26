@@ -179,7 +179,7 @@ function handleDelete(row: any) {
     }
   ).then(async function () {
     row.deleteLoading = true
-    await delAction(clientId, type, row.name)
+    await delAction(clientId, type, row.id)
     row.deleteLoading = false
     getList()
     ElMessage({

@@ -153,7 +153,7 @@ function getRoleOptions() {
   getRoles(clientId, type).then((res:any) => {
     roleOptions.value = res.map((item: any) => ({
       label: item.name,
-      value: item.name,
+      value: item.id,
       id: item.id
     }))
   })
@@ -162,7 +162,7 @@ function getRoleOptions() {
 function getUserOptions() {
   getClientUsers(clientId).then((res:any) => {
     userOptions.value = res.map((item: any) => ({
-      label: item.userName,
+      label: item.username,
       value: item.id
     }))
   })
@@ -196,7 +196,7 @@ function submitForm() {
       updateLoading.value = true
       let { user, role } = state.form
 
-      const params = { userId: user }
+      const params = [{ userId: user }]
 
       saveUser(clientId, type,resource, role, params).then(() => {
         ElMessage({
