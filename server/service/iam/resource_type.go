@@ -26,7 +26,7 @@ func CreateResourceType(tenantId uint, clientId string, resourceType *models.Res
 
 func DeleteResourceType(tenantId uint, typeId string) error {
 	var roles []string
-	if err := global.DB.Select("id").
+	if err := global.DB.Model(models.ResourceTypeRole{}).Select("id").
 		Where("tenant_id = ? and type_id = ?", tenantId, typeId).
 		Find(&roles).Error; err != nil {
 		return err
