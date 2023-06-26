@@ -198,7 +198,7 @@ function handleDelete(row: any) {
     }
   ).then(async function () {
     row.deleteLoading = true
-    await delRoleAction(clientId, type, roleName, row.actionName)
+    await delRoleAction(clientId, type, roleName, row.actionId)
     row.deleteLoading = false
     getList()
     ElMessage({
