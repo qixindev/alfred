@@ -2294,6 +2294,50 @@ const docTemplate = `{
                 }
             }
         },
+        "/accounts/{tenant}/iam/clients/{client}/types/{typeId}/resources/{resourceId}/users": {
+            "get": {
+                "description": "get iam action user",
+                "tags": [
+                    "iam-action"
+                ],
+                "summary": "iam users roles",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "tenant",
+                        "name": "tenant",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "tenant",
+                        "name": "client",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "tenant",
+                        "name": "typeId",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "tenant",
+                        "name": "resourceId",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
         "/accounts/{tenant}/iam/clients/{client}/types/{typeId}/roles": {
             "get": {
                 "description": "get iam role list",

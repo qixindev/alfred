@@ -8,6 +8,7 @@ type Tenant struct {
 	Id   uint   `gorm:"primaryKey;autoIncrement" json:"id"`
 	Name string `json:"name" gorm:"uniqueIndex"`
 	Sub  string `json:"sub" gorm:"<-:false;-:migration"`
+	Role string `json:"role" gorm:"<-:false;-:migration"`
 }
 
 func (t *Tenant) Dto() dto.TenantDto {

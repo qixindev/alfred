@@ -60,7 +60,7 @@ func NewIamType(c *gin.Context) {
 		return
 	}
 
-	t, err := iam.CreateResourceType(client.TenantId, client.Id, &typ)
+	t, err := iam.CreateResourceType(client.TenantId, client.Id, typ)
 	if err != nil {
 		internal.ErrorSqlResponse(c, "failed to create resource type")
 		global.LOG.Error("create resource type err: " + err.Error())

@@ -14,14 +14,14 @@ func ListResourceTypes(tenantId uint, clientId string) ([]models.ResourceType, e
 	return resourceTypes, nil
 }
 
-func CreateResourceType(tenantId uint, clientId string, resourceType *models.ResourceType) (*models.ResourceType, error) {
+func CreateResourceType(tenantId uint, clientId string, resourceType models.ResourceType) (*models.ResourceType, error) {
 	resourceType.TenantId = tenantId
 	resourceType.ClientId = clientId
 	resourceType.Id = uuid.NewString()
 	if err := global.WithTenant(tenantId).Create(&resourceType).Error; err != nil {
 		return nil, err
 	}
-	return resourceType, nil
+	return &resourceType, nil
 }
 
 func DeleteResourceType(tenantId uint, typeId string) error {

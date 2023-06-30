@@ -57,7 +57,7 @@ func IsUserActionPermission(c *gin.Context) {
 //	@Param			tenant		path	string	true	"tenant"
 //	@Param			client		path	string	true	"tenant"
 //	@Param			typeId		path	string	true	"tenant"
-//	@Param			actionId		path	string	true	"tenant"
+//	@Param			actionId	path	string	true	"tenant"
 //	@Param			user		path	string	true	"tenant"
 //	@Success		200
 //	@Router			/accounts/{tenant}/iam/clients/{client}/types/{typeId}/actions/{actionId}/users/{user}/resources [get]
@@ -77,6 +77,39 @@ func GetIamActionResource(c *gin.Context) {
 		Where("rru.tenant_id = ? AND cu.sub = ? AND r.type_id = ? AND rtra.action_id = ?",
 			tenant.Id, user, typeId, actionId).Find(&res).Error; err != nil {
 		internal.ErrorSqlResponse(c, "failed to get user's resources")
+		global.LOG.Error("get resource err: " + err.Error())
+		return
+	}
+
+	c.JSON(http.StatusOK, utils.Filter(res, models.ResourceRoleUserDto))
+}
+
+// GetResourceUserList godoc
+//
+//	@Summary		iam users roles
+//	@Schemes
+//	@Description	get iam action user
+//	@Tags			iam-action
+//	@Param			tenant		path	string	true	"tenant"
+//	@Param			client		path	string	true	"tenant"
+//	@Param			typeId		path	string	true	"tenant"
+//	@Param			resourceId		path	string	true	"tenant"
+//	@Success		200
+//	@Router			/accounts/{tenant}/iam/clients/{client}/types/{typeId}/resources/{resourceId}/users [get]
+func GetResourceUserList(c *gin.Context) {
+	typeId := c.Param("typeId")
+	resourceId := c.Param("resourceId")
+	tenant := internal.GetTenant(c)
+	var res []models.ResourceRoleUser
+	if err := global.DB.Table("resource_role_users as ru").Debug().
+		Select("ru.role_id", "ro.name role_name", "cu.sub", "u.display_name").
+		Joins("LEFT JOIN resources as r ON r.id = ru.resource_id").
+		Joins("LEFT JOIN resource_type_roles ro ON ro.id = ru.role_id").
+		Joins("LEFT JOIN client_users cu ON cu.id = ru.client_user_id").
+		Joins("LEFT JOIN users u ON u.id = cu.user_id").
+		Where("ru.tenant_id = ? AND ru.resource_id = ? AND r.type_id = ?", tenant.Id, resourceId, typeId).
+		Find(&res).Error; err != nil {
+		internal.ErrorSqlResponse(c, "get resource user list err")
 		global.LOG.Error("get resource err: " + err.Error())
 		return
 	}
