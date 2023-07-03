@@ -16,12 +16,14 @@
         <el-table-column label="ID" width="80px" align="center" prop="id"/>
         <el-table-column label="用户" align="center" prop="user">
           <template #default="{ row }">
-            {{ userNameFilter(row.userId) }}
+            <!-- {{ userNameFilter(row.id) }} -->
+            {{ row.userName }}
           </template>
         </el-table-column>
         <el-table-column label="角色" align="center" prop="role">
           <template #default="{ row }">
-            {{ roleFilter(row.roleId) }}
+            <!-- {{ roleFilter(row.roleId) }} -->
+            {{ row.roleName}}
           </template>
         </el-table-column>
         <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
