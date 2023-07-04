@@ -31,7 +31,7 @@ type ResourceTypeAction struct {
 
 type ResourceTypeRole struct {
 	Id       string       `gorm:"primaryKey" json:"id"`
-	Name     string       `json:"name"`
+	Name     string       `json:"name" gorm:"unique"`
 	TypeId   string       `json:"typeId"`
 	Type     ResourceType `gorm:"foreignKey:TypeId, TenantId" json:"-"`
 	TenantId uint         `gorm:"primaryKey"`
@@ -85,6 +85,7 @@ func (r *ResourceRoleUser) Dto() *dto.ResourceRoleUserDto {
 		RoleName:     r.RoleName,
 		Sub:          r.Sub,
 		DisplayName:  r.DisplayName,
+		ClientUserId: r.ClientUserId,
 	}
 }
 
