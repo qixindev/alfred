@@ -69,7 +69,7 @@ func GetIamActionResource(c *gin.Context) {
 	res := make([]models.ResourceRoleUser, 0)
 
 	if err := global.DB.Table("resource_role_users as rru").
-		Select("rru.resource_id", "r.name resource_name", "rru.role_id", "rr.name role_name", "cu.sub").
+		Select("rru.resource_id", "r.name resource_name", "rru.role_id", "rr.name role_name", "rru.client_user_id", "cu.sub").
 		Joins("LEFT JOIN resources r ON r.id = rru.resource_id").
 		Joins("LEFT JOIN resource_type_roles rr ON rr.id = rru.role_id").
 		Joins("LEFT JOIN client_users cu ON cu.id = rru.client_user_id").
@@ -101,13 +101,13 @@ func GetResourceUserList(c *gin.Context) {
 	resourceId := c.Param("resourceId")
 	tenant := internal.GetTenant(c)
 	var res []models.ResourceRoleUser
-	if err := global.DB.Table("resource_role_users as ru").Debug().
-		Select("ru.role_id", "ro.name role_name", "cu.sub", "u.display_name").
-		Joins("LEFT JOIN resources as r ON r.id = ru.resource_id").
-		Joins("LEFT JOIN resource_type_roles ro ON ro.id = ru.role_id").
-		Joins("LEFT JOIN client_users cu ON cu.id = ru.client_user_id").
+	if err := global.DB.Table("resource_role_users as rru").
+		Select("rru.role_id", "ro.name role_name", "rru.client_user_id", "cu.sub", "u.display_name").
+		Joins("LEFT JOIN resources as r ON r.id = rru.resource_id").
+		Joins("LEFT JOIN resource_type_roles ro ON ro.id = rru.role_id").
+		Joins("LEFT JOIN client_users cu ON cu.id = rru.client_user_id").
 		Joins("LEFT JOIN users u ON u.id = cu.user_id").
-		Where("ru.tenant_id = ? AND ru.resource_id = ? AND r.type_id = ?", tenant.Id, resourceId, typeId).
+		Where("rru.tenant_id = ? AND rru.resource_id = ? AND r.type_id = ?", tenant.Id, resourceId, typeId).
 		Find(&res).Error; err != nil {
 		internal.ErrorSqlResponse(c, "get resource user list err")
 		global.LOG.Error("get resource err: " + err.Error())
