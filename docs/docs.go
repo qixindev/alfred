@@ -2830,7 +2830,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/accounts/{tenant}/message/{providerId}": {
+        "/accounts/{tenant}/message/{provider}": {
             "get": {
                 "description": "send message",
                 "tags": [
@@ -2847,10 +2847,19 @@ const docTemplate = `{
                     },
                     {
                         "type": "string",
-                        "description": "provider id",
+                        "description": "provider name",
                         "name": "providerId",
                         "in": "path",
                         "required": true
+                    },
+                    {
+                        "description": "msg body",
+                        "name": "by",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/notify.SendInfo"
+                        }
                     }
                 ],
                 "responses": {
@@ -3231,6 +3240,46 @@ const docTemplate = `{
             "properties": {
                 "userId": {
                     "type": "integer"
+                }
+            }
+        },
+        "notify.SendInfo": {
+            "type": "object",
+            "properties": {
+                "link": {
+                    "description": "点击跳转链接",
+                    "type": "string"
+                },
+                "msg": {
+                    "description": "要发送的消息",
+                    "type": "string"
+                },
+                "msgType": {
+                    "description": "消息类型：图文，markdown，文字",
+                    "type": "string"
+                },
+                "platform": {
+                    "description": "发送到哪个平台",
+                    "type": "string"
+                },
+                "pngLink": {
+                    "description": "消息图片链接",
+                    "type": "string"
+                },
+                "title": {
+                    "description": "标题",
+                    "type": "string"
+                },
+                "titleColor": {
+                    "description": "标题颜色",
+                    "type": "string"
+                },
+                "users": {
+                    "description": "发送给谁",
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
                 }
             }
         }

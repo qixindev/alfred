@@ -143,7 +143,7 @@ func GetProvider(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, authProvider.LoginConfig())
+	c.JSON(http.StatusOK, authProvider.ProviderConfig())
 }
 
 // Register godoc

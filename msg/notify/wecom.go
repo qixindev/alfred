@@ -4,6 +4,7 @@ import (
 	"accounts/config/env"
 	"accounts/msg/api"
 	"accounts/utils"
+	"github.com/gin-gonic/gin"
 )
 
 func getMarkdownText(info *SendInfo) string {
@@ -24,19 +25,19 @@ func getNews(title, text, link, logo string) api.NewsMsg {
 	return news
 }
 
-func getMsg(info *SendInfo, conf *api.Third) api.MsgStruct {
+func getMsg(info *SendInfo, conf *api.Wecom) api.MsgStruct {
 	toUser := utils.MergeString(info.Users, "|")
 	msg := api.MsgStruct{
 		ToUser:               toUser,
 		ToParty:              "@all",
 		ToTag:                "@all",
-		AgentId:              conf.GetWecomAgentId(),
+		AgentId:              conf.AgentId,
 		Safe:                 0,
 		EnableIdTrans:        0,
 		EnableDuplicateCheck: 0,
 	}
 
-	switch info.Type {
+	switch info.MsgType {
 	case env.MsgMarkdown:
 		msg.MsgType = "markdown"
 		text := getMarkdownText(info)
@@ -49,10 +50,13 @@ func getMsg(info *SendInfo, conf *api.Third) api.MsgStruct {
 	return msg
 }
 
-func SendMsgToWecom(info *SendInfo, conf *api.Third) error {
-	corpId := conf.GetWecomCorpId()
-	corpSecret := conf.GetWecomSecret()
-	token, err := api.ForceGetWecomToken(corpId, corpSecret)
+func SendMsgToWecom(info *SendInfo, providerConfig gin.H) error {
+	conf, err := api.GetWecomConfig(providerConfig)
+	if err != nil {
+		return err
+	}
+
+	token, err := api.ForceGetWecomToken(conf.CorpId, conf.Secret)
 	if err != nil {
 		return err
 	}

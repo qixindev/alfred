@@ -4,6 +4,7 @@ import (
 	"accounts/config/env"
 	"accounts/msg/api"
 	"accounts/utils"
+	"github.com/gin-gonic/gin"
 	"net/url"
 )
 
@@ -46,14 +47,14 @@ func getActionMsg(info *SendInfo) api.DingMessage {
 	return actionMsg
 }
 
-func GetDingMsg(info *SendInfo, conf *api.Third) api.DingNotify {
+func GetDingMsg(info *SendInfo, conf *api.Ding) api.DingNotify {
 	dingMsg := api.DingNotify{
-		AgentId:    conf.GetDingAgentId(),
+		AgentId:    conf.AgentId,
 		UseridList: utils.MergeString(info.Users, ","),
 		ToAllUser:  false,
 	}
 
-	switch info.Type {
+	switch info.MsgType {
 	case env.MsgMarkdown:
 		dingMsg.Msg = getMarkDownMsg(info)
 	default: // case config.MsgPicture:
@@ -63,7 +64,11 @@ func GetDingMsg(info *SendInfo, conf *api.Third) api.DingNotify {
 	return dingMsg
 }
 
-func SendMsgToDingTalk(info *SendInfo, conf *api.Third) error {
+func SendMsgToDingTalk(info *SendInfo, providerConf gin.H) error {
+	conf, err := api.GetDingTalkConfig(providerConf)
+	if err != nil {
+		return err
+	}
 	token, err := api.GetDingAccessToken(conf)
 	if err != nil {
 		return err

@@ -1,5 +1,10 @@
 package api
 
+import (
+	"errors"
+	"github.com/gin-gonic/gin"
+)
+
 type Wecom struct {
 	AgentId int    `mapstructure:"agentId" json:"agentId" yaml:"agentId"`
 	CorpId  string `mapstructure:"corpId" json:"corpId" yaml:"corpId"`
@@ -17,6 +22,34 @@ type Third struct {
 	} `mapstructure:"login" json:"login" yaml:"login"`
 	Wecom Wecom `mapstructure:"wecom" json:"wecom" yaml:"wecom"`
 	Ding  Ding  `mapstructure:"ding" json:"ding" yaml:"ding"`
+}
+
+func GetWecomConfig(c gin.H) (*Wecom, error) {
+	res := Wecom{
+		AgentId: c["agentId"].(int),
+		CorpId:  c["corpId"].(string),
+		Secret:  c["secret"].(string),
+	}
+
+	if res.AgentId == 0 || res.CorpId == "" || res.Secret == "" {
+		return nil, errors.New("invalid wecom config")
+	}
+
+	return &res, nil
+}
+
+func GetDingTalkConfig(c gin.H) (*Ding, error) {
+	res := Ding{
+		AgentId:   c["agentId"].(int64),
+		AppKey:    c["appKey"].(string),
+		AppSecret: c["appSecret"].(string),
+	}
+
+	if res.AgentId == 0 || res.AppKey == "" || res.AppSecret == "" {
+		return nil, errors.New("invalid ding talk config")
+	}
+
+	return &res, nil
 }
 
 // ==========企业微信配置==========

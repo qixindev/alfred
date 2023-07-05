@@ -24,12 +24,12 @@ type GroupUser struct {
 	TenantId uint `gorm:"primaryKey"`
 }
 
-func (g *GroupUser) Dto() dto.GroupUserDto {
+func (u *GroupUser) Dto() dto.GroupUserDto {
 	return dto.GroupUserDto{
-		Id:      g.Id,
-		GroupId: g.GroupId,
-		UserId:  g.UserId,
-		Role:    g.Role,
+		Id:      u.Id,
+		GroupId: u.GroupId,
+		UserId:  u.UserId,
+		Role:    u.Role,
 	}
 }
 
@@ -80,10 +80,10 @@ func (u *GroupUser) GroupMemberDto() dto.GroupMemberDto {
 	}
 }
 
-func (d *GroupDevice) GroupMemberDto() dto.GroupMemberDto {
+func (g *GroupDevice) GroupMemberDto() dto.GroupMemberDto {
 	return dto.GroupMemberDto{
 		Type: "device",
-		Id:   d.Id,
-		Name: d.Device.Name,
+		Id:   g.Id,
+		Name: g.Device.Name,
 	}
 }

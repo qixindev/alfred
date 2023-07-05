@@ -2,9 +2,10 @@ package server
 
 import (
 	"accounts/global"
-	"accounts/models"
 	"accounts/msg/notify"
+	"accounts/server/auth"
 	"accounts/server/internal"
+	"accounts/utils"
 	"github.com/gin-gonic/gin"
 )
 
@@ -14,10 +15,11 @@ import (
 //	@Schemes
 //	@Description	send message
 //	@Tags			msg
-//	@Param			tenant		path	string	true	"tenant name"
-//	@Param			providerId	path	string	true	"provider id"
+//	@Param			tenant		path	string			true	"tenant name"
+//	@Param			providerId	path	string			true	"provider name"
+//	@Param			by			body	notify.SendInfo	true	"msg body"
 //	@Success		200
-//	@Router			/accounts/{tenant}/message/{providerId} [get]
+//	@Router			/accounts/{tenant}/message/{provider} [get]
 func SendMsg(c *gin.Context) {
 	var in notify.SendInfo
 	if err := c.ShouldBindJSON(&in); err != nil {
@@ -25,14 +27,25 @@ func SendMsg(c *gin.Context) {
 		return
 	}
 
-	var provider models.Provider
-	if err := global.DB.Where("").First(&provider).Error; err != nil {
-		internal.ErrorSqlResponse(c, "failed to get provider info")
-		global.LOG.Error("get send provider info err: " + err.Error())
+	tenant := internal.GetTenant(c)
+	authProvider, err := auth.GetAuthProvider(tenant.Id, in.Platform)
+	if err != nil {
 		return
 	}
 
-	if err := notify.SendMsgToUsers(&in, nil); err != nil {
+	var providerUser []string
+	providerConfig := *authProvider.ProviderConfig()
+	if err = global.DB.Table("provider_users pu").Select("pu.name").
+		Joins("LEFT JOIN client_users as cu ON cu.user_id = pu.user_id").
+		Where("tenant_id = ? AND provider_id = ? AND cu.sub in ?", tenant.Id, providerConfig["providerId"], in.Users).
+		Find(&providerUser).Error; err != nil {
+		return
+	}
+
+	in.Users = providerUser
+	global.LOG.Debug("msg send info: " + utils.StructToString(in))
+	global.LOG.Debug("msg conf: " + utils.StructToString(providerConfig))
+	if err = notify.SendMsgToUsers(&in, providerConfig); err != nil {
 		internal.ErrorSqlResponse(c, "failed to send msg")
 		global.LOG.Error("send msg err: " + err.Error())
 		return

@@ -51,7 +51,7 @@ func (p ProviderDingTalk) Login(c *gin.Context) (*models.UserInfo, error) {
 	if err != nil {
 		return nil, err
 	}
-	
+
 	resp, err := http.Post("https://api.dingtalk.com/v1.0/oauth2/userAccessToken", "application/json", bytes.NewReader(body))
 	if err != nil {
 		return nil, err
@@ -99,7 +99,7 @@ func (p ProviderDingTalk) Login(c *gin.Context) (*models.UserInfo, error) {
 	}, nil
 }
 
-func (p ProviderDingTalk) LoginConfig() *gin.H {
+func (p ProviderDingTalk) ProviderConfig() *gin.H {
 	return &gin.H{
 		"providerId": p.Config.ProviderId,
 		"appKey":     p.Config.AppKey,

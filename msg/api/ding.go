@@ -35,11 +35,8 @@ type DingNotify struct {
 	Msg        DingMessage `json:"msg"`
 }
 
-func GetDingAccessToken(conf *Third) (string, error) {
-	appKey := conf.GetDingAppKey()
-	appSecret := conf.GetDingAppSecret()
-
-	url := fmt.Sprintf("https://oapi.dingtalk.com/gettoken?appkey=%s&appsecret=%s", appKey, appSecret)
+func GetDingAccessToken(conf *Ding) (string, error) {
+	url := fmt.Sprintf("https://oapi.dingtalk.com/gettoken?appkey=%s&appsecret=%s", conf.AppKey, conf.AppSecret)
 
 	var resp struct {
 		ErrCode float64 `json:"errcode"`
@@ -57,7 +54,7 @@ func GetDingAccessToken(conf *Third) (string, error) {
 	return resp.Token, nil
 }
 
-func getSendMsgRes(taskId int64, conf *Third) error {
+func getSendMsgRes(taskId int64, conf *Ding) error {
 	token, err := GetDingAccessToken(conf)
 	if err != nil {
 		return err
@@ -67,7 +64,7 @@ func getSendMsgRes(taskId int64, conf *Third) error {
 	body := struct {
 		AgentId int64 `json:"agent_id"`
 		TaskId  int64 `json:"task_id"`
-	}{conf.GetDingAgentId(), taskId}
+	}{conf.AgentId, taskId}
 	var resp struct {
 		ErrCode float64 `json:"errcode"`
 		ErrMsg  string  `json:"errmsg"`
@@ -108,7 +105,7 @@ func GetUseridByUnionId(token, unionId string) (userid string, err error) {
 }
 
 // SendDingMsg 发送消息到钉钉
-func SendDingMsg(token string, dingMsg DingNotify, conf *Third) error {
+func SendDingMsg(token string, dingMsg DingNotify, conf *Ding) error {
 	url := fmt.Sprintf("https://oapi.dingtalk.com/topapi/message/corpconversation/asyncsend_v2?access_token=%s", token)
 	var resp struct {
 		ErrCode   int    `json:"errcode"`

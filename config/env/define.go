@@ -2,7 +2,7 @@ package env
 
 const (
 	PlatformWecom    = "wecom"
-	PlatformDingTalk = "ding"
+	PlatformDingTalk = "dingtalk"
 	PlatformPhone    = "phone"
 
 	MsgMarkdown = "markdown"

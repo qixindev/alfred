@@ -2,8 +2,8 @@ package notify
 
 import (
 	"accounts/config/env"
-	"accounts/msg/api"
 	"errors"
+	"github.com/gin-gonic/gin"
 )
 
 type SendInfo struct {
@@ -12,13 +12,13 @@ type SendInfo struct {
 	Users []string // 发送给谁
 
 	Platform   string // 发送到哪个平台
-	Type       string // 消息类型：图文，markdown，文字
+	MsgType    string // 消息类型：图文，markdown，文字
 	Title      string // 标题
 	TitleColor string // 标题颜色
 	PngLink    string // 消息图片链接
 }
 
-func SendMsgToUsers(info *SendInfo, conf *api.Third) (err error) {
+func SendMsgToUsers(info *SendInfo, conf gin.H) (err error) {
 	if len(info.Users) == 0 {
 		return errors.New("users is null")
 	}

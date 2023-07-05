@@ -94,7 +94,7 @@ func (p ProviderWeCom) Login(c *gin.Context) (*models.UserInfo, error) {
 	return &userInfo, nil
 }
 
-func (p ProviderWeCom) LoginConfig() *gin.H {
+func (p ProviderWeCom) ProviderConfig() *gin.H {
 	return &gin.H{
 		"providerId": p.Config.ProviderId,
 		"corpId":     p.Config.CorpId,
