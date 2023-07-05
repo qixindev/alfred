@@ -45,6 +45,7 @@ func AddIamRoutes(rg *gin.RouterGroup) {
 	rg.POST("/types/:typeId/resources/:resourceId/roles/:roleId/users", NewIamResourceRole)
 	rg.DELETE("/types/:typeId/resources/:resourceId/roles/:roleId/users/:userId", DeleteIamResourceRoleUser)
 
+	rg.GET("/types/:typeId/resources/:resourceId/users", GetResourceUserList)              // 获取某个资源下面用户列表
 	rg.GET("/types/:typeId/actions/:actionId/users/:user/resources", GetIamActionResource) // 针对一类资源，用户拥有哪些资源的哪些角色
 	rg.GET("/types/:typeId/resources/:resourceId/actions/:actionId/users/:user", IsUserActionPermission)
 }

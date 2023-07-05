@@ -14,6 +14,7 @@ type ResourceRoleUserDto struct {
 	ResourceName string `json:"resourceName"`
 	RoleId       string `json:"roleId"`
 	RoleName     string `json:"roleName"`
-	DisplayName  string `json:"userName"`
+	DisplayName  string `json:"displayName"`
 	Sub          string `json:"sub"`
+	ClientUserId uint   `json:"clientUserId"`
 }

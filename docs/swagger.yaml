@@ -535,6 +535,36 @@ paths:
       summary: iam resource role
       tags:
       - iam-role
+  /accounts/{tenant}/iam/clients/{client}/types/{typeId}/resources/{resourceId}/users:
+    get:
+      description: get iam action user
+      parameters:
+      - description: tenant
+        in: path
+        name: tenant
+        required: true
+        type: string
+      - description: tenant
+        in: path
+        name: client
+        required: true
+        type: string
+      - description: tenant
+        in: path
+        name: typeId
+        required: true
+        type: string
+      - description: tenant
+        in: path
+        name: resourceId
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+      summary: iam users roles
+      tags:
+      - iam-action
   /accounts/{tenant}/iam/clients/{client}/types/{typeId}/roles:
     get:
       description: get iam role list

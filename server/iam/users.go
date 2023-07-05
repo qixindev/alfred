@@ -57,7 +57,7 @@ func IsUserActionPermission(c *gin.Context) {
 //	@Param			tenant		path	string	true	"tenant"
 //	@Param			client		path	string	true	"tenant"
 //	@Param			typeId		path	string	true	"tenant"
-//	@Param			actionId		path	string	true	"tenant"
+//	@Param			actionId	path	string	true	"tenant"
 //	@Param			user		path	string	true	"tenant"
 //	@Success		200
 //	@Router			/accounts/{tenant}/iam/clients/{client}/types/{typeId}/actions/{actionId}/users/{user}/resources [get]
@@ -69,7 +69,7 @@ func GetIamActionResource(c *gin.Context) {
 	res := make([]models.ResourceRoleUser, 0)
 
 	if err := global.DB.Table("resource_role_users as rru").
-		Select("rru.resource_id", "r.name resource_name", "rru.role_id", "rr.name role_name", "cu.sub").
+		Select("rru.resource_id", "r.name resource_name", "rru.role_id", "rr.name role_name", "rru.client_user_id", "cu.sub").
 		Joins("LEFT JOIN resources r ON r.id = rru.resource_id").
 		Joins("LEFT JOIN resource_type_roles rr ON rr.id = rru.role_id").
 		Joins("LEFT JOIN client_users cu ON cu.id = rru.client_user_id").
@@ -77,6 +77,39 @@ func GetIamActionResource(c *gin.Context) {
 		Where("rru.tenant_id = ? AND cu.sub = ? AND r.type_id = ? AND rtra.action_id = ?",
 			tenant.Id, user, typeId, actionId).Find(&res).Error; err != nil {
 		internal.ErrorSqlResponse(c, "failed to get user's resources")
+		global.LOG.Error("get resource err: " + err.Error())
+		return
+	}
+
+	c.JSON(http.StatusOK, utils.Filter(res, models.ResourceRoleUserDto))
+}
+
+// GetResourceUserList godoc
+//
+//	@Summary		iam users roles
+//	@Schemes
+//	@Description	get iam action user
+//	@Tags			iam-action
+//	@Param			tenant		path	string	true	"tenant"
+//	@Param			client		path	string	true	"tenant"
+//	@Param			typeId		path	string	true	"tenant"
+//	@Param			resourceId		path	string	true	"tenant"
+//	@Success		200
+//	@Router			/accounts/{tenant}/iam/clients/{client}/types/{typeId}/resources/{resourceId}/users [get]
+func GetResourceUserList(c *gin.Context) {
+	typeId := c.Param("typeId")
+	resourceId := c.Param("resourceId")
+	tenant := internal.GetTenant(c)
+	var res []models.ResourceRoleUser
+	if err := global.DB.Table("resource_role_users as rru").
+		Select("rru.role_id", "ro.name role_name", "rru.client_user_id", "cu.sub", "u.display_name").
+		Joins("LEFT JOIN resources as r ON r.id = rru.resource_id").
+		Joins("LEFT JOIN resource_type_roles ro ON ro.id = rru.role_id").
+		Joins("LEFT JOIN client_users cu ON cu.id = rru.client_user_id").
+		Joins("LEFT JOIN users u ON u.id = cu.user_id").
+		Where("rru.tenant_id = ? AND rru.resource_id = ? AND r.type_id = ?", tenant.Id, resourceId, typeId).
+		Find(&res).Error; err != nil {
+		internal.ErrorSqlResponse(c, "get resource user list err")
 		global.LOG.Error("get resource err: " + err.Error())
 		return
 	}

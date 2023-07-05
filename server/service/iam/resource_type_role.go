@@ -25,6 +25,14 @@ func CreateResourceTypeRole(tenantId uint, typeId string, role *models.ResourceT
 }
 
 func DeleteResourceTypeRole(tenantId uint, roleId string) error {
+	if err := global.DB.Where("tenant_id = ? AND role_id = ?", tenantId, roleId).
+		Delete(&models.ResourceTypeRoleAction{}).Error; err != nil {
+		return err
+	}
+	if err := global.DB.Where("tenant_id = ? AND role_id = ?", tenantId, roleId).
+		Delete(&models.ResourceRoleUser{}).Error; err != nil {
+		return err
+	}
 	if err := global.DB.Where("tenant_id = ? AND id = ?", tenantId, roleId).
 		Delete(&models.ResourceTypeRole{}).Error; err != nil {
 		return err

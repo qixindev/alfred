@@ -23,7 +23,7 @@ import (
 func ListTenants(c *gin.Context) {
 	var tenants []models.Tenant
 	username := sessions.Default(c).Get("user")
-	if err := global.DB.Model(models.User{}).Select("t.id, t.name").
+	if err := global.DB.Model(models.User{}).Select("t.id, t.name, users.role").
 		Joins("LEFT JOIN tenants as t ON t.id = users.tenant_id").
 		Where("users.username = ?", username).
 		Find(&tenants).Error; err != nil {
@@ -31,7 +31,14 @@ func ListTenants(c *gin.Context) {
 		global.LOG.Error("get tenants err: " + err.Error())
 		return
 	}
-	c.JSON(http.StatusOK, utils.Filter(tenants, models.Tenant2Dto))
+
+	res := make([]models.Tenant, 0)
+	for _, tenant := range tenants {
+		if tenant.Role == "admin" || tenant.Role == "owner" {
+			res = append(res, tenant)
+		}
+	}
+	c.JSON(http.StatusOK, utils.Filter(res, models.Tenant2Dto))
 }
 
 // ListUserTenants godoc
