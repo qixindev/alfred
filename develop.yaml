@@ -38,7 +38,7 @@ spec:
             - name: NANE_SPACE
               value: "default"
             - name: RELEASE_TYPE
-              value: "first"
+              value: "release"
           image: qixindev.azurecr.io/iot/accounts:develop-20230321.1
           name: accounts
           ports:
