@@ -17,7 +17,7 @@
         <el-table-column label="用户" align="center" prop="user">
           <template #default="{ row }">
             <!-- {{ userNameFilter(row.id) }} -->
-            {{ row.userName }}
+            {{ row.displayName }}
           </template>
         </el-table-column>
         <el-table-column label="角色" align="center" prop="role">
@@ -145,6 +145,8 @@ function getList() {
   if (!state.query.role) return
   state.loading = true
   getUsers(clientId, type, resource, state.query.role).then((res:any) => {
+    console.log(res,"查询列表");
+    
     state.dataList = res
   }).finally(() => {
     state.loading = false
