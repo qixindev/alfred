@@ -25,7 +25,7 @@ type MsgStruct struct {
 	ToParty              string          `json:"toparty"`
 	ToTag                string          `json:"totag"`
 	MsgType              string          `json:"msgtype"`
-	AgentId              int             `json:"agentid"`
+	AgentId              int64           `json:"agentid"`
 	Markdown             MarkdownContext `json:"markdown"`
 	News                 NewsMsg         `json:"news"`
 	Safe                 int             `json:"safe"`

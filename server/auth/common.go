@@ -14,6 +14,8 @@ type Provider interface {
 	// Login Callback when auth completed.
 	Login(*gin.Context) (*models.UserInfo, error)
 
+	LoginConfig() *gin.H
+
 	ProviderConfig() *gin.H
 }
 

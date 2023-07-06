@@ -66,8 +66,16 @@ func getSendMsgRes(taskId int64, conf *Ding) error {
 		TaskId  int64 `json:"task_id"`
 	}{conf.AgentId, taskId}
 	var resp struct {
-		ErrCode float64 `json:"errcode"`
-		ErrMsg  string  `json:"errmsg"`
+		ErrCode    float64 `json:"errcode"`
+		ErrMsg     string  `json:"errmsg"`
+		SendResult struct {
+			InvalidUserIdList []string      `json:"invalid_user_id_list"`
+			ForbiddenList     []interface{} `json:"forbidden_list"`
+			FailedUserIdList  []string      `json:"failed_user_id_list"`
+			InvalidDeptIdList []string      `json:"invalid_dept_id_list"`
+			ReadUserIdList    []string      `json:"read_user_id_list"`
+			UnreadUserIdList  []string      `json:"unread_user_id_list"`
+		} `json:"send_result"`
 	}
 	if err = PostClient(url, body, &resp); err != nil {
 		return err
@@ -75,6 +83,10 @@ func getSendMsgRes(taskId int64, conf *Ding) error {
 
 	if resp.ErrCode != 0 || resp.ErrMsg != "ok" {
 		return errors.New(fmt.Sprintf("发送钉钉消息失败: [%f] %s", resp.ErrCode, resp.ErrMsg))
+	}
+
+	if len(resp.SendResult.InvalidUserIdList) != 0 {
+		return errors.New(fmt.Sprintf("invalide user id list: %v", resp.SendResult.InvalidUserIdList))
 	}
 
 	return nil

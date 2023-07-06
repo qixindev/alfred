@@ -5,8 +5,8 @@ import (
 	"accounts/msg/notify"
 	"accounts/server/auth"
 	"accounts/server/internal"
-	"accounts/utils"
 	"github.com/gin-gonic/gin"
+	"net/http"
 )
 
 // SendMsg godoc
@@ -16,10 +16,10 @@ import (
 //	@Description	send message
 //	@Tags			msg
 //	@Param			tenant		path	string			true	"tenant name"
-//	@Param			providerId	path	string			true	"provider name"
+//	@Param			provider	path	string			true	"provider name"
 //	@Param			by			body	notify.SendInfo	true	"msg body"
 //	@Success		200
-//	@Router			/accounts/{tenant}/message/{provider} [get]
+//	@Router			/accounts/{tenant}/message/{provider} [post]
 func SendMsg(c *gin.Context) {
 	var in notify.SendInfo
 	if err := c.ShouldBindJSON(&in); err != nil {
@@ -28,8 +28,10 @@ func SendMsg(c *gin.Context) {
 	}
 
 	tenant := internal.GetTenant(c)
-	authProvider, err := auth.GetAuthProvider(tenant.Id, in.Platform)
+	authProvider, err := auth.GetAuthProvider(tenant.Id, c.Param("provider"))
 	if err != nil {
+		global.LOG.Error("get provider err: " + err.Error())
+		internal.ErrorSqlResponse(c, "no such provider")
 		return
 	}
 
@@ -37,23 +39,23 @@ func SendMsg(c *gin.Context) {
 	providerConfig := *authProvider.ProviderConfig()
 	if err = global.DB.Table("provider_users pu").Select("pu.name").
 		Joins("LEFT JOIN client_users as cu ON cu.user_id = pu.user_id").
-		Where("tenant_id = ? AND provider_id = ? AND cu.sub in ?", tenant.Id, providerConfig["providerId"], in.Users).
+		Where("pu.tenant_id = ? AND pu.provider_id = ? AND cu.sub in ?", tenant.Id, providerConfig["providerId"], in.Users).
 		Find(&providerUser).Error; err != nil {
+		global.LOG.Error("get provider user err")
+		internal.ErrorSqlResponse(c, "failed to get provider user")
 		return
 	}
 
 	in.Users = providerUser
-	global.LOG.Debug("msg send info: " + utils.StructToString(in))
-	global.LOG.Debug("msg conf: " + utils.StructToString(providerConfig))
+	in.Platform = providerConfig["type"].(string)
 	if err = notify.SendMsgToUsers(&in, providerConfig); err != nil {
-		internal.ErrorSqlResponse(c, "failed to send msg")
 		global.LOG.Error("send msg err: " + err.Error())
+		internal.ErrorSqlResponse(c, "failed to send msg")
 		return
 	}
-
-	internal.Success(c)
+	c.JSON(http.StatusOK, gin.H{"in": in, "conf": providerConfig})
 }
 
 func AddMsgRouter(r *gin.RouterGroup) {
-	r.POST("/message/:providerId", SendMsg)
+	r.POST("/message/:provider", SendMsg)
 }

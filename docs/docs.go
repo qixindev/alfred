@@ -2831,7 +2831,7 @@ const docTemplate = `{
             }
         },
         "/accounts/{tenant}/message/{provider}": {
-            "get": {
+            "post": {
                 "description": "send message",
                 "tags": [
                     "msg"
@@ -2848,7 +2848,7 @@ const docTemplate = `{
                     {
                         "type": "string",
                         "description": "provider name",
-                        "name": "providerId",
+                        "name": "provider",
                         "in": "path",
                         "required": true
                     },

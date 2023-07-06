@@ -3,10 +3,11 @@ package api
 import (
 	"errors"
 	"github.com/gin-gonic/gin"
+	"strconv"
 )
 
 type Wecom struct {
-	AgentId int    `mapstructure:"agentId" json:"agentId" yaml:"agentId"`
+	AgentId int64  `mapstructure:"agentId" json:"agentId" yaml:"agentId"`
 	CorpId  string `mapstructure:"corpId" json:"corpId" yaml:"corpId"`
 	Secret  string `mapstructure:"secret" json:"secret" yaml:"secret"`
 }
@@ -24,9 +25,22 @@ type Third struct {
 	Ding  Ding  `mapstructure:"ding" json:"ding" yaml:"ding"`
 }
 
+func toInt64(s any) int64 {
+	res, ok := s.(string)
+	if !ok {
+		return 0
+	}
+	parseInt, err := strconv.ParseInt(res, 10, 64)
+	if err != nil {
+		return 0
+	}
+
+	return parseInt
+}
+
 func GetWecomConfig(c gin.H) (*Wecom, error) {
 	res := Wecom{
-		AgentId: c["agentId"].(int),
+		AgentId: toInt64(c["agentId"]),
 		CorpId:  c["corpId"].(string),
 		Secret:  c["secret"].(string),
 	}
@@ -40,7 +54,7 @@ func GetWecomConfig(c gin.H) (*Wecom, error) {
 
 func GetDingTalkConfig(c gin.H) (*Ding, error) {
 	res := Ding{
-		AgentId:   c["agentId"].(int64),
+		AgentId:   toInt64(c["agentId"]),
 		AppKey:    c["appKey"].(string),
 		AppSecret: c["appSecret"].(string),
 	}
@@ -50,28 +64,4 @@ func GetDingTalkConfig(c gin.H) (*Ding, error) {
 	}
 
 	return &res, nil
-}
-
-// ==========企业微信配置==========
-
-func (t *Third) GetWecomAgentId() int {
-	return t.Wecom.AgentId
-}
-func (t *Third) GetWecomCorpId() string {
-	return t.Wecom.CorpId
-}
-func (t *Third) GetWecomSecret() string {
-	return t.Wecom.Secret
-}
-
-// ==========钉钉配置==========
-
-func (t *Third) GetDingAppKey() string {
-	return t.Ding.AppKey
-}
-func (t *Third) GetDingAppSecret() string {
-	return t.Ding.AppSecret
-}
-func (t *Third) GetDingAgentId() int64 {
-	return t.Ding.AgentId
 }

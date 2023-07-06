@@ -86,12 +86,12 @@ func (p ProviderDingTalk) Login(c *gin.Context) (*models.UserInfo, error) {
 		return nil, err
 	}
 
-	if utils.GetString(profile["openId"]) == "" {
+	if utils.GetString(profile["unionId"]) == "" {
 		return nil, errors.New("get userinfo failed")
 	}
 
 	return &models.UserInfo{
-		Sub:         utils.GetString(profile["openId"]),
+		Sub:         utils.GetString(profile["unionId"]),
 		DisplayName: utils.GetString(profile["nick"]),
 		Email:       utils.GetString(profile["email"]),
 		Phone:       utils.GetString(profile["mobile"]),
@@ -99,10 +99,20 @@ func (p ProviderDingTalk) Login(c *gin.Context) (*models.UserInfo, error) {
 	}, nil
 }
 
-func (p ProviderDingTalk) ProviderConfig() *gin.H {
+func (p ProviderDingTalk) LoginConfig() *gin.H {
 	return &gin.H{
 		"providerId": p.Config.ProviderId,
 		"appKey":     p.Config.AppKey,
+		"type":       p.Config.Provider.Type,
+	}
+}
+
+func (p ProviderDingTalk) ProviderConfig() *gin.H {
+	return &gin.H{
+		"providerId": p.Config.ProviderId,
+		"agentId":    p.Config.AgentId,
+		"appKey":     p.Config.AppKey,
+		"appSecret":  p.Config.AppSecret,
 		"type":       p.Config.Provider.Type,
 	}
 }

@@ -927,7 +927,7 @@ paths:
       tags:
       - user
   /accounts/{tenant}/message/{provider}:
-    get:
+    post:
       description: send message
       parameters:
       - description: tenant name
@@ -937,7 +937,7 @@ paths:
         type: string
       - description: provider name
         in: path
-        name: providerId
+        name: provider
         required: true
         type: string
       - description: msg body

@@ -68,6 +68,12 @@ func (p *ProviderSms) Login(c *gin.Context) (*models.UserInfo, error) {
 	}
 	return &u, nil
 }
+func (p *ProviderSms) LoginConfig() *gin.H {
+	return &gin.H{
+		"providerId": p.Config.ProviderId,
+	}
+}
+
 func (p *ProviderSms) ProviderConfig() *gin.H {
 	return &gin.H{
 		"providerId": p.Config.ProviderId,

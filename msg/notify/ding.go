@@ -5,6 +5,7 @@ import (
 	"accounts/msg/api"
 	"accounts/utils"
 	"github.com/gin-gonic/gin"
+	"github.com/pkg/errors"
 	"net/url"
 )
 
@@ -64,6 +65,18 @@ func GetDingMsg(info *SendInfo, conf *api.Ding) api.DingNotify {
 	return dingMsg
 }
 
+func convertToUserId(unionIds []string, token string) ([]string, error) {
+	res := make([]string, 0, len(unionIds))
+	for _, unionId := range unionIds {
+		userId, err := api.GetUseridByUnionId(token, unionId)
+		if err != nil {
+			return nil, errors.Wrap(err, "get ding talk user id err")
+		}
+		res = append(res, userId)
+	}
+	return res, nil
+}
+
 func SendMsgToDingTalk(info *SendInfo, providerConf gin.H) error {
 	conf, err := api.GetDingTalkConfig(providerConf)
 	if err != nil {
@@ -74,6 +87,10 @@ func SendMsgToDingTalk(info *SendInfo, providerConf gin.H) error {
 		return err
 	}
 
+	info.Users, err = convertToUserId(info.Users, token)
+	if err != nil {
+		return err
+	}
 	dingMsg := GetDingMsg(info, conf)
 	return api.SendDingMsg(token, dingMsg, conf)
 }
