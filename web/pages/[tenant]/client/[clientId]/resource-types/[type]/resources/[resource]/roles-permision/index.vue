@@ -45,7 +45,7 @@
           </el-select>
         </el-form-item>
         <el-form-item label="用户" prop="name">
-          <el-select v-model="form.user"  multiple collapse-tags   placeholder="请选择用户">
+          <el-select v-model="form.user"  multiple    placeholder="请选择用户">
             <el-option v-for="item in userOptions" :key="item.value" :label="item.label" :value="item.value" />
           </el-select>
         </el-form-item>
