@@ -24,7 +24,7 @@
       append-to-body :before-close="cancel">
       <el-form ref="formRef" :model="form" :rules="rules" label-width="100px">
         <el-form-item label="action" prop="actionId">
-          <el-select v-model="form.actionId" multiple collapse-tags collapse-tags-tooltip placeholder="请选择action">
+          <el-select v-model="form.actionId" multiple collapse-tags  placeholder="请选择action">
             <el-option v-for="item in actionOption" :key="item.value" :label="item.label" :value="item.value" />
           </el-select>
         </el-form-item>
