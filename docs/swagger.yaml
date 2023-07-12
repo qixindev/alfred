@@ -1879,6 +1879,31 @@ paths:
       summary: provider
       tags:
       - provider
+  /accounts/admin/{tenant}/providers/{providerId}/users:
+    get:
+      description: get provider user list
+      parameters:
+      - description: tenant
+        in: path
+        name: tenant
+        required: true
+        type: string
+      - description: tenant
+        in: path
+        name: providerId
+        required: true
+        type: integer
+      - description: client name
+        in: query
+        name: client
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+      summary: get provider user list
+      tags:
+      - provider
   /accounts/admin/{tenant}/users:
     get:
       description: get user list

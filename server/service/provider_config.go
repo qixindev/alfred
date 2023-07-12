@@ -71,6 +71,19 @@ func GetProvider(tenantId uint, providerId uint, t string) (any, error) {
 	return pr.Dto(), nil
 }
 
+func GetProviderUsers(tenantId uint, providerId uint, client string) (any, error) {
+	var users []models.ProviderUser
+	if err := global.DB.Table("provider_users as pu").Select("cu.sub", "u.display_name", "pu.provider_id").
+		Joins("LEFT JOIN users u ON u.id = pu.user_id").
+		Joins("LEFT JOIN client_users cu ON cu.user_id = pu.user_id").
+		Where("pu.provider_id = ? AND pu.tenant_id = ? AND cu.client_id = ?", providerId, tenantId, client).
+		Preload("Provider").Find(&users).Error; err != nil {
+		return nil, err
+	}
+
+	return users, nil
+}
+
 func DeleteProviderConfig(p models.Provider) error {
 	pr, err := GetProviderModel(p.Type)
 	if err != nil {

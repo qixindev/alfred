@@ -12,7 +12,7 @@ import (
 func getMarkdownString(info *SendInfo) string {
 	text := info.Msg
 	if info.Title != "" {
-		text = "<font color=" + info.TitleColor + ">" + info.Title + "</font>" + text
+		text = "<font color=" + info.TitleColor + ">" + info.Title + "</font>   \n" + text
 	}
 
 	if info.PngLink != "" {

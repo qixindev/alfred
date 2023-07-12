@@ -25,12 +25,14 @@ func Provider2Dto(p Provider) dto.ProviderDto {
 }
 
 type ProviderUser struct {
-	Id         uint     `gorm:"primaryKey;autoIncrement" json:"id"`
-	ProviderId uint     `json:"providerId"`
-	Provider   Provider `gorm:"foreignKey:ProviderId, TenantId" json:"provider"`
-	UserId     uint     `json:"userId"`
-	User       User     `gorm:"foreignKey:UserId, TenantId" json:"user"`
-	Name       string   `json:"name"`
+	Id          uint     `gorm:"primaryKey;autoIncrement" json:"id"`
+	ProviderId  uint     `json:"providerId"`
+	Provider    Provider `gorm:"foreignKey:ProviderId, TenantId" json:"provider"`
+	UserId      uint     `json:"userId"`
+	User        User     `gorm:"foreignKey:UserId, TenantId" json:"user"`
+	Name        string   `json:"name"`
+	Sub         string   `json:"sub" gorm:"<-:false;-:migration"`
+	DisplayName string   `json:"displayName" gorm:"<-:false;-:migration"`
 
 	TenantId uint `gorm:"primaryKey"`
 }

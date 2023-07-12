@@ -1352,6 +1352,43 @@ const docTemplate = `{
                 }
             }
         },
+        "/accounts/admin/{tenant}/providers/{providerId}/users": {
+            "get": {
+                "description": "get provider user list",
+                "tags": [
+                    "provider"
+                ],
+                "summary": "get provider user list",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "tenant",
+                        "name": "tenant",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "tenant",
+                        "name": "providerId",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "client name",
+                        "name": "client",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
         "/accounts/admin/{tenant}/users": {
             "get": {
                 "description": "get user list",
