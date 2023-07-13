@@ -43,7 +43,5 @@ func AddRoutes(r *gin.Engine) {
 
 func AddWebRoutes(r *gin.Engine) {
 	r.Use(static.Serve("/", static.LocalFile("./web/.output/public", false)))
-	r.NoRoute(func(c *gin.Context) {
-		c.File("./web/.output/public/index.html")
-	})
+	r.StaticFile("/", "./web/.output/public/index.html")
 }
