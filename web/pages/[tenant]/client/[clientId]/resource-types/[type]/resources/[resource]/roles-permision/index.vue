@@ -13,20 +13,23 @@
     </div>
     <el-card>
       <el-table v-loading="loading" stripe :data="dataList">
-        <el-table-column label="ID" width="80px" align="center" prop="id"/>
+        <el-table-column label="ID"  align="center" prop="id"/>
         <el-table-column label="用户" align="center" prop="user">
           <template #default="{ row }">
-            {{ userNameFilter(row.userId) }}
+            <!-- {{ userNameFilter(row.id) }} -->
+            {{ row.displayName }}
           </template>
         </el-table-column>
         <el-table-column label="角色" align="center" prop="role">
           <template #default="{ row }">
-            {{ roleFilter(row.roleId) }}
+            <!-- {{ roleFilter(row.roleId) }} -->
+            {{ row.roleName }}
           </template>
         </el-table-column>
         <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
           <template #default="{ row }">
-            <el-button size="small" type="primary" link icon="Delete" @click="handleDelete(row)" :loading="row.deleteLoading">删除
+            <el-button size="small" type="primary" link icon="Delete" @click="handleDelete(row)"
+              :loading="row.deleteLoading">删除
             </el-button>
           </template>
         </el-table-column>
@@ -34,29 +37,18 @@
     </el-card>
 
     <!-- 添加或修改岗位对话框 -->
-    <el-dialog title="角色分配" titleIcon="modify" v-model="visible" width="500px" append-to-body
-      :before-close="cancel">
+    <el-dialog title="角色分配" titleIcon="modify" v-model="visible" width="500px" append-to-body :before-close="cancel">
       <el-form ref="formRef" :model="form" :rules="rules" label-width="100px">
         <el-form-item label="角色" prop="role">
           <el-select v-model="form.role" placeholder="请选择角色">
-            <el-option
-              v-for="item in roleOptions"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value" 
-            />
+            <el-option v-for="item in roleOptions" :key="item.value" :label="item.label" :value="item.value" />
           </el-select>
         </el-form-item>
         <el-form-item label="用户" prop="name">
-          <el-select v-model="form.user" placeholder="请选择用户">
-            <el-option
-              v-for="item in userOptions"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value" 
-            />
+          <el-select v-model="form.user"  multiple    placeholder="请选择用户">
+            <el-option v-for="item in userOptions" :key="item.value" :label="item.label" :value="item.value" />
           </el-select>
-        </el-form-item>        
+        </el-form-item>
       </el-form>
       <template #footer>
         <el-button type="primary" @click="submitForm" :loading="updateLoading">确 定</el-button>
@@ -142,7 +134,7 @@ const viewDialogVisible = ref(false)
 function getList() {
   if (!state.query.role) return
   state.loading = true
-  getUsers(clientId, type, resource, state.query.role).then((res:any) => {
+  getUsers(clientId, type, resource, state.query.role).then((res: any) => {
     state.dataList = res
   }).finally(() => {
     state.loading = false
@@ -150,7 +142,7 @@ function getList() {
 }
 
 function getRoleOptions() {
-  getRoles(clientId, type).then((res:any) => {
+  getRoles(clientId, type).then((res: any) => {
     roleOptions.value = res.map((item: any) => ({
       label: item.name,
       value: item.id,
@@ -160,7 +152,7 @@ function getRoleOptions() {
 }
 
 function getUserOptions() {
-  getClientUsers(clientId).then((res:any) => {
+  getClientUsers(clientId).then((res: any) => {
     userOptions.value = res.map((item: any) => ({
       label: item.username,
       value: item.id
@@ -195,10 +187,11 @@ function submitForm() {
     if (valid) {
       updateLoading.value = true
       let { user, role } = state.form
-
-      const params = [{ userId: user }]
-
-      saveUser(clientId, type,resource, role, params).then(() => {
+      // const params = [{ userId: user }]
+      const obj = { userId: user };
+      const params = Object.entries(obj)
+        .flatMap(([key, values]) => values.map((value:any) => ({ [key]: value })));
+      saveUser(clientId, type, resource, role, params).then(() => {
         ElMessage({
           showClose: true,
           message: '创建成功',
@@ -224,7 +217,7 @@ function handleDelete(row: any) {
     }
   ).then(async function () {
     row.deleteLoading = true
-    await delUser(clientId, type,resource, state.query.role, row.sub)
+    await delUser(clientId, type, resource, state.query.role, row.sub)
     row.deleteLoading = false
     getList()
     ElMessage({
@@ -236,14 +229,14 @@ function handleDelete(row: any) {
   })
 }
 
-const userNameFilter = computed(function() {
-  return function(id: string) {
+const userNameFilter = computed(function () {
+  return function (id: string) {
     return userOptions.value.find(item => item.value == id)?.label
   }
 })
 
-const roleFilter = computed(function() {
-  return function(id: string) {
+const roleFilter = computed(function () {
+  return function (id: string) {
     return roleOptions.value.find(item => item.id == id)?.label
   }
 })

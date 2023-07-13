@@ -5,7 +5,7 @@
     </div>
     <el-card>
       <el-table v-loading="loading" stripe :data="dataList">
-        <el-table-column label="ID" width="80px" align="center" prop="id"/>
+        <el-table-column label="ID"  align="center" prop="id"/>
         <el-table-column label="username" align="center" prop="username" />
         <el-table-column label="displayName" align="center" prop="displayName" />
         <el-table-column label="firstName" align="center" prop="firstName" />

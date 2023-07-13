@@ -5,8 +5,6 @@ export const getActions = async (clientId: number, typeId: string) => {
 }
 
 export const saveAction = async (clientId: number, typeId: string, data: any) => {
-  console.log(typeId,"typeIdurl");
-  
   return await useHttp.post(`/${tenant.value}/iam/clients/${clientId}/types/${typeId}/actions`, data)
 }
 

@@ -5,13 +5,14 @@
     </div>
     <el-card>
       <el-table v-loading="loading" stripe :data="dataList">
-        <el-table-column label="ID" width="80px" align="center" prop="id"/>
+        <el-table-column label="ID"  align="center" prop="id" />
         <el-table-column label="actionName" align="center" prop="actionName" />
         <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
           <template #default="{ row }">
             <!-- <el-button size="small" type="primary" link icon="Edit" @click="handleUpdate(row)">修改
             </el-button> -->
-            <el-button size="small" type="primary" link icon="Delete" @click="handleDelete(row)" :loading="row.deleteLoading">删除
+            <el-button size="small" type="primary" link icon="Delete" @click="handleDelete(row)"
+              :loading="row.deleteLoading">删除
             </el-button>
           </template>
         </el-table-column>
@@ -19,17 +20,12 @@
     </el-card>
 
     <!-- 添加或修改岗位对话框 -->
-    <el-dialog :title="`${open === Status.ADD ? '新增' : '修改'}`" titleIcon="modify" v-model="visible" width="500px" append-to-body
-      :before-close="cancel">
+    <el-dialog :title="`${open === Status.ADD ? '新增' : '修改'}`" titleIcon="modify" v-model="visible" width="500px"
+      append-to-body :before-close="cancel">
       <el-form ref="formRef" :model="form" :rules="rules" label-width="100px">
         <el-form-item label="action" prop="actionId">
-          <el-select v-model="form.actionId" placeholder="请选择action">
-            <el-option
-              v-for="item in actionOption"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value"
-            />
+          <el-select v-model="form.actionId" multiple   placeholder="请选择action">
+            <el-option v-for="item in actionOption" :key="item.value" :label="item.label" :value="item.value" />
           </el-select>
         </el-form-item>
       </el-form>
@@ -102,7 +98,7 @@ const viewDialogVisible = ref(false)
 /** 查询列表 */
 function getList() {
   state.loading = true
-  getRoleActions(clientId, type, roleName).then((res:any) => {
+  getRoleActions(clientId, type, roleName).then((res: any) => {
     state.dataList = res
   }).finally(() => {
     state.loading = false
@@ -111,7 +107,7 @@ function getList() {
 
 // 获取action列表
 async function getActionsList() {
-  const actionList: any = await getActions(clientId,type)
+  const actionList: any = await getActions(clientId, type)
   actionOption.value = actionList.map((item: any) => ({
     label: item.name,
     value: item.id
@@ -138,9 +134,9 @@ function handleAdd() {
 }
 /** 修改按钮操作 */
 function handleUpdate(row: any) {
-  const {id, actionId } = row
+  const { id, actionId } = row
   state.open = Status.EDIT
-  nextTick(()=>{
+  nextTick(() => {
     state.form = {
       id,
       actionId,
@@ -155,9 +151,10 @@ function submitForm() {
     if (valid) {
       updateLoading.value = true
       let { id, actionId } = state.form
-
-      const params = [{ actionId }]
-
+      // const params = [{ actionId }]
+      const obj = { actionId };
+      const params = Object.entries(obj)
+        .flatMap(([key, values]) => values.map((value:any) => ({ [key]: value })));
       if (state.open === Status.EDIT) {
         updateRoleAction(clientId, type, roleName, id as number, params).then(() => {
           ElMessage({
