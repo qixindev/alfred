@@ -34,7 +34,7 @@ func GetUserDetail(c *gin.Context) {
 //	@Description	update user
 //	@Tags			user
 //	@Param			tenant	path		string	true	"tenant"
-//	@Body			request	body							dto.UserProfileDto	true	"request"
+//	@Body			request	body		dto.UserProfileDto	true	"request"
 //	@Success		200		{object}	dto.UserDto
 //	@Router			/accounts/{tenant}/me [put]
 func UpdateUserDetail(c *gin.Context) {
