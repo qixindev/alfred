@@ -47,6 +47,24 @@ const fetch = (url: string , option: HttpOption) => {
             navigateTo('/login')
           }
         }
+        if (status === 200 || status === 204) {
+          resolve(data)
+        }
+        else if (status === 401) {
+          // TODO: 临时处理 拦截登录账号密码错误
+          if (response.url.includes('/login')) {
+            resolve(10000)
+          } else if (data.code == '1000') {
+            navigateTo('/login')
+          }
+        } else {
+          const { message } = data;
+          ElMessage({
+            message: message || '未知错误',
+            type: 'error'
+          });
+          reject({ message });
+        }
         // console.log(response)
         // const { code, msg } = response._data;
         // console.log(response);
