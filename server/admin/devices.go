@@ -142,20 +142,8 @@ func UpdateDevice(c *gin.Context) {
 //	@Router			/accounts/admin/{tenant}/devices/{deviceId} [delete]
 func DeleteDevice(c *gin.Context) {
 	deviceId := c.Param("deviceId")
-	var device models.Device
-	if err := internal.TenantDB(c).First(&device, "id = ?", deviceId).Error; err != nil {
-		c.Status(http.StatusNotFound)
-		global.LOG.Error("get device err: " + err.Error())
-		return
-	}
-	if err := global.DB.Where("device_id = ?", deviceId).
-		Delete(&models.DeviceSecret{}).Error; err != nil {
-		c.Status(http.StatusInternalServerError)
-		global.LOG.Error("delete device err: " + err.Error())
-		return
-	}
-
-	if err := global.DB.Delete(&device).Error; err != nil {
+	tenant := internal.GetTenant(c)
+	if err := service.DeleteDevice(tenant.Id, deviceId); err != nil {
 		c.Status(http.StatusInternalServerError)
 		global.LOG.Error("delete device err: " + err.Error())
 		return
