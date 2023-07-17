@@ -29,7 +29,7 @@ interface ThirdLoginType {
 }
 
 let thirdLoginTypes= ref<ThirdLoginType[]>([])
-
+let thirdLoginTypesLength= ref()
 const phoneRuleFormRef = ref<FormInstance>()
 const accountRuleFormRef = ref<FormInstance>()
 
@@ -131,8 +131,7 @@ const getLoginConfig  = async () => {
   const route = useRoute()
   const { state } = route.query as any
   thirdLoginTypes.value = await getThirdLoginConfigs(state) as ThirdLoginType[]
-  console.log(thirdLoginTypes.value,"thirdLoginTypes.value");
-  
+  thirdLoginTypesLength.value =  thirdLoginTypes.value.length
 }
 
 getLoginConfig()
@@ -197,9 +196,10 @@ definePageMeta({
       </el-tabs>
       
       <div class="option">
-        <div class="other-login">其它方式登录： 
+        <div class="other-login" v-if="thirdLoginTypesLength>0">其它方式登录： 
           <svg-icon v-for="item in thirdLoginTypes" :name="item.type" @click="thirdLogin(item)" size="1.5em"></svg-icon>
         </div>
+        <div v-else></div>
         <span class="register-btn" v-if="hasRegister" @click="navigateToRegister">注册账户</span>
       </div>
     </div>
