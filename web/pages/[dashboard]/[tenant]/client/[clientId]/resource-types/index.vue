@@ -1,15 +1,19 @@
 <template>
   <div>
     <div class="option">
-      <el-button type="primary" icon="Plus" @click="handleAdd">新增Resources</el-button>
+      <el-button type="primary" icon="Plus" @click="handleAdd">新增Type</el-button>
     </div>
     <el-card>
       <el-table v-loading="loading" stripe :data="dataList">
-        <el-table-column label="ID"  align="center" prop="id"/>
+        <el-table-column label="ID" align="center" prop="id"/>
         <el-table-column label="name" align="center" prop="name" />
         <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
           <template #default="{ row }">
-            <el-button size="small" type="primary" link icon="Edit" @click="viewRoles(row)">角色分配
+            <el-button size="small" type="primary" link icon="Edit" @click="viewActions(row)">action管理
+            </el-button>
+            <el-button size="small" type="primary" link icon="Edit" @click="viewResourecs(row)">资源管理
+            </el-button>
+            <el-button size="small" type="primary" link icon="Edit" @click="viewRoles(row)">角色管理
             </el-button>
             <!-- <el-button size="small" type="primary" link icon="Edit" @click="handleUpdate(row)">修改
             </el-button> -->
@@ -40,10 +44,10 @@
 <script lang="ts" setup name="Users">
 import { ElForm, ElInput, ElMessage, ElMessageBox } from 'element-plus';
 
-import { getResources, saveResource, updateResource, delResource } from '~/api/client/resource-type/resource'
+import { getTypes, saveType, updateType, delType } from '~/api/client/resource-type/types'
 const tenant =  useTenant()
 const route = useRoute()
-const { clientId, type } = route.params as any
+const { clientId } = route.params
 
 interface Form {
   id: undefined | Number,
@@ -94,7 +98,7 @@ const viewDialogVisible = ref(false)
 /** 查询列表 */
 function getList() {
   state.loading = true
-  getResources(clientId, type).then((res:any) => {
+  getTypes(clientId).then((res:any) => {
     state.dataList = res
   }).finally(() => {
     state.loading = false
@@ -142,7 +146,7 @@ function submitForm() {
       const params = { name }
 
       if (state.open === Status.EDIT) {
-        updateResource(clientId, id as number,type,  params).then(() => {
+        updateType(clientId, id as number, params).then(() => {
           ElMessage({
             showClose: true,
             message: '修改成功',
@@ -154,7 +158,7 @@ function submitForm() {
           updateLoading.value = false
         })
       } else {
-        saveResource(clientId, type, params).then(() => {
+        saveType(clientId, params).then(() => {
           ElMessage({
             showClose: true,
             message: '创建成功',
@@ -181,7 +185,7 @@ function handleDelete(row: any) {
     }
   ).then(async function () {
     row.deleteLoading = true
-    await delResource(clientId, type, row.id)
+    await delType(clientId, row.id)
     row.deleteLoading = false
     getList()
     ElMessage({
@@ -194,7 +198,15 @@ function handleDelete(row: any) {
 }
 
 function viewRoles(row: any) {
-  navigateTo(`/${tenant.value}/client/${clientId}/resource-types/${type}/resources/${row.id}/roles-permision`)
+  navigateTo(`/dashboard/${tenant.value}/client/${clientId}/resource-types/${row.id}/roles`)
+}
+
+function viewResourecs(row: any) {
+  navigateTo(`/dashboard/${tenant.value}/client/${clientId}/resource-types/${row.id}/resources`)
+}
+
+function viewActions(row: any) {
+  navigateTo(`/dashboard/${tenant.value}/client/${clientId}/resource-types/${row.id}/actions`)
 }
 
 onMounted(() => {

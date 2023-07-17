@@ -1,8 +1,6 @@
 // const tenant =  import.meta.env.VITE_APP_TENANT as string
 const tenant = computed(() => useTenant().value) 
 export const getUserInfo = async () => {
-  console.log(useTenant().value,"useTenant()");
-  
   return await useHttp.get(`/default/me`)
 }
 

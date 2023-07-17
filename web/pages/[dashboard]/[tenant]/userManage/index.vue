@@ -299,7 +299,7 @@ function handleDelete(row: any) {
 }
 
 function viewGroups(row: any) {
-  navigateTo(`/${tenant.value}/userManage/${row.id}/groups`)
+  navigateTo(`/dashboard/${tenant.value}/userManage/${row.id}/groups`)
 }
 
 onMounted(() => {

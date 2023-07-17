@@ -14,7 +14,7 @@ export default defineNuxtConfig({
   runtimeConfig: {
     public: envData
   },
-  css: ['element-plus/dist/index.css',"~/assets/css/main.scss"],
+  css: ['element-plus/dist/index.css', "~/assets/css/main.scss"],
   vite: {
     server: {
       proxy: {
@@ -31,8 +31,20 @@ export default defineNuxtConfig({
 
     plugins: [
       createSvgIconsPlugin({
-          iconDirs: [path.resolve(process.cwd(), 'assets/svg')]
+        iconDirs: [path.resolve(process.cwd(), 'assets/svg')]
       })
-  ],
+    ],
   },
+  // router: {
+  //   extendRoutes(routes:any, resolve:any) {
+  //     routes.push({
+  //       path: '/redirect',
+  //       redirect: '/'
+  //     })
+  //   },
+  //   options: {
+  //     hashMode: true,
+  //   },
+  // },
 })
+
