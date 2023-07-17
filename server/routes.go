@@ -43,5 +43,7 @@ func AddRoutes(r *gin.Engine) {
 
 func AddWebRoutes(r *gin.Engine) {
 	r.Use(static.Serve("/", static.LocalFile("./web/.output/public", false)))
-	r.StaticFile("/", "./web/.output/public/index.html")
+	r.GET("/dashboard/*any", func(c *gin.Context) {
+		c.File("./web/.output/public/dashboard/index.html")
+	})
 }
