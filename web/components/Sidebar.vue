@@ -44,13 +44,12 @@ const router = ref([
 ])
 
 const currentIndex = ref(router.value.findIndex(item => item.path === route.path))
-
 const handleClick = (index: number, item: any) => {
   currentIndex.value = index
   if (index == 0) {
     navigateTo(router.value[index].path)
   } else {//非主页
-    navigateTo(`/${tenant.value}${item.path}`)
+    navigateTo(`/dashboard/${tenant.value}${item.path}`)
   }
   // navigateTo(router.value[index].path)
 }
@@ -58,7 +57,7 @@ const handleClick = (index: number, item: any) => {
 watch(
   () => routerTenant.currentRoute.value,
   (newValue: any) => {
-    currentIndex.value = router.value.findIndex(item => item.name === newValue.fullPath.split('/')[2])
+    currentIndex.value = router.value.findIndex(item => item.name === newValue.fullPath.split('/')[3])
   },
   { immediate: true }
 )

@@ -73,6 +73,7 @@ const submit = async (formEl: FormInstance) => {
         } else {
           const route = useRoute()
           navigateTo(route.query.from as string || '/', { replace: true })
+          // window.location.href = route.query.from||'/'
         }
       })
     }

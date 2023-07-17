@@ -191,7 +191,7 @@ function handleDelete(row: any) {
 }
 
 function viewGroups(row: any) {
-  navigateTo(`/${tenant.value}/device/${row.id}/groups`)
+  navigateTo(`/dashboard/${tenant.value}/device/${row.id}/groups`)
 }
 
 onMounted(() => {
