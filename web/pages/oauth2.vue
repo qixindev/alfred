@@ -131,6 +131,8 @@ const getLoginConfig  = async () => {
   const route = useRoute()
   const { state } = route.query as any
   thirdLoginTypes.value = await getThirdLoginConfigs(state) as ThirdLoginType[]
+  console.log(thirdLoginTypes.value,"thirdLoginTypes.value");
+  
 }
 
 getLoginConfig()
