@@ -68,11 +68,9 @@ func GetProvider(c *gin.Context) {
 //	@Tags			provider
 //	@Param			tenant		path	string	true	"tenant"
 //	@Param			providerId	path	integer	true	"tenant"
-//	@Param			client		query	string	true	"client name"
 //	@Success		200
 //	@Router			/accounts/admin/{tenant}/providers/{providerId}/users [get]
 func GetProviderUsers(c *gin.Context) {
-	client := c.Query("client")
 	providerId := c.Param("providerId")
 	tenant := internal.GetTenant(c)
 	var p models.Provider
@@ -82,7 +80,7 @@ func GetProviderUsers(c *gin.Context) {
 		return
 	}
 
-	res, err := service.GetProviderUsers(tenant.Id, p.Id, client)
+	res, err := service.GetProviderUsers(tenant.Id, p.Id)
 	if err != nil {
 		c.Status(http.StatusInternalServerError)
 		global.LOG.Error("get provider config err: " + err.Error())

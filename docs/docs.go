@@ -1373,13 +1373,6 @@ const docTemplate = `{
                         "name": "providerId",
                         "in": "path",
                         "required": true
-                    },
-                    {
-                        "type": "string",
-                        "description": "client name",
-                        "name": "client",
-                        "in": "query",
-                        "required": true
                     }
                 ],
                 "responses": {

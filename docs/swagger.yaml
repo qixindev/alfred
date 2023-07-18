@@ -1893,11 +1893,6 @@ paths:
         name: providerId
         required: true
         type: integer
-      - description: client name
-        in: query
-        name: client
-        required: true
-        type: string
       responses:
         "200":
           description: OK
