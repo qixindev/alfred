@@ -2,6 +2,7 @@ package server
 
 import (
 	"accounts/global"
+	"accounts/models"
 	"accounts/msg/notify"
 	"accounts/server/auth"
 	"accounts/server/internal"
@@ -16,10 +17,10 @@ import (
 //	@Description	send message
 //	@Tags			msg
 //	@Param			tenant		path	string			true	"tenant name"
-//	@Param			provider	path	string			true	"provider name"
+//	@Param			providerId	path	integer			true	"provider id"
 //	@Param			by			body	notify.SendInfo	true	"msg body"
 //	@Success		200
-//	@Router			/accounts/{tenant}/message/{provider} [post]
+//	@Router			/accounts/{tenant}/message/{providerId} [post]
 func SendMsg(c *gin.Context) {
 	var in notify.SendInfo
 	if err := c.ShouldBindJSON(&in); err != nil {
@@ -27,8 +28,16 @@ func SendMsg(c *gin.Context) {
 		return
 	}
 
+	providerId := c.Param("providerId")
+	var p models.Provider
+	if err := internal.TenantDB(c).First(&p, "id = ?", providerId).Error; err != nil {
+		internal.ErrorSqlResponse(c, "no such provider")
+		global.LOG.Error("get provider err: " + err.Error())
+		return
+	}
+
 	tenant := internal.GetTenant(c)
-	authProvider, err := auth.GetAuthProvider(tenant.Id, c.Param("provider"))
+	authProvider, err := auth.GetAuthProvider(tenant.Id, p.Name)
 	if err != nil {
 		global.LOG.Error("get provider err: " + err.Error())
 		internal.ErrorSqlResponse(c, "no such provider")
@@ -57,5 +66,5 @@ func SendMsg(c *gin.Context) {
 }
 
 func AddMsgRouter(r *gin.RouterGroup) {
-	r.POST("/message/:provider", SendMsg)
+	r.POST("/message/:providerId", SendMsg)
 }

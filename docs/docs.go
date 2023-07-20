@@ -1352,7 +1352,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/accounts/admin/{tenant}/providers/{providerId}/users": {
+        "/accounts/admin/{tenant}/providers/{provider}/users": {
             "get": {
                 "description": "get provider user list",
                 "tags": [
@@ -1369,7 +1369,7 @@ const docTemplate = `{
                     },
                     {
                         "type": "integer",
-                        "description": "tenant",
+                        "description": "provider id",
                         "name": "providerId",
                         "in": "path",
                         "required": true
@@ -2860,7 +2860,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/accounts/{tenant}/message/{provider}": {
+        "/accounts/{tenant}/message/{providerId}": {
             "post": {
                 "description": "send message",
                 "tags": [
@@ -2876,9 +2876,9 @@ const docTemplate = `{
                         "required": true
                     },
                     {
-                        "type": "string",
-                        "description": "provider name",
-                        "name": "provider",
+                        "type": "integer",
+                        "description": "provider id",
+                        "name": "providerId",
                         "in": "path",
                         "required": true
                     },

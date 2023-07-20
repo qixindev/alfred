@@ -926,7 +926,7 @@ paths:
       summary: get user profile
       tags:
       - user
-  /accounts/{tenant}/message/{provider}:
+  /accounts/{tenant}/message/{providerId}:
     post:
       description: send message
       parameters:
@@ -935,11 +935,11 @@ paths:
         name: tenant
         required: true
         type: string
-      - description: provider name
+      - description: provider id
         in: path
-        name: provider
+        name: providerId
         required: true
-        type: string
+        type: integer
       - description: msg body
         in: body
         name: by
@@ -1821,6 +1821,26 @@ paths:
       summary: provider
       tags:
       - provider
+  /accounts/admin/{tenant}/providers/{provider}/users:
+    get:
+      description: get provider user list
+      parameters:
+      - description: tenant
+        in: path
+        name: tenant
+        required: true
+        type: string
+      - description: provider id
+        in: path
+        name: providerId
+        required: true
+        type: integer
+      responses:
+        "200":
+          description: OK
+      summary: get provider user list
+      tags:
+      - provider
   /accounts/admin/{tenant}/providers/{providerId}:
     delete:
       description: delete provider
@@ -1877,26 +1897,6 @@ paths:
         "200":
           description: OK
       summary: provider
-      tags:
-      - provider
-  /accounts/admin/{tenant}/providers/{providerId}/users:
-    get:
-      description: get provider user list
-      parameters:
-      - description: tenant
-        in: path
-        name: tenant
-        required: true
-        type: string
-      - description: tenant
-        in: path
-        name: providerId
-        required: true
-        type: integer
-      responses:
-        "200":
-          description: OK
-      summary: get provider user list
       tags:
       - provider
   /accounts/admin/{tenant}/users:
