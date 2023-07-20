@@ -1,12 +1,22 @@
 version: '3'
 
 services:
-  postgres:
+  accounts:
     build: .
-    restart: always
     container_name: accounts
     ports:
-      - "8086:8086"
+      - "80:80"
+    networks:
+      - qixin
+  postgres:
+    image: postgres
+    container_name: postgres
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_USER=qixin
+      - POSTGRES_PASSWORD=Qx20190822
+      - POSTGRES_DB=accounts
     networks:
       - qixin
 

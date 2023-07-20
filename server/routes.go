@@ -9,6 +9,8 @@ import (
 	"github.com/gin-gonic/gin"
 	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
+	"net/http"
+	"strings"
 )
 
 func AddRoutes(r *gin.Engine) {
@@ -45,5 +47,13 @@ func AddWebRoutes(r *gin.Engine) {
 	r.Use(static.Serve("/", static.LocalFile("./web/.output/public", false)))
 	r.GET("/dashboard/*any", func(c *gin.Context) {
 		c.File("./web/.output/public/index.html")
+	})
+
+	r.NoRoute(func(c *gin.Context) {
+		if strings.HasPrefix(c.Request.URL.Path, "/accounts") {
+			c.JSON(http.StatusNotFound, gin.H{"message": "no such router"})
+			return
+		}
+		c.File("./web/.output/public/404.html")
 	})
 }
