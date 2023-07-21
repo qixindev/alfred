@@ -42,7 +42,7 @@ func GetWecomConfig(c gin.H) (*Wecom, error) {
 	res := Wecom{
 		AgentId: toInt64(c["agentId"]),
 		CorpId:  c["corpId"].(string),
-		Secret:  c["secret"].(string),
+		Secret:  c["appSecret"].(string),
 	}
 
 	if res.AgentId == 0 || res.CorpId == "" || res.Secret == "" {
