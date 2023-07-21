@@ -24,25 +24,24 @@ func CopyUser(sub string, tenantId uint) error {
 }
 
 func DeleteUser(id uint) error {
-	var clientUser models.ClientUser
-	if err := global.DB.Model(clientUser).Where("user_id = ?", id).First(clientUser).Error; err != nil {
-		return err
+	var clientUser []uint
+	if err := global.DB.Model(models.ClientUser{}).Select("id").Where("user_id = ?", id).Find(&clientUser).Error; err == nil {
+		if err = global.DB.Where("client_user_id in ?", clientUser).
+			Delete(models.ResourceRoleUser{}).Error; err != nil {
+			return err
+		}
 	}
 
+	if err := global.DB.Where("user_id = ?", id).Delete(&models.ClientUser{}).Error; err != nil {
+		return err
+	}
 	if err := global.DB.Where("user_id = ?", id).Delete(&models.GroupUser{}).Error; err != nil {
 		return err
 	}
 	if err := global.DB.Where("user_id = ?", id).Delete(&models.ProviderUser{}).Error; err != nil {
 		return err
 	}
-	if err := global.DB.Where("client_user_id = ?", clientUser.UserId).
-		Delete(models.ResourceRoleUser{}).Error; err != nil {
-		return err
-	}
 
-	if err := global.DB.Where("user_id = ?", clientUser.UserId).Delete(&clientUser).Error; err != nil {
-		return err
-	}
 	if err := global.DB.Where("id = ?", id).Delete(&models.User{}).Error; err != nil {
 		return err
 	}
