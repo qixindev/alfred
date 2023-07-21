@@ -62,7 +62,7 @@ func SendMsg(c *gin.Context) {
 		internal.ErrorSqlResponse(c, "failed to send msg")
 		return
 	}
-	c.JSON(http.StatusOK, gin.H{"in": in, "conf": providerConfig})
+	c.String(http.StatusOK, "ok")
 }
 
 func AddMsgRouter(r *gin.RouterGroup) {
