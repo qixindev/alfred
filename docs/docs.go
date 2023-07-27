@@ -1352,7 +1352,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/accounts/admin/{tenant}/providers/{provider}/users": {
+        "/accounts/admin/{tenant}/providers/{providerId}/users": {
             "get": {
                 "description": "get provider user list",
                 "tags": [

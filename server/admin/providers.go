@@ -69,7 +69,7 @@ func GetProvider(c *gin.Context) {
 //	@Param			tenant		path	string	true	"tenant"
 //	@Param			providerId	path	integer	true	"provider id"
 //	@Success		200
-//	@Router			/accounts/admin/{tenant}/providers/{provider}/users [get]
+//	@Router			/accounts/admin/{tenant}/providers/{providerId}/users [get]
 func GetProviderUsers(c *gin.Context) {
 	providerId := c.Param("providerId")
 	tenant := internal.GetTenant(c)
