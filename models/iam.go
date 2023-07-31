@@ -31,7 +31,7 @@ type ResourceTypeAction struct {
 
 type ResourceTypeRole struct {
 	Id       string       `gorm:"primaryKey" json:"id"`
-	Name     string       `json:"name" gorm:"unique"`
+	Name     string       `json:"name"`
 	TypeId   string       `json:"typeId"`
 	Type     ResourceType `gorm:"foreignKey:TypeId, TenantId" json:"-"`
 	TenantId uint         `gorm:"primaryKey"`
