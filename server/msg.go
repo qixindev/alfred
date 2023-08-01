@@ -99,6 +99,7 @@ func GetMsg(c *gin.Context) {
 		global.LOG.Error("get msg err: " + err.Error())
 		return
 	}
+
 	var count int64
 	if err := internal.TenantDB(c).Model(&models.SendInfo{}).Where("? = ANY(users)", subId).Count(&count).Error; err != nil {
 		internal.ErrorSqlResponse(c, "failed to get msg")
