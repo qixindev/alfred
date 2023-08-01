@@ -60,8 +60,25 @@ func SendMsg(c *gin.Context) {
 	}
 
 	in.TenantId = tenant.Id
+
+	var userDb []models.SendInfo
+	for _, v := range in.Users {
+		userDb = append(userDb, models.SendInfo{
+			Link:       in.Link,
+			UsersDB:    v,
+			Sender:     in.Sender,
+			Platform:   providerConfig["type"].(string),
+			TenantId:   tenant.Id,
+			Msg:        in.Msg,
+			MsgType:    in.MsgType,
+			Title:      in.Title,
+			TitleColor: in.TitleColor,
+			PngLink:    in.PngLink,
+		})
+	}
+
 	// 调用InsertSendInfo函数插入数据到数据库
-	if createErr := global.DB.Create(&in).Error; createErr != nil {
+	if createErr := global.DB.Create(&userDb).Error; createErr != nil {
 		global.LOG.Error("failed to insert SendInfo: " + createErr.Error())
 		internal.ErrorSqlResponse(c, "failed to insert SendInfo")
 		return
@@ -94,13 +111,13 @@ func SendMsg(c *gin.Context) {
 func GetMsg(c *gin.Context) {
 	subId := c.Param("subId")
 	var SendInfo []models.SendInfo
-	if err := internal.TenantDB(c).Model(&models.SendInfo{}).Where("? = ANY(users)", subId).Find(&SendInfo).Error; err != nil {
+	if err := internal.TenantDB(c).Model(&models.SendInfo{}).Where("users_db = ?", subId).Find(&SendInfo).Error; err != nil {
 		internal.ErrorSqlResponse(c, "failed to get msg")
 		global.LOG.Error("get msg err: " + err.Error())
 		return
 	}
 	var count int64
-	if err := internal.TenantDB(c).Model(&models.SendInfo{}).Where("? = ANY(users)", subId).Count(&count).Error; err != nil {
+	if err := internal.TenantDB(c).Model(&models.SendInfo{}).Where("users_db = ?", subId).Count(&count).Error; err != nil {
 		internal.ErrorSqlResponse(c, "failed to get msg")
 		global.LOG.Error("get msg err: " + err.Error())
 		return
@@ -114,16 +131,27 @@ func GetMsg(c *gin.Context) {
 //	@Schemes
 //	@Description	mark message read
 //	@Tags			msg
-//	@Param			subId		path	integer			true	"sub id"
+//	@Param			tenant		path	string			true	"tenant name"
+//	@Param			msgId		path	integer			true	"msg id"
 //	@Success		200
-//	@Router			/accounts/{tenant}/message/MarkMsg [put]
+//	@Router			/accounts/{tenant}/message/{msgId} [put]
 func MarkMsg(c *gin.Context) {
 	var in models.SendInfo
-	if err := c.ShouldBindJSON(&in); err != nil {
+	if err := c.ShouldBindUri(&in); err != nil {
 		internal.ErrReqPara(c, err)
 		return
 	}
-	if err := internal.TenantDB(c).Model(&models.SendInfo{}).Where("msg = ?", in.Msg).Update("is_read", in.IsRead).Error; err != nil {
+	var count int64
+	if err := internal.TenantDB(c).Debug().Model(&models.SendInfo{}).Where("id = ?", in.Id).Count(&count).Error; err != nil {
+		internal.ErrorSqlResponse(c, "failed to mark msg read")
+		global.LOG.Error("mark msg read err: " + err.Error())
+		return
+	}
+	if count == 0 {
+		internal.SuccessWithMessage(c, "please check msg id")
+		return
+	}
+	if err := internal.TenantDB(c).Model(&models.SendInfo{}).Where("id = ?", in.Id).Update("is_read", true).Error; err != nil {
 		internal.ErrorSqlResponse(c, "failed to mark msg read")
 		global.LOG.Error("mark msg read err: " + err.Error())
 		return
@@ -143,18 +171,17 @@ func MarkMsg(c *gin.Context) {
 func GetUnreadMsgCount(c *gin.Context) {
 	subId := c.Param("subId")
 	var count int64
-	if err := internal.TenantDB(c).Debug().Model(&models.SendInfo{}).Where("? = ANY(users)", subId).Where("is_read = ?", false).Count(&count).Error; err != nil {
-		internal.ErrorSqlResponse(c, "failed to get unread msg count")
-		global.LOG.Error("get unread msg count err: " + err.Error())
+	if err := internal.TenantDB(c).Debug().Model(&models.SendInfo{}).Where("users_db = ? AND is_read = ?", subId, false).Count(&count).Error; err != nil {
+		internal.ErrorSqlResponse(c, "failed to get msg")
+		global.LOG.Error("get msg err: " + err.Error())
 		return
 	}
-
 	internal.SuccessWithMessageAndData(c, "查询成功", count)
 }
 
 func AddMsgRouter(r *gin.RouterGroup) {
 	r.POST("/message/:providerId", SendMsg)
-	r.GET("/message/:subId", GetMsg)
-	r.PUT("/message/markMsg", MarkMsg)
+	r.GET("/message/getMsg/:subId", GetMsg)
+	r.PUT("/message/markMsg/:msgId", MarkMsg)
 	r.GET("/message/unreadMsgCount/:subId", GetUnreadMsgCount)
 }
