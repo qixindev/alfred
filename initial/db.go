@@ -47,6 +47,7 @@ func migrateDB() error {
 		&models.ResourceTypeRoleAction{},
 		&models.Resource{},
 		&models.ResourceRoleUser{},
+		&models.SendInfo{},
 	}
 
 	if err := global.DB.AutoMigrate(migrateList...); err != nil {

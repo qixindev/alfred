@@ -8,7 +8,7 @@ const (
 	DefaultServiceConfigMap = "service-config"
 	DefaultConfigPath       = "config.dev.yaml"
 	DefaultDeployType       = "k8s"
-	DefaultReleaseType      = "release"
+	DefaultReleaseType      = "first"
 	DefaultCmJWKS           = "accounts.jwks"
 )
 

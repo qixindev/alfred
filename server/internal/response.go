@@ -9,7 +9,7 @@ import (
 type Response struct {
 	Code    int    `json:"code"`
 	Message string `json:"message"`
-	Total   uint   `json:"total"`
+	Total   int64  `json:"total"`
 	Data    any    `json:"data"`
 }
 
@@ -60,5 +60,30 @@ func Success(c *gin.Context) {
 		Code:    http.StatusOK,
 		Message: "",
 		Data:    struct{}{},
+	})
+}
+
+func SuccessWithDataAndTotal(c *gin.Context, data any, total int64) {
+	c.JSON(http.StatusOK, Response{
+		Code:    http.StatusOK,
+		Message: "操作成功",
+		Data:    data,
+		Total:   total,
+	})
+}
+
+func SuccessWithMessage(c *gin.Context, msg string) {
+	c.JSON(http.StatusOK, Response{
+		Code:    http.StatusOK,
+		Message: msg,
+		Data:    map[string]interface{}{},
+	})
+}
+
+func SuccessWithMessageAndData(c *gin.Context, msg string, data any) {
+	c.JSON(http.StatusOK, Response{
+		Code:    http.StatusOK,
+		Message: msg,
+		Data:    data,
 	})
 }
