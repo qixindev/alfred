@@ -148,6 +148,7 @@ func GetUnreadMsgCount(c *gin.Context) {
 		global.LOG.Error("get unread msg count err: " + err.Error())
 		return
 	}
+
 	internal.SuccessWithMessageAndData(c, "查询成功", count)
 }
 
