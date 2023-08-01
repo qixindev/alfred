@@ -154,6 +154,6 @@ func GetUnreadMsgCount(c *gin.Context) {
 func AddMsgRouter(r *gin.RouterGroup) {
 	r.POST("/message/:providerId", SendMsg)
 	r.GET("/message/:subId", GetMsg)
-	r.PUT("/message/markMsgRead", MarkMsg)
+	r.PUT("/message/markMsg", MarkMsg)
 	r.GET("/message/unreadMsgCount/:subId", GetUnreadMsgCount)
 }
