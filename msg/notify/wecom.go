@@ -2,13 +2,12 @@ package notify
 
 import (
 	"accounts/config/env"
-	"accounts/models"
 	"accounts/msg/api"
 	"accounts/utils"
 	"github.com/gin-gonic/gin"
 )
 
-func getMarkdownText(info *models.SendInfo) string {
+func getMarkdownText(info *SendInfo) string {
 	markdownText := "<font color=\"" + info.TitleColor + "\">" + info.Title + "</font>   \n" + info.Msg
 	return markdownText
 }
@@ -26,7 +25,7 @@ func getNews(title, text, link, logo string) api.NewsMsg {
 	return news
 }
 
-func getMsg(info *models.SendInfo, conf *api.Wecom) api.MsgStruct {
+func getMsg(info *SendInfo, conf *api.Wecom) api.MsgStruct {
 	toUser := utils.MergeString(info.Users, "|")
 	msg := api.MsgStruct{
 		ToUser:               toUser,
@@ -51,7 +50,7 @@ func getMsg(info *models.SendInfo, conf *api.Wecom) api.MsgStruct {
 	return msg
 }
 
-func SendMsgToWecom(info *models.SendInfo, providerConfig gin.H) error {
+func SendMsgToWecom(info *SendInfo, providerConfig gin.H) error {
 	conf, err := api.GetWecomConfig(providerConfig)
 	if err != nil {
 		return err

@@ -2,7 +2,6 @@ package notify
 
 import (
 	"accounts/config/env"
-	"accounts/models"
 	"accounts/msg/api"
 	"accounts/utils"
 	"github.com/gin-gonic/gin"
@@ -10,7 +9,7 @@ import (
 	"net/url"
 )
 
-func getMarkdownString(info *models.SendInfo) string {
+func getMarkdownString(info *SendInfo) string {
 	text := info.Msg
 	if info.Title != "" {
 		text = "<font color=" + info.TitleColor + ">" + info.Title + "</font>   \n" + text
@@ -24,7 +23,7 @@ func getMarkdownString(info *models.SendInfo) string {
 }
 
 // markdown消息
-func getMarkDownMsg(info *models.SendInfo) api.DingMessage {
+func getMarkDownMsg(info *SendInfo) api.DingMessage {
 	markdownMsg := api.DingMessage{
 		MsgType: "markdown",
 		Markdown: api.DingMarkdown{
@@ -36,7 +35,7 @@ func getMarkDownMsg(info *models.SendInfo) api.DingMessage {
 }
 
 // 卡片消息
-func getActionMsg(info *models.SendInfo) api.DingMessage {
+func getActionMsg(info *SendInfo) api.DingMessage {
 	actionMsg := api.DingMessage{
 		MsgType: "action_card",
 		ActionCard: api.DingActionCard{
@@ -49,7 +48,7 @@ func getActionMsg(info *models.SendInfo) api.DingMessage {
 	return actionMsg
 }
 
-func GetDingMsg(info *models.SendInfo, conf *api.Ding) api.DingNotify {
+func GetDingMsg(info *SendInfo, conf *api.Ding) api.DingNotify {
 	dingMsg := api.DingNotify{
 		AgentId:    conf.AgentId,
 		UseridList: utils.MergeString(info.Users, ","),
@@ -78,7 +77,7 @@ func convertToUserId(unionIds []string, token string) ([]string, error) {
 	return res, nil
 }
 
-func SendMsgToDingTalk(info *models.SendInfo, providerConf gin.H) error {
+func SendMsgToDingTalk(info *SendInfo, providerConf gin.H) error {
 	conf, err := api.GetDingTalkConfig(providerConf)
 	if err != nil {
 		return err

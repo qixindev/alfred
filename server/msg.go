@@ -7,7 +7,7 @@ import (
 	"accounts/server/auth"
 	"accounts/server/internal"
 	"github.com/gin-gonic/gin"
-	"strings"
+	"net/http"
 )
 
 // SendMsg godoc
@@ -22,7 +22,7 @@ import (
 //	@Success		200
 //	@Router			/accounts/{tenant}/message/{providerId} [post]
 func SendMsg(c *gin.Context) {
-	var in models.SendInfo
+	var in notify.SendInfo
 	if err := c.ShouldBindJSON(&in); err != nil {
 		internal.ErrReqPara(c, err)
 		return
@@ -46,114 +46,25 @@ func SendMsg(c *gin.Context) {
 
 	var providerUser []string
 	providerConfig := *authProvider.ProviderConfig()
-	usersSlice := make([]string, len(in.Users))
-	for i, v := range in.Users {
-		usersSlice[i] = strings.Trim(v, "{}")
-	}
 	if err = global.DB.Table("provider_users pu").Select("pu.name").
 		Joins("LEFT JOIN client_users as cu ON cu.user_id = pu.user_id").
-		Where("pu.tenant_id = ? AND pu.provider_id = ? AND cu.sub IN (?)", tenant.Id, providerConfig["providerId"], usersSlice).
+		Where("pu.tenant_id = ? AND pu.provider_id = ? AND cu.sub in ?", tenant.Id, providerConfig["providerId"], in.Users).
 		Find(&providerUser).Error; err != nil {
 		global.LOG.Error("get provider user err")
 		internal.ErrorSqlResponse(c, "failed to get provider user")
 		return
 	}
 
-	in.TenantId = tenant.Id
-	// 调用InsertSendInfo函数插入数据到数据库
-	if createErr := global.DB.Create(&in).Error; createErr != nil {
-		global.LOG.Error("failed to insert SendInfo: " + createErr.Error())
-		internal.ErrorSqlResponse(c, "failed to insert SendInfo")
-		return
-	}
-
 	in.Users = providerUser
 	in.Platform = providerConfig["type"].(string)
-	if len(in.Users) == 0 {
-		global.LOG.Warn("no provider user")
-		internal.SuccessWithMessage(c, "no provider user")
-		return
-	}
 	if err = notify.SendMsgToUsers(&in, providerConfig); err != nil {
 		global.LOG.Error("send msg err: " + err.Error())
 		internal.ErrorSqlResponse(c, "failed to send msg")
 		return
 	}
-	internal.SuccessWithMessage(c, "ok")
-}
-
-// GetMsg godoc
-//
-//	@Summary	get message
-//	@Schemes
-//	@Description	get message
-//	@Tags			msg
-//	@Param			subId		path	integer			true	"sub id"
-//	@Success		200
-//	@Router			/accounts/{tenant}/message/{subId} [get]
-func GetMsg(c *gin.Context) {
-	subId := c.Param("subId")
-	var SendInfo []models.SendInfo
-	if err := internal.TenantDB(c).Model(&models.SendInfo{}).Where("? = ANY(users)", subId).Find(&SendInfo).Error; err != nil {
-		internal.ErrorSqlResponse(c, "failed to get msg")
-		global.LOG.Error("get msg err: " + err.Error())
-		return
-	}
-	var count int64
-	if err := internal.TenantDB(c).Model(&models.SendInfo{}).Where("? = ANY(users)", subId).Count(&count).Error; err != nil {
-		internal.ErrorSqlResponse(c, "failed to get msg")
-		global.LOG.Error("get msg err: " + err.Error())
-		return
-	}
-	internal.SuccessWithDataAndTotal(c, SendInfo, count)
-}
-
-// MarkMsg godoc
-//
-//	@Summary	mark message read
-//	@Schemes
-//	@Description	mark message read
-//	@Tags			msg
-//	@Param			subId		path	integer			true	"sub id"
-//	@Success		200
-//	@Router			/accounts/{tenant}/message/MarkMsg [put]
-func MarkMsg(c *gin.Context) {
-	var in models.SendInfo
-	if err := c.ShouldBindJSON(&in); err != nil {
-		internal.ErrReqPara(c, err)
-		return
-	}
-	if err := internal.TenantDB(c).Model(&models.SendInfo{}).Where("msg = ?", in.Msg).Update("is_read", in.IsRead).Error; err != nil {
-		internal.ErrorSqlResponse(c, "failed to mark msg read")
-		global.LOG.Error("mark msg read err: " + err.Error())
-		return
-	}
-	internal.SuccessWithMessage(c, "mark msg read success")
-}
-
-// GetUnreadMsgCount godoc
-//
-//	@Summary	get unread message count
-//	@Schemes
-//	@Description	get unread message count
-//	@Tags			msg
-//	@Param			subId		path	integer			true	"sub id"
-//	@Success		200
-//	@Router			/accounts/{tenant}/message/{subId} [get]
-func GetUnreadMsgCount(c *gin.Context) {
-	subId := c.Param("subId")
-	var count int64
-	if err := internal.TenantDB(c).Debug().Model(&models.SendInfo{}).Where("? = ANY(users)", subId).Where("is_read = ?", false).Count(&count).Error; err != nil {
-		internal.ErrorSqlResponse(c, "failed to get unread msg count")
-		global.LOG.Error("get unread msg count err: " + err.Error())
-		return
-	}
-	internal.SuccessWithMessageAndData(c, "查询成功", count)
+	c.String(http.StatusOK, "ok")
 }
 
 func AddMsgRouter(r *gin.RouterGroup) {
 	r.POST("/message/:providerId", SendMsg)
-	r.GET("/message/:subId", GetMsg)
-	r.PUT("/message/markMsg", MarkMsg)
-	r.GET("/message/unreadMsgCount/:subId", GetUnreadMsgCount)
 }
