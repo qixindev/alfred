@@ -5,7 +5,7 @@ type SendInfo struct {
 	Msg        string   `json:"msg" gorm:"not null"`      // 要发送的消息
 	Link       string   `json:"link"`                     // 点击跳转链接
 	Users      []string `json:"users" gorm:"-"`           // 发送给谁，使用字符串数组存储
-	UsersDB    string   `json:"-" gorm:"type:text"`       // 发送给谁，使用字符串数组存储
+	UsersDB    string   `json:"usersDB" gorm:"type:text"` // 发送给谁，使用字符串数组存储
 	Sender     string   `json:"sender" gorm:"not null"`   // 发送者
 	Platform   string   `json:"platform" gorm:"not null"` // 发送到哪个平台
 	Tenant     *Tenant  `json:"-" gorm:"foreignKey:TenantId;references:Id"`
