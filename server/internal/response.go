@@ -7,10 +7,11 @@ import (
 )
 
 type Response struct {
-	Code    int    `json:"code"`
-	Message string `json:"message"`
-	Total   int64  `json:"total"`
-	Data    any    `json:"data"`
+	Code      int    `json:"code"`
+	Message   string `json:"message"`
+	Total     int64  `json:"total"`
+	Data      any    `json:"data"`
+	PageTotal int64  `json:"pageTotal"`
 }
 
 func ErrorSqlResponse(c *gin.Context, msg string) {
@@ -63,12 +64,13 @@ func Success(c *gin.Context) {
 	})
 }
 
-func SuccessWithDataAndTotal(c *gin.Context, data any, total int64) {
+func SuccessWithDataAndTotal(c *gin.Context, data any, pageTotal int64, total int64) {
 	c.JSON(http.StatusOK, Response{
-		Code:    http.StatusOK,
-		Message: "操作成功",
-		Data:    data,
-		Total:   total,
+		Code:      http.StatusOK,
+		Message:   "操作成功",
+		Data:      data,
+		Total:     total,
+		PageTotal: pageTotal,
 	})
 }
 

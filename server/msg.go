@@ -7,6 +7,7 @@ import (
 	"accounts/server/auth"
 	"accounts/server/internal"
 	"github.com/gin-gonic/gin"
+	"strconv"
 	"strings"
 )
 
@@ -37,6 +38,7 @@ func SendMsg(c *gin.Context) {
 	}
 
 	tenant := internal.GetTenant(c)
+	in.TenantId = tenant.Id
 	authProvider, err := auth.GetAuthProvider(tenant.Id, p.Name)
 	if err != nil {
 		global.LOG.Error("get provider err: " + err.Error())
@@ -58,8 +60,6 @@ func SendMsg(c *gin.Context) {
 		internal.ErrorSqlResponse(c, "failed to get provider user")
 		return
 	}
-
-	in.TenantId = tenant.Id
 
 	var userDb []models.SendInfo
 	for _, v := range in.Users {
@@ -106,23 +106,65 @@ func SendMsg(c *gin.Context) {
 //	@Description	get message
 //	@Tags			msg
 //	@Param			subId		path	integer			true	"sub id"
+//	@Param			page		query	integer			false	"pageNum"
+//	@Param			pageSize	query	integer			false	"pageSize"
 //	@Success		200
 //	@Router			/accounts/{tenant}/message/{subId} [get]
 func GetMsg(c *gin.Context) {
 	subId := c.Param("subId")
 	var SendInfo []models.SendInfo
-	if err := internal.TenantDB(c).Model(&models.SendInfo{}).Where("users_db = ?", subId).Find(&SendInfo).Error; err != nil {
+	var SendInfoDB []models.SendInfoDB
+
+	// 获取页码，默认为1
+	pageNum, _ := strconv.Atoi(c.DefaultQuery("pageNum", "1"))
+	// 获取每页显示的数据数量，默认为10
+	pageSize, _ := strconv.Atoi(c.DefaultQuery("pageSize", "10"))
+
+	// 通过JOIN查询获取Message数据和发送者、接收者的显示名
+	if err := global.DB.Debug().
+		Table("message").
+		Select("message.*, u1.display_name as sender_name, u2.display_name as receiver_name").
+		Joins("LEFT JOIN client_users cu1 ON message.sender = cu1.sub").
+		Joins("LEFT JOIN client_users cu2 ON message.users_db = cu2.sub").
+		Joins("LEFT JOIN users u1 ON cu1.user_id = u1.id").
+		Joins("LEFT JOIN users u2 ON cu2.user_id = u2.id").
+		Where("message.users_db = ?", subId).
+		Limit(pageSize).Offset((pageNum - 1) * pageSize).
+		Find(&SendInfoDB).Error; err != nil {
 		internal.ErrorSqlResponse(c, "failed to get msg")
 		global.LOG.Error("get msg err: " + err.Error())
 		return
 	}
-	var count int64
-	if err := internal.TenantDB(c).Model(&models.SendInfo{}).Where("users_db = ?", subId).Count(&count).Error; err != nil {
+
+	// 获取消息
+	var pageTotal int64
+	if err := internal.TenantDB(c).Debug().Model(&models.SendInfo{}).
+		Where("users_db = ?", subId).Limit(pageSize).Offset((pageNum - 1) * pageSize).
+		Find(&SendInfo).Count(&pageTotal).Error; err != nil {
 		internal.ErrorSqlResponse(c, "failed to get msg")
 		global.LOG.Error("get msg err: " + err.Error())
 		return
 	}
-	internal.SuccessWithDataAndTotal(c, SendInfo, count)
+
+	for i, v := range SendInfo {
+		for _, v2 := range SendInfoDB {
+			if v.Id == v2.Id {
+				SendInfo[i].SenderName = v2.SenderName
+				SendInfo[i].ReceiverName = v2.ReceiverName
+			}
+		}
+	}
+
+	// 获取消息总数
+	var total int64
+	if err := internal.TenantDB(c).Debug().Model(&models.SendInfo{}).
+		Where("users_db = ?", subId).Count(&total).Error; err != nil {
+		internal.ErrorSqlResponse(c, "failed to get msg")
+		global.LOG.Error("get msg err: " + err.Error())
+		return
+	}
+
+	internal.SuccessWithDataAndTotal(c, SendInfo, pageTotal, total)
 }
 
 // MarkMsg godoc
@@ -171,7 +213,7 @@ func MarkMsg(c *gin.Context) {
 func GetUnreadMsgCount(c *gin.Context) {
 	subId := c.Param("subId")
 	var count int64
-	if err := internal.TenantDB(c).Debug().Model(&models.SendInfo{}).Where("users_db = ? AND is_read = ?", subId, false).Count(&count).Error; err != nil {
+	if err := internal.TenantDB(c).Model(&models.SendInfo{}).Where("users_db = ? AND is_read = ?", subId, false).Count(&count).Error; err != nil {
 		internal.ErrorSqlResponse(c, "failed to get msg")
 		global.LOG.Error("get msg err: " + err.Error())
 		return
