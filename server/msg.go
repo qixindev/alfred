@@ -137,10 +137,10 @@ func GetMsg(c *gin.Context) {
 	}
 
 	// 获取消息
-	var pageTotal int64
+	var total int64
 	if err := internal.TenantDB(c).Debug().Model(&models.SendInfo{}).
 		Where("users_db = ?", subId).Limit(pageSize).Offset((pageNum - 1) * pageSize).
-		Find(&SendInfo).Count(&pageTotal).Error; err != nil {
+		Find(&SendInfo).Count(&total).Error; err != nil {
 		internal.ErrorSqlResponse(c, "failed to get msg")
 		global.LOG.Error("get msg err: " + err.Error())
 		return
@@ -155,16 +155,7 @@ func GetMsg(c *gin.Context) {
 		}
 	}
 
-	// 获取消息总数
-	var total int64
-	if err := internal.TenantDB(c).Debug().Model(&models.SendInfo{}).
-		Where("users_db = ?", subId).Count(&total).Error; err != nil {
-		internal.ErrorSqlResponse(c, "failed to get msg")
-		global.LOG.Error("get msg err: " + err.Error())
-		return
-	}
-
-	internal.SuccessWithDataAndTotal(c, SendInfo, pageTotal, total)
+	internal.SuccessWithDataAndTotal(c, SendInfo, total)
 }
 
 // MarkMsg godoc

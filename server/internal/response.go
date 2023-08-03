@@ -64,13 +64,12 @@ func Success(c *gin.Context) {
 	})
 }
 
-func SuccessWithDataAndTotal(c *gin.Context, data any, pageTotal int64, total int64) {
+func SuccessWithDataAndTotal(c *gin.Context, data any, total int64) {
 	c.JSON(http.StatusOK, Response{
-		Code:      http.StatusOK,
-		Message:   "操作成功",
-		Data:      data,
-		Total:     total,
-		PageTotal: pageTotal,
+		Code:    http.StatusOK,
+		Message: "操作成功",
+		Data:    data,
+		Total:   total,
 	})
 }
 
