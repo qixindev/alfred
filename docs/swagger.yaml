@@ -595,7 +595,7 @@ paths:
         in: path
         name: userId
         required: true
-        type: string
+        type: integer
       responses:
         "200":
           description: OK

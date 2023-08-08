@@ -214,7 +214,7 @@ func DeleteIamResourceRoleUser(c *gin.Context) {
 //	@Param			client		path	string	true	"tenant"
 //	@Param			typeId		path	string	true	"tenant"
 //	@Param			roleId		path	string	true	"tenant"
-//	@Param			userId		path	string	true	"tenant"
+//	@Param			userId		path	integer	true	"tenant"
 //	@Success		200
 //	@Router			/accounts/{tenant}/iam/clients/{client}/types/{typeId}/resources/all/users/{userId}/roles/{roleId} [post]
 func CreateAllTypeRole(c *gin.Context) {

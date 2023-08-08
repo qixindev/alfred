@@ -2089,7 +2089,7 @@ const docTemplate = `{
                         "required": true
                     },
                     {
-                        "type": "string",
+                        "type": "integer",
                         "description": "tenant",
                         "name": "userId",
                         "in": "path",
