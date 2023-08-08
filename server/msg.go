@@ -18,7 +18,7 @@ import (
 //	@Tags			msg
 //	@Param			tenant		path	string			true	"tenant name"
 //	@Param			providerId	path	integer			true	"provider id"
-//	@Param			by			body	notify.SendInfo	true	"msg body"
+//	@Param			by			body	models.SendInfo	true	"msg body"
 //	@Success		200
 //	@Router			/accounts/{tenant}/message/{providerId} [post]
 func SendMsg(c *gin.Context) {
@@ -139,7 +139,7 @@ func MarkMsg(c *gin.Context) {
 //	@Tags			msg
 //	@Param			subId		path	integer			true	"sub id"
 //	@Success		200
-//	@Router			/accounts/{tenant}/message/{subId} [get]
+//	@Router			/accounts/{tenant}/message/unreadMsgCount/{subId} [get]
 func GetUnreadMsgCount(c *gin.Context) {
 	subId := c.Param("subId")
 	var count int64

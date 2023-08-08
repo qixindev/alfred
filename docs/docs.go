@@ -2052,6 +2052,57 @@ const docTemplate = `{
                 }
             }
         },
+        "/accounts/{tenant}/iam/clients/{client}/types/{typeId}/resources/all/users/{userId}/roles/{roleId}": {
+            "post": {
+                "description": "delete iam resource role",
+                "tags": [
+                    "iam-role"
+                ],
+                "summary": "iam resource role",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "tenant",
+                        "name": "tenant",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "tenant",
+                        "name": "client",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "tenant",
+                        "name": "typeId",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "tenant",
+                        "name": "roleId",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "tenant",
+                        "name": "userId",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
         "/accounts/{tenant}/iam/clients/{client}/types/{typeId}/resources/{resourceId}": {
             "delete": {
                 "description": "delete iam resource",
@@ -2312,7 +2363,7 @@ const docTemplate = `{
                     {
                         "type": "string",
                         "description": "tenant",
-                        "name": "user",
+                        "name": "userId",
                         "in": "path",
                         "required": true
                     }
@@ -2860,6 +2911,52 @@ const docTemplate = `{
                 }
             }
         },
+        "/accounts/{tenant}/message/MarkMsg": {
+            "put": {
+                "description": "mark message read",
+                "tags": [
+                    "msg"
+                ],
+                "summary": "mark message read",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "sub id",
+                        "name": "subId",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/accounts/{tenant}/message/unreadMsgCount/{subId}": {
+            "get": {
+                "description": "get unread message count",
+                "tags": [
+                    "msg"
+                ],
+                "summary": "get unread message count",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "sub id",
+                        "name": "subId",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
         "/accounts/{tenant}/message/{providerId}": {
             "post": {
                 "description": "send message",
@@ -2888,8 +2985,31 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/notify.SendInfo"
+                            "$ref": "#/definitions/models.SendInfo"
                         }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/accounts/{tenant}/message/{subId}": {
+            "get": {
+                "description": "get message",
+                "tags": [
+                    "msg"
+                ],
+                "summary": "get message",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "sub id",
+                        "name": "subId",
+                        "in": "path",
+                        "required": true
                     }
                 ],
                 "responses": {
@@ -3273,45 +3393,8 @@ const docTemplate = `{
                 }
             }
         },
-        "notify.SendInfo": {
-            "type": "object",
-            "properties": {
-                "link": {
-                    "description": "点击跳转链接",
-                    "type": "string"
-                },
-                "msg": {
-                    "description": "要发送的消息",
-                    "type": "string"
-                },
-                "msgType": {
-                    "description": "消息类型：图文，markdown，文字",
-                    "type": "string"
-                },
-                "platform": {
-                    "description": "发送到哪个平台",
-                    "type": "string"
-                },
-                "pngLink": {
-                    "description": "消息图片链接",
-                    "type": "string"
-                },
-                "title": {
-                    "description": "标题",
-                    "type": "string"
-                },
-                "titleColor": {
-                    "description": "标题颜色",
-                    "type": "string"
-                },
-                "users": {
-                    "description": "发送给谁",
-                    "type": "array",
-                    "items": {
-                        "type": "string"
-                    }
-                }
-            }
+        "models.SendInfo": {
+            "type": "object"
         }
     }
 }`

@@ -68,34 +68,7 @@ definitions:
       userId:
         type: integer
     type: object
-  notify.SendInfo:
-    properties:
-      link:
-        description: 点击跳转链接
-        type: string
-      msg:
-        description: 要发送的消息
-        type: string
-      msgType:
-        description: 消息类型：图文，markdown，文字
-        type: string
-      platform:
-        description: 发送到哪个平台
-        type: string
-      pngLink:
-        description: 消息图片链接
-        type: string
-      title:
-        description: 标题
-        type: string
-      titleColor:
-        description: 标题颜色
-        type: string
-      users:
-        description: 发送给谁
-        items:
-          type: string
-        type: array
+  models.SendInfo:
     type: object
 info:
   contact: {}
@@ -555,7 +528,7 @@ paths:
         type: string
       - description: tenant
         in: path
-        name: user
+        name: userId
         required: true
         type: string
       responses:
@@ -594,6 +567,41 @@ paths:
       summary: iam users roles
       tags:
       - iam-action
+  /accounts/{tenant}/iam/clients/{client}/types/{typeId}/resources/all/users/{userId}/roles/{roleId}:
+    post:
+      description: delete iam resource role
+      parameters:
+      - description: tenant
+        in: path
+        name: tenant
+        required: true
+        type: string
+      - description: tenant
+        in: path
+        name: client
+        required: true
+        type: string
+      - description: tenant
+        in: path
+        name: typeId
+        required: true
+        type: string
+      - description: tenant
+        in: path
+        name: roleId
+        required: true
+        type: string
+      - description: tenant
+        in: path
+        name: userId
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+      summary: iam resource role
+      tags:
+      - iam-role
   /accounts/{tenant}/iam/clients/{client}/types/{typeId}/roles:
     get:
       description: get iam role list
@@ -945,11 +953,56 @@ paths:
         name: by
         required: true
         schema:
-          $ref: '#/definitions/notify.SendInfo'
+          $ref: '#/definitions/models.SendInfo'
       responses:
         "200":
           description: OK
       summary: send message
+      tags:
+      - msg
+  /accounts/{tenant}/message/{subId}:
+    get:
+      description: get message
+      parameters:
+      - description: sub id
+        in: path
+        name: subId
+        required: true
+        type: integer
+      responses:
+        "200":
+          description: OK
+      summary: get message
+      tags:
+      - msg
+  /accounts/{tenant}/message/MarkMsg:
+    put:
+      description: mark message read
+      parameters:
+      - description: sub id
+        in: path
+        name: subId
+        required: true
+        type: integer
+      responses:
+        "200":
+          description: OK
+      summary: mark message read
+      tags:
+      - msg
+  /accounts/{tenant}/message/unreadMsgCount/{subId}:
+    get:
+      description: get unread message count
+      parameters:
+      - description: sub id
+        in: path
+        name: subId
+        required: true
+        type: integer
+      responses:
+        "200":
+          description: OK
+      summary: get unread message count
       tags:
       - msg
   /accounts/{tenant}/oauth2/auth:

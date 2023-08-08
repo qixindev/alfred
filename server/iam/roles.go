@@ -9,6 +9,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"go.uber.org/zap"
 	"net/http"
+	"strconv"
 )
 
 // ListIamRole godoc
@@ -174,7 +175,7 @@ func NewIamResourceRole(c *gin.Context) {
 //	@Param			typeId		path	string	true	"tenant"
 //	@Param			resourceId	path	string	true	"tenant"
 //	@Param			roleId		path	string	true	"tenant"
-//	@Param			user		path	string	true	"tenant"
+//	@Param			userId		path	string	true	"tenant"
 //	@Success		200
 //	@Router			/accounts/{tenant}/iam/clients/{client}/types/{typeId}/resources/{resourceId}/roles/{roleId}/users/{userId} [delete]
 func DeleteIamResourceRoleUser(c *gin.Context) {
@@ -201,4 +202,51 @@ func DeleteIamResourceRoleUser(c *gin.Context) {
 		return
 	}
 	c.Status(http.StatusNoContent)
+}
+
+// CreateAllTypeRole godoc
+//
+//	@Summary		iam resource role
+//	@Schemes
+//	@Description	delete iam resource role
+//	@Tags			iam-role
+//	@Param			tenant		path	string	true	"tenant"
+//	@Param			client		path	string	true	"tenant"
+//	@Param			typeId		path	string	true	"tenant"
+//	@Param			roleId		path	string	true	"tenant"
+//	@Param			userId		path	string	true	"tenant"
+//	@Success		200
+//	@Router			/accounts/{tenant}/iam/clients/{client}/types/{typeId}/resources/all/users/{userId}/roles/{roleId} [post]
+func CreateAllTypeRole(c *gin.Context) {
+	tenant := internal.GetTenant(c)
+	typeId := c.Param("typeId")
+	userId := c.Param("userId")
+	userIdUint, err := strconv.ParseUint(userId, 10, 64)
+	if err != nil {
+		internal.ErrReqParaCustom(c, "user id should be a number")
+		global.LOG.Error("create all type role err: " + err.Error())
+		return
+	}
+
+	resources, err := iam.ListResources(tenant.Id, typeId)
+	if err != nil {
+		internal.ErrorSqlResponse(c, "failed to get resource list")
+		global.LOG.Error("list resource err: " + err.Error())
+		return
+	}
+	for _, resource := range resources {
+		roleUser := []models.ResourceRoleUser{{
+			RoleId:       c.Param("roleId"),
+			TenantId:     tenant.Id,
+			ResourceId:   resource.Id,
+			ClientUserId: uint(userIdUint),
+		}}
+		if err = iam.CreateResourceRoleUser(tenant.Id, roleUser); err != nil {
+			internal.ErrorSqlResponse(c, "failed to create resource role user")
+			global.LOG.Error("create resource role user err: " + err.Error())
+			return
+		}
+	}
+
+	internal.Success(c)
 }
