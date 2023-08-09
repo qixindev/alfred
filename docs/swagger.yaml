@@ -107,12 +107,14 @@ paths:
     get:
       description: get iam resource type list
       parameters:
-      - description: tenant
+      - default: default
+        description: tenant
         in: path
         name: tenant
         required: true
         type: string
-      - description: tenant
+      - default: default
+        description: client
         in: path
         name: client
         required: true
@@ -126,12 +128,14 @@ paths:
     post:
       description: new iam resource type
       parameters:
-      - description: tenant
+      - default: default
+        description: tenant
         in: path
         name: tenant
         required: true
         type: string
-      - description: tenant
+      - default: default
+        description: client
         in: path
         name: client
         required: true
@@ -152,12 +156,14 @@ paths:
     delete:
       description: delete iam resource type
       parameters:
-      - description: tenant
+      - default: default
+        description: tenant
         in: path
         name: tenant
         required: true
         type: string
-      - description: tenant
+      - default: default
+        description: client
         in: path
         name: client
         required: true
@@ -177,12 +183,14 @@ paths:
     get:
       description: get iam action list
       parameters:
-      - description: tenant
+      - default: default
+        description: tenant
         in: path
         name: tenant
         required: true
         type: string
-      - description: tenant
+      - default: default
+        description: client
         in: path
         name: client
         required: true
@@ -201,12 +209,14 @@ paths:
     post:
       description: new iam action
       parameters:
-      - description: tenant
+      - default: default
+        description: tenant
         in: path
         name: tenant
         required: true
         type: string
-      - description: tenant
+      - default: default
+        description: client
         in: path
         name: client
         required: true
@@ -234,12 +244,14 @@ paths:
     delete:
       description: delete iam action
       parameters:
-      - description: tenant
+      - default: default
+        description: tenant
         in: path
         name: tenant
         required: true
         type: string
-      - description: tenant
+      - default: default
+        description: client
         in: path
         name: client
         required: true
@@ -264,12 +276,14 @@ paths:
     get:
       description: get iam action user
       parameters:
-      - description: tenant
+      - default: default
+        description: tenant
         in: path
         name: tenant
         required: true
         type: string
-      - description: tenant
+      - default: default
+        description: client
         in: path
         name: client
         required: true
@@ -299,12 +313,14 @@ paths:
     get:
       description: get iam resource list
       parameters:
-      - description: tenant
+      - default: default
+        description: tenant
         in: path
         name: tenant
         required: true
         type: string
-      - description: tenant
+      - default: default
+        description: client
         in: path
         name: client
         required: true
@@ -323,12 +339,14 @@ paths:
     post:
       description: new iam resource
       parameters:
-      - description: tenant
+      - default: default
+        description: tenant
         in: path
         name: tenant
         required: true
         type: string
-      - description: tenant
+      - default: default
+        description: client
         in: path
         name: client
         required: true
@@ -354,12 +372,14 @@ paths:
     delete:
       description: delete iam resource
       parameters:
-      - description: tenant
+      - default: default
+        description: tenant
         in: path
         name: tenant
         required: true
         type: string
-      - description: tenant
+      - default: default
+        description: client
         in: path
         name: client
         required: true
@@ -380,16 +400,55 @@ paths:
       summary: iam resource
       tags:
       - iam-resource
-  /accounts/{tenant}/iam/clients/{client}/types/{typeId}/resources/{resourceId}/actions/{actionId}/users/{user}:
-    get:
-      description: get iam action user
+    put:
+      description: update iam resource name
       parameters:
-      - description: tenant
+      - default: default
+        description: tenant
         in: path
         name: tenant
         required: true
         type: string
+      - default: default
+        description: client
+        in: path
+        name: client
+        required: true
+        type: string
+      - description: typeId
+        in: path
+        name: typeId
+        required: true
+        type: string
+      - description: resourceId
+        in: path
+        name: resourceId
+        required: true
+        type: string
       - description: tenant
+        in: body
+        name: iamBody
+        required: true
+        schema:
+          $ref: '#/definitions/internal.IamNameRequest'
+      responses:
+        "200":
+          description: OK
+      summary: iam resource
+      tags:
+      - iam-resource
+  /accounts/{tenant}/iam/clients/{client}/types/{typeId}/resources/{resourceId}/actions/{actionId}/users/{user}:
+    get:
+      description: get iam action user
+      parameters:
+      - default: default
+        description: tenant
+        in: path
+        name: tenant
+        required: true
+        type: string
+      - default: default
+        description: client
         in: path
         name: client
         required: true
@@ -424,12 +483,14 @@ paths:
     get:
       description: get iam resource role list
       parameters:
-      - description: tenant
+      - default: default
+        description: tenant
         in: path
         name: tenant
         required: true
         type: string
-      - description: tenant
+      - default: default
+        description: client
         in: path
         name: client
         required: true
@@ -458,12 +519,14 @@ paths:
     post:
       description: new iam resource role
       parameters:
-      - description: tenant
+      - default: default
+        description: tenant
         in: path
         name: tenant
         required: true
         type: string
-      - description: tenant
+      - default: default
+        description: client
         in: path
         name: client
         required: true
@@ -501,12 +564,14 @@ paths:
     delete:
       description: delete iam resource role
       parameters:
-      - description: tenant
+      - default: default
+        description: tenant
         in: path
         name: tenant
         required: true
         type: string
-      - description: tenant
+      - default: default
+        description: client
         in: path
         name: client
         required: true
@@ -541,12 +606,14 @@ paths:
     get:
       description: get iam action user
       parameters:
-      - description: tenant
+      - default: default
+        description: tenant
         in: path
         name: tenant
         required: true
         type: string
-      - description: tenant
+      - default: default
+        description: client
         in: path
         name: client
         required: true
@@ -571,12 +638,14 @@ paths:
     post:
       description: delete iam resource role
       parameters:
-      - description: tenant
+      - default: default
+        description: tenant
         in: path
         name: tenant
         required: true
         type: string
-      - description: tenant
+      - default: default
+        description: client
         in: path
         name: client
         required: true
@@ -606,12 +675,14 @@ paths:
     get:
       description: get iam role list
       parameters:
-      - description: tenant
+      - default: default
+        description: tenant
         in: path
         name: tenant
         required: true
         type: string
-      - description: tenant
+      - default: default
+        description: client
         in: path
         name: client
         required: true
@@ -630,12 +701,14 @@ paths:
     post:
       description: new iam role
       parameters:
-      - description: tenant
+      - default: default
+        description: tenant
         in: path
         name: tenant
         required: true
         type: string
-      - description: tenant
+      - default: default
+        description: client
         in: path
         name: client
         required: true
@@ -661,12 +734,14 @@ paths:
     delete:
       description: delete iam role
       parameters:
-      - description: tenant
+      - default: default
+        description: tenant
         in: path
         name: tenant
         required: true
         type: string
-      - description: tenant
+      - default: default
+        description: client
         in: path
         name: client
         required: true
@@ -691,12 +766,14 @@ paths:
     get:
       description: get iam role action list
       parameters:
-      - description: tenant
+      - default: default
+        description: tenant
         in: path
         name: tenant
         required: true
         type: string
-      - description: tenant
+      - default: default
+        description: client
         in: path
         name: client
         required: true
@@ -720,12 +797,14 @@ paths:
     post:
       description: new iam role action
       parameters:
-      - description: tenant
+      - default: default
+        description: tenant
         in: path
         name: tenant
         required: true
         type: string
-      - description: tenant
+      - default: default
+        description: client
         in: path
         name: client
         required: true
@@ -758,12 +837,14 @@ paths:
     delete:
       description: delete iam role action
       parameters:
-      - description: tenant
+      - default: default
+        description: tenant
         in: path
         name: tenant
         required: true
         type: string
-      - description: tenant
+      - default: default
+        description: client
         in: path
         name: client
         required: true
@@ -1187,7 +1268,8 @@ paths:
     get:
       description: get client list
       parameters:
-      - description: tenant
+      - default: default
+        description: tenant
         in: path
         name: tenant
         required: true
@@ -1843,7 +1925,8 @@ paths:
     get:
       description: list provider
       parameters:
-      - description: tenant
+      - default: default
+        description: tenant
         in: path
         name: tenant
         required: true
@@ -1857,7 +1940,8 @@ paths:
     post:
       description: new provider
       parameters:
-      - description: tenant
+      - default: default
+        description: tenant
         in: path
         name: tenant
         required: true
@@ -1878,7 +1962,8 @@ paths:
     delete:
       description: delete provider
       parameters:
-      - description: tenant
+      - default: default
+        description: tenant
         in: path
         name: tenant
         required: true
@@ -1897,7 +1982,8 @@ paths:
     get:
       description: get provider
       parameters:
-      - description: tenant
+      - default: default
+        description: tenant
         in: path
         name: tenant
         required: true
@@ -1916,7 +2002,8 @@ paths:
     put:
       description: update provider
       parameters:
-      - description: tenant
+      - default: default
+        description: tenant
         in: path
         name: tenant
         required: true
@@ -1936,7 +2023,8 @@ paths:
     get:
       description: get provider user list
       parameters:
-      - description: tenant
+      - default: default
+        description: tenant
         in: path
         name: tenant
         required: true
@@ -1956,7 +2044,8 @@ paths:
     get:
       description: get user list
       parameters:
-      - description: tenant
+      - default: default
+        description: tenant
         in: path
         name: tenant
         required: true
@@ -2004,7 +2093,8 @@ paths:
     get:
       description: get user
       parameters:
-      - description: tenant
+      - default: default
+        description: tenant
         in: path
         name: tenant
         required: true
@@ -2131,7 +2221,8 @@ paths:
     get:
       description: list tenants
       parameters:
-      - description: tenant
+      - default: default
+        description: tenant
         in: path
         name: tenant
         required: true
@@ -2145,7 +2236,8 @@ paths:
     post:
       description: new tenants
       parameters:
-      - description: tenant
+      - default: default
+        description: tenant
         in: path
         name: tenant
         required: true
@@ -2179,7 +2271,8 @@ paths:
     get:
       description: get tenants
       parameters:
-      - description: tenant
+      - default: default
+        description: tenant
         in: path
         name: tenant
         required: true
@@ -2258,7 +2351,8 @@ paths:
     get:
       description: list tenants
       parameters:
-      - description: tenant
+      - default: default
+        description: tenant
         in: path
         name: tenant
         required: true

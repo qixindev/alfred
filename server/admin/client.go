@@ -16,7 +16,7 @@ import (
 //	@Schemes
 //	@Description	get client list
 //	@Tags			client
-//	@Param			tenant	path		string	true	"tenant"
+//	@Param			tenant	path		string	true	"tenant"	default(default)
 //	@Success		200
 //	@Router			/accounts/admin/{tenant}/clients [get]
 func ListClients(c *gin.Context) {

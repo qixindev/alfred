@@ -18,8 +18,8 @@ import (
 //	@Schemes
 //	@Description	get iam role list
 //	@Tags			iam-role
-//	@Param			tenant		path	string	true	"tenant"
-//	@Param			client		path	string	true	"tenant"
+//	@Param			tenant		path	string	true	"tenant"	default(default)
+//	@Param			client		path	string	true	"client"	default(default)
 //	@Param			typeId		path	string	true	"tenant"
 //	@Success		200
 //	@Router			/accounts/{tenant}/iam/clients/{client}/types/{typeId}/roles [get]
@@ -41,8 +41,8 @@ func ListIamRole(c *gin.Context) {
 //	@Schemes
 //	@Description	new iam role
 //	@Tags			iam-role
-//	@Param			tenant		path	string	true	"tenant"
-//	@Param			client		path	string	true	"tenant"
+//	@Param			tenant		path	string	true	"tenant"	default(default)
+//	@Param			client		path	string	true	"client"	default(default)
 //	@Param			typeId		path	string	true	"tenant"
 //	@Param			iamBody		body	internal.IamNameRequest	true	"tenant"
 //	@Success		200
@@ -71,8 +71,8 @@ func NewIamRole(c *gin.Context) {
 //	@Schemes
 //	@Description	delete iam role
 //	@Tags			iam-role
-//	@Param			tenant		path	string	true	"tenant"
-//	@Param			client		path	string	true	"tenant"
+//	@Param			tenant		path	string	true	"tenant"	default(default)
+//	@Param			client		path	string	true	"client"	default(default)
 //	@Param			typeId		path	string	true	"tenant"
 //	@Param			roleId		path	string	true	"tenant"
 //	@Success		200
@@ -102,8 +102,8 @@ func DeleteIamRole(c *gin.Context) {
 //	@Schemes
 //	@Description	get iam resource role list
 //	@Tags			iam-role
-//	@Param			tenant		path	string	true	"tenant"
-//	@Param			client		path	string	true	"tenant"
+//	@Param			tenant		path	string	true	"tenant"	default(default)
+//	@Param			client		path	string	true	"client"	default(default)
 //	@Param			typeId		path	string	true	"tenant"
 //	@Param			roleId		path	string	true	"tenant"
 //	@Param			resourceId	path	string	true	"tenant"
@@ -128,8 +128,8 @@ func ListIamResourceRole(c *gin.Context) {
 //	@Schemes
 //	@Description	new iam resource role
 //	@Tags			iam-role
-//	@Param			tenant		path	string	true	"tenant"
-//	@Param			client		path	string	true	"tenant"
+//	@Param			tenant		path	string	true	"tenant"	default(default)
+//	@Param			client		path	string	true	"client"	default(default)
 //	@Param			typeId		path	string	true	"tenant"
 //	@Param			roleId		path	string	true	"tenant"
 //	@Param			resourceId	path	string	true	"tenant"
@@ -170,8 +170,8 @@ func NewIamResourceRole(c *gin.Context) {
 //	@Schemes
 //	@Description	delete iam resource role
 //	@Tags			iam-role
-//	@Param			tenant		path	string	true	"tenant"
-//	@Param			client		path	string	true	"tenant"
+//	@Param			tenant		path	string	true	"tenant"	default(default)
+//	@Param			client		path	string	true	"client"	default(default)
 //	@Param			typeId		path	string	true	"tenant"
 //	@Param			resourceId	path	string	true	"tenant"
 //	@Param			roleId		path	string	true	"tenant"
@@ -210,8 +210,8 @@ func DeleteIamResourceRoleUser(c *gin.Context) {
 //	@Schemes
 //	@Description	delete iam resource role
 //	@Tags			iam-role
-//	@Param			tenant		path	string	true	"tenant"
-//	@Param			client		path	string	true	"tenant"
+//	@Param			tenant		path	string	true	"tenant"	default(default)
+//	@Param			client		path	string	true	"client"	default(default)
 //	@Param			typeId		path	string	true	"tenant"
 //	@Param			roleId		path	string	true	"tenant"
 //	@Param			userId		path	integer	true	"tenant"

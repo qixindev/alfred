@@ -17,7 +17,7 @@ import (
 //	@Schemes
 //	@Description	get user list
 //	@Tags			user
-//	@Param			tenant	path	string	true	"tenant"
+//	@Param			tenant	path	string	true	"tenant"	default(default)
 //	@Success		200
 //	@Router			/accounts/admin/{tenant}/users [get]
 func ListUsers(c *gin.Context) {
@@ -36,7 +36,7 @@ func ListUsers(c *gin.Context) {
 //	@Schemes
 //	@Description	get user
 //	@Tags			user
-//	@Param			tenant	path	string	true	"tenant"
+//	@Param			tenant	path	string	true	"tenant"	default(default)
 //	@Param			userId	path	integer	true	"tenant"
 //	@Success		200
 //	@Router			/accounts/admin/{tenant}/users/{userId} [get]

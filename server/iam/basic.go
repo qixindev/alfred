@@ -23,6 +23,7 @@ func AddIamRoutes(rg *gin.RouterGroup) {
 	// 资源管理
 	rg.GET("/types/:typeId/resources", ListIamResource)
 	rg.POST("/types/:typeId/resources", NewIamResource)
+	rg.PUT("/types/:typeId/resources/:resourceId", UpdateIamResource)
 	rg.DELETE("/types/:typeId/resources/:resourceId", DeleteIamResource)
 
 	// 角色管理
