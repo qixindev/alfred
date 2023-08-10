@@ -16,8 +16,8 @@ import (
 //	@Schemes
 //	@Description	get iam action user
 //	@Tags			iam-action
-//	@Param			tenant		path	string	true	"tenant"
-//	@Param			client		path	string	true	"tenant"
+//	@Param			tenant		path	string	true	"tenant"	default(default)
+//	@Param			client		path	string	true	"client"	default(default)
 //	@Param			typeId		path	string	true	"tenant"
 //	@Param			resourceId	path	string	true	"tenant"
 //	@Param			actionId	path	string	true	"tenant"
@@ -54,8 +54,8 @@ func IsUserActionPermission(c *gin.Context) {
 //	@Schemes
 //	@Description	get iam action user
 //	@Tags			iam-action
-//	@Param			tenant		path	string	true	"tenant"
-//	@Param			client		path	string	true	"tenant"
+//	@Param			tenant		path	string	true	"tenant"	default(default)
+//	@Param			client		path	string	true	"client"	default(default)
 //	@Param			typeId		path	string	true	"tenant"
 //	@Param			actionId	path	string	true	"tenant"
 //	@Param			user		path	string	true	"tenant"
@@ -90,8 +90,8 @@ func GetIamActionResource(c *gin.Context) {
 //	@Schemes
 //	@Description	get iam action user
 //	@Tags			iam-action
-//	@Param			tenant		path	string	true	"tenant"
-//	@Param			client		path	string	true	"tenant"
+//	@Param			tenant		path	string	true	"tenant"	default(default)
+//	@Param			client		path	string	true	"client"	default(default)
 //	@Param			typeId		path	string	true	"tenant"
 //	@Param			resourceId		path	string	true	"tenant"
 //	@Success		200

@@ -17,7 +17,7 @@ import (
 //	@Schemes
 //	@Description	list provider
 //	@Tags			provider
-//	@Param			tenant	path	string	true	"tenant"
+//	@Param			tenant	path	string	true	"tenant"	default(default)
 //	@Success		200
 //	@Router			/accounts/admin/{tenant}/providers [get]
 func ListProviders(c *gin.Context) {
@@ -36,7 +36,7 @@ func ListProviders(c *gin.Context) {
 //	@Schemes
 //	@Description	get provider
 //	@Tags			provider
-//	@Param			tenant		path	string	true	"tenant"
+//	@Param			tenant		path	string	true	"tenant"	default(default)
 //	@Param			providerId	path	integer	true	"tenant"
 //	@Success		200
 //	@Router			/accounts/admin/{tenant}/providers/{providerId} [get]
@@ -66,7 +66,7 @@ func GetProvider(c *gin.Context) {
 //	@Schemes
 //	@Description	get provider user list
 //	@Tags			provider
-//	@Param			tenant		path	string	true	"tenant"
+//	@Param			tenant		path	string	true	"tenant"	default(default)
 //	@Param			providerId	path	integer	true	"provider id"
 //	@Success		200
 //	@Router			/accounts/admin/{tenant}/providers/{providerId}/users [get]
@@ -96,7 +96,7 @@ func GetProviderUsers(c *gin.Context) {
 //	@Schemes
 //	@Description	new provider
 //	@Tags			provider
-//	@Param			tenant	path	string	true	"tenant"
+//	@Param			tenant	path	string	true	"tenant"	default(default)
 //	@Param			req		body	object	true	"body"
 //	@Success		200
 //	@Router			/accounts/admin/{tenant}/providers [post]
@@ -124,7 +124,7 @@ func NewProvider(c *gin.Context) {
 //	@Schemes
 //	@Description	update provider
 //	@Tags			provider
-//	@Param			tenant		path	string	true	"tenant"
+//	@Param			tenant		path	string	true	"tenant"	default(default)
 //	@Param			providerId	path	integer	true	"tenant"
 //	@Success		200
 //	@Router			/accounts/admin/{tenant}/providers/{providerId} [put]
@@ -154,7 +154,7 @@ func UpdateProvider(c *gin.Context) {
 //	@Schemes
 //	@Description	delete provider
 //	@Tags			provider
-//	@Param			tenant		path	string	true	"tenant"
+//	@Param			tenant		path	string	true	"tenant"	default(default)
 //	@Param			providerId	path	integer	true	"tenant"
 //	@Success		200
 //	@Router			/accounts/admin/{tenant}/providers/{providerId} [delete]

@@ -17,7 +17,7 @@ import (
 //	@Schemes
 //	@Description	list tenants
 //	@Tags			admin-tenants
-//	@Param			tenant	path	string	true	"tenant"
+//	@Param			tenant	path	string	true	"tenant"	default(default)
 //	@Success		200
 //	@Router			/accounts/admin/tenants [get]
 func ListTenants(c *gin.Context) {
@@ -47,7 +47,7 @@ func ListTenants(c *gin.Context) {
 //	@Schemes
 //	@Description	list tenants
 //	@Tags			admin-tenants
-//	@Param			tenant	path	string	true	"tenant"
+//	@Param			tenant	path	string	true	"tenant"	default(default)
 //	@Param			userId	path	string	true	"tenant"
 //	@Success		200
 //	@Router			/accounts/admin/tenants/users/{user} [get]
@@ -68,7 +68,7 @@ func ListUserTenants(c *gin.Context) {
 //	@Schemes
 //	@Description	get tenants
 //	@Tags			admin-tenants
-//	@Param			tenant		path	string	true	"tenant"
+//	@Param			tenant		path	string	true	"tenant"	default(default)
 //	@Param			tenantId	path	integer	true	"tenant"
 //	@Success		200
 //	@Router			/accounts/admin/tenants/{tenantId} [get]
@@ -89,7 +89,7 @@ func GetTenant(c *gin.Context) {
 //	@Schemes
 //	@Description	new tenants
 //	@Tags			admin-tenants
-//	@Param			tenant	path	string	true	"tenant"
+//	@Param			tenant	path	string	true	"tenant"	default(default)
 //	@Success		200
 //	@Router			/accounts/admin/tenants [post]
 func NewTenant(c *gin.Context) {

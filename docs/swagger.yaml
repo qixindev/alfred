@@ -68,34 +68,7 @@ definitions:
       userId:
         type: integer
     type: object
-  notify.SendInfo:
-    properties:
-      link:
-        description: 点击跳转链接
-        type: string
-      msg:
-        description: 要发送的消息
-        type: string
-      msgType:
-        description: 消息类型：图文，markdown，文字
-        type: string
-      platform:
-        description: 发送到哪个平台
-        type: string
-      pngLink:
-        description: 消息图片链接
-        type: string
-      title:
-        description: 标题
-        type: string
-      titleColor:
-        description: 标题颜色
-        type: string
-      users:
-        description: 发送给谁
-        items:
-          type: string
-        type: array
+  models.SendInfo:
     type: object
 info:
   contact: {}
@@ -134,12 +107,14 @@ paths:
     get:
       description: get iam resource type list
       parameters:
-      - description: tenant
+      - default: default
+        description: tenant
         in: path
         name: tenant
         required: true
         type: string
-      - description: tenant
+      - default: default
+        description: client
         in: path
         name: client
         required: true
@@ -153,12 +128,14 @@ paths:
     post:
       description: new iam resource type
       parameters:
-      - description: tenant
+      - default: default
+        description: tenant
         in: path
         name: tenant
         required: true
         type: string
-      - description: tenant
+      - default: default
+        description: client
         in: path
         name: client
         required: true
@@ -179,12 +156,14 @@ paths:
     delete:
       description: delete iam resource type
       parameters:
-      - description: tenant
+      - default: default
+        description: tenant
         in: path
         name: tenant
         required: true
         type: string
-      - description: tenant
+      - default: default
+        description: client
         in: path
         name: client
         required: true
@@ -204,12 +183,14 @@ paths:
     get:
       description: get iam action list
       parameters:
-      - description: tenant
+      - default: default
+        description: tenant
         in: path
         name: tenant
         required: true
         type: string
-      - description: tenant
+      - default: default
+        description: client
         in: path
         name: client
         required: true
@@ -228,12 +209,14 @@ paths:
     post:
       description: new iam action
       parameters:
-      - description: tenant
+      - default: default
+        description: tenant
         in: path
         name: tenant
         required: true
         type: string
-      - description: tenant
+      - default: default
+        description: client
         in: path
         name: client
         required: true
@@ -261,12 +244,14 @@ paths:
     delete:
       description: delete iam action
       parameters:
-      - description: tenant
+      - default: default
+        description: tenant
         in: path
         name: tenant
         required: true
         type: string
-      - description: tenant
+      - default: default
+        description: client
         in: path
         name: client
         required: true
@@ -291,12 +276,14 @@ paths:
     get:
       description: get iam action user
       parameters:
-      - description: tenant
+      - default: default
+        description: tenant
         in: path
         name: tenant
         required: true
         type: string
-      - description: tenant
+      - default: default
+        description: client
         in: path
         name: client
         required: true
@@ -326,12 +313,14 @@ paths:
     get:
       description: get iam resource list
       parameters:
-      - description: tenant
+      - default: default
+        description: tenant
         in: path
         name: tenant
         required: true
         type: string
-      - description: tenant
+      - default: default
+        description: client
         in: path
         name: client
         required: true
@@ -350,12 +339,14 @@ paths:
     post:
       description: new iam resource
       parameters:
-      - description: tenant
+      - default: default
+        description: tenant
         in: path
         name: tenant
         required: true
         type: string
-      - description: tenant
+      - default: default
+        description: client
         in: path
         name: client
         required: true
@@ -381,12 +372,14 @@ paths:
     delete:
       description: delete iam resource
       parameters:
-      - description: tenant
+      - default: default
+        description: tenant
         in: path
         name: tenant
         required: true
         type: string
-      - description: tenant
+      - default: default
+        description: client
         in: path
         name: client
         required: true
@@ -407,16 +400,55 @@ paths:
       summary: iam resource
       tags:
       - iam-resource
-  /accounts/{tenant}/iam/clients/{client}/types/{typeId}/resources/{resourceId}/actions/{actionId}/users/{user}:
-    get:
-      description: get iam action user
+    put:
+      description: update iam resource name
       parameters:
-      - description: tenant
+      - default: default
+        description: tenant
         in: path
         name: tenant
         required: true
         type: string
+      - default: default
+        description: client
+        in: path
+        name: client
+        required: true
+        type: string
+      - description: typeId
+        in: path
+        name: typeId
+        required: true
+        type: string
+      - description: resourceId
+        in: path
+        name: resourceId
+        required: true
+        type: string
       - description: tenant
+        in: body
+        name: iamBody
+        required: true
+        schema:
+          $ref: '#/definitions/internal.IamNameRequest'
+      responses:
+        "200":
+          description: OK
+      summary: iam resource
+      tags:
+      - iam-resource
+  /accounts/{tenant}/iam/clients/{client}/types/{typeId}/resources/{resourceId}/actions/{actionId}/users/{user}:
+    get:
+      description: get iam action user
+      parameters:
+      - default: default
+        description: tenant
+        in: path
+        name: tenant
+        required: true
+        type: string
+      - default: default
+        description: client
         in: path
         name: client
         required: true
@@ -451,12 +483,14 @@ paths:
     get:
       description: get iam resource role list
       parameters:
-      - description: tenant
+      - default: default
+        description: tenant
         in: path
         name: tenant
         required: true
         type: string
-      - description: tenant
+      - default: default
+        description: client
         in: path
         name: client
         required: true
@@ -485,12 +519,14 @@ paths:
     post:
       description: new iam resource role
       parameters:
-      - description: tenant
+      - default: default
+        description: tenant
         in: path
         name: tenant
         required: true
         type: string
-      - description: tenant
+      - default: default
+        description: client
         in: path
         name: client
         required: true
@@ -528,12 +564,14 @@ paths:
     delete:
       description: delete iam resource role
       parameters:
-      - description: tenant
+      - default: default
+        description: tenant
         in: path
         name: tenant
         required: true
         type: string
-      - description: tenant
+      - default: default
+        description: client
         in: path
         name: client
         required: true
@@ -555,7 +593,7 @@ paths:
         type: string
       - description: tenant
         in: path
-        name: user
+        name: userId
         required: true
         type: string
       responses:
@@ -568,12 +606,14 @@ paths:
     get:
       description: get iam action user
       parameters:
-      - description: tenant
+      - default: default
+        description: tenant
         in: path
         name: tenant
         required: true
         type: string
-      - description: tenant
+      - default: default
+        description: client
         in: path
         name: client
         required: true
@@ -594,16 +634,55 @@ paths:
       summary: iam users roles
       tags:
       - iam-action
-  /accounts/{tenant}/iam/clients/{client}/types/{typeId}/roles:
-    get:
-      description: get iam role list
+  /accounts/{tenant}/iam/clients/{client}/types/{typeId}/resources/all/users/{userId}/roles/{roleId}:
+    post:
+      description: delete iam resource role
       parameters:
-      - description: tenant
+      - default: default
+        description: tenant
         in: path
         name: tenant
         required: true
         type: string
+      - default: default
+        description: client
+        in: path
+        name: client
+        required: true
+        type: string
       - description: tenant
+        in: path
+        name: typeId
+        required: true
+        type: string
+      - description: tenant
+        in: path
+        name: roleId
+        required: true
+        type: string
+      - description: tenant
+        in: path
+        name: userId
+        required: true
+        type: integer
+      responses:
+        "200":
+          description: OK
+      summary: iam resource role
+      tags:
+      - iam-role
+  /accounts/{tenant}/iam/clients/{client}/types/{typeId}/roles:
+    get:
+      description: get iam role list
+      parameters:
+      - default: default
+        description: tenant
+        in: path
+        name: tenant
+        required: true
+        type: string
+      - default: default
+        description: client
         in: path
         name: client
         required: true
@@ -622,12 +701,14 @@ paths:
     post:
       description: new iam role
       parameters:
-      - description: tenant
+      - default: default
+        description: tenant
         in: path
         name: tenant
         required: true
         type: string
-      - description: tenant
+      - default: default
+        description: client
         in: path
         name: client
         required: true
@@ -653,12 +734,14 @@ paths:
     delete:
       description: delete iam role
       parameters:
-      - description: tenant
+      - default: default
+        description: tenant
         in: path
         name: tenant
         required: true
         type: string
-      - description: tenant
+      - default: default
+        description: client
         in: path
         name: client
         required: true
@@ -683,12 +766,14 @@ paths:
     get:
       description: get iam role action list
       parameters:
-      - description: tenant
+      - default: default
+        description: tenant
         in: path
         name: tenant
         required: true
         type: string
-      - description: tenant
+      - default: default
+        description: client
         in: path
         name: client
         required: true
@@ -712,12 +797,14 @@ paths:
     post:
       description: new iam role action
       parameters:
-      - description: tenant
+      - default: default
+        description: tenant
         in: path
         name: tenant
         required: true
         type: string
-      - description: tenant
+      - default: default
+        description: client
         in: path
         name: client
         required: true
@@ -750,12 +837,14 @@ paths:
     delete:
       description: delete iam role action
       parameters:
-      - description: tenant
+      - default: default
+        description: tenant
         in: path
         name: tenant
         required: true
         type: string
-      - description: tenant
+      - default: default
+        description: client
         in: path
         name: client
         required: true
@@ -945,11 +1034,56 @@ paths:
         name: by
         required: true
         schema:
-          $ref: '#/definitions/notify.SendInfo'
+          $ref: '#/definitions/models.SendInfo'
       responses:
         "200":
           description: OK
       summary: send message
+      tags:
+      - msg
+  /accounts/{tenant}/message/{subId}:
+    get:
+      description: get message
+      parameters:
+      - description: sub id
+        in: path
+        name: subId
+        required: true
+        type: integer
+      responses:
+        "200":
+          description: OK
+      summary: get message
+      tags:
+      - msg
+  /accounts/{tenant}/message/MarkMsg:
+    put:
+      description: mark message read
+      parameters:
+      - description: sub id
+        in: path
+        name: subId
+        required: true
+        type: integer
+      responses:
+        "200":
+          description: OK
+      summary: mark message read
+      tags:
+      - msg
+  /accounts/{tenant}/message/unreadMsgCount/{subId}:
+    get:
+      description: get unread message count
+      parameters:
+      - description: sub id
+        in: path
+        name: subId
+        required: true
+        type: integer
+      responses:
+        "200":
+          description: OK
+      summary: get unread message count
       tags:
       - msg
   /accounts/{tenant}/oauth2/auth:
@@ -1134,7 +1268,8 @@ paths:
     get:
       description: get client list
       parameters:
-      - description: tenant
+      - default: default
+        description: tenant
         in: path
         name: tenant
         required: true
@@ -1790,7 +1925,8 @@ paths:
     get:
       description: list provider
       parameters:
-      - description: tenant
+      - default: default
+        description: tenant
         in: path
         name: tenant
         required: true
@@ -1804,7 +1940,8 @@ paths:
     post:
       description: new provider
       parameters:
-      - description: tenant
+      - default: default
+        description: tenant
         in: path
         name: tenant
         required: true
@@ -1825,7 +1962,8 @@ paths:
     delete:
       description: delete provider
       parameters:
-      - description: tenant
+      - default: default
+        description: tenant
         in: path
         name: tenant
         required: true
@@ -1844,7 +1982,8 @@ paths:
     get:
       description: get provider
       parameters:
-      - description: tenant
+      - default: default
+        description: tenant
         in: path
         name: tenant
         required: true
@@ -1863,7 +2002,8 @@ paths:
     put:
       description: update provider
       parameters:
-      - description: tenant
+      - default: default
+        description: tenant
         in: path
         name: tenant
         required: true
@@ -1883,7 +2023,8 @@ paths:
     get:
       description: get provider user list
       parameters:
-      - description: tenant
+      - default: default
+        description: tenant
         in: path
         name: tenant
         required: true
@@ -1903,7 +2044,8 @@ paths:
     get:
       description: get user list
       parameters:
-      - description: tenant
+      - default: default
+        description: tenant
         in: path
         name: tenant
         required: true
@@ -1951,7 +2093,8 @@ paths:
     get:
       description: get user
       parameters:
-      - description: tenant
+      - default: default
+        description: tenant
         in: path
         name: tenant
         required: true
@@ -2078,7 +2221,8 @@ paths:
     get:
       description: list tenants
       parameters:
-      - description: tenant
+      - default: default
+        description: tenant
         in: path
         name: tenant
         required: true
@@ -2092,7 +2236,8 @@ paths:
     post:
       description: new tenants
       parameters:
-      - description: tenant
+      - default: default
+        description: tenant
         in: path
         name: tenant
         required: true
@@ -2126,7 +2271,8 @@ paths:
     get:
       description: get tenants
       parameters:
-      - description: tenant
+      - default: default
+        description: tenant
         in: path
         name: tenant
         required: true
@@ -2205,7 +2351,8 @@ paths:
     get:
       description: list tenants
       parameters:
-      - description: tenant
+      - default: default
+        description: tenant
         in: path
         name: tenant
         required: true
