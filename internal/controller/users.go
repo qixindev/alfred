@@ -62,7 +62,7 @@ func GetUserProfile(c *gin.Context) {
 	c.JSON(http.StatusOK, user.ProfileDto())
 }
 
-func addUsersRoutes(rg *gin.RouterGroup) {
+func AddUsersRoutes(rg *gin.RouterGroup) {
 	rg.GET("/me", middlewares.Authorized(false), GetUserDetail)
 	rg.PUT("/me", middlewares.Authorized(false), UpdateUserDetail)
 	rg.GET("/me/profile", middlewares.Authorized(false), GetUserProfile)

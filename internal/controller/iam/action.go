@@ -2,6 +2,7 @@ package iam
 
 import (
 	"accounts/internal/controller/internal"
+	"accounts/internal/endpoint/resp"
 	"accounts/internal/model"
 	"accounts/internal/service/iam"
 	"accounts/pkg/global"
@@ -26,7 +27,7 @@ func ListIamAction(c *gin.Context) {
 	tenant := internal.GetTenant(c)
 	actions, err := iam.ListResourceTypeActions(tenant.Id, typeId)
 	if err != nil {
-		internal.ErrorSqlResponse(c, "failed to get resource type action")
+		resp.ErrorSqlResponse(c, "failed to get resource type action")
 		global.LOG.Error("list resource type action err: " + err.Error())
 		return
 	}
@@ -48,7 +49,7 @@ func ListIamAction(c *gin.Context) {
 func NewIamAction(c *gin.Context) {
 	var action []model.ResourceTypeAction
 	if err := c.BindJSON(&action); err != nil {
-		internal.ErrReqPara(c, err)
+		resp.ErrReqPara(c, err)
 		return
 	}
 
@@ -56,13 +57,13 @@ func NewIamAction(c *gin.Context) {
 	tenant := internal.GetTenant(c)
 	typ, err := iam.GetIamType(tenant.Id, typeId)
 	if err != nil {
-		internal.ErrReqParaCustom(c, "no such iam resource type")
+		resp.ErrReqParaCustom(c, "no such iam resource type")
 		global.LOG.Error("get iam type err: " + err.Error())
 		return
 	}
 
 	if err = iam.CreateResourceTypeAction(tenant.Id, typ.Id, action); err != nil {
-		internal.ErrorSqlResponse(c, "failed to create resource type action")
+		resp.ErrorSqlResponse(c, "failed to create resource type action")
 		global.LOG.Error("create resource type action err: " + err.Error())
 		return
 	}
@@ -87,13 +88,13 @@ func DeleteIamAction(c *gin.Context) {
 	tenant := internal.GetTenant(c)
 	action, err := iam.GetIamAction(tenant.Id, typeId, actionId)
 	if err != nil {
-		internal.ErrReqParaCustom(c, "no such action")
+		resp.ErrReqParaCustom(c, "no such action")
 		global.LOG.Error("get iam action err: " + err.Error())
 		return
 	}
 
 	if err = iam.DeleteResourceTypeAction(tenant.Id, action.Id); err != nil {
-		internal.ErrorSqlResponse(c, "failed to delete resource type action")
+		resp.ErrorSqlResponse(c, "failed to delete resource type action")
 		global.LOG.Error("delete resource type action err: " + err.Error())
 		return
 	}
@@ -117,7 +118,7 @@ func ListIamRoleAction(c *gin.Context) {
 	tenant := internal.GetTenant(c)
 	roleActions, err := iam.ListResourceTypeRoleActions(tenant.Id, roleId)
 	if err != nil {
-		internal.ErrorSqlResponse(c, "failed to get resource type role action list")
+		resp.ErrorSqlResponse(c, "failed to get resource type role action list")
 		global.LOG.Error("list resource type role action err: " + err.Error())
 		return
 	}
@@ -140,7 +141,7 @@ func ListIamRoleAction(c *gin.Context) {
 func NewIamRoleAction(c *gin.Context) {
 	var roleAction []model.ResourceTypeRoleAction
 	if err := c.BindJSON(&roleAction); err != nil {
-		internal.ErrReqPara(c, err)
+		resp.ErrReqPara(c, err)
 		return
 	}
 
@@ -149,13 +150,13 @@ func NewIamRoleAction(c *gin.Context) {
 	tenant := internal.GetTenant(c)
 	role, err := iam.GetIamRole(tenant.Id, typeId, roleId)
 	if err != nil {
-		internal.ErrReqParaCustom(c, "no such role")
+		resp.ErrReqParaCustom(c, "no such role")
 		global.LOG.Error("get iam role err: ", zap.Error(err))
 		return
 	}
 
 	if err = iam.CreateResourceTypeRoleAction(tenant.Id, role.Id, roleAction); err != nil {
-		internal.ErrorSqlResponse(c, "failed to create role action")
+		resp.ErrorSqlResponse(c, "failed to create role action")
 		global.LOG.Error("create resource type role action err: " + err.Error())
 		return
 	}
@@ -180,12 +181,12 @@ func DeleteIamRoleAction(c *gin.Context) {
 	roleId := c.Param("roleId")
 	var roleAction model.ResourceTypeRoleAction
 	if err := internal.TenantDB(c).First(&roleAction, "role_id = ? AND action_id = ?", roleId, actionId).Error; err != nil {
-		internal.ErrReqParaCustom(c, "no such role action")
+		resp.ErrReqParaCustom(c, "no such role action")
 		global.LOG.Error("get resource type role action err: " + err.Error())
 		return
 	}
 	if err := iam.DeleteResourceTypeRoleAction(roleAction.TenantId, roleAction.Id); err != nil {
-		internal.ErrorSqlResponse(c, "failed to delete resource role action")
+		resp.ErrorSqlResponse(c, "failed to delete resource role action")
 		global.LOG.Error("delete resource type role action err: " + err.Error())
 		return
 	}

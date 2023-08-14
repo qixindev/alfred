@@ -3,6 +3,7 @@ package admin
 import (
 	"accounts/internal/controller/internal"
 	"accounts/internal/endpoint/dto"
+	"accounts/internal/endpoint/resp"
 	"accounts/internal/model"
 	"accounts/internal/service"
 	"accounts/pkg/global"
@@ -66,7 +67,7 @@ func NewDevice(c *gin.Context) {
 	tenant := internal.GetTenant(c)
 	var device model.Device
 	if err := c.BindJSON(&device); err != nil {
-		internal.ErrReqPara(c, err)
+		resp.ErrReqPara(c, err)
 		return
 	}
 	if device.Id == "" {
@@ -118,7 +119,7 @@ func UpdateDevice(c *gin.Context) {
 	}
 	var d model.Device
 	if err := c.BindJSON(&d); err != nil {
-		internal.ErrReqPara(c, err)
+		resp.ErrReqPara(c, err)
 		return
 	}
 	device.Name = d.Name
@@ -198,7 +199,7 @@ func NewDeviceSecret(c *gin.Context) {
 	}
 	var secret model.DeviceSecret
 	if err := c.BindJSON(&secret); err != nil {
-		internal.ErrReqPara(c, err)
+		resp.ErrReqPara(c, err)
 		return
 	}
 	secret.DeviceId = device.Id
@@ -290,7 +291,7 @@ func NewDeviceGroup(c *gin.Context) {
 	deviceId := c.Param("deviceId")
 	var deviceGroup model.GroupDevice
 	if err := c.BindJSON(&deviceGroup); err != nil {
-		internal.ErrReqPara(c, err)
+		resp.ErrReqPara(c, err)
 		return
 	}
 

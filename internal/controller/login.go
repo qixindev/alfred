@@ -303,7 +303,7 @@ func ProviderCallback(c *gin.Context) {
 	}
 }
 
-func addLoginRoutes(rg *gin.RouterGroup) {
+func AddLoginRoutes(rg *gin.RouterGroup) {
 	rg.POST("/login", Login)
 	rg.GET("/login/:provider", LoginToProvider)
 	rg.GET("/providers", ListProviders)

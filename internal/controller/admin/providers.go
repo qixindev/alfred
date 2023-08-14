@@ -3,6 +3,7 @@ package admin
 import (
 	"accounts/internal/controller/internal"
 	"accounts/internal/endpoint/req"
+	"accounts/internal/endpoint/resp"
 	"accounts/internal/model"
 	"accounts/internal/service"
 	"accounts/pkg/global"
@@ -104,7 +105,7 @@ func NewProvider(c *gin.Context) {
 	tenant := internal.GetTenant(c)
 	var provider req.ReqProvider
 	if err := c.BindJSON(&provider); err != nil {
-		internal.ErrReqPara(c, err)
+		resp.ErrReqPara(c, err)
 		return
 	}
 
@@ -133,7 +134,7 @@ func UpdateProvider(c *gin.Context) {
 	providerId := c.Param("providerId")
 	var p req.ReqProvider
 	if err := c.BindJSON(&p); err != nil {
-		internal.ErrReqPara(c, err)
+		resp.ErrReqPara(c, err)
 		return
 	}
 

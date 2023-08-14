@@ -2,6 +2,7 @@ package admin
 
 import (
 	"accounts/internal/controller/internal"
+	"accounts/internal/endpoint/resp"
 	"accounts/internal/model"
 	"accounts/pkg/global"
 	"accounts/pkg/utils"
@@ -82,7 +83,7 @@ func NewClient(c *gin.Context) {
 	tenant := internal.GetTenant(c)
 	var client model.Client
 	if err := c.BindJSON(&client); err != nil {
-		internal.ErrReqPara(c, err)
+		resp.ErrReqPara(c, err)
 		return
 	}
 	client.TenantId = tenant.Id
@@ -127,7 +128,7 @@ func UpdateClient(c *gin.Context) {
 	}
 	var cli model.Client
 	if err := c.BindJSON(&cli); err != nil {
-		internal.ErrReqPara(c, err)
+		resp.ErrReqPara(c, err)
 		return
 	}
 	client.Name = cli.Name
@@ -213,7 +214,7 @@ func NewClientRedirectUri(c *gin.Context) {
 	}
 	var uri model.RedirectUri
 	if err := c.BindJSON(&uri); err != nil {
-		internal.ErrReqPara(c, err)
+		resp.ErrReqPara(c, err)
 		return
 	}
 	uri.TenantId = client.TenantId
@@ -239,7 +240,7 @@ func UpdateClientRedirectUri(c *gin.Context) {
 	uriId := c.Param("uriId")
 	var newUri model.RedirectUri
 	if err := c.BindJSON(&newUri); err != nil {
-		internal.ErrReqPara(c, err)
+		resp.ErrReqPara(c, err)
 		return
 	}
 
@@ -337,7 +338,7 @@ func NewClientSecret(c *gin.Context) {
 	}
 	var secret model.ClientSecret
 	if err := c.BindJSON(&secret); err != nil {
-		internal.ErrReqPara(c, err)
+		resp.ErrReqPara(c, err)
 		return
 	}
 	secret.TenantId = client.TenantId
@@ -440,7 +441,7 @@ func GetClientUsers(c *gin.Context) {
 	}
 
 	if clientUser.Username == "" {
-		internal.ErrorNotFound(c, "no such client user")
+		resp.ErrorNotFound(c, "no such client user")
 		return
 	}
 	c.JSON(http.StatusOK, clientUser)

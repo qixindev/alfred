@@ -2,6 +2,7 @@ package iam
 
 import (
 	"accounts/internal/controller/internal"
+	"accounts/internal/endpoint/resp"
 	"accounts/internal/model"
 	"accounts/internal/service/iam"
 	"accounts/pkg/global"
@@ -33,14 +34,14 @@ func IsUserActionPermission(c *gin.Context) {
 
 	var clientUser model.ClientUser
 	if err := internal.TenantDB(c).First(&clientUser, "client_id = ? AND sub = ?", clientId, userName).Error; err != nil {
-		internal.ErrReqParaCustom(c, "no such client user")
+		resp.ErrReqParaCustom(c, "no such client user")
 		global.LOG.Error("get client user err: " + err.Error())
 		return
 	}
 
 	result, err := iam.CheckPermission(tenant.Id, clientUser.Id, resourceId, actionId)
 	if err != nil {
-		internal.ErrorSqlResponse(c, "failed to check permission")
+		resp.ErrorSqlResponse(c, "failed to check permission")
 		global.LOG.Error("check permission err: " + err.Error())
 		return
 	}
@@ -76,7 +77,7 @@ func GetIamActionResource(c *gin.Context) {
 		Joins("LEFT JOIN resource_type_role_actions rtra ON rtra.role_id = rr.id").
 		Where("rru.tenant_id = ? AND cu.sub = ? AND r.type_id = ? AND rtra.action_id = ?",
 			tenant.Id, user, typeId, actionId).Find(&res).Error; err != nil {
-		internal.ErrorSqlResponse(c, "failed to get user's resources")
+		resp.ErrorSqlResponse(c, "failed to get user's resources")
 		global.LOG.Error("get resource err: " + err.Error())
 		return
 	}
@@ -109,7 +110,7 @@ func GetResourceUserList(c *gin.Context) {
 		Joins("LEFT JOIN users u ON u.id = cu.user_id").
 		Where("rru.tenant_id = ? AND rru.resource_id = ? AND r.type_id = ?", tenant.Id, resourceId, typeId).
 		Find(&res).Error; err != nil {
-		internal.ErrorSqlResponse(c, "get resource user list err")
+		resp.ErrorSqlResponse(c, "get resource user list err")
 		global.LOG.Error("get resource err: " + err.Error())
 		return
 	}

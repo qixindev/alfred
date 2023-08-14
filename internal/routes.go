@@ -1,7 +1,8 @@
-package controller
+package internal
 
 import (
 	_ "accounts/docs"
+	"accounts/internal/controller"
 	"accounts/internal/controller/admin"
 	"accounts/internal/controller/iam"
 	"accounts/pkg/middlewares"
@@ -21,10 +22,10 @@ func AddRoutes(r *gin.Engine) {
 
 	tenantApi := r.RouterGroup.Group("/accounts/:tenant", middlewares.MultiTenancy)
 	{
-		addLoginRoutes(tenantApi)
-		addUsersRoutes(tenantApi)
-		addOAuth2Routes(tenantApi)
-		AddMsgRouter(tenantApi)
+		controller.AddLoginRoutes(tenantApi)
+		controller.AddUsersRoutes(tenantApi)
+		controller.AddOAuth2Routes(tenantApi)
+		controller.AddMsgRouter(tenantApi)
 	}
 
 	adminApi := r.RouterGroup.Group("/accounts/admin/:tenant", middlewares.MultiTenancy, middlewares.AuthorizedAdmin)

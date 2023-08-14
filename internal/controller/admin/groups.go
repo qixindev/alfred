@@ -3,6 +3,7 @@ package admin
 import (
 	"accounts/internal/controller/internal"
 	"accounts/internal/endpoint/dto"
+	"accounts/internal/endpoint/resp"
 	"accounts/internal/model"
 	"accounts/pkg/global"
 	"accounts/pkg/utils"
@@ -63,7 +64,7 @@ func NewGroup(c *gin.Context) {
 	tenant := internal.GetTenant(c)
 	var group model.Group
 	if err := c.BindJSON(&group); err != nil {
-		internal.ErrReqPara(c, err)
+		resp.ErrReqPara(c, err)
 		return
 	}
 	group.TenantId = tenant.Id
@@ -95,7 +96,7 @@ func UpdateGroup(c *gin.Context) {
 	}
 	var g model.Group
 	if err := c.BindJSON(&g); err != nil {
-		internal.ErrReqPara(c, err)
+		resp.ErrReqPara(c, err)
 		return
 	}
 	group.Name = g.Name

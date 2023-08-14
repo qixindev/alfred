@@ -3,6 +3,7 @@ package admin
 import (
 	"accounts/internal/controller/internal"
 	"accounts/internal/endpoint/dto"
+	"accounts/internal/endpoint/resp"
 	"accounts/internal/model"
 	"accounts/internal/service"
 	"accounts/pkg/global"
@@ -64,7 +65,7 @@ func NewUser(c *gin.Context) {
 	tenant := internal.GetTenant(c)
 	var user model.User
 	if err := c.BindJSON(&user); err != nil {
-		internal.ErrReqPara(c, err)
+		resp.ErrReqPara(c, err)
 		return
 	}
 	if user.PasswordHash == "" {
@@ -109,7 +110,7 @@ func UpdateUser(c *gin.Context) {
 	}
 	var u model.User
 	if err := c.BindJSON(&u); err != nil {
-		internal.ErrReqPara(c, err)
+		resp.ErrReqPara(c, err)
 		return
 	}
 	user.Username = u.Username
@@ -207,7 +208,7 @@ func NewUserGroup(c *gin.Context) {
 	userId := c.Param("userId")
 	var groupUser model.GroupUser
 	if err := c.BindJSON(&groupUser); err != nil {
-		internal.ErrReqPara(c, err)
+		resp.ErrReqPara(c, err)
 		return
 	}
 
@@ -258,7 +259,7 @@ func UpdateUserGroup(c *gin.Context) {
 	}
 	var gu dto.GroupMemberDto
 	if err := c.BindJSON(&gu); err != nil {
-		internal.ErrReqPara(c, err)
+		resp.ErrReqPara(c, err)
 		return
 	}
 	var groupUser model.GroupUser

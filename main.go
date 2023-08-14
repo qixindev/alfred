@@ -2,7 +2,7 @@ package main
 
 import (
 	"accounts/initial"
-	"accounts/internal/controller"
+	"accounts/internal"
 	"accounts/pkg/config/env"
 	"accounts/pkg/global"
 	"accounts/pkg/utils"
@@ -67,7 +67,7 @@ func main() {
 		Path:   "/",
 	})
 	r.Use(sessions.Sessions("QixinAuth", store))
-	controller.AddRoutes(r)
+	internal.AddRoutes(r)
 
 	if err = r.Run(":80"); err != nil {
 		fmt.Println("server run err: ", err)

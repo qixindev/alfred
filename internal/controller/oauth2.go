@@ -341,7 +341,7 @@ func GetJwks(c *gin.Context) {
 	c.JSON(http.StatusOK, jwks)
 }
 
-func addOAuth2Routes(rg *gin.RouterGroup) {
+func AddOAuth2Routes(rg *gin.RouterGroup) {
 	rg.GET("/oauth2/auth", middlewares.Authorized(true), GetAuthCode)
 	rg.POST("/oauth2/device/code", GetDeviceCode)
 	rg.GET("/oauth2/token", GetToken)
