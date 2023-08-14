@@ -1,7 +1,7 @@
 package utils
 
 import (
-	"accounts/config/env"
+	"accounts/pkg/config/env"
 	"context"
 	"encoding/json"
 	"errors"
