@@ -1,23 +1,23 @@
 package service
 
 import (
-	"accounts/internal/global"
-	"accounts/pkg/models"
+	"accounts/internal/model"
+	"accounts/pkg/global"
 )
 
 func DeleteDevice(tenantId uint, deviceId string) error {
 	if err := global.DB.Where("tenant_id = ? AND device_id = ?", tenantId, deviceId).
-		Delete(models.GroupDevice{}).Error; err != nil {
+		Delete(model.GroupDevice{}).Error; err != nil {
 		return err
 	}
 
 	if err := global.DB.Where("tenant_id = ? AND device_id = ?", tenantId, deviceId).
-		Delete(models.DeviceSecret{}).Error; err != nil {
+		Delete(model.DeviceSecret{}).Error; err != nil {
 		return err
 	}
 
 	if err := global.DB.Where("tenant_id = ? AND id = ?", tenantId, deviceId).
-		Delete(models.Device{}).Error; err != nil {
+		Delete(model.Device{}).Error; err != nil {
 		return err
 	}
 	return nil

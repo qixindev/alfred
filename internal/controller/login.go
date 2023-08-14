@@ -3,10 +3,10 @@ package controller
 import (
 	"accounts/internal/controller/auth"
 	"accounts/internal/controller/internal"
-	"accounts/internal/global"
-	"accounts/internal/middlewares"
-	"accounts/pkg/models"
-	"accounts/utils"
+	"accounts/internal/model"
+	"accounts/pkg/global"
+	"accounts/pkg/middlewares"
+	"accounts/pkg/utils"
 	"fmt"
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-gonic/gin"
@@ -37,7 +37,7 @@ func Login(c *gin.Context) {
 
 	tenant := internal.GetTenant(c)
 
-	var user models.User
+	var user model.User
 	if err := global.DB.First(&user, "tenant_id = ? AND username = ?", tenant.Id, login).Error; err != nil {
 		c.Status(http.StatusUnauthorized)
 		global.LOG.Error("get user err: " + err.Error())
@@ -114,13 +114,13 @@ func LoginToProvider(c *gin.Context) {
 //	@Success		200		{object}	[]dto.ProviderDto
 //	@Router			/accounts/{tenant}/providers [get]
 func ListProviders(c *gin.Context) {
-	var providers []models.Provider
+	var providers []model.Provider
 	if err := internal.TenantDB(c).Find(&providers).Error; err != nil {
 		c.Status(http.StatusInternalServerError)
 		global.LOG.Error("get provider list err: " + err.Error())
 		return
 	}
-	c.JSON(http.StatusOK, utils.Filter(providers, models.Provider2Dto))
+	c.JSON(http.StatusOK, utils.Filter(providers, model.Provider2Dto))
 }
 
 // GetProvider godoc
@@ -161,7 +161,7 @@ func Register(c *gin.Context) {
 	tenant := internal.GetTenant(c)
 	login := c.PostForm("login")
 	password := c.PostForm("password")
-	var user models.User
+	var user model.User
 	if err := global.DB.First(&user, "tenant_id = ? AND username = ?", tenant.Id, login).Error; err == nil {
 		c.Status(http.StatusConflict)
 		global.LOG.Error("user is exist: " + err.Error())
@@ -175,7 +175,7 @@ func Register(c *gin.Context) {
 		return
 	}
 
-	newUser := models.User{
+	newUser := model.User{
 		TenantId:     tenant.Id,
 		Username:     login,
 		PasswordHash: hash,
@@ -224,7 +224,7 @@ func Logout(c *gin.Context) {
 //	@Router			/accounts/{tenant}/logged-in/{provider} [get]
 func ProviderCallback(c *gin.Context) {
 	providerName := c.Param("provider")
-	var provider models.Provider
+	var provider model.Provider
 	if err := internal.TenantDB(c).First(&provider, "name = ?", providerName).Error; err != nil {
 		c.Status(http.StatusNotFound)
 		global.LOG.Error("get provider err: " + err.Error())
@@ -242,8 +242,8 @@ func ProviderCallback(c *gin.Context) {
 		return
 	}
 
-	var providerUser models.ProviderUser
-	existingUser := &models.User{}
+	var providerUser model.ProviderUser
+	existingUser := &model.User{}
 	if err = internal.TenantDB(c).First(&providerUser, "provider_id = ? AND name = ?", provider.Id, userInfo.Sub).Error; err != nil {
 		global.LOG.Error("get user err: " + err.Error())
 		// Current bind not found.
@@ -251,7 +251,7 @@ func ProviderCallback(c *gin.Context) {
 		user, err := middlewares.GetUserStandalone(c)
 		if err != nil {
 			// If not logged in, create new user.
-			newUser := models.User{
+			newUser := model.User{
 				Username:         uuid.NewString(),
 				FirstName:        userInfo.FirstName,
 				LastName:         userInfo.LastName,

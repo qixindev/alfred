@@ -2,12 +2,12 @@ package controller
 
 import (
 	"accounts/internal/controller/internal"
-	"accounts/internal/global"
-	"accounts/internal/middlewares"
+	"accounts/internal/endpoint/dto"
+	"accounts/internal/model"
 	"accounts/internal/service"
-	"accounts/pkg/dto"
-	"accounts/pkg/models"
-	"accounts/utils"
+	"accounts/pkg/global"
+	"accounts/pkg/middlewares"
+	"accounts/pkg/utils"
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
@@ -17,13 +17,13 @@ import (
 	"time"
 )
 
-func getAccessCode(c *gin.Context, client *models.Client) (string, error) {
-	token, err := internal.GetAccessToken(c, client)
+func getAccessCode(c *gin.Context, client *model.Client) (string, error) {
+	token, err := service.GetAccessToken(c, client)
 	if err != nil {
 		return "", err
 	}
 	code := uuid.NewString()
-	tokenCode := models.TokenCode{
+	tokenCode := model.TokenCode{
 		Token:     token,
 		Code:      code,
 		CreatedAt: time.Now(),
@@ -63,7 +63,7 @@ func GetAuthCode(c *gin.Context) {
 	nonce := c.Query("nonce")
 	tenant := internal.GetTenant(c)
 
-	var client models.Client
+	var client model.Client
 	if err := global.DB.First(&client, "tenant_id = ? AND id = ?", tenant.Id, clientId).Error; err != nil {
 		c.JSON(http.StatusForbidden, gin.H{"message": "Invalid client_id."})
 		global.LOG.Error("get client err: " + err.Error())
@@ -91,7 +91,7 @@ func GetAuthCode(c *gin.Context) {
 		c.Redirect(http.StatusFound, location)
 		return
 	} else if responseType == "token" {
-		token, err := internal.GetAccessToken(c, &client)
+		token, err := service.GetAccessToken(c, &client)
 		if err != nil {
 			c.Status(http.StatusInternalServerError)
 			global.LOG.Error("get access token err: " + err.Error())
@@ -125,14 +125,14 @@ func GetDeviceCode(c *gin.Context) {
 	clientId := c.Query("client_id")
 	scope := c.Query("scope")
 	tenant := internal.GetTenant(c)
-	var client models.Client
+	var client model.Client
 	if err := global.DB.First(&client, "tenant_id = ? AND id = ?", tenant.Id, clientId).Error; err != nil {
 		c.JSON(http.StatusForbidden, gin.H{"message": "Invalid client_id."})
 		global.LOG.Error("get client err: " + err.Error())
 		return
 	}
 
-	deviceCode := models.DeviceCode{
+	deviceCode := model.DeviceCode{
 		TenantId: tenant.Id,
 		Code:     uuid.NewString(),
 		UserCode: utils.GetDeviceUserCode(),
@@ -184,20 +184,20 @@ func GetToken(c *gin.Context) {
 
 	if grantType == "authorization_code" {
 		tenant := internal.GetTenant(c)
-		var client models.Client
+		var client model.Client
 		if err := global.DB.First(&client, "tenant_id = ? AND id = ?", tenant.Id, clientId).Error; err != nil {
 			c.JSON(http.StatusForbidden, gin.H{"message": "Invalid client_id."})
 			global.LOG.Error("get client err: " + err.Error())
 			return
 		}
-		var secret models.ClientSecret
+		var secret model.ClientSecret
 		if err := internal.TenantDB(c).First(&secret, "client_id = ? AND secret = ?", client.Id, clientSecret).Error; err != nil {
 			c.JSON(http.StatusForbidden, gin.H{"message": "Invalid client_secret."})
 			global.LOG.Error("get client secret err: " + err.Error())
 			return
 		}
 
-		var tokenCode models.TokenCode
+		var tokenCode model.TokenCode
 		if err := internal.TenantDB(c).First(&tokenCode, "code = ?", code).Error; err != nil {
 			c.JSON(http.StatusForbidden, gin.H{"message": "Invalid code."})
 			global.LOG.Error("get token code err: " + err.Error())
@@ -209,20 +209,20 @@ func GetToken(c *gin.Context) {
 		return
 	} else if grantType == "client_credential" {
 		tenant := internal.GetTenant(c)
-		var client models.Client
+		var client model.Client
 		if err := global.DB.First(&client, "tenant_id = ? AND id = ?", tenant.Id, clientId).Error; err != nil {
 			c.JSON(http.StatusForbidden, gin.H{"message": "Invalid client_id."})
 			global.LOG.Error("get client err: " + err.Error())
 			return
 		}
-		var secret models.ClientSecret
+		var secret model.ClientSecret
 		if err := internal.TenantDB(c).First(&secret, "client_id = ? AND secret = ?", client.Id, clientSecret).Error; err != nil {
 			c.JSON(http.StatusForbidden, gin.H{"message": "Invalid client_secret."})
 			global.LOG.Error("get client secret err: " + err.Error())
 			return
 		}
 
-		token, err := internal.GetClientAccessToken(c, &client)
+		token, err := service.GetClientAccessToken(c, &client)
 		if err != nil {
 			global.LOG.Error("get accessToken err: " + err.Error())
 			c.JSON(http.StatusInternalServerError, gin.H{"message": "generate token err"})
@@ -232,14 +232,14 @@ func GetToken(c *gin.Context) {
 		return
 	} else if grantType == "urn:ietf:params:oauth:grant-type:device_code" {
 		tenant := internal.GetTenant(c)
-		var client models.Client
+		var client model.Client
 		if err := global.DB.First(&client, "tenant_id = ? AND id = ?", tenant.Id, clientId).Error; err != nil {
 			c.JSON(http.StatusForbidden, gin.H{"message": "Invalid client_id."})
 			global.LOG.Error("get client err: " + err.Error())
 			return
 		}
 
-		var deviceCode models.DeviceCode
+		var deviceCode model.DeviceCode
 		if err := global.DB.First(&deviceCode, "tenant_id = ? AND user_code = ?", tenant.Id, code).Error; err != nil {
 			c.JSON(http.StatusForbidden, gin.H{"message": "Invalid user code."})
 			global.LOG.Error("get device code err: " + err.Error())
@@ -250,7 +250,7 @@ func GetToken(c *gin.Context) {
 			return
 		}
 
-		token, err := internal.GetClientAccessToken(c, &client)
+		token, err := service.GetClientAccessToken(c, &client)
 		if err != nil {
 			global.LOG.Error("get accessToken err: " + err.Error())
 			c.JSON(http.StatusInternalServerError, gin.H{"message": "generate token err"})
@@ -263,21 +263,21 @@ func GetToken(c *gin.Context) {
 	} else if grantType == "device_credential" {
 		id := c.Query("device_id")
 		secret := c.Query("device_secret")
-		var device models.Device
+		var device model.Device
 		if err := internal.TenantDB(c).Where("id = ?", id).First(&device).Error; err != nil {
 			c.String(http.StatusUnauthorized, "invalidate device id")
 			global.LOG.Error("get device id err: " + err.Error())
 			return
 		}
 
-		var deviceSecret models.DeviceSecret
+		var deviceSecret model.DeviceSecret
 		if err := internal.TenantDB(c).Where("device_id = ? AND secret = ?", id, secret).First(&deviceSecret).Error; err != nil {
 			c.String(http.StatusUnauthorized, "invalidate device secret")
 			global.LOG.Error("get device secret err: " + err.Error())
 			return
 		}
 
-		token, err := internal.GetDeviceToken(c, &device)
+		token, err := service.GetDeviceToken(c, &device)
 		if err != nil {
 			global.LOG.Error("get accessToken err: " + err.Error())
 			c.JSON(http.StatusInternalServerError, gin.H{"message": "generate token err"})

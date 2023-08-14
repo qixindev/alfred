@@ -2,9 +2,9 @@ package iam
 
 import (
 	"accounts/internal/controller/internal"
-	"accounts/internal/global"
+	"accounts/internal/model"
 	"accounts/internal/service/iam"
-	"accounts/pkg/models"
+	"accounts/pkg/global"
 	"github.com/gin-gonic/gin"
 	"net/http"
 )
@@ -48,7 +48,7 @@ func ListIamType(c *gin.Context) {
 //	@Success		200
 //	@Router			/accounts/{tenant}/iam/clients/{client}/types [post]
 func NewIamType(c *gin.Context) {
-	var typ models.ResourceType
+	var typ model.ResourceType
 	if err := c.BindJSON(&typ); err != nil {
 		internal.ErrReqPara(c, err)
 		return
@@ -84,7 +84,7 @@ func DeleteIamType(c *gin.Context) {
 	clientId := c.Param("client")
 	typeId := c.Param("typeId")
 	tenant := internal.GetTenant(c)
-	var typ models.ResourceType
+	var typ model.ResourceType
 	if err := internal.TenantDB(c).First(&typ, "client_id = ? AND id = ?", clientId, typeId).Error; err != nil {
 		internal.ErrReqParaCustom(c, "no such resource type")
 		global.LOG.Error("get resource type err: " + err.Error())
@@ -135,7 +135,7 @@ func ListIamResource(c *gin.Context) {
 //	@Success		200
 //	@Router			/accounts/{tenant}/iam/clients/{client}/types/{typeId}/resources [post]
 func NewIamResource(c *gin.Context) {
-	var resource models.Resource
+	var resource model.Resource
 	if err := c.BindJSON(&resource); err != nil {
 		internal.ErrReqPara(c, err)
 		return
@@ -172,7 +172,7 @@ func NewIamResource(c *gin.Context) {
 //	@Success		200
 //	@Router			/accounts/{tenant}/iam/clients/{client}/types/{typeId}/resources/{resourceId} [put]
 func UpdateIamResource(c *gin.Context) {
-	var resource models.Resource
+	var resource model.Resource
 	if err := c.BindJSON(&resource); err != nil {
 		internal.ErrReqPara(c, err)
 		return

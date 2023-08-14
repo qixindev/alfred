@@ -1,31 +1,31 @@
 package service
 
 import (
-	"accounts/internal/controller/types"
-	"accounts/internal/global"
-	"accounts/pkg/models"
+	"accounts/internal/endpoint/req"
+	"accounts/internal/model"
+	"accounts/pkg/global"
 	"errors"
 )
 
-func GetProviderModel(t string) (models.ItfProvider, error) {
+func GetProviderModel(t string) (model.ItfProvider, error) {
 	switch t {
 	case "oauth2":
-		return &models.ProviderOAuth2{}, nil
+		return &model.ProviderOAuth2{}, nil
 	case "dingtalk":
-		return &models.ProviderDingTalk{}, nil
+		return &model.ProviderDingTalk{}, nil
 	case "wecom":
-		return &models.ProviderWeCom{}, nil
+		return &model.ProviderWeCom{}, nil
 	}
 	return nil, errors.New("no such type")
 }
 
-func CreateProviderConfig(p types.ReqProvider) error {
+func CreateProviderConfig(p req.ReqProvider) error {
 	it, err := GetProviderModel(p.Type)
 	if err != nil {
 		return err
 	}
 
-	provider := models.Provider{Name: p.Name, Type: p.Type, TenantId: p.TenantId}
+	provider := model.Provider{Name: p.Name, Type: p.Type, TenantId: p.TenantId}
 	if err = global.DB.Create(&provider).Error; err != nil {
 		return err
 	}
@@ -37,13 +37,13 @@ func CreateProviderConfig(p types.ReqProvider) error {
 	return nil
 }
 
-func UpdateProviderConfig(p types.ReqProvider) error {
+func UpdateProviderConfig(p req.ReqProvider) error {
 	it, err := GetProviderModel(p.Type)
 	if err != nil {
 		return err
 	}
 
-	provider := models.Provider{Name: p.Name, Type: p.Type}
+	provider := model.Provider{Name: p.Name, Type: p.Type}
 	if err = global.DB.Where("tenant_id = ? AND id = ? AND type = ?", p.TenantId, p.ProviderId, p.Type).
 		Updates(&provider).Error; err != nil {
 		return err
@@ -72,7 +72,7 @@ func GetProvider(tenantId uint, providerId uint, t string) (any, error) {
 }
 
 func GetProviderUsers(tenantId uint, providerId uint) (any, error) {
-	var users []models.ProviderUser
+	var users []model.ProviderUser
 	if err := global.DB.Table("provider_users as pu").
 		Select("pu.provider_id", "cu.sub", "u.display_name").
 		Joins("LEFT JOIN users u ON u.id = pu.user_id").
@@ -85,7 +85,7 @@ func GetProviderUsers(tenantId uint, providerId uint) (any, error) {
 	return users, nil
 }
 
-func DeleteProviderConfig(p models.Provider) error {
+func DeleteProviderConfig(p model.Provider) error {
 	pr, err := GetProviderModel(p.Type)
 	if err != nil {
 		return err

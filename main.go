@@ -1,11 +1,11 @@
 package main
 
 import (
+	"accounts/initial"
 	"accounts/internal/controller"
-	"accounts/internal/global"
-	initial2 "accounts/internal/initial"
 	"accounts/pkg/config/env"
-	"accounts/utils"
+	"accounts/pkg/global"
+	"accounts/pkg/utils"
 	"errors"
 	"fmt"
 	"github.com/gin-contrib/cors"
@@ -18,25 +18,25 @@ import (
 
 func InitSystem() error {
 	var err error
-	if err = initial2.InitConfig(); err != nil { // 初始化配置
+	if err = initial.InitConfig(); err != nil { // 初始化配置
 		fmt.Println("Init Config error: " + err.Error())
 		return err
 	}
 
 	// 初始化日志
-	global.LOG = initial2.Zap()
+	global.LOG = initial.Zap()
 	zap.ReplaceGlobals(global.LOG)
 	if global.LOG == nil {
 		fmt.Println("init zap log err: zap log is nil")
 		return errors.New("init zap log err")
 	}
 
-	if err = initial2.InitDB(); err != nil {
+	if err = initial.InitDB(); err != nil {
 		fmt.Println("Init DB error: ", err)
 		return err
 	}
 
-	if err = initial2.CheckFirstRun(); err != nil {
+	if err = initial.CheckFirstRun(); err != nil {
 		fmt.Println("first run err: ", err)
 		return err
 	}
@@ -60,7 +60,7 @@ func main() {
 
 	r := gin.Default()
 	r.Use(cors.Default())
-	cookieSecret := initial2.GetSessionSecret()
+	cookieSecret := initial.GetSessionSecret()
 	store := cookie.NewStore(cookieSecret)
 	store.Options(sessions.Options{
 		MaxAge: 60 * 60 * 24,

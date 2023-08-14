@@ -1,13 +1,13 @@
 package iam
 
 import (
-	"accounts/internal/global"
-	"accounts/pkg/models"
+	"accounts/internal/model"
+	"accounts/pkg/global"
 	"gorm.io/gorm"
 )
 
 func CheckSinglePermission(tenantId, clientUserId uint, resourceId string, actionId string) (bool, error) {
-	var roleActions []models.ResourceTypeRoleAction
+	var roleActions []model.ResourceTypeRoleAction
 	// get all the roles this action supports
 	if err := global.DB.Distinct("role_id").Find(&roleActions, "tenant_id = ? AND action_id = ?", tenantId, actionId).Error; err != nil {
 		return false, err
@@ -17,7 +17,7 @@ func CheckSinglePermission(tenantId, clientUserId uint, resourceId string, actio
 		roleIds[i] = r.RoleId
 	}
 
-	var user models.ResourceRoleUser
+	var user model.ResourceRoleUser
 	if err := global.DB.
 		Where("tenant_id = ? AND resource_id = ? AND client_user_id = ? AND role_id IN ?", tenantId, resourceId, clientUserId, roleIds).
 		First(&user).Error; err != nil {
@@ -40,7 +40,7 @@ func CheckPermission(tenantId, clientUserId uint, resourceId string, actionId st
 			return true, nil // passed
 		}
 
-		var resource models.Resource
+		var resource model.Resource
 		if err := global.DB.First(&resource, "tenant_id = ? AND id = ?", tenantId, currentId).Error; err != nil {
 			return false, err
 		}
@@ -53,32 +53,32 @@ func CheckPermission(tenantId, clientUserId uint, resourceId string, actionId st
 	return false, nil
 }
 
-func GetIamType(tenantId uint, typeId string) (*models.ResourceType, error) {
-	var typ models.ResourceType
+func GetIamType(tenantId uint, typeId string) (*model.ResourceType, error) {
+	var typ model.ResourceType
 	if err := global.DB.First(&typ, "tenant_id = ? AND id = ?", tenantId, typeId).Error; err != nil {
 		return nil, err
 	}
 	return &typ, nil
 }
 
-func GetIamAction(tenantId uint, typeId, actionId string) (*models.ResourceTypeAction, error) {
-	var action models.ResourceTypeAction
+func GetIamAction(tenantId uint, typeId, actionId string) (*model.ResourceTypeAction, error) {
+	var action model.ResourceTypeAction
 	if err := global.DB.First(&action, "tenant_id = ? AND type_id = ? AND id = ?", tenantId, typeId, actionId).Error; err != nil {
 		return nil, err
 	}
 	return &action, nil
 }
 
-func GetIamRole(tenantId uint, typeId, roleId string) (*models.ResourceTypeRole, error) {
-	var role models.ResourceTypeRole
+func GetIamRole(tenantId uint, typeId, roleId string) (*model.ResourceTypeRole, error) {
+	var role model.ResourceTypeRole
 	if err := global.DB.First(&role, "tenant_id = ? AND type_id = ? AND id = ?", tenantId, typeId, roleId).Error; err != nil {
 		return nil, err
 	}
 	return &role, nil
 }
 
-func GetIamResource(tenantId uint, typeId, resourceId string) (*models.Resource, error) {
-	var resource models.Resource
+func GetIamResource(tenantId uint, typeId, resourceId string) (*model.Resource, error) {
+	var resource model.Resource
 	if err := global.DB.First(&resource, "tenant_id = ? AND type_id = ? AND id = ?", tenantId, typeId, resourceId).Error; err != nil {
 		return nil, err
 	}

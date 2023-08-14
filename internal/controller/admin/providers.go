@@ -2,11 +2,11 @@ package admin
 
 import (
 	"accounts/internal/controller/internal"
-	"accounts/internal/controller/types"
-	"accounts/internal/global"
+	"accounts/internal/endpoint/req"
+	"accounts/internal/model"
 	"accounts/internal/service"
-	"accounts/pkg/models"
-	"accounts/utils"
+	"accounts/pkg/global"
+	"accounts/pkg/utils"
 	"github.com/gin-gonic/gin"
 	"net/http"
 )
@@ -21,13 +21,13 @@ import (
 //	@Success		200
 //	@Router			/accounts/admin/{tenant}/providers [get]
 func ListProviders(c *gin.Context) {
-	var providers []models.Provider
+	var providers []model.Provider
 	if err := internal.TenantDB(c).Find(&providers).Error; err != nil {
 		c.Status(http.StatusInternalServerError)
 		global.LOG.Error("get provider err: " + err.Error())
 		return
 	}
-	c.JSON(http.StatusOK, utils.Filter(providers, models.Provider2Dto))
+	c.JSON(http.StatusOK, utils.Filter(providers, model.Provider2Dto))
 }
 
 // GetProvider godoc
@@ -43,7 +43,7 @@ func ListProviders(c *gin.Context) {
 func GetProvider(c *gin.Context) {
 	tenant := internal.GetTenant(c)
 	providerId := c.Param("providerId")
-	var p models.Provider
+	var p model.Provider
 	if err := internal.TenantDB(c).First(&p, "id = ?", providerId).Error; err != nil {
 		c.Status(http.StatusInternalServerError)
 		global.LOG.Error("get provider err: " + err.Error())
@@ -73,7 +73,7 @@ func GetProvider(c *gin.Context) {
 func GetProviderUsers(c *gin.Context) {
 	providerId := c.Param("providerId")
 	tenant := internal.GetTenant(c)
-	var p models.Provider
+	var p model.Provider
 	if err := internal.TenantDB(c).First(&p, "id = ?", providerId).Error; err != nil {
 		c.Status(http.StatusInternalServerError)
 		global.LOG.Error("get provider err: " + err.Error())
@@ -102,7 +102,7 @@ func GetProviderUsers(c *gin.Context) {
 //	@Router			/accounts/admin/{tenant}/providers [post]
 func NewProvider(c *gin.Context) {
 	tenant := internal.GetTenant(c)
-	var provider types.ReqProvider
+	var provider req.ReqProvider
 	if err := c.BindJSON(&provider); err != nil {
 		internal.ErrReqPara(c, err)
 		return
@@ -131,7 +131,7 @@ func NewProvider(c *gin.Context) {
 func UpdateProvider(c *gin.Context) {
 	tenant := internal.GetTenant(c)
 	providerId := c.Param("providerId")
-	var p types.ReqProvider
+	var p req.ReqProvider
 	if err := c.BindJSON(&p); err != nil {
 		internal.ErrReqPara(c, err)
 		return
@@ -160,7 +160,7 @@ func UpdateProvider(c *gin.Context) {
 //	@Router			/accounts/admin/{tenant}/providers/{providerId} [delete]
 func DeleteProvider(c *gin.Context) {
 	providerId := c.Param("providerId")
-	var provider models.Provider
+	var provider model.Provider
 	if err := internal.TenantDB(c).First(&provider, "id = ?", providerId).Error; err != nil {
 		c.Status(http.StatusNotFound)
 		global.LOG.Error("get provider err: " + err.Error())

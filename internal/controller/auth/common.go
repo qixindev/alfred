@@ -1,8 +1,8 @@
 package auth
 
 import (
-	"accounts/internal/global"
-	"accounts/pkg/models"
+	"accounts/internal/model"
+	"accounts/pkg/global"
 	"errors"
 	"github.com/gin-gonic/gin"
 )
@@ -12,7 +12,7 @@ type Provider interface {
 	Auth(string) (string, error)
 
 	// Login Callback when auth completed.
-	Login(*gin.Context) (*models.UserInfo, error)
+	Login(*gin.Context) (*model.UserInfo, error)
 
 	LoginConfig() *gin.H
 
@@ -20,12 +20,12 @@ type Provider interface {
 }
 
 func GetAuthProvider(tenantId uint, providerName string) (Provider, error) {
-	var provider models.Provider
+	var provider model.Provider
 	if err := global.DB.First(&provider, "tenant_id = ? AND name = ?", tenantId, providerName).Error; err != nil {
 		return nil, err
 	}
 	if provider.Type == "oauth2" {
-		var config models.ProviderOAuth2
+		var config model.ProviderOAuth2
 		if err := global.DB.First(&config, "tenant_id = ? AND provider_id = ?", tenantId, provider.Id).Error; err != nil {
 			return nil, err
 		}
@@ -35,7 +35,7 @@ func GetAuthProvider(tenantId uint, providerName string) (Provider, error) {
 		return p, nil
 	}
 	if provider.Type == "dingtalk" {
-		var config models.ProviderDingTalk
+		var config model.ProviderDingTalk
 		if err := global.DB.First(&config, "tenant_id = ? AND provider_id = ?", tenantId, provider.Id).Error; err != nil {
 			return nil, err
 		}
@@ -45,7 +45,7 @@ func GetAuthProvider(tenantId uint, providerName string) (Provider, error) {
 		return p, nil
 	}
 	if provider.Type == "wecom" {
-		var config models.ProviderWeCom
+		var config model.ProviderWeCom
 		if err := global.DB.First(&config, "tenant_id = ? AND provider_id = ?", tenantId, provider.Id).Error; err != nil {
 			return nil, err
 		}

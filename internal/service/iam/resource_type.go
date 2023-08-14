@@ -1,20 +1,20 @@
 package iam
 
 import (
-	"accounts/internal/global"
-	"accounts/pkg/models"
+	"accounts/internal/model"
+	"accounts/pkg/global"
 	"github.com/google/uuid"
 )
 
-func ListResourceTypes(tenantId uint, clientId string) ([]models.ResourceType, error) {
-	var resourceTypes []models.ResourceType
+func ListResourceTypes(tenantId uint, clientId string) ([]model.ResourceType, error) {
+	var resourceTypes []model.ResourceType
 	if err := global.WithTenant(tenantId).Find(&resourceTypes, "client_id = ?", clientId).Error; err != nil {
 		return nil, err
 	}
 	return resourceTypes, nil
 }
 
-func CreateResourceType(tenantId uint, clientId string, resourceType models.ResourceType) (*models.ResourceType, error) {
+func CreateResourceType(tenantId uint, clientId string, resourceType model.ResourceType) (*model.ResourceType, error) {
 	resourceType.TenantId = tenantId
 	resourceType.ClientId = clientId
 	resourceType.Id = uuid.NewString()
@@ -26,35 +26,35 @@ func CreateResourceType(tenantId uint, clientId string, resourceType models.Reso
 
 func DeleteResourceType(tenantId uint, typeId string) error {
 	var roles []string
-	if err := global.DB.Model(models.ResourceTypeRole{}).Select("id").
+	if err := global.DB.Model(model.ResourceTypeRole{}).Select("id").
 		Where("tenant_id = ? and type_id = ?", tenantId, typeId).
 		Find(&roles).Error; err != nil {
 		return err
 	}
 
 	if err := global.DB.Where("tenant_id = ? AND role_id IN ?", tenantId, roles).
-		Delete(&models.ResourceTypeRoleAction{}).Error; err != nil {
+		Delete(&model.ResourceTypeRoleAction{}).Error; err != nil {
 		return err
 	}
 	if err := global.DB.Where("tenant_id = ? AND role_id IN ?", tenantId, roles).
-		Delete(&models.ResourceRoleUser{}).Error; err != nil {
+		Delete(&model.ResourceRoleUser{}).Error; err != nil {
 		return err
 	}
 	if err := global.DB.Where("tenant_id = ? AND type_id = ?", tenantId, typeId).
-		Delete(&models.ResourceTypeRole{}).Error; err != nil {
+		Delete(&model.ResourceTypeRole{}).Error; err != nil {
 		return err
 	}
 
 	if err := global.DB.Where("tenant_id = ? AND type_id = ?", tenantId, typeId).
-		Delete(&models.ResourceTypeAction{}).Error; err != nil {
+		Delete(&model.ResourceTypeAction{}).Error; err != nil {
 		return err
 	}
 	if err := global.DB.Where("tenant_id = ? AND type_id = ?", tenantId, typeId).
-		Delete(&models.Resource{}).Error; err != nil {
+		Delete(&model.Resource{}).Error; err != nil {
 		return err
 	}
 	if err := global.DB.Where("tenant_id = ? AND id = ?", tenantId, typeId).
-		Delete(&models.ResourceType{}).Error; err != nil {
+		Delete(&model.ResourceType{}).Error; err != nil {
 		return err
 	}
 	return nil

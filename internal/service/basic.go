@@ -1,7 +1,7 @@
 package service
 
 import (
-	"accounts/internal/global"
+	"accounts/pkg/global"
 )
 
 func deleteSource(md any, relayList []any, id any, name string) error {

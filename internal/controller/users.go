@@ -1,16 +1,16 @@
 package controller
 
 import (
-	"accounts/internal/global"
-	"accounts/internal/middlewares"
-	"accounts/pkg/dto"
-	"accounts/pkg/models"
+	"accounts/internal/endpoint/dto"
+	"accounts/internal/model"
+	"accounts/pkg/global"
+	"accounts/pkg/middlewares"
 	"github.com/gin-gonic/gin"
 	"net/http"
 )
 
-func GetUser(c *gin.Context) *models.User {
-	return c.MustGet("user").(*models.User)
+func GetUser(c *gin.Context) *model.User {
+	return c.MustGet("user").(*model.User)
 }
 
 // GetUserDetail godoc

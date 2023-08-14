@@ -1,14 +1,14 @@
 package connectors
 
 import (
-	"accounts/pkg/models"
+	"accounts/internal/model"
 	"github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/common"
 	"github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/common/profile"
 	sms "github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/sms/v20210111"
 )
 
 type SmsTcloud struct {
-	Config models.SmsTcloud
+	Config model.SmsTcloud
 }
 
 func (s *SmsTcloud) Send(number string, contents []string) error {

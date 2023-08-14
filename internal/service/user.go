@@ -1,12 +1,12 @@
 package service
 
 import (
-	"accounts/internal/global"
-	"accounts/pkg/models"
+	"accounts/internal/model"
+	"accounts/pkg/global"
 )
 
 func CopyUser(sub string, tenantId uint) error {
-	var clientUser models.ClientUser
+	var clientUser model.ClientUser
 	if err := global.DB.Model(clientUser).Where("sub = ?", sub).First(&clientUser).Error; err != nil {
 		return err
 	}
@@ -25,24 +25,24 @@ func CopyUser(sub string, tenantId uint) error {
 
 func DeleteUser(id uint) error {
 	var clientUser []uint
-	if err := global.DB.Model(models.ClientUser{}).Select("id").Where("user_id = ?", id).Find(&clientUser).Error; err == nil {
+	if err := global.DB.Model(model.ClientUser{}).Select("id").Where("user_id = ?", id).Find(&clientUser).Error; err == nil {
 		if err = global.DB.Where("client_user_id in ?", clientUser).
-			Delete(models.ResourceRoleUser{}).Error; err != nil {
+			Delete(model.ResourceRoleUser{}).Error; err != nil {
 			return err
 		}
 	}
 
-	if err := global.DB.Where("user_id = ?", id).Delete(&models.ClientUser{}).Error; err != nil {
+	if err := global.DB.Where("user_id = ?", id).Delete(&model.ClientUser{}).Error; err != nil {
 		return err
 	}
-	if err := global.DB.Where("user_id = ?", id).Delete(&models.GroupUser{}).Error; err != nil {
+	if err := global.DB.Where("user_id = ?", id).Delete(&model.GroupUser{}).Error; err != nil {
 		return err
 	}
-	if err := global.DB.Where("user_id = ?", id).Delete(&models.ProviderUser{}).Error; err != nil {
+	if err := global.DB.Where("user_id = ?", id).Delete(&model.ProviderUser{}).Error; err != nil {
 		return err
 	}
 
-	if err := global.DB.Where("id = ?", id).Delete(&models.User{}).Error; err != nil {
+	if err := global.DB.Where("id = ?", id).Delete(&model.User{}).Error; err != nil {
 		return err
 	}
 

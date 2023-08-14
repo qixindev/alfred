@@ -1,16 +1,16 @@
 package service
 
 import (
-	"accounts/pkg/models"
+	"accounts/internal/model"
 )
 
 func DeleteProvider(id uint) error {
 	delList := []any{
-		models.ProviderDingTalk{},
-		models.ProviderWeCom{},
-		models.ProviderOAuth2{},
+		model.ProviderDingTalk{},
+		model.ProviderWeCom{},
+		model.ProviderOAuth2{},
 	}
-	if err := deleteSource(models.Provider{}, delList, id, "provider_id"); err != nil {
+	if err := deleteSource(model.Provider{}, delList, id, "provider_id"); err != nil {
 		return err
 	}
 

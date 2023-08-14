@@ -3,9 +3,9 @@ package controller
 import (
 	"accounts/internal/controller/auth"
 	"accounts/internal/controller/internal"
-	"accounts/internal/controller/msg/notify"
-	"accounts/internal/global"
-	"accounts/pkg/models"
+	"accounts/internal/model"
+	"accounts/pkg/client/msg/notify"
+	"accounts/pkg/global"
 	"github.com/gin-gonic/gin"
 	"strings"
 )
@@ -22,14 +22,14 @@ import (
 //	@Success		200
 //	@Router			/accounts/{tenant}/message/{providerId} [post]
 func SendMsg(c *gin.Context) {
-	var in models.SendInfo
+	var in model.SendInfo
 	if err := c.ShouldBindJSON(&in); err != nil {
 		internal.ErrReqPara(c, err)
 		return
 	}
 
 	providerId := c.Param("providerId")
-	var p models.Provider
+	var p model.Provider
 	if err := internal.TenantDB(c).First(&p, "id = ?", providerId).Error; err != nil {
 		internal.ErrorSqlResponse(c, "no such provider")
 		global.LOG.Error("get provider err: " + err.Error())
@@ -93,14 +93,14 @@ func SendMsg(c *gin.Context) {
 //	@Router			/accounts/{tenant}/message/{subId} [get]
 func GetMsg(c *gin.Context) {
 	subId := c.Param("subId")
-	var SendInfo []models.SendInfo
-	if err := internal.TenantDB(c).Model(&models.SendInfo{}).Where("? = ANY(users)", subId).Find(&SendInfo).Error; err != nil {
+	var SendInfo []model.SendInfo
+	if err := internal.TenantDB(c).Model(&model.SendInfo{}).Where("? = ANY(users)", subId).Find(&SendInfo).Error; err != nil {
 		internal.ErrorSqlResponse(c, "failed to get msg")
 		global.LOG.Error("get msg err: " + err.Error())
 		return
 	}
 	var count int64
-	if err := internal.TenantDB(c).Model(&models.SendInfo{}).Where("? = ANY(users)", subId).Count(&count).Error; err != nil {
+	if err := internal.TenantDB(c).Model(&model.SendInfo{}).Where("? = ANY(users)", subId).Count(&count).Error; err != nil {
 		internal.ErrorSqlResponse(c, "failed to get msg")
 		global.LOG.Error("get msg err: " + err.Error())
 		return
@@ -118,12 +118,12 @@ func GetMsg(c *gin.Context) {
 //	@Success		200
 //	@Router			/accounts/{tenant}/message/MarkMsg [put]
 func MarkMsg(c *gin.Context) {
-	var in models.SendInfo
+	var in model.SendInfo
 	if err := c.ShouldBindJSON(&in); err != nil {
 		internal.ErrReqPara(c, err)
 		return
 	}
-	if err := internal.TenantDB(c).Model(&models.SendInfo{}).Where("msg = ?", in.Msg).Update("is_read", in.IsRead).Error; err != nil {
+	if err := internal.TenantDB(c).Model(&model.SendInfo{}).Where("msg = ?", in.Msg).Update("is_read", in.IsRead).Error; err != nil {
 		internal.ErrorSqlResponse(c, "failed to mark msg read")
 		global.LOG.Error("mark msg read err: " + err.Error())
 		return
@@ -143,7 +143,7 @@ func MarkMsg(c *gin.Context) {
 func GetUnreadMsgCount(c *gin.Context) {
 	subId := c.Param("subId")
 	var count int64
-	if err := internal.TenantDB(c).Debug().Model(&models.SendInfo{}).Where("? = ANY(users)", subId).Where("is_read = ?", false).Count(&count).Error; err != nil {
+	if err := internal.TenantDB(c).Debug().Model(&model.SendInfo{}).Where("? = ANY(users)", subId).Where("is_read = ?", false).Count(&count).Error; err != nil {
 		internal.ErrorSqlResponse(c, "failed to get unread msg count")
 		global.LOG.Error("get unread msg count err: " + err.Error())
 		return

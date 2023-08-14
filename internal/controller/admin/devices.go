@@ -2,11 +2,11 @@ package admin
 
 import (
 	"accounts/internal/controller/internal"
-	"accounts/internal/global"
+	"accounts/internal/endpoint/dto"
+	"accounts/internal/model"
 	"accounts/internal/service"
-	"accounts/pkg/dto"
-	"accounts/pkg/models"
-	"accounts/utils"
+	"accounts/pkg/global"
+	"accounts/pkg/utils"
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
 	"net/http"
@@ -23,13 +23,13 @@ import (
 //	@Success		200
 //	@Router			/accounts/admin/{tenant}/devices [get]
 func ListDevices(c *gin.Context) {
-	var devices []models.Device
+	var devices []model.Device
 	if err := internal.TenantDB(c).Find(&devices).Error; err != nil {
 		c.Status(http.StatusInternalServerError)
 		global.LOG.Error("get device err: " + err.Error())
 		return
 	}
-	c.JSON(http.StatusOK, utils.Filter(devices, models.Device2Dto))
+	c.JSON(http.StatusOK, utils.Filter(devices, model.Device2Dto))
 }
 
 // GetDevice godoc
@@ -44,7 +44,7 @@ func ListDevices(c *gin.Context) {
 //	@Router			/accounts/admin/{tenant}/devices/{deviceId} [get]
 func GetDevice(c *gin.Context) {
 	deviceId := c.Param("deviceId")
-	var device models.Device
+	var device model.Device
 	if err := internal.TenantDB(c).First(&device, "id = ?", deviceId).Error; err != nil {
 		c.Status(http.StatusNotFound)
 		global.LOG.Error("get device err: " + err.Error())
@@ -64,7 +64,7 @@ func GetDevice(c *gin.Context) {
 //	@Router			/accounts/admin/{tenant}/devices [post]
 func NewDevice(c *gin.Context) {
 	tenant := internal.GetTenant(c)
-	var device models.Device
+	var device model.Device
 	if err := c.BindJSON(&device); err != nil {
 		internal.ErrReqPara(c, err)
 		return
@@ -79,7 +79,7 @@ func NewDevice(c *gin.Context) {
 		return
 	}
 
-	secret := models.DeviceSecret{
+	secret := model.DeviceSecret{
 		DeviceId: device.Id,
 		Name:     "default",
 		Secret:   uuid.NewString(),
@@ -110,13 +110,13 @@ func NewDevice(c *gin.Context) {
 //	@Router			/accounts/admin/{tenant}/devices/{deviceId} [put]
 func UpdateDevice(c *gin.Context) {
 	deviceId := c.Param("deviceId")
-	var device models.Device
+	var device model.Device
 	if err := internal.TenantDB(c).First(&device, "id = ?", deviceId).Error; err != nil {
 		c.Status(http.StatusNotFound)
 		global.LOG.Error("get device err: " + err.Error())
 		return
 	}
-	var d models.Device
+	var d model.Device
 	if err := c.BindJSON(&d); err != nil {
 		internal.ErrReqPara(c, err)
 		return
@@ -163,19 +163,19 @@ func DeleteDevice(c *gin.Context) {
 //	@Router			/accounts/admin/{tenant}/devices/{deviceId}/secrets [get]
 func ListDeviceSecret(c *gin.Context) {
 	deviceId := c.Param("deviceId")
-	var device models.Device
+	var device model.Device
 	if err := internal.TenantDB(c).First(&device, "id = ?", deviceId).Error; err != nil {
 		c.Status(http.StatusNotFound)
 		global.LOG.Error("get device err: " + err.Error())
 		return
 	}
-	var secrets []models.DeviceSecret
+	var secrets []model.DeviceSecret
 	if err := internal.TenantDB(c).Find(&secrets, "device_id = ?", device.Id).Error; err != nil {
 		c.Status(http.StatusInternalServerError)
 		global.LOG.Error("get device secret err: " + err.Error())
 		return
 	}
-	c.JSON(http.StatusOK, utils.Filter(secrets, models.DeviceSecret2Dto))
+	c.JSON(http.StatusOK, utils.Filter(secrets, model.DeviceSecret2Dto))
 }
 
 // NewDeviceSecret godoc
@@ -190,13 +190,13 @@ func ListDeviceSecret(c *gin.Context) {
 //	@Router			/accounts/admin/{tenant}/devices/{deviceId}/secrets [post]
 func NewDeviceSecret(c *gin.Context) {
 	deviceId := c.Param("deviceId")
-	var device models.Device
+	var device model.Device
 	if err := internal.TenantDB(c).First(&device, "id = ?", deviceId).Error; err != nil {
 		c.Status(http.StatusNotFound)
 		global.LOG.Error("get device err: " + err.Error())
 		return
 	}
-	var secret models.DeviceSecret
+	var secret model.DeviceSecret
 	if err := c.BindJSON(&secret); err != nil {
 		internal.ErrReqPara(c, err)
 		return
@@ -226,7 +226,7 @@ func DeleteDeviceSecret(c *gin.Context) {
 	deviceId := c.Param("deviceId")
 	secretId := c.Param("secretId")
 	tenant := internal.GetTenant(c)
-	var secret models.DeviceSecret
+	var secret model.DeviceSecret
 	if err := internal.TenantDB(c).First(&secret, "tenant_id = ? AND device_id = ? AND id = ?", tenant.Id, deviceId, secretId).Error; err != nil {
 		c.Status(http.StatusNotFound)
 		global.LOG.Error("get device secret err: " + err.Error())
@@ -254,20 +254,20 @@ func DeleteDeviceSecret(c *gin.Context) {
 //	@Router			/accounts/admin/{tenant}/devices/{deviceId}/groups [get]
 func GetDeviceGroups(c *gin.Context) {
 	deviceId := c.Param("deviceId")
-	var device models.Device
+	var device model.Device
 	if err := internal.TenantDB(c).First(&device, "id = ?", deviceId).Error; err != nil {
 		c.Status(http.StatusNotFound)
 		global.LOG.Error("get device err: " + err.Error())
 		return
 	}
-	var groupDevices []models.GroupDevice
+	var groupDevices []model.GroupDevice
 	if err := global.DB.Joins("Group", "group_devices.group_id = groups.id AND group_devices.tenant_id = groups.tenant_id").
 		Find(&groupDevices, "group_devices.tenant_id = ? AND device_id = ?", device.TenantId, device.Id).Error; err != nil {
 		c.Status(http.StatusInternalServerError)
 		global.LOG.Error("get device group err: " + err.Error())
 		return
 	}
-	groups := utils.Filter(groupDevices, func(gd models.GroupDevice) dto.GroupMemberDto {
+	groups := utils.Filter(groupDevices, func(gd model.GroupDevice) dto.GroupMemberDto {
 		return dto.GroupMemberDto{
 			Id:   gd.GroupId,
 			Name: gd.Group.Name,
@@ -288,13 +288,13 @@ func GetDeviceGroups(c *gin.Context) {
 //	@Router			/accounts/admin/{tenant}/devices/{deviceId}/groups [post]
 func NewDeviceGroup(c *gin.Context) {
 	deviceId := c.Param("deviceId")
-	var deviceGroup models.GroupDevice
+	var deviceGroup model.GroupDevice
 	if err := c.BindJSON(&deviceGroup); err != nil {
 		internal.ErrReqPara(c, err)
 		return
 	}
 
-	var device models.Device
+	var device model.Device
 	if err := internal.TenantDB(c).First(&device, "id = ?", deviceId).Error; err != nil {
 		c.Status(http.StatusNotFound)
 		global.LOG.Error("get device err: " + err.Error())
@@ -325,7 +325,7 @@ func NewDeviceGroup(c *gin.Context) {
 //	@Router			/accounts/admin/{tenant}/devices/{deviceId}/groups/{groupId} [put]
 func UpdateDeviceGroup(c *gin.Context) {
 	deviceId := c.Param("deviceId")
-	var device models.Device
+	var device model.Device
 	if err := internal.TenantDB(c).First(&device, "id = ?", deviceId).Error; err != nil {
 		c.Status(http.StatusNotFound)
 		global.LOG.Error("get device err: " + err.Error())
@@ -333,14 +333,14 @@ func UpdateDeviceGroup(c *gin.Context) {
 	}
 
 	groupId := c.Param("groupId")
-	var group models.Group
+	var group model.Group
 	if err := internal.TenantDB(c).First(&group, "id = ?", groupId).Error; err != nil {
 		c.Status(http.StatusNotFound)
 		global.LOG.Error("get group err: " + err.Error())
 		return
 	}
 
-	var groupDevice models.GroupDevice
+	var groupDevice model.GroupDevice
 	if err := internal.TenantDB(c).First(groupDevice, "group_id = ? AND device_id = ?", group.Id, device.Id).Error; err != nil {
 		global.LOG.Error("get group device err: " + err.Error())
 		// Not found, create one.
@@ -371,7 +371,7 @@ func UpdateDeviceGroup(c *gin.Context) {
 //	@Router			/accounts/admin/{tenant}/devices/{deviceId}/groups/{groupId} [delete]
 func DeleteDeviceGroup(c *gin.Context) {
 	deviceId := c.Param("deviceId")
-	var device models.Device
+	var device model.Device
 	if err := internal.TenantDB(c).First(&device, "id = ?", deviceId).Error; err != nil {
 		c.Status(http.StatusNotFound)
 		global.LOG.Error("get device err: " + err.Error())
@@ -379,7 +379,7 @@ func DeleteDeviceGroup(c *gin.Context) {
 	}
 
 	groupId := c.Param("groupId")
-	var groupDevice models.GroupDevice
+	var groupDevice model.GroupDevice
 	if err := internal.TenantDB(c).First(&groupDevice, "device_id = ? AND group_id = ?", device.Id, groupId).Error; err != nil {
 		c.Status(http.StatusNotFound)
 		global.LOG.Error("get group device err: " + err.Error())
@@ -406,7 +406,7 @@ func DeleteDeviceGroup(c *gin.Context) {
 //	@Router			/accounts/admin/{tenant}/devices/code/{userCode} [post]
 func VerifyDeviceCode(c *gin.Context) {
 	userCode := c.Param("userCode")
-	deviceCode := models.DeviceCode{}
+	deviceCode := model.DeviceCode{}
 	if err := internal.TenantDB(c).Where("user_code = ?", userCode).First(&deviceCode).Error; err != nil {
 		c.String(http.StatusInternalServerError, "failed to get user code")
 		global.LOG.Error("set device code err: " + err.Error())

@@ -1,8 +1,8 @@
 package connectors
 
 import (
-	"accounts/internal/global"
-	"accounts/pkg/models"
+	"accounts/internal/model"
+	"accounts/pkg/global"
 )
 
 type SmsConnector interface {
@@ -10,13 +10,13 @@ type SmsConnector interface {
 }
 
 func GetConnector(tenantId, connectorId uint) (SmsConnector, error) {
-	var c models.SmsConnector
+	var c model.SmsConnector
 	if err := global.DB.First(&c, "tenant_id = ? AND id = ?", tenantId, connectorId).Error; err != nil {
 		return nil, err
 	}
 	var connector SmsConnector
 	if c.Type == "tcloud" {
-		var config models.SmsTcloud
+		var config model.SmsTcloud
 		if err := global.DB.First(&config, "tenant_id = ? AND sms_connector_id = ?", c.TenantId, c.Id).Error; err != nil {
 			return nil, err
 		}

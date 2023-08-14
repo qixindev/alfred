@@ -1,29 +1,29 @@
 package service
 
 import (
-	"accounts/pkg/models"
+	"accounts/internal/model"
 	"errors"
 )
 
-func DeleteTenant(tenant models.Tenant) error {
+func DeleteTenant(tenant model.Tenant) error {
 	if tenant.Id == 0 {
 		return errors.New("delete invalid tenant")
 	}
 	delList := []any{
-		models.RedirectUri{}, models.TokenCode{},
-		models.ResourceTypeRoleAction{}, models.ResourceRoleUser{},
-		models.ResourceTypeAction{}, models.Resource{}, models.ResourceTypeRole{}, models.ResourceType{},
+		model.RedirectUri{}, model.TokenCode{},
+		model.ResourceTypeRoleAction{}, model.ResourceRoleUser{},
+		model.ResourceTypeAction{}, model.Resource{}, model.ResourceTypeRole{}, model.ResourceType{},
 
-		models.ProviderUser{}, models.ProviderDingTalk{}, models.ProviderWeCom{},
-		models.ProviderOAuth2{}, models.Provider{},
+		model.ProviderUser{}, model.ProviderDingTalk{}, model.ProviderWeCom{},
+		model.ProviderOAuth2{}, model.Provider{},
 
-		models.GroupUser{}, models.GroupDevice{}, models.Group{},
-		models.DeviceSecret{}, models.DeviceCode{}, models.Device{},
-		models.ClientUser{}, models.ClientSecret{}, models.Client{},
-		models.User{},
+		model.GroupUser{}, model.GroupDevice{}, model.Group{},
+		model.DeviceSecret{}, model.DeviceCode{}, model.Device{},
+		model.ClientUser{}, model.ClientSecret{}, model.Client{},
+		model.User{},
 	}
 
-	if err := deleteSource(models.Tenant{}, delList, tenant.Id, "tenant_id"); err != nil {
+	if err := deleteSource(model.Tenant{}, delList, tenant.Id, "tenant_id"); err != nil {
 		return err
 	}
 	return nil

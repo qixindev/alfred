@@ -1,8 +1,8 @@
 package auth
 
 import (
-	"accounts/pkg/models"
-	"accounts/utils"
+	"accounts/internal/model"
+	"accounts/pkg/utils"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -13,7 +13,7 @@ import (
 )
 
 type ProviderWeCom struct {
-	Config models.ProviderWeCom
+	Config model.ProviderWeCom
 }
 
 func (p ProviderWeCom) Auth(redirectUri string) (string, error) {
@@ -28,7 +28,7 @@ func (p ProviderWeCom) Auth(redirectUri string) (string, error) {
 	return location, nil
 }
 
-func (p ProviderWeCom) Login(c *gin.Context) (*models.UserInfo, error) {
+func (p ProviderWeCom) Login(c *gin.Context) (*model.UserInfo, error) {
 	code := c.Query("code")
 	if code == "" {
 		return nil, errors.New("no auth code")
@@ -72,7 +72,7 @@ func (p ProviderWeCom) Login(c *gin.Context) (*models.UserInfo, error) {
 		return nil, err
 	}
 
-	var userInfo models.UserInfo
+	var userInfo model.UserInfo
 	userInfo.Sub = userId
 	userInfo.DisplayName = utils.GetString(result["userid"])
 	detailInfoUrl := "https://qyapi.weixin.qq.com/cgi-bin/user/get"

@@ -2,10 +2,10 @@ package iam
 
 import (
 	"accounts/internal/controller/internal"
-	"accounts/internal/global"
+	"accounts/internal/model"
 	"accounts/internal/service/iam"
-	"accounts/pkg/models"
-	"accounts/utils"
+	"accounts/pkg/global"
+	"accounts/pkg/utils"
 	"github.com/gin-gonic/gin"
 	"net/http"
 )
@@ -31,7 +31,7 @@ func IsUserActionPermission(c *gin.Context) {
 	userName := c.Param("user")
 	clientId := c.Param("client")
 
-	var clientUser models.ClientUser
+	var clientUser model.ClientUser
 	if err := internal.TenantDB(c).First(&clientUser, "client_id = ? AND sub = ?", clientId, userName).Error; err != nil {
 		internal.ErrReqParaCustom(c, "no such client user")
 		global.LOG.Error("get client user err: " + err.Error())
@@ -66,7 +66,7 @@ func GetIamActionResource(c *gin.Context) {
 	actionId := c.Param("actionId")
 	user := c.Param("user")
 	tenant := internal.GetTenant(c)
-	res := make([]models.ResourceRoleUser, 0)
+	res := make([]model.ResourceRoleUser, 0)
 
 	if err := global.DB.Table("resource_role_users as rru").
 		Select("rru.id", "rru.resource_id", "r.name resource_name", "rru.role_id", "rr.name role_name", "rru.client_user_id", "cu.sub").
@@ -81,7 +81,7 @@ func GetIamActionResource(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, utils.Filter(res, models.ResourceRoleUserDto))
+	c.JSON(http.StatusOK, utils.Filter(res, model.ResourceRoleUserDto))
 }
 
 // GetResourceUserList godoc
@@ -100,7 +100,7 @@ func GetResourceUserList(c *gin.Context) {
 	typeId := c.Param("typeId")
 	resourceId := c.Param("resourceId")
 	tenant := internal.GetTenant(c)
-	var res []models.ResourceRoleUser
+	var res []model.ResourceRoleUser
 	if err := global.DB.Table("resource_role_users as rru").
 		Select("rru.id", "rru.role_id", "ro.name role_name", "rru.client_user_id", "cu.sub", "u.display_name").
 		Joins("LEFT JOIN resources as r ON r.id = rru.resource_id").
@@ -114,5 +114,5 @@ func GetResourceUserList(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, utils.Filter(res, models.ResourceRoleUserDto))
+	c.JSON(http.StatusOK, utils.Filter(res, model.ResourceRoleUserDto))
 }

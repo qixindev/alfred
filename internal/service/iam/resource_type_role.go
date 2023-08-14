@@ -1,20 +1,20 @@
 package iam
 
 import (
-	"accounts/internal/global"
-	"accounts/pkg/models"
+	"accounts/internal/model"
+	"accounts/pkg/global"
 	"github.com/google/uuid"
 )
 
-func ListResourceTypeRoles(tenantId uint, typeId string) ([]models.ResourceTypeRole, error) {
-	var resourceTypeRoles []models.ResourceTypeRole
+func ListResourceTypeRoles(tenantId uint, typeId string) ([]model.ResourceTypeRole, error) {
+	var resourceTypeRoles []model.ResourceTypeRole
 	if err := global.WithTenant(tenantId).Find(&resourceTypeRoles, "type_id = ?", typeId).Error; err != nil {
 		return nil, err
 	}
 	return resourceTypeRoles, nil
 }
 
-func CreateResourceTypeRole(tenantId uint, typeId string, role *models.ResourceTypeRole) (*models.ResourceTypeRole, error) {
+func CreateResourceTypeRole(tenantId uint, typeId string, role *model.ResourceTypeRole) (*model.ResourceTypeRole, error) {
 	role.TenantId = tenantId
 	role.TypeId = typeId
 	role.Id = uuid.NewString()
@@ -26,15 +26,15 @@ func CreateResourceTypeRole(tenantId uint, typeId string, role *models.ResourceT
 
 func DeleteResourceTypeRole(tenantId uint, roleId string) error {
 	if err := global.DB.Where("tenant_id = ? AND role_id = ?", tenantId, roleId).
-		Delete(&models.ResourceTypeRoleAction{}).Error; err != nil {
+		Delete(&model.ResourceTypeRoleAction{}).Error; err != nil {
 		return err
 	}
 	if err := global.DB.Where("tenant_id = ? AND role_id = ?", tenantId, roleId).
-		Delete(&models.ResourceRoleUser{}).Error; err != nil {
+		Delete(&model.ResourceRoleUser{}).Error; err != nil {
 		return err
 	}
 	if err := global.DB.Where("tenant_id = ? AND id = ?", tenantId, roleId).
-		Delete(&models.ResourceTypeRole{}).Error; err != nil {
+		Delete(&model.ResourceTypeRole{}).Error; err != nil {
 		return err
 	}
 	return nil

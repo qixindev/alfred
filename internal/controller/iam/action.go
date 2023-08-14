@@ -2,9 +2,9 @@ package iam
 
 import (
 	"accounts/internal/controller/internal"
-	"accounts/internal/global"
+	"accounts/internal/model"
 	"accounts/internal/service/iam"
-	"accounts/pkg/models"
+	"accounts/pkg/global"
 	"github.com/gin-gonic/gin"
 	"go.uber.org/zap"
 	"net/http"
@@ -46,7 +46,7 @@ func ListIamAction(c *gin.Context) {
 //	@Success		200
 //	@Router			/accounts/{tenant}/iam/clients/{client}/types/{typeId}/actions [post]
 func NewIamAction(c *gin.Context) {
-	var action []models.ResourceTypeAction
+	var action []model.ResourceTypeAction
 	if err := c.BindJSON(&action); err != nil {
 		internal.ErrReqPara(c, err)
 		return
@@ -138,7 +138,7 @@ func ListIamRoleAction(c *gin.Context) {
 //	@Success		200
 //	@Router			/accounts/{tenant}/iam/clients/{client}/types/{typeId}/roles/{roleId}/actions [post]
 func NewIamRoleAction(c *gin.Context) {
-	var roleAction []models.ResourceTypeRoleAction
+	var roleAction []model.ResourceTypeRoleAction
 	if err := c.BindJSON(&roleAction); err != nil {
 		internal.ErrReqPara(c, err)
 		return
@@ -178,7 +178,7 @@ func NewIamRoleAction(c *gin.Context) {
 func DeleteIamRoleAction(c *gin.Context) {
 	actionId := c.Param("actionId")
 	roleId := c.Param("roleId")
-	var roleAction models.ResourceTypeRoleAction
+	var roleAction model.ResourceTypeRoleAction
 	if err := internal.TenantDB(c).First(&roleAction, "role_id = ? AND action_id = ?", roleId, actionId).Error; err != nil {
 		internal.ErrReqParaCustom(c, "no such role action")
 		global.LOG.Error("get resource type role action err: " + err.Error())

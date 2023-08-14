@@ -1,7 +1,7 @@
 package internal
 
 import (
-	"accounts/internal/global"
+	"accounts/pkg/global"
 	"github.com/gin-gonic/gin"
 	"net/http"
 )

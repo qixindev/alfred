@@ -1,13 +1,13 @@
 package iam
 
 import (
-	"accounts/internal/global"
-	"accounts/pkg/models"
+	"accounts/internal/model"
+	"accounts/pkg/global"
 	"errors"
 )
 
-func ListResourceTypeRoleActions(tenantId uint, roleId string) ([]models.ResourceTypeRoleAction, error) {
-	var resourceTypeRoleActions []models.ResourceTypeRoleAction
+func ListResourceTypeRoleActions(tenantId uint, roleId string) ([]model.ResourceTypeRoleAction, error) {
+	var resourceTypeRoleActions []model.ResourceTypeRoleAction
 	if err := global.DB.Table("resource_type_role_actions ra").
 		Select("ra.id", "ra.role_id", "ra.action_id", "ra.tenant_id", "a.name action_name", "r.name role_name").
 		Joins("LEFT JOIN resource_type_actions a ON ra.action_id = a.id").
@@ -18,7 +18,7 @@ func ListResourceTypeRoleActions(tenantId uint, roleId string) ([]models.Resourc
 	return resourceTypeRoleActions, nil
 }
 
-func CreateResourceTypeRoleAction(tenantId uint, roleId string, roleAction []models.ResourceTypeRoleAction) error {
+func CreateResourceTypeRoleAction(tenantId uint, roleId string, roleAction []model.ResourceTypeRoleAction) error {
 	for i := 0; i < len(roleAction); i++ {
 		if roleAction[i].ActionId == "" {
 			return errors.New("actionId should not be empty")
@@ -34,7 +34,7 @@ func CreateResourceTypeRoleAction(tenantId uint, roleId string, roleAction []mod
 
 func DeleteResourceTypeRoleAction(tenantId, roleActionId uint) error {
 	if err := global.DB.Where("tenant_id = ? AND id = ?", tenantId, roleActionId).
-		Delete(&models.ResourceTypeRoleAction{}).Error; err != nil {
+		Delete(&model.ResourceTypeRoleAction{}).Error; err != nil {
 		return err
 	}
 	return nil

@@ -1,8 +1,8 @@
 package auth
 
 import (
-	"accounts/pkg/models"
-	"accounts/utils"
+	"accounts/internal/model"
+	"accounts/pkg/utils"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -13,7 +13,7 @@ import (
 )
 
 type ProviderOAuth2 struct {
-	Config models.ProviderOAuth2
+	Config model.ProviderOAuth2
 }
 
 func (ProviderOAuth2) TableName() string {
@@ -30,7 +30,7 @@ func (p ProviderOAuth2) Auth(redirectUri string) (string, error) {
 	return location, nil
 }
 
-func (p ProviderOAuth2) Login(c *gin.Context) (*models.UserInfo, error) {
+func (p ProviderOAuth2) Login(c *gin.Context) (*model.UserInfo, error) {
 	tenantName := c.Param("tenant")
 	providerName := c.Param("provider")
 	code := c.Query("code")
@@ -65,7 +65,7 @@ func (p ProviderOAuth2) Login(c *gin.Context) (*models.UserInfo, error) {
 	}
 	claims := token.Claims.(jwt.MapClaims)
 
-	return &models.UserInfo{
+	return &model.UserInfo{
 		Sub:         utils.GetString(claims["sub"]),
 		DisplayName: utils.GetString(claims["name"]),
 		FirstName:   utils.GetString(claims["given_name"]),

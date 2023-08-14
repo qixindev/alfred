@@ -1,8 +1,8 @@
 package auth
 
 import (
-	"accounts/pkg/models"
-	"accounts/utils"
+	"accounts/internal/model"
+	"accounts/pkg/utils"
 	"bytes"
 	"encoding/json"
 	"errors"
@@ -14,7 +14,7 @@ import (
 )
 
 type ProviderDingTalk struct {
-	Config models.ProviderDingTalk
+	Config model.ProviderDingTalk
 }
 
 func (p ProviderDingTalk) Auth(redirectUri string) (string, error) {
@@ -36,7 +36,7 @@ type dingTalkTokenRequest struct {
 	GrantType    string `json:"grantType"`
 }
 
-func (p ProviderDingTalk) Login(c *gin.Context) (*models.UserInfo, error) {
+func (p ProviderDingTalk) Login(c *gin.Context) (*model.UserInfo, error) {
 	code := c.Query("code")
 	if code == "" {
 		return nil, errors.New("no auth code")
@@ -90,7 +90,7 @@ func (p ProviderDingTalk) Login(c *gin.Context) (*models.UserInfo, error) {
 		return nil, errors.New("get userinfo failed")
 	}
 
-	return &models.UserInfo{
+	return &model.UserInfo{
 		Sub:         utils.GetString(profile["unionId"]),
 		DisplayName: utils.GetString(profile["nick"]),
 		Email:       utils.GetString(profile["email"]),

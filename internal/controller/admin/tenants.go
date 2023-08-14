@@ -2,10 +2,10 @@ package admin
 
 import (
 	"accounts/internal/controller/internal"
-	"accounts/internal/global"
+	"accounts/internal/model"
 	"accounts/internal/service"
-	"accounts/pkg/models"
-	"accounts/utils"
+	"accounts/pkg/global"
+	"accounts/pkg/utils"
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-gonic/gin"
 	"net/http"
@@ -21,9 +21,9 @@ import (
 //	@Success		200
 //	@Router			/accounts/admin/tenants [get]
 func ListTenants(c *gin.Context) {
-	var tenants []models.Tenant
+	var tenants []model.Tenant
 	username := sessions.Default(c).Get("user")
-	if err := global.DB.Model(models.User{}).Select("t.id, t.name, users.role").
+	if err := global.DB.Model(model.User{}).Select("t.id, t.name, users.role").
 		Joins("LEFT JOIN tenants as t ON t.id = users.tenant_id").
 		Where("users.username = ?", username).
 		Find(&tenants).Error; err != nil {
@@ -32,13 +32,13 @@ func ListTenants(c *gin.Context) {
 		return
 	}
 
-	res := make([]models.Tenant, 0)
+	res := make([]model.Tenant, 0)
 	for _, tenant := range tenants {
 		if tenant.Role == "admin" || tenant.Role == "owner" {
 			res = append(res, tenant)
 		}
 	}
-	c.JSON(http.StatusOK, utils.Filter(res, models.Tenant2Dto))
+	c.JSON(http.StatusOK, utils.Filter(res, model.Tenant2Dto))
 }
 
 // ListUserTenants godoc
@@ -53,13 +53,13 @@ func ListTenants(c *gin.Context) {
 //	@Router			/accounts/admin/tenants/users/{user} [get]
 func ListUserTenants(c *gin.Context) {
 	userId := c.Param("user")
-	var tenants []models.Tenant
+	var tenants []model.Tenant
 	if err := global.DB.Where("sub = ?", userId).Find(&tenants).Error; err != nil {
 		c.Status(http.StatusInternalServerError)
 		global.LOG.Error("get tenants err: " + err.Error())
 		return
 	}
-	c.JSON(http.StatusOK, utils.Filter(tenants, models.Tenant2Dto))
+	c.JSON(http.StatusOK, utils.Filter(tenants, model.Tenant2Dto))
 }
 
 // GetTenant godoc
@@ -74,7 +74,7 @@ func ListUserTenants(c *gin.Context) {
 //	@Router			/accounts/admin/tenants/{tenantId} [get]
 func GetTenant(c *gin.Context) {
 	tenantId := c.Param("tenantId")
-	var tenant models.Tenant
+	var tenant model.Tenant
 	if err := global.DB.First(&tenant, "id = ?", tenantId).Error; err != nil {
 		c.Status(http.StatusNotFound)
 		global.LOG.Error("get tenant err: " + err.Error())
@@ -93,7 +93,7 @@ func GetTenant(c *gin.Context) {
 //	@Success		200
 //	@Router			/accounts/admin/tenants [post]
 func NewTenant(c *gin.Context) {
-	var tenant models.Tenant
+	var tenant model.Tenant
 	if err := c.BindJSON(&tenant); err != nil {
 		internal.ErrReqPara(c, err)
 		return
@@ -130,13 +130,13 @@ func NewTenant(c *gin.Context) {
 //	@Router			/accounts/admin/tenants/{tenantId} [put]
 func UpdateTenant(c *gin.Context) {
 	tenantId := c.Param("tenantId")
-	var tenant models.Tenant
+	var tenant model.Tenant
 	if err := global.DB.First(&tenant, "id = ?", tenantId).Error; err != nil {
 		c.Status(http.StatusNotFound)
 		global.LOG.Error("get tenant err: " + err.Error())
 		return
 	}
-	var t models.Tenant
+	var t model.Tenant
 	if err := c.BindJSON(&t); err != nil {
 		internal.ErrReqPara(c, err)
 		return
@@ -162,7 +162,7 @@ func UpdateTenant(c *gin.Context) {
 //	@Router			/accounts/admin/tenants/{tenantId} [delete]
 func DeleteTenant(c *gin.Context) {
 	tenantId := c.Param("tenantId")
-	var tenant models.Tenant
+	var tenant model.Tenant
 	if err := global.DB.First(&tenant, "id = ?", tenantId).Error; err != nil {
 		c.Status(http.StatusNotFound)
 		global.LOG.Error("get tenant err: " + err.Error())
@@ -188,7 +188,7 @@ func DeleteTenant(c *gin.Context) {
 //	@Router			/accounts/admin/tenants/{tenantId}/secrets/{secretId} [delete]
 func DeleteTenantSecret(c *gin.Context) {
 	tenantId := c.Param("tenantId")
-	var tenant models.Tenant
+	var tenant model.Tenant
 	if err := global.DB.First(&tenant, "id = ?", tenantId).Error; err != nil {
 		c.Status(http.StatusNotFound)
 		global.LOG.Error("get tenant err: " + err.Error())
@@ -215,7 +215,7 @@ func DeleteTenantSecret(c *gin.Context) {
 //	@Router			/accounts/admin/tenants/{tenantId}/secrets [post]
 func NewTenantSecret(c *gin.Context) {
 	tenantId := c.Param("tenantId")
-	var tenant models.Tenant
+	var tenant model.Tenant
 	if err := global.DB.First(&tenant, "id = ?", tenantId).Error; err != nil {
 		c.Status(http.StatusNotFound)
 		global.LOG.Error("get tenant err: " + err.Error())

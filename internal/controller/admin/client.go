@@ -2,9 +2,9 @@ package admin
 
 import (
 	"accounts/internal/controller/internal"
-	"accounts/internal/global"
-	"accounts/pkg/models"
-	"accounts/utils"
+	"accounts/internal/model"
+	"accounts/pkg/global"
+	"accounts/pkg/utils"
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
 	"net/http"
@@ -20,12 +20,12 @@ import (
 //	@Success		200
 //	@Router			/accounts/admin/{tenant}/clients [get]
 func ListClients(c *gin.Context) {
-	var clients []models.Client
+	var clients []model.Client
 	if err := internal.TenantDB(c).Find(&clients).Error; err != nil {
 		c.Status(http.StatusInternalServerError)
 		return
 	}
-	c.JSON(http.StatusOK, utils.Filter(clients, models.Client2Dto))
+	c.JSON(http.StatusOK, utils.Filter(clients, model.Client2Dto))
 }
 
 // GetClient godoc
@@ -40,7 +40,7 @@ func ListClients(c *gin.Context) {
 //	@Router			/accounts/admin/{tenant}/clients/{clientId} [get]
 func GetClient(c *gin.Context) {
 	clientId := c.Param("clientId")
-	var client models.Client
+	var client model.Client
 	if err := internal.TenantDB(c).First(&client, "id = ?", clientId).Error; err != nil {
 		c.Status(http.StatusNotFound)
 		global.LOG.Error("get client err: " + err.Error())
@@ -59,7 +59,7 @@ func GetClient(c *gin.Context) {
 //	@Success		200
 //	@Router			/accounts/admin/{tenant}/clients/default [get]
 func GetDefaultClient(c *gin.Context) {
-	var client models.Client
+	var client model.Client
 	if err := internal.TenantDB(c).First(&client, "name = ?", "default").Error; err != nil {
 		c.Status(http.StatusNotFound)
 		global.LOG.Error("get default client err: " + err.Error())
@@ -80,7 +80,7 @@ func GetDefaultClient(c *gin.Context) {
 //	@Router			/accounts/admin/{tenant}/clients [post]
 func NewClient(c *gin.Context) {
 	tenant := internal.GetTenant(c)
-	var client models.Client
+	var client model.Client
 	if err := c.BindJSON(&client); err != nil {
 		internal.ErrReqPara(c, err)
 		return
@@ -96,7 +96,7 @@ func NewClient(c *gin.Context) {
 		return
 	}
 
-	if err := global.DB.Create(&models.ClientSecret{
+	if err := global.DB.Create(&model.ClientSecret{
 		ClientId: client.Id, Name: client.Name, Secret: uuid.NewString(), TenantId: tenant.Id,
 	}).Error; err != nil {
 		c.String(http.StatusConflict, "failed to create client secret")
@@ -119,13 +119,13 @@ func NewClient(c *gin.Context) {
 //	@Router			/accounts/admin/{tenant}/clients/{clientId} [put]
 func UpdateClient(c *gin.Context) {
 	clientId := c.Param("clientId")
-	var client models.Client
+	var client model.Client
 	if err := internal.TenantDB(c).First(&client, "id = ?", clientId).Error; err != nil {
 		c.Status(http.StatusNotFound)
 		global.LOG.Error("get client err: " + err.Error())
 		return
 	}
-	var cli models.Client
+	var cli model.Client
 	if err := c.BindJSON(&cli); err != nil {
 		internal.ErrReqPara(c, err)
 		return
@@ -151,7 +151,7 @@ func UpdateClient(c *gin.Context) {
 //	@Router			/accounts/admin/{tenant}/clients/{clientId} [delete]
 func DeleteClient(c *gin.Context) {
 	clientId := c.Param("clientId")
-	var client models.Client
+	var client model.Client
 	if err := internal.TenantDB(c).First(&client, "id = ?", clientId).Error; err != nil {
 		c.Status(http.StatusNotFound)
 		global.LOG.Error("get client err: " + err.Error())
@@ -177,21 +177,21 @@ func DeleteClient(c *gin.Context) {
 //	@Router			/accounts/admin/{tenant}/clients/{clientId}/redirect-uris [get]
 func ListClientRedirectUri(c *gin.Context) {
 	clientId := c.Param("clientId")
-	var client models.Client
+	var client model.Client
 	if err := internal.TenantDB(c).First(&client, "id = ?", clientId).Error; err != nil {
 		c.Status(http.StatusNotFound)
 		global.LOG.Error("get client err: " + err.Error())
 		return
 	}
 
-	var uris []models.RedirectUri
+	var uris []model.RedirectUri
 	if err := internal.TenantDB(c).Find(&uris, "client_id = ?", client.Id).Error; err != nil {
 		c.Status(http.StatusInternalServerError)
 		global.LOG.Error("get redirect-uris err: " + err.Error())
 		return
 	}
 
-	c.JSON(http.StatusOK, utils.Filter(uris, models.RedirectUri2Dto))
+	c.JSON(http.StatusOK, utils.Filter(uris, model.RedirectUri2Dto))
 }
 
 // NewClientRedirectUri godoc
@@ -205,13 +205,13 @@ func ListClientRedirectUri(c *gin.Context) {
 //	@Router			/accounts/admin/{tenant}/clients/{clientId}/redirect-uris [post]
 func NewClientRedirectUri(c *gin.Context) {
 	clientId := c.Param("clientId")
-	var client models.Client
+	var client model.Client
 	if err := internal.TenantDB(c).First(&client, "id = ?", clientId).Error; err != nil {
 		c.Status(http.StatusNotFound)
 		global.LOG.Error("get client err: " + err.Error())
 		return
 	}
-	var uri models.RedirectUri
+	var uri model.RedirectUri
 	if err := c.BindJSON(&uri); err != nil {
 		internal.ErrReqPara(c, err)
 		return
@@ -237,13 +237,13 @@ func NewClientRedirectUri(c *gin.Context) {
 func UpdateClientRedirectUri(c *gin.Context) {
 	clientId := c.Param("clientId")
 	uriId := c.Param("uriId")
-	var newUri models.RedirectUri
+	var newUri model.RedirectUri
 	if err := c.BindJSON(&newUri); err != nil {
 		internal.ErrReqPara(c, err)
 		return
 	}
 
-	var uri models.RedirectUri
+	var uri model.RedirectUri
 	if err := internal.TenantDB(c).First(&uri, "client_id = ? AND id = ?", clientId, uriId).Error; err != nil {
 		c.Status(http.StatusNotFound)
 		global.LOG.Error("get client err: " + err.Error())
@@ -274,7 +274,7 @@ func DeleteClientRedirectUri(c *gin.Context) {
 	clientId := c.Param("clientId")
 	uriId := c.Param("uriId")
 	tenant := internal.GetTenant(c)
-	var uri models.RedirectUri
+	var uri model.RedirectUri
 	if err := internal.TenantDB(c).First(&uri, "tenant_id = ? AND client_id = ? AND id = ?", tenant.Id, clientId, uriId).Error; err != nil {
 		c.Status(http.StatusNotFound)
 		global.LOG.Error("get redirect uri err: " + err.Error())
@@ -302,19 +302,19 @@ func DeleteClientRedirectUri(c *gin.Context) {
 //	@Router			/accounts/admin/{tenant}/clients/{clientId}/secrets [get]
 func ListClientSecret(c *gin.Context) {
 	clientId := c.Param("clientId")
-	var client models.Client
+	var client model.Client
 	if err := internal.TenantDB(c).First(&client, "id = ?", clientId).Error; err != nil {
 		c.Status(http.StatusNotFound)
 		global.LOG.Error("get client err: " + err.Error())
 		return
 	}
-	var secrets []models.ClientSecret
+	var secrets []model.ClientSecret
 	if err := internal.TenantDB(c).Find(&secrets, "client_id = ?", client.Id).Error; err != nil {
 		c.Status(http.StatusInternalServerError)
 		global.LOG.Error("get clients secret err: " + err.Error())
 		return
 	}
-	c.JSON(http.StatusOK, utils.Filter(secrets, models.ClientSecret2Dto))
+	c.JSON(http.StatusOK, utils.Filter(secrets, model.ClientSecret2Dto))
 }
 
 // NewClientSecret godoc
@@ -329,13 +329,13 @@ func ListClientSecret(c *gin.Context) {
 //	@Router			/accounts/admin/{tenant}/clients/{clientId}/secrets [post]
 func NewClientSecret(c *gin.Context) {
 	clientId := c.Param("clientId")
-	var client models.Client
+	var client model.Client
 	if err := internal.TenantDB(c).First(&client, "id = ?", clientId).Error; err != nil {
 		c.Status(http.StatusNotFound)
 		global.LOG.Error("get client err: " + err.Error())
 		return
 	}
-	var secret models.ClientSecret
+	var secret model.ClientSecret
 	if err := c.BindJSON(&secret); err != nil {
 		internal.ErrReqPara(c, err)
 		return
@@ -365,7 +365,7 @@ func DeleteClientSecret(c *gin.Context) {
 	clientId := c.Param("clientId")
 	secretId := c.Param("secretId")
 	tenant := internal.GetTenant(c)
-	var secret models.ClientSecret
+	var secret model.ClientSecret
 	if err := internal.TenantDB(c).First(&secret, "tenant_id = ? AND client_id = ? AND id = ?", tenant.Id, clientId, secretId).Error; err != nil {
 		c.Status(http.StatusNotFound)
 		global.LOG.Error("get client secret err: " + err.Error())
@@ -395,7 +395,7 @@ func ListClientUsers(c *gin.Context) {
 	var clientUser []struct {
 		Sub      string `json:"sub"`
 		ClientId string `json:"clientId"`
-		models.User
+		model.User
 	}
 	clientId := c.Param("clientId")
 	if err := global.DB.Table("client_users cu").
@@ -425,7 +425,7 @@ func GetClientUsers(c *gin.Context) {
 	var clientUser struct {
 		Sub      string `json:"sub"`
 		ClientId string `json:"clientId"`
-		models.User
+		model.User
 	}
 	clientId := c.Param("clientId")
 	subId := c.Param("subId")

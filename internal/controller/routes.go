@@ -2,9 +2,9 @@ package controller
 
 import (
 	_ "accounts/docs"
-	admin2 "accounts/internal/controller/admin"
+	"accounts/internal/controller/admin"
 	"accounts/internal/controller/iam"
-	"accounts/internal/middlewares"
+	"accounts/pkg/middlewares"
 	"github.com/gin-contrib/static"
 	"github.com/gin-gonic/gin"
 	swaggerFiles "github.com/swaggo/files"
@@ -29,15 +29,15 @@ func AddRoutes(r *gin.Engine) {
 
 	adminApi := r.RouterGroup.Group("/accounts/admin/:tenant", middlewares.MultiTenancy, middlewares.AuthorizedAdmin)
 	{
-		admin2.AddAdminGroupsRoutes(adminApi)
-		admin2.AddAdminUsersRoutes(adminApi)
-		admin2.AddAdminDevicesRoutes(adminApi)
-		admin2.AddAdminProvidersRoutes(adminApi)
-		admin2.AddAdminClientsRoutes(adminApi)
+		admin.AddAdminGroupsRoutes(adminApi)
+		admin.AddAdminUsersRoutes(adminApi)
+		admin.AddAdminDevicesRoutes(adminApi)
+		admin.AddAdminProvidersRoutes(adminApi)
+		admin.AddAdminClientsRoutes(adminApi)
 	}
 
 	adminRouter := r.RouterGroup.Group("/accounts/admin", middlewares.MultiTenancy, middlewares.AuthorizedAdmin)
-	admin2.AddAdminTenantsRoutes(adminRouter) // all tenants
+	admin.AddAdminTenantsRoutes(adminRouter) // all tenants
 
 	iamRouter := r.RouterGroup.Group("/accounts/:tenant/iam/clients/:client", middlewares.MultiTenancy, middlewares.AuthorizedAdmin)
 	iam.AddIamRoutes(iamRouter)

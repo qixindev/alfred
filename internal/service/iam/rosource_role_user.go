@@ -1,12 +1,12 @@
 package iam
 
 import (
-	"accounts/internal/global"
-	"accounts/pkg/models"
+	"accounts/internal/model"
+	"accounts/pkg/global"
 )
 
-func ListResourcesRoleUsers(tenantId uint, resourceId string, roleId string) ([]models.ResourceRoleUser, error) {
-	var resourceRoleUsers []models.ResourceRoleUser
+func ListResourcesRoleUsers(tenantId uint, resourceId string, roleId string) ([]model.ResourceRoleUser, error) {
+	var resourceRoleUsers []model.ResourceRoleUser
 	if err := global.DB.Table("resource_role_users as rru").
 		Select("rru.id", "rru.resource_id", "rru.role_id", "r.name resource_name",
 			"rr.name role_name", "rru.client_user_id", "cu.sub", "u.display_name").
@@ -21,7 +21,7 @@ func ListResourcesRoleUsers(tenantId uint, resourceId string, roleId string) ([]
 	return resourceRoleUsers, nil
 }
 
-func CreateResourceRoleUser(tenantId uint, roleUser []models.ResourceRoleUser) error {
+func CreateResourceRoleUser(tenantId uint, roleUser []model.ResourceRoleUser) error {
 	if err := global.WithTenant(tenantId).Create(roleUser).Error; err != nil {
 		return err
 	}
@@ -30,7 +30,7 @@ func CreateResourceRoleUser(tenantId uint, roleUser []models.ResourceRoleUser) e
 
 func DeleteResourceRoleUser(tenantId, roleUserId uint) error {
 	if err := global.DB.Where("tenant_id = ? AND id = ?", tenantId, roleUserId).
-		Delete(&models.ResourceRoleUser{}).Error; err != nil {
+		Delete(&model.ResourceRoleUser{}).Error; err != nil {
 		return err
 	}
 	return nil

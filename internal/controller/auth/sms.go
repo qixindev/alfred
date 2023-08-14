@@ -2,8 +2,8 @@ package auth
 
 import (
 	"accounts/internal/controller/connectors"
-	"accounts/internal/global"
-	"accounts/pkg/models"
+	"accounts/internal/model"
+	"accounts/pkg/global"
 	"errors"
 	"fmt"
 	"github.com/gin-gonic/gin"
@@ -12,7 +12,7 @@ import (
 )
 
 type ProviderSms struct {
-	Config models.ProviderSms
+	Config model.ProviderSms
 }
 
 func (p *ProviderSms) Auth(number string) (string, error) {
@@ -21,7 +21,7 @@ func (p *ProviderSms) Auth(number string) (string, error) {
 		return "", err
 	}
 
-	var phoneVerification models.PhoneVerification
+	var phoneVerification model.PhoneVerification
 	if strings.HasPrefix(number, "+86") == false {
 		return "", errors.New("only +86 suffix supported")
 	}
@@ -52,17 +52,17 @@ func (p *ProviderSms) Auth(number string) (string, error) {
 	return "sent", nil
 }
 
-func (p *ProviderSms) Login(c *gin.Context) (*models.UserInfo, error) {
+func (p *ProviderSms) Login(c *gin.Context) (*model.UserInfo, error) {
 	phone := c.PostForm("phone")
 	code := c.PostForm("code")
-	var v models.PhoneVerification
+	var v model.PhoneVerification
 	if err := global.DB.First(&v, "phone = ? AND code = ?", phone, code).Error; err != nil {
 		return nil, err
 	}
 	if err := global.DB.Delete(&v).Error; err != nil {
 		return nil, err
 	}
-	u := models.UserInfo{
+	u := model.UserInfo{
 		Sub:   phone,
 		Phone: phone,
 	}

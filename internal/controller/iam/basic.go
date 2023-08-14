@@ -2,13 +2,13 @@ package iam
 
 import (
 	"accounts/internal/controller/internal"
-	"accounts/pkg/models"
+	"accounts/internal/model"
 	"github.com/gin-gonic/gin"
 )
 
-func GetClientFromCid(c *gin.Context) (*models.Client, error) {
+func GetClientFromCid(c *gin.Context) (*model.Client, error) {
 	cid := c.Param("client")
-	var client models.Client
+	var client model.Client
 	if err := internal.TenantDB(c).First(&client, "id = ?", cid).Error; err != nil {
 		return nil, err
 	}

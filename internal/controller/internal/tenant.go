@@ -1,8 +1,8 @@
 package internal
 
 import (
-	"accounts/internal/global"
-	"accounts/pkg/models"
+	"accounts/internal/model"
+	"accounts/pkg/global"
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
 )
@@ -12,6 +12,6 @@ func TenantDB(c *gin.Context) *gorm.DB {
 	return global.DB.Where("tenant_id = ?", tenant.Id)
 }
 
-func GetTenant(c *gin.Context) *models.Tenant {
-	return c.MustGet("tenant").(*models.Tenant)
+func GetTenant(c *gin.Context) *model.Tenant {
+	return c.MustGet("tenant").(*model.Tenant)
 }

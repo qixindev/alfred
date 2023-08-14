@@ -1,8 +1,8 @@
 package service
 
 import (
-	"accounts/internal/global"
-	"accounts/pkg/models"
+	"accounts/internal/model"
+	"accounts/pkg/global"
 	"errors"
 	"net/url"
 )
@@ -12,19 +12,19 @@ func DeleteClient(clientId string) error {
 		return errors.New("delete invalid client")
 	}
 	delList := []any{
-		models.RedirectUri{}, models.TokenCode{},
-		models.ResourceTypeRoleAction{}, models.ResourceRoleUser{},
-		models.ResourceTypeAction{}, models.Resource{}, models.ResourceTypeRole{}, models.ResourceType{},
+		model.RedirectUri{}, model.TokenCode{},
+		model.ResourceTypeRoleAction{}, model.ResourceRoleUser{},
+		model.ResourceTypeAction{}, model.Resource{}, model.ResourceTypeRole{}, model.ResourceType{},
 
-		models.ProviderUser{}, models.ProviderDingTalk{}, models.ProviderWeCom{},
-		models.ProviderOAuth2{}, models.Provider{},
+		model.ProviderUser{}, model.ProviderDingTalk{}, model.ProviderWeCom{},
+		model.ProviderOAuth2{}, model.Provider{},
 
-		models.GroupUser{}, models.GroupDevice{}, models.Group{},
-		models.DeviceSecret{}, models.DeviceCode{}, models.Device{},
-		models.ClientUser{}, models.ClientSecret{},
+		model.GroupUser{}, model.GroupDevice{}, model.Group{},
+		model.DeviceSecret{}, model.DeviceCode{}, model.Device{},
+		model.ClientUser{}, model.ClientSecret{},
 	}
 
-	if err := deleteSource(models.Client{}, delList, clientId, "client_id"); err != nil {
+	if err := deleteSource(model.Client{}, delList, clientId, "client_id"); err != nil {
 		return err
 	}
 	return nil
@@ -37,7 +37,7 @@ func IsValidateUri(tenantId uint, clientId, uri string) error {
 	}
 
 	host := parsedURL.Scheme + "://" + parsedURL.Host
-	if err = global.DB.First(&models.RedirectUri{}, "tenant_id = ? AND client_id = ? AND redirect_uri = ?", tenantId, clientId, host).Error; err != nil {
+	if err = global.DB.First(&model.RedirectUri{}, "tenant_id = ? AND client_id = ? AND redirect_uri = ?", tenantId, clientId, host).Error; err != nil {
 		return err
 	}
 

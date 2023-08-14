@@ -2,10 +2,10 @@ package iam
 
 import (
 	"accounts/internal/controller/internal"
-	"accounts/internal/global"
+	"accounts/internal/model"
 	"accounts/internal/service/iam"
-	"accounts/pkg/models"
-	"accounts/utils"
+	"accounts/pkg/global"
+	"accounts/pkg/utils"
 	"github.com/gin-gonic/gin"
 	"go.uber.org/zap"
 	"net/http"
@@ -48,7 +48,7 @@ func ListIamRole(c *gin.Context) {
 //	@Success		200
 //	@Router			/accounts/{tenant}/iam/clients/{client}/types/{typeId}/roles [post]
 func NewIamRole(c *gin.Context) {
-	var role models.ResourceTypeRole
+	var role model.ResourceTypeRole
 	if err := c.BindJSON(&role); err != nil {
 		internal.ErrReqPara(c, err)
 		return
@@ -119,7 +119,7 @@ func ListIamResourceRole(c *gin.Context) {
 		global.LOG.Error("list resource role users err: " + err.Error())
 		return
 	}
-	c.JSON(http.StatusOK, utils.Filter(roleUsers, models.ResourceRoleUserDto))
+	c.JSON(http.StatusOK, utils.Filter(roleUsers, model.ResourceRoleUserDto))
 }
 
 // NewIamResourceRole godoc
@@ -137,7 +137,7 @@ func ListIamResourceRole(c *gin.Context) {
 //	@Success		200
 //	@Router			/accounts/{tenant}/iam/clients/{client}/types/{typeId}/resources/{resourceId}/roles/{roleId}/users [post]
 func NewIamResourceRole(c *gin.Context) {
-	var roleUser []models.ResourceRoleUser
+	var roleUser []model.ResourceRoleUser
 	if err := c.BindJSON(&roleUser); err != nil {
 		internal.ErrReqPara(c, err)
 		return
@@ -185,7 +185,7 @@ func DeleteIamResourceRoleUser(c *gin.Context) {
 	clientId := c.Param("client")
 	tenant := internal.GetTenant(c)
 
-	var roleUser models.ResourceRoleUser
+	var roleUser model.ResourceRoleUser
 	if err := global.DB.Table("resource_role_users as ru").Select("ru.id").
 		Joins("LEFT JOIN client_users as cu ON ru.client_user_id = cu.id").
 		Where("ru.tenant_id = ? AND cu.client_id = ? AND ru.resource_id = ? AND ru.role_id = ? AND cu.sub = ?",
@@ -235,7 +235,7 @@ func CreateAllTypeRole(c *gin.Context) {
 		return
 	}
 	for _, resource := range resources {
-		roleUser := []models.ResourceRoleUser{{
+		roleUser := []model.ResourceRoleUser{{
 			RoleId:       c.Param("roleId"),
 			TenantId:     tenant.Id,
 			ResourceId:   resource.Id,

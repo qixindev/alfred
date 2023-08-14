@@ -2,10 +2,10 @@ package admin
 
 import (
 	"accounts/internal/controller/internal"
-	"accounts/internal/global"
-	"accounts/pkg/dto"
-	"accounts/pkg/models"
-	"accounts/utils"
+	"accounts/internal/endpoint/dto"
+	"accounts/internal/model"
+	"accounts/pkg/global"
+	"accounts/pkg/utils"
 	"github.com/gin-gonic/gin"
 	"net/http"
 )
@@ -20,13 +20,13 @@ import (
 //	@Success		200
 //	@Router			/accounts/admin/{tenant}/groups [get]
 func ListGroups(c *gin.Context) {
-	var groups []models.Group
+	var groups []model.Group
 	if err := internal.TenantDB(c).Find(&groups).Error; err != nil {
 		c.Status(http.StatusInternalServerError)
 		global.LOG.Error("get group err: " + err.Error())
 		return
 	}
-	c.JSON(http.StatusOK, utils.Filter(groups, models.Group2Dto))
+	c.JSON(http.StatusOK, utils.Filter(groups, model.Group2Dto))
 }
 
 // GetGroup godoc
@@ -41,7 +41,7 @@ func ListGroups(c *gin.Context) {
 //	@Router			/accounts/admin/{tenant}/groups/{groupId} [get]
 func GetGroup(c *gin.Context) {
 	groupId := c.Param("groupId")
-	var group models.Group
+	var group model.Group
 	if err := internal.TenantDB(c).First(&group, "id = ?", groupId).Error; err != nil {
 		c.Status(http.StatusNotFound)
 		global.LOG.Error("get group err: " + err.Error())
@@ -61,7 +61,7 @@ func GetGroup(c *gin.Context) {
 //	@Router			/accounts/admin/{tenant}/groups [post]
 func NewGroup(c *gin.Context) {
 	tenant := internal.GetTenant(c)
-	var group models.Group
+	var group model.Group
 	if err := c.BindJSON(&group); err != nil {
 		internal.ErrReqPara(c, err)
 		return
@@ -87,13 +87,13 @@ func NewGroup(c *gin.Context) {
 //	@Router			/accounts/admin/{tenant}/groups/{groupId} [put]
 func UpdateGroup(c *gin.Context) {
 	groupId := c.Param("groupId")
-	var group models.Group
+	var group model.Group
 	if err := internal.TenantDB(c).First(&group, "id = ?", groupId).Error; err != nil {
 		c.Status(http.StatusNotFound)
 		global.LOG.Error("get group err: " + err.Error())
 		return
 	}
-	var g models.Group
+	var g model.Group
 	if err := c.BindJSON(&g); err != nil {
 		internal.ErrReqPara(c, err)
 		return
@@ -120,7 +120,7 @@ func UpdateGroup(c *gin.Context) {
 //	@Router			/accounts/admin/{tenant}/groups/{groupId} [delete]
 func DeleteGroup(c *gin.Context) {
 	groupId := c.Param("groupId")
-	var group models.Group
+	var group model.Group
 	if err := internal.TenantDB(c).First(&group, "id = ?", groupId).Error; err != nil {
 		c.Status(http.StatusNotFound)
 		global.LOG.Error("get group err: " + err.Error())
@@ -146,7 +146,7 @@ func DeleteGroup(c *gin.Context) {
 //	@Router			/accounts/admin/{tenant}/groups/{groupId}/member [get]
 func GetGroupMembers(c *gin.Context) {
 	groupId := c.Param("groupId")
-	var group models.Group
+	var group model.Group
 	if err := internal.TenantDB(c).First(&group, "id = ?", groupId).Error; err != nil {
 		c.Status(http.StatusNotFound)
 		global.LOG.Error("get group err: " + err.Error())
@@ -154,7 +154,7 @@ func GetGroupMembers(c *gin.Context) {
 	}
 
 	var members []dto.GroupMemberDto
-	var groups []models.Group
+	var groups []model.Group
 	if err := internal.TenantDB(c).Find(&groups, "parent_id = ?", group.Id).Error; err != nil {
 		c.Status(http.StatusInternalServerError)
 		global.LOG.Error("get group err: " + err.Error())
@@ -164,7 +164,7 @@ func GetGroupMembers(c *gin.Context) {
 		members = append(members, g.GroupMemberDto())
 	}
 
-	var groupUsers []models.GroupUser
+	var groupUsers []model.GroupUser
 	if err := global.DB.Joins("User", "group_users.user_id = users.id AND group_users.tenant_id = users.tenant_id").
 		Find(&groupUsers, "group_users.tenant_id = ? AND group_id = ?", group.TenantId, group.Id).Error; err != nil {
 		c.Status(http.StatusInternalServerError)
@@ -175,7 +175,7 @@ func GetGroupMembers(c *gin.Context) {
 		members = append(members, u.GroupMemberDto())
 	}
 
-	var groupDevices []models.GroupDevice
+	var groupDevices []model.GroupDevice
 	if err := global.DB.Joins("Device", "group_devices.device_id = devices.id AND group_devices.tenant_id = devices.tenant_id").
 		Find(&groupDevices, "group_devices.tenant_id = ? AND group_id = ?", group.TenantId, group.Id).Error; err != nil {
 		c.Status(http.StatusInternalServerError)

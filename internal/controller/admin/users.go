@@ -2,11 +2,11 @@ package admin
 
 import (
 	"accounts/internal/controller/internal"
-	"accounts/internal/global"
+	"accounts/internal/endpoint/dto"
+	"accounts/internal/model"
 	"accounts/internal/service"
-	"accounts/pkg/dto"
-	"accounts/pkg/models"
-	"accounts/utils"
+	"accounts/pkg/global"
+	"accounts/pkg/utils"
 	"github.com/gin-gonic/gin"
 	"net/http"
 )
@@ -21,13 +21,13 @@ import (
 //	@Success		200
 //	@Router			/accounts/admin/{tenant}/users [get]
 func ListUsers(c *gin.Context) {
-	var users []models.User
+	var users []model.User
 	if err := internal.TenantDB(c).Find(&users).Error; err != nil {
 		c.Status(http.StatusInternalServerError)
 		global.LOG.Error("get tenant users err: " + err.Error())
 		return
 	}
-	c.JSON(http.StatusOK, utils.Filter(users, models.User2AdminDto))
+	c.JSON(http.StatusOK, utils.Filter(users, model.User2AdminDto))
 }
 
 // GetUser godoc
@@ -42,7 +42,7 @@ func ListUsers(c *gin.Context) {
 //	@Router			/accounts/admin/{tenant}/users/{userId} [get]
 func GetUser(c *gin.Context) {
 	userId := c.Param("userId")
-	var user models.User
+	var user model.User
 	if err := internal.TenantDB(c).First(&user, "id = ?", userId).Error; err != nil {
 		c.Status(http.StatusNotFound)
 		global.LOG.Error("get user err: " + err.Error())
@@ -62,7 +62,7 @@ func GetUser(c *gin.Context) {
 //	@Router			/accounts/admin/{tenant}/users [post]
 func NewUser(c *gin.Context) {
 	tenant := internal.GetTenant(c)
-	var user models.User
+	var user model.User
 	if err := c.BindJSON(&user); err != nil {
 		internal.ErrReqPara(c, err)
 		return
@@ -101,13 +101,13 @@ func NewUser(c *gin.Context) {
 //	@Router			/accounts/admin/{tenant}/users/{userId} [put]
 func UpdateUser(c *gin.Context) {
 	userId := c.Param("userId")
-	var user models.User
+	var user model.User
 	if err := internal.TenantDB(c).First(&user, "id = ?", userId).Error; err != nil {
 		c.Status(http.StatusNotFound)
 		global.LOG.Error("get user err: " + err.Error())
 		return
 	}
-	var u models.User
+	var u model.User
 	if err := c.BindJSON(&u); err != nil {
 		internal.ErrReqPara(c, err)
 		return
@@ -143,7 +143,7 @@ func UpdateUser(c *gin.Context) {
 //	@Router			/accounts/admin/{tenant}/users/{userId} [delete]
 func DeleteUser(c *gin.Context) {
 	userId := c.Param("userId")
-	var user models.User
+	var user model.User
 	if err := internal.TenantDB(c).First(&user, "id = ?", userId).Error; err != nil {
 		c.Status(http.StatusNotFound)
 		global.LOG.Error("get user err: " + err.Error())
@@ -170,20 +170,20 @@ func DeleteUser(c *gin.Context) {
 //	@Router			/accounts/admin/{tenant}/users/{userId}/groups [get]
 func GetUserGroups(c *gin.Context) {
 	userId := c.Param("userId")
-	var user models.User
+	var user model.User
 	if err := internal.TenantDB(c).First(&user, "id = ?", userId).Error; err != nil {
 		c.Status(http.StatusNotFound)
 		global.LOG.Error("get user err: " + err.Error())
 		return
 	}
-	var groupUsers []models.GroupUser
+	var groupUsers []model.GroupUser
 	if err := global.DB.Joins("Group", "group_users.group_id = groups.id AND group_users.tenant_id = groups.tenant_id").
 		Find(&groupUsers, "group_users.tenant_id = ? AND user_id = ?", user.TenantId, user.Id).Error; err != nil {
 		c.Status(http.StatusInternalServerError)
 		global.LOG.Error("get tenant user groups err: " + err.Error())
 		return
 	}
-	groups := utils.Filter(groupUsers, func(gu models.GroupUser) dto.GroupMemberDto {
+	groups := utils.Filter(groupUsers, func(gu model.GroupUser) dto.GroupMemberDto {
 		return dto.GroupMemberDto{
 			Id:   gu.GroupId,
 			Name: gu.Group.Name,
@@ -205,13 +205,13 @@ func GetUserGroups(c *gin.Context) {
 //	@Router			/accounts/admin/{tenant}/users/{userId}/groups [post]
 func NewUserGroup(c *gin.Context) {
 	userId := c.Param("userId")
-	var groupUser models.GroupUser
+	var groupUser model.GroupUser
 	if err := c.BindJSON(&groupUser); err != nil {
 		internal.ErrReqPara(c, err)
 		return
 	}
 
-	var user models.User
+	var user model.User
 	if err := internal.TenantDB(c).First(&user, "id = ?", userId).Error; err != nil {
 		c.Status(http.StatusNotFound)
 		global.LOG.Error("get user err: " + err.Error())
@@ -243,14 +243,14 @@ func NewUserGroup(c *gin.Context) {
 //	@Router			/accounts/admin/{tenant}/users/{userId}/groups/{groupId} [get]
 func UpdateUserGroup(c *gin.Context) {
 	userId := c.Param("userId")
-	var user models.User
+	var user model.User
 	if err := internal.TenantDB(c).First(&user, "id = ?", userId).Error; err != nil {
 		c.Status(http.StatusNotFound)
 		global.LOG.Error("get user err: " + err.Error())
 		return
 	}
 	groupId := c.Param("groupId")
-	var group models.Group
+	var group model.Group
 	if err := internal.TenantDB(c).First(&group, "id = ?", groupId).Error; err != nil {
 		c.Status(http.StatusNotFound)
 		global.LOG.Error("get group err: " + err.Error())
@@ -261,7 +261,7 @@ func UpdateUserGroup(c *gin.Context) {
 		internal.ErrReqPara(c, err)
 		return
 	}
-	var groupUser models.GroupUser
+	var groupUser model.GroupUser
 	if err := internal.TenantDB(c).First(groupUser, "group_id = ? AND user_id = ?", group.Id, user.Id).Error; err != nil {
 		global.LOG.Error("get group user err: " + err.Error())
 		// Not found, create one.
@@ -294,14 +294,14 @@ func UpdateUserGroup(c *gin.Context) {
 //	@Router			/accounts/admin/{tenant}/users/{userId}/groups/{groupId} [delete]
 func DeleteUserGroup(c *gin.Context) {
 	userId := c.Param("userId")
-	var user models.User
+	var user model.User
 	if err := internal.TenantDB(c).First(&user, "id = ?", userId).Error; err != nil {
 		c.Status(http.StatusNotFound)
 		global.LOG.Error("get user err: " + err.Error())
 		return
 	}
 	groupId := c.Param("groupId")
-	var groupUser models.GroupUser
+	var groupUser model.GroupUser
 	if err := internal.TenantDB(c).First(&groupUser, "user_id = ? AND group_id = ?", user.Id, groupId).Error; err != nil {
 		c.Status(http.StatusNotFound)
 		global.LOG.Error("get group user err: " + err.Error())
