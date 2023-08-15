@@ -6,7 +6,6 @@ import (
 	"accounts/internal/endpoint/resp"
 	"accounts/internal/model"
 	"accounts/internal/service"
-	"accounts/pkg/global"
 	"accounts/pkg/utils"
 	"github.com/gin-gonic/gin"
 	"net/http"
@@ -24,8 +23,7 @@ import (
 func ListProviders(c *gin.Context) {
 	var providers []model.Provider
 	if err := internal.TenantDB(c).Find(&providers).Error; err != nil {
-		c.Status(http.StatusInternalServerError)
-		global.LOG.Error("get provider err: " + err.Error())
+		resp.ErrorSqlSelect(c, err, "list provider err")
 		return
 	}
 	c.JSON(http.StatusOK, utils.Filter(providers, model.Provider2Dto))
@@ -46,15 +44,13 @@ func GetProvider(c *gin.Context) {
 	providerId := c.Param("providerId")
 	var p model.Provider
 	if err := internal.TenantDB(c).First(&p, "id = ?", providerId).Error; err != nil {
-		c.Status(http.StatusInternalServerError)
-		global.LOG.Error("get provider err: " + err.Error())
+		resp.ErrorSqlFirst(c, err, "get provider err")
 		return
 	}
 
 	res, err := service.GetProvider(tenant.Id, p.Id, p.Type)
 	if err != nil {
-		c.Status(http.StatusInternalServerError)
-		global.LOG.Error("get provider config err: " + err.Error())
+		resp.ErrorSqlFirst(c, err, "get provider config err")
 		return
 	}
 
@@ -76,15 +72,13 @@ func GetProviderUsers(c *gin.Context) {
 	tenant := internal.GetTenant(c)
 	var p model.Provider
 	if err := internal.TenantDB(c).First(&p, "id = ?", providerId).Error; err != nil {
-		c.Status(http.StatusInternalServerError)
-		global.LOG.Error("get provider err: " + err.Error())
+		resp.ErrorSqlFirst(c, err, "get provider err: ", true)
 		return
 	}
 
 	res, err := service.GetProviderUsers(tenant.Id, p.Id)
 	if err != nil {
-		c.Status(http.StatusInternalServerError)
-		global.LOG.Error("get provider config err: " + err.Error())
+		resp.ErrorSqlSelect(c, err, "list provider users err")
 		return
 	}
 
@@ -103,17 +97,16 @@ func GetProviderUsers(c *gin.Context) {
 //	@Router			/accounts/admin/{tenant}/providers [post]
 func NewProvider(c *gin.Context) {
 	tenant := internal.GetTenant(c)
-	var provider req.ReqProvider
+	var provider req.Provider
 	if err := c.BindJSON(&provider); err != nil {
-		resp.ErrReqPara(c, err)
+		resp.ErrorRequest(c, err, "bind new provider err")
 		return
 	}
 
 	provider.Id = 0
 	provider.TenantId = tenant.Id
 	if err := service.CreateProviderConfig(provider); err != nil {
-		c.JSON(http.StatusInternalServerError, &gin.H{"message": "failed to create provider config"})
-		global.LOG.Error("create provider config err: " + err.Error())
+		resp.ErrorSqlCreate(c, err, "create provider config err")
 		return
 	}
 	c.JSON(http.StatusOK, provider.Dto())
@@ -132,17 +125,16 @@ func NewProvider(c *gin.Context) {
 func UpdateProvider(c *gin.Context) {
 	tenant := internal.GetTenant(c)
 	providerId := c.Param("providerId")
-	var p req.ReqProvider
+	var p req.Provider
 	if err := c.BindJSON(&p); err != nil {
-		resp.ErrReqPara(c, err)
+		resp.ErrorRequest(c, err, "bind update provider err")
 		return
 	}
 
 	p.TenantId = tenant.Id
 	p.ProviderId = utils.StrToUint(providerId)
 	if err := service.UpdateProviderConfig(p); err != nil {
-		c.Status(http.StatusInternalServerError)
-		global.LOG.Error("update provider config err: " + err.Error())
+		resp.ErrorSqlUpdate(c, err, "update provider config err")
 		return
 	}
 
@@ -163,20 +155,17 @@ func DeleteProvider(c *gin.Context) {
 	providerId := c.Param("providerId")
 	var provider model.Provider
 	if err := internal.TenantDB(c).First(&provider, "id = ?", providerId).Error; err != nil {
-		c.Status(http.StatusNotFound)
-		global.LOG.Error("get provider err: " + err.Error())
+		resp.ErrorSqlFirst(c, err, "get provider err")
 		return
 	}
 
 	if err := service.DeleteProviderConfig(provider); err != nil {
-		c.Status(http.StatusInternalServerError)
-		global.LOG.Error("delete provider config err: " + err.Error())
+		resp.ErrorSqlDelete(c, err, "delete provider config err")
 		return
 	}
 
 	if err := internal.TenantDB(c).Where("id = ?", providerId).Delete(&provider).Error; err != nil {
-		c.Status(http.StatusInternalServerError)
-		global.LOG.Error("delete provider err: " + err.Error())
+		resp.ErrorSqlDelete(c, err, "delete provider err")
 		return
 	}
 

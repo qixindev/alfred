@@ -8,7 +8,6 @@ import (
 	"accounts/pkg/global"
 	"accounts/pkg/utils"
 	"github.com/gin-gonic/gin"
-	"go.uber.org/zap"
 	"net/http"
 	"strconv"
 )
@@ -29,8 +28,7 @@ func ListIamRole(c *gin.Context) {
 	tenant := internal.GetTenant(c)
 	roles, err := iam.ListResourceTypeRoles(tenant.Id, typeId)
 	if err != nil {
-		resp.ErrorSqlResponse(c, "failed to get resource type role list")
-		global.LOG.Error("list resource type role err: " + err.Error())
+		resp.ErrorSqlSelect(c, err, "list resource type role err", true)
 		return
 	}
 	c.JSON(http.StatusOK, roles)
@@ -51,7 +49,7 @@ func ListIamRole(c *gin.Context) {
 func NewIamRole(c *gin.Context) {
 	var role model.ResourceTypeRole
 	if err := c.BindJSON(&role); err != nil {
-		resp.ErrReqPara(c, err)
+		resp.ErrorRequest(c, err, "bind new iam role err")
 		return
 	}
 
@@ -59,8 +57,7 @@ func NewIamRole(c *gin.Context) {
 	tenant := internal.GetTenant(c)
 	r, err := iam.CreateResourceTypeRole(tenant.Id, typeId, &role)
 	if err != nil {
-		resp.ErrorSqlResponse(c, "failed to create resource role")
-		global.LOG.Error("create resource type role err: " + err.Error())
+		resp.ErrorSqlCreate(c, err, "create resource role err")
 		return
 	}
 	c.JSON(http.StatusOK, r)
@@ -85,13 +82,11 @@ func DeleteIamRole(c *gin.Context) {
 	role, err := iam.GetIamRole(tenant.Id, typeId, roleId)
 	if err != nil {
 		resp.ErrReqParaCustom(c, "no such role")
-		global.LOG.Error("get iam role err: ", zap.Error(err))
 		return
 	}
 
 	if err = iam.DeleteResourceTypeRole(tenant.Id, role.Id); err != nil {
-		resp.ErrorSqlResponse(c, "failed to delete resource role")
-		global.LOG.Error("delete resource type role err: " + err.Error())
+		resp.ErrorSqlDelete(c, err, "delete resource role err")
 		return
 	}
 	c.Status(http.StatusNoContent)
@@ -116,8 +111,7 @@ func ListIamResourceRole(c *gin.Context) {
 	tenant := internal.GetTenant(c)
 	roleUsers, err := iam.ListResourcesRoleUsers(tenant.Id, resourceId, roleId)
 	if err != nil {
-		resp.ErrorSqlResponse(c, "failed to get resources role user list")
-		global.LOG.Error("list resource role users err: " + err.Error())
+		resp.ErrorSqlSelect(c, err, "list resources role user err", true)
 		return
 	}
 	c.JSON(http.StatusOK, utils.Filter(roleUsers, model.ResourceRoleUserDto))
@@ -140,7 +134,7 @@ func ListIamResourceRole(c *gin.Context) {
 func NewIamResourceRole(c *gin.Context) {
 	var roleUser []model.ResourceRoleUser
 	if err := c.BindJSON(&roleUser); err != nil {
-		resp.ErrReqPara(c, err)
+		resp.ErrorRequest(c, err, "bind new iam resource role err")
 		return
 	}
 
@@ -158,8 +152,7 @@ func NewIamResourceRole(c *gin.Context) {
 	}
 
 	if err := iam.CreateResourceRoleUser(tenant.Id, roleUser); err != nil {
-		resp.ErrorSqlResponse(c, "failed to create resource role user")
-		global.LOG.Error("create resource role user err: " + err.Error())
+		resp.ErrorSqlCreate(c, err, "create resource role user err")
 		return
 	}
 	c.Status(http.StatusOK)
@@ -192,14 +185,12 @@ func DeleteIamResourceRoleUser(c *gin.Context) {
 		Where("ru.tenant_id = ? AND cu.client_id = ? AND ru.resource_id = ? AND ru.role_id = ? AND cu.sub = ?",
 			tenant.Id, clientId, resourceId, roleId, sub).
 		First(&roleUser).Error; err != nil {
-		resp.ErrReqParaCustom(c, "no such resource role user")
-		global.LOG.Error("delete resource role user err: " + err.Error())
+		resp.ErrorSqlFirst(c, err, "get resource role user")
 		return
 	}
 
 	if err := iam.DeleteResourceRoleUser(tenant.Id, roleUser.Id); err != nil {
-		resp.ErrorSqlResponse(c, "failed to delete resource role user")
-		global.LOG.Error("delete resource role user err: " + err.Error())
+		resp.ErrorSqlDelete(c, err, "delete resource role user err")
 		return
 	}
 	c.Status(http.StatusNoContent)
@@ -225,14 +216,12 @@ func CreateAllTypeRole(c *gin.Context) {
 	userIdUint, err := strconv.ParseUint(userId, 10, 64)
 	if err != nil {
 		resp.ErrReqParaCustom(c, "user id should be a number")
-		global.LOG.Error("create all type role err: " + err.Error())
 		return
 	}
 
 	resources, err := iam.ListResources(tenant.Id, typeId)
 	if err != nil {
-		resp.ErrorSqlResponse(c, "failed to get resource list")
-		global.LOG.Error("list resource err: " + err.Error())
+		resp.ErrorSqlSelect(c, err, "list resource err")
 		return
 	}
 	for _, resource := range resources {
@@ -243,8 +232,7 @@ func CreateAllTypeRole(c *gin.Context) {
 			ClientUserId: uint(userIdUint),
 		}}
 		if err = iam.CreateResourceRoleUser(tenant.Id, roleUser); err != nil {
-			resp.ErrorSqlResponse(c, "failed to create resource role user")
-			global.LOG.Error("create resource role user err: " + err.Error())
+			resp.ErrorSqlCreate(c, err, "create resource role user err")
 			return
 		}
 	}

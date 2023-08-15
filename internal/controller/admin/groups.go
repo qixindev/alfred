@@ -23,8 +23,7 @@ import (
 func ListGroups(c *gin.Context) {
 	var groups []model.Group
 	if err := internal.TenantDB(c).Find(&groups).Error; err != nil {
-		c.Status(http.StatusInternalServerError)
-		global.LOG.Error("get group err: " + err.Error())
+		resp.ErrorSqlSelect(c, err, "list groups err", true)
 		return
 	}
 	c.JSON(http.StatusOK, utils.Filter(groups, model.Group2Dto))
@@ -44,8 +43,7 @@ func GetGroup(c *gin.Context) {
 	groupId := c.Param("groupId")
 	var group model.Group
 	if err := internal.TenantDB(c).First(&group, "id = ?", groupId).Error; err != nil {
-		c.Status(http.StatusNotFound)
-		global.LOG.Error("get group err: " + err.Error())
+		resp.ErrorSqlFirst(c, err, "get group err")
 		return
 	}
 	c.JSON(http.StatusOK, group.Dto())
@@ -64,13 +62,12 @@ func NewGroup(c *gin.Context) {
 	tenant := internal.GetTenant(c)
 	var group model.Group
 	if err := c.BindJSON(&group); err != nil {
-		resp.ErrReqPara(c, err)
+		resp.ErrorRequest(c, err, "bind new group err")
 		return
 	}
 	group.TenantId = tenant.Id
 	if err := global.DB.Create(&group).Error; err != nil {
-		c.Status(http.StatusConflict)
-		global.LOG.Error("new group err: " + err.Error())
+		resp.ErrorSqlCreate(c, err, "create group err")
 		return
 	}
 	c.JSON(http.StatusOK, group.Dto())
@@ -90,20 +87,18 @@ func UpdateGroup(c *gin.Context) {
 	groupId := c.Param("groupId")
 	var group model.Group
 	if err := internal.TenantDB(c).First(&group, "id = ?", groupId).Error; err != nil {
-		c.Status(http.StatusNotFound)
-		global.LOG.Error("get group err: " + err.Error())
+		resp.ErrorSqlFirst(c, err, "get group err")
 		return
 	}
 	var g model.Group
 	if err := c.BindJSON(&g); err != nil {
-		resp.ErrReqPara(c, err)
+		resp.ErrorRequest(c, err, "bind update group err")
 		return
 	}
 	group.Name = g.Name
 	group.ParentId = g.ParentId
 	if err := global.DB.Save(&group).Error; err != nil {
-		c.Status(http.StatusInternalServerError)
-		global.LOG.Error("update group err: " + err.Error())
+		resp.ErrorSqlUpdate(c, err, "update group err")
 		return
 	}
 	c.JSON(http.StatusOK, group.Dto())
@@ -123,13 +118,11 @@ func DeleteGroup(c *gin.Context) {
 	groupId := c.Param("groupId")
 	var group model.Group
 	if err := internal.TenantDB(c).First(&group, "id = ?", groupId).Error; err != nil {
-		c.Status(http.StatusNotFound)
-		global.LOG.Error("get group err: " + err.Error())
+		resp.ErrorSqlFirst(c, err, "get group err")
 		return
 	}
 	if err := global.DB.Delete(&group).Error; err != nil {
-		c.Status(http.StatusInternalServerError)
-		global.LOG.Error("delete group err: " + err.Error())
+		resp.ErrorSqlDelete(c, err, "delete group err")
 		return
 	}
 	c.Status(http.StatusNoContent)
@@ -149,16 +142,14 @@ func GetGroupMembers(c *gin.Context) {
 	groupId := c.Param("groupId")
 	var group model.Group
 	if err := internal.TenantDB(c).First(&group, "id = ?", groupId).Error; err != nil {
-		c.Status(http.StatusNotFound)
-		global.LOG.Error("get group err: " + err.Error())
+		resp.ErrorSqlFirst(c, err, "get group err", true)
 		return
 	}
 
 	var members []dto.GroupMemberDto
 	var groups []model.Group
 	if err := internal.TenantDB(c).Find(&groups, "parent_id = ?", group.Id).Error; err != nil {
-		c.Status(http.StatusInternalServerError)
-		global.LOG.Error("get group err: " + err.Error())
+		resp.ErrorSqlSelect(c, err, "list group err")
 		return
 	}
 	for _, g := range groups {
@@ -168,8 +159,7 @@ func GetGroupMembers(c *gin.Context) {
 	var groupUsers []model.GroupUser
 	if err := global.DB.Joins("User", "group_users.user_id = users.id AND group_users.tenant_id = users.tenant_id").
 		Find(&groupUsers, "group_users.tenant_id = ? AND group_id = ?", group.TenantId, group.Id).Error; err != nil {
-		c.Status(http.StatusInternalServerError)
-		global.LOG.Error("get group member err: " + err.Error())
+		resp.ErrorSqlSelect(c, err, "get group member err")
 		return
 	}
 	for _, u := range groupUsers {
@@ -179,8 +169,7 @@ func GetGroupMembers(c *gin.Context) {
 	var groupDevices []model.GroupDevice
 	if err := global.DB.Joins("Device", "group_devices.device_id = devices.id AND group_devices.tenant_id = devices.tenant_id").
 		Find(&groupDevices, "group_devices.tenant_id = ? AND group_id = ?", group.TenantId, group.Id).Error; err != nil {
-		c.Status(http.StatusInternalServerError)
-		global.LOG.Error("get group device err: " + err.Error())
+		resp.ErrorSqlSelect(c, err, "list group device err")
 		return
 	}
 	for _, d := range groupDevices {

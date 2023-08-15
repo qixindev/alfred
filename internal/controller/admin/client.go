@@ -23,7 +23,7 @@ import (
 func ListClients(c *gin.Context) {
 	var clients []model.Client
 	if err := internal.TenantDB(c).Find(&clients).Error; err != nil {
-		c.Status(http.StatusInternalServerError)
+		resp.ErrorSqlSelect(c, err, "list client err", true)
 		return
 	}
 	c.JSON(http.StatusOK, utils.Filter(clients, model.Client2Dto))
@@ -43,8 +43,7 @@ func GetClient(c *gin.Context) {
 	clientId := c.Param("clientId")
 	var client model.Client
 	if err := internal.TenantDB(c).First(&client, "id = ?", clientId).Error; err != nil {
-		c.Status(http.StatusNotFound)
-		global.LOG.Error("get client err: " + err.Error())
+		resp.ErrorSqlFirst(c, err, "get client err")
 		return
 	}
 	c.JSON(http.StatusOK, client.Dto())
@@ -62,8 +61,7 @@ func GetClient(c *gin.Context) {
 func GetDefaultClient(c *gin.Context) {
 	var client model.Client
 	if err := internal.TenantDB(c).First(&client, "name = ?", "default").Error; err != nil {
-		c.Status(http.StatusNotFound)
-		global.LOG.Error("get default client err: " + err.Error())
+		resp.ErrorSqlFirst(c, err, "get default client err")
 		return
 	}
 	c.JSON(http.StatusOK, client.Dto())
@@ -83,7 +81,7 @@ func NewClient(c *gin.Context) {
 	tenant := internal.GetTenant(c)
 	var client model.Client
 	if err := c.BindJSON(&client); err != nil {
-		resp.ErrReqPara(c, err)
+		resp.ErrorRequest(c, err, "bind new client err")
 		return
 	}
 	client.TenantId = tenant.Id
@@ -92,16 +90,14 @@ func NewClient(c *gin.Context) {
 	}
 
 	if err := global.DB.Create(&client).Error; err != nil {
-		c.String(http.StatusConflict, "failed to create client")
-		global.LOG.Error("create client err: " + err.Error())
+		resp.ErrorSqlCreate(c, err, "failed to create client")
 		return
 	}
 
 	if err := global.DB.Create(&model.ClientSecret{
 		ClientId: client.Id, Name: client.Name, Secret: uuid.NewString(), TenantId: tenant.Id,
 	}).Error; err != nil {
-		c.String(http.StatusConflict, "failed to create client secret")
-		global.LOG.Error("create client secret err: " + err.Error())
+		resp.ErrorSqlCreate(c, err, "failed to create client secret")
 		return
 	}
 
@@ -122,19 +118,17 @@ func UpdateClient(c *gin.Context) {
 	clientId := c.Param("clientId")
 	var client model.Client
 	if err := internal.TenantDB(c).First(&client, "id = ?", clientId).Error; err != nil {
-		c.Status(http.StatusNotFound)
-		global.LOG.Error("get client err: " + err.Error())
+		resp.ErrorSqlFirst(c, err, "get client err")
 		return
 	}
 	var cli model.Client
 	if err := c.BindJSON(&cli); err != nil {
-		resp.ErrReqPara(c, err)
+		resp.ErrorRequest(c, err, "bind update client err")
 		return
 	}
 	client.Name = cli.Name
 	if err := global.DB.Save(&client).Error; err != nil {
-		c.Status(http.StatusInternalServerError)
-		global.LOG.Error("update clients err: " + err.Error())
+		resp.ErrorSqlUpdate(c, err, "update clients err")
 		return
 	}
 	c.JSON(http.StatusOK, client.Dto())
@@ -154,13 +148,11 @@ func DeleteClient(c *gin.Context) {
 	clientId := c.Param("clientId")
 	var client model.Client
 	if err := internal.TenantDB(c).First(&client, "id = ?", clientId).Error; err != nil {
-		c.Status(http.StatusNotFound)
-		global.LOG.Error("get client err: " + err.Error())
+		resp.ErrorSqlFirst(c, err, "get client err")
 		return
 	}
 	if err := global.DB.Delete(&client).Error; err != nil {
-		c.Status(http.StatusInternalServerError)
-		global.LOG.Error("delete client err: " + err.Error())
+		resp.ErrorSqlDelete(c, err, "delete client err")
 		return
 	}
 	c.Status(http.StatusNoContent)
@@ -180,8 +172,7 @@ func ListClientRedirectUri(c *gin.Context) {
 	clientId := c.Param("clientId")
 	var client model.Client
 	if err := internal.TenantDB(c).First(&client, "id = ?", clientId).Error; err != nil {
-		c.Status(http.StatusNotFound)
-		global.LOG.Error("get client err: " + err.Error())
+		resp.ErrorSqlFirst(c, err, "get client err", true)
 		return
 	}
 
@@ -189,6 +180,7 @@ func ListClientRedirectUri(c *gin.Context) {
 	if err := internal.TenantDB(c).Find(&uris, "client_id = ?", client.Id).Error; err != nil {
 		c.Status(http.StatusInternalServerError)
 		global.LOG.Error("get redirect-uris err: " + err.Error())
+		resp.ErrorSqlSelect(c, err, "list redirect-uris err", true)
 		return
 	}
 
@@ -208,19 +200,18 @@ func NewClientRedirectUri(c *gin.Context) {
 	clientId := c.Param("clientId")
 	var client model.Client
 	if err := internal.TenantDB(c).First(&client, "id = ?", clientId).Error; err != nil {
-		c.Status(http.StatusNotFound)
-		global.LOG.Error("get client err: " + err.Error())
+		resp.ErrorSqlFirst(c, err, "get client err")
 		return
 	}
 	var uri model.RedirectUri
 	if err := c.BindJSON(&uri); err != nil {
-		resp.ErrReqPara(c, err)
+		resp.ErrorRequest(c, err, "bind new redirect uri err")
 		return
 	}
 	uri.TenantId = client.TenantId
 	uri.ClientId = client.Id
 	if err := internal.TenantDB(c).Create(&uri).Error; err != nil {
-		c.Status(http.StatusConflict)
+		resp.ErrorSqlCreate(c, err, "create redirect uri err")
 		return
 	}
 	c.JSON(http.StatusOK, uri.Dto())
@@ -240,20 +231,20 @@ func UpdateClientRedirectUri(c *gin.Context) {
 	uriId := c.Param("uriId")
 	var newUri model.RedirectUri
 	if err := c.BindJSON(&newUri); err != nil {
-		resp.ErrReqPara(c, err)
+		resp.ErrorRequest(c, err, "bind update redirect uri err")
 		return
 	}
 
 	var uri model.RedirectUri
 	if err := internal.TenantDB(c).First(&uri, "client_id = ? AND id = ?", clientId, uriId).Error; err != nil {
-		c.Status(http.StatusNotFound)
-		global.LOG.Error("get client err: " + err.Error())
+		resp.ErrorSqlFirst(c, err, "get client err")
 		return
 	}
 
 	uri.RedirectUri = newUri.RedirectUri
 	if err := internal.TenantDB(c).Updates(&uri).Error; err != nil {
 		c.Status(http.StatusConflict)
+		resp.ErrorSqlUpdate(c, err, "update redirect uri err")
 		return
 	}
 
@@ -277,14 +268,12 @@ func DeleteClientRedirectUri(c *gin.Context) {
 	tenant := internal.GetTenant(c)
 	var uri model.RedirectUri
 	if err := internal.TenantDB(c).First(&uri, "tenant_id = ? AND client_id = ? AND id = ?", tenant.Id, clientId, uriId).Error; err != nil {
-		c.Status(http.StatusNotFound)
-		global.LOG.Error("get redirect uri err: " + err.Error())
+		resp.ErrorSqlFirst(c, err, "get redirect uri err: ")
 		return
 	}
 
 	if err := global.DB.Delete(&uri).Error; err != nil {
-		c.Status(http.StatusInternalServerError)
-		global.LOG.Error("delete redirect-uri err: " + err.Error())
+		resp.ErrorSqlDelete(c, err, "delete redirect uri err")
 		return
 	}
 
@@ -305,14 +294,12 @@ func ListClientSecret(c *gin.Context) {
 	clientId := c.Param("clientId")
 	var client model.Client
 	if err := internal.TenantDB(c).First(&client, "id = ?", clientId).Error; err != nil {
-		c.Status(http.StatusNotFound)
-		global.LOG.Error("get client err: " + err.Error())
+		resp.ErrorSqlFirst(c, err, "get client err: ", true)
 		return
 	}
 	var secrets []model.ClientSecret
 	if err := internal.TenantDB(c).Find(&secrets, "client_id = ?", client.Id).Error; err != nil {
-		c.Status(http.StatusInternalServerError)
-		global.LOG.Error("get clients secret err: " + err.Error())
+		resp.ErrorSqlSelect(c, err, "list clients secret err", true)
 		return
 	}
 	c.JSON(http.StatusOK, utils.Filter(secrets, model.ClientSecret2Dto))
@@ -332,20 +319,18 @@ func NewClientSecret(c *gin.Context) {
 	clientId := c.Param("clientId")
 	var client model.Client
 	if err := internal.TenantDB(c).First(&client, "id = ?", clientId).Error; err != nil {
-		c.Status(http.StatusNotFound)
-		global.LOG.Error("get client err: " + err.Error())
+		resp.ErrorSqlFirst(c, err, "get client err")
 		return
 	}
 	var secret model.ClientSecret
 	if err := c.BindJSON(&secret); err != nil {
-		resp.ErrReqPara(c, err)
+		resp.ErrorRequest(c, err, "bind new client secret err")
 		return
 	}
 	secret.TenantId = client.TenantId
 	secret.ClientId = client.Id
 	if err := internal.TenantDB(c).Create(&secret).Error; err != nil {
-		c.Status(http.StatusConflict)
-		global.LOG.Error("new client secret err: " + err.Error())
+		resp.ErrorSqlCreate(c, err, "create new client secret err")
 		return
 	}
 	c.JSON(http.StatusOK, secret.Dto())
@@ -368,14 +353,12 @@ func DeleteClientSecret(c *gin.Context) {
 	tenant := internal.GetTenant(c)
 	var secret model.ClientSecret
 	if err := internal.TenantDB(c).First(&secret, "tenant_id = ? AND client_id = ? AND id = ?", tenant.Id, clientId, secretId).Error; err != nil {
-		c.Status(http.StatusNotFound)
-		global.LOG.Error("get client secret err: " + err.Error())
+		resp.ErrorSqlFirst(c, err, "get client secret err")
 		return
 	}
 
 	if err := global.DB.Delete(&secret).Error; err != nil {
-		c.Status(http.StatusInternalServerError)
-		global.LOG.Error("delete client secret err: " + err.Error())
+		resp.ErrorSqlDelete(c, err, "delete client secret err")
 		return
 	}
 
@@ -404,8 +387,7 @@ func ListClientUsers(c *gin.Context) {
 		Joins("LEFT JOIN users u ON u.id = cu.user_id").
 		Where("cu.tenant_id = ? AND cu.client_id = ?", internal.GetTenant(c).Id, clientId).
 		Find(&clientUser).Error; err != nil {
-		c.Status(http.StatusInternalServerError)
-		global.LOG.Error("get client user err: " + err.Error())
+		resp.ErrorSqlSelect(c, err, "list client user err", true)
 		return
 	}
 	c.JSON(http.StatusOK, clientUser)
@@ -435,8 +417,7 @@ func GetClientUsers(c *gin.Context) {
 		Joins("LEFT JOIN users u ON u.id = cu.user_id").
 		Where("cu.tenant_id = ? AND cu.client_id = ? AND cu.sub = ?", internal.GetTenant(c).Id, clientId, subId).
 		Find(&clientUser).Error; err != nil {
-		c.Status(http.StatusInternalServerError)
-		global.LOG.Error("get client user err: " + err.Error())
+		resp.ErrorSqlSelect(c, err, "get client user err")
 		return
 	}
 

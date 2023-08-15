@@ -5,7 +5,6 @@ import (
 	"accounts/internal/endpoint/resp"
 	"accounts/internal/model"
 	"accounts/internal/service/iam"
-	"accounts/pkg/global"
 	"github.com/gin-gonic/gin"
 	"net/http"
 )
@@ -23,15 +22,13 @@ import (
 func ListIamType(c *gin.Context) {
 	client, err := GetClientFromCid(c)
 	if err != nil {
-		resp.ErrReqParaCustom(c, "no such client")
-		global.LOG.Error("get client from cid err: " + err.Error())
+		resp.ErrorSqlFirst(c, err, "get client err", true)
 		return
 	}
 
 	types, err := iam.ListResourceTypes(client.TenantId, client.Id)
 	if err != nil {
-		resp.ErrorSqlResponse(c, "failed to get resource type list")
-		global.LOG.Error("list resource types err: " + err.Error())
+		resp.ErrorSqlSelect(c, err, "list resource type err", true)
 		return
 	}
 	c.JSON(http.StatusOK, types)
@@ -51,20 +48,18 @@ func ListIamType(c *gin.Context) {
 func NewIamType(c *gin.Context) {
 	var typ model.ResourceType
 	if err := c.BindJSON(&typ); err != nil {
-		resp.ErrReqPara(c, err)
+		resp.ErrorRequest(c, err, "bind new iam type err")
 		return
 	}
 	client, err := GetClientFromCid(c)
 	if err != nil {
-		resp.ErrReqParaCustom(c, "no such client")
-		global.LOG.Error("get client from cid err: " + err.Error())
+		resp.ErrorSqlFirst(c, err, "get client err")
 		return
 	}
 
 	t, err := iam.CreateResourceType(client.TenantId, client.Id, typ)
 	if err != nil {
-		resp.ErrorSqlResponse(c, "failed to create resource type")
-		global.LOG.Error("create resource type err: " + err.Error())
+		resp.ErrorSqlCreate(c, err, "create resource type err")
 		return
 	}
 	c.JSON(http.StatusOK, t)
@@ -87,14 +82,12 @@ func DeleteIamType(c *gin.Context) {
 	tenant := internal.GetTenant(c)
 	var typ model.ResourceType
 	if err := internal.TenantDB(c).First(&typ, "client_id = ? AND id = ?", clientId, typeId).Error; err != nil {
-		resp.ErrReqParaCustom(c, "no such resource type")
-		global.LOG.Error("get resource type err: " + err.Error())
+		resp.ErrorSqlFirst(c, err, "get resource type err")
 		return
 	}
 
 	if err := iam.DeleteResourceType(tenant.Id, typ.Id); err != nil {
-		resp.ErrorSqlResponse(c, "failed to delete resource type")
-		global.LOG.Error("delete resource type err: " + err.Error())
+		resp.ErrorSqlDelete(c, err, "delete resource type err")
 		return
 	}
 	c.Status(http.StatusNoContent)
@@ -116,8 +109,7 @@ func ListIamResource(c *gin.Context) {
 	typeId := c.Param("typeId")
 	resources, err := iam.ListResources(tenant.Id, typeId)
 	if err != nil {
-		resp.ErrorSqlResponse(c, "failed to get resource list")
-		global.LOG.Error("list resource err: " + err.Error())
+		resp.ErrorSqlSelect(c, err, "list resource err", true)
 		return
 	}
 	c.JSON(http.StatusOK, resources)
@@ -138,22 +130,20 @@ func ListIamResource(c *gin.Context) {
 func NewIamResource(c *gin.Context) {
 	var resource model.Resource
 	if err := c.BindJSON(&resource); err != nil {
-		resp.ErrReqPara(c, err)
+		resp.ErrorRequest(c, err, "bind new iam resource err")
 		return
 	}
 	tenant := internal.GetTenant(c)
 	typeId := c.Param("typeId")
 	typ, err := iam.GetIamType(tenant.Id, typeId)
 	if err != nil {
-		resp.ErrReqParaCustom(c, "no such resource type")
-		global.LOG.Error("create resource err: " + err.Error())
+		resp.ErrorSqlFirst(c, err, "get resource type err")
 		return
 	}
 
 	r, err := iam.CreateResource(tenant.Id, typ.Id, &resource)
 	if err != nil {
-		resp.ErrorSqlResponse(c, "failed to create resource")
-		global.LOG.Error("create resource err: " + err.Error())
+		resp.ErrorSqlCreate(c, err, "create resource err")
 		return
 	}
 	c.JSON(http.StatusOK, r)
@@ -175,7 +165,7 @@ func NewIamResource(c *gin.Context) {
 func UpdateIamResource(c *gin.Context) {
 	var resource model.Resource
 	if err := c.BindJSON(&resource); err != nil {
-		resp.ErrReqPara(c, err)
+		resp.ErrorRequest(c, err, "bind update iam resource err")
 		return
 	}
 
@@ -184,8 +174,7 @@ func UpdateIamResource(c *gin.Context) {
 	resource.TypeId = c.Param("typeId")
 	r, err := iam.UpdateResource(tenant.Id, &resource)
 	if err != nil {
-		resp.ErrorSqlResponse(c, "failed to modify resource")
-		global.LOG.Error("modify resource err: " + err.Error())
+		resp.ErrorSqlUpdate(c, err, "modify resource err")
 		return
 	}
 	c.JSON(http.StatusOK, r)
@@ -213,8 +202,7 @@ func DeleteIamResource(c *gin.Context) {
 		return
 	}
 	if err = iam.DeleteResource(tenant.Id, resource.Id); err != nil {
-		resp.ErrorSqlResponse(c, "failed to delete resource")
-		global.LOG.Error("delete resource err: " + err.Error())
+		resp.ErrorSqlDelete(c, err, "delete resource err")
 		return
 	}
 	c.Status(http.StatusNoContent)

@@ -33,19 +33,18 @@ func (p *ProviderSms) Auth(number string) (string, error) {
 		}
 		phoneVerification.Code = code
 		phoneVerification.CreatedAt = time.Now()
-		if err := global.DB.Save(&phoneVerification).Error; err != nil {
+		if err = global.DB.Save(&phoneVerification).Error; err != nil {
 			return "", err
 		}
 	} else {
 		phoneVerification.Phone = number
 		phoneVerification.Code = code
 		phoneVerification.CreatedAt = time.Now()
-		if err := global.DB.Create(&phoneVerification).Error; err != nil {
+		if err = global.DB.Create(&phoneVerification).Error; err != nil {
 			return "", err
 		}
 	}
-	err = connector.Send(number, []string{code})
-	if err != nil {
+	if err = connector.Send(number, []string{code}); err != nil {
 		return "", err
 	}
 

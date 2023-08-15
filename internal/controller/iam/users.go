@@ -34,15 +34,13 @@ func IsUserActionPermission(c *gin.Context) {
 
 	var clientUser model.ClientUser
 	if err := internal.TenantDB(c).First(&clientUser, "client_id = ? AND sub = ?", clientId, userName).Error; err != nil {
-		resp.ErrReqParaCustom(c, "no such client user")
-		global.LOG.Error("get client user err: " + err.Error())
+		resp.ErrorSqlFirst(c, err, "get client user err")
 		return
 	}
 
 	result, err := iam.CheckPermission(tenant.Id, clientUser.Id, resourceId, actionId)
 	if err != nil {
-		resp.ErrorSqlResponse(c, "failed to check permission")
-		global.LOG.Error("check permission err: " + err.Error())
+		resp.ErrorSqlFirst(c, err, "failed to check permission")
 		return
 	}
 
@@ -77,8 +75,7 @@ func GetIamActionResource(c *gin.Context) {
 		Joins("LEFT JOIN resource_type_role_actions rtra ON rtra.role_id = rr.id").
 		Where("rru.tenant_id = ? AND cu.sub = ? AND r.type_id = ? AND rtra.action_id = ?",
 			tenant.Id, user, typeId, actionId).Find(&res).Error; err != nil {
-		resp.ErrorSqlResponse(c, "failed to get user's resources")
-		global.LOG.Error("get resource err: " + err.Error())
+		resp.ErrorSqlSelect(c, err, "list user's resources err", true)
 		return
 	}
 
@@ -110,8 +107,7 @@ func GetResourceUserList(c *gin.Context) {
 		Joins("LEFT JOIN users u ON u.id = cu.user_id").
 		Where("rru.tenant_id = ? AND rru.resource_id = ? AND r.type_id = ?", tenant.Id, resourceId, typeId).
 		Find(&res).Error; err != nil {
-		resp.ErrorSqlResponse(c, "get resource user list err")
-		global.LOG.Error("get resource err: " + err.Error())
+		resp.ErrorSqlSelect(c, err, "list resource user err")
 		return
 	}
 

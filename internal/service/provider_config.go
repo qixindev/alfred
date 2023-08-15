@@ -19,7 +19,7 @@ func GetProviderModel(t string) (model.ItfProvider, error) {
 	return nil, errors.New("no such type")
 }
 
-func CreateProviderConfig(p req.ReqProvider) error {
+func CreateProviderConfig(p req.Provider) error {
 	it, err := GetProviderModel(p.Type)
 	if err != nil {
 		return err
@@ -37,7 +37,7 @@ func CreateProviderConfig(p req.ReqProvider) error {
 	return nil
 }
 
-func UpdateProviderConfig(p req.ReqProvider) error {
+func UpdateProviderConfig(p req.Provider) error {
 	it, err := GetProviderModel(p.Type)
 	if err != nil {
 		return err

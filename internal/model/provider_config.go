@@ -7,7 +7,7 @@ import (
 
 type ItfProvider interface {
 	Dto() any
-	Save(req.ReqProvider) any
+	Save(req.Provider) any
 }
 
 type ProviderAzureAd struct {
@@ -40,7 +40,7 @@ func (p *ProviderDingTalk) Dto() any {
 		"appSecret":  p.AppSecret,
 	}
 }
-func (p *ProviderDingTalk) Save(r req.ReqProvider) any {
+func (p *ProviderDingTalk) Save(r req.Provider) any {
 	return &ProviderDingTalk{
 		ProviderId: r.ProviderId,
 		TenantId:   r.TenantId,
@@ -79,7 +79,7 @@ func (p *ProviderOAuth2) Dto() any {
 		"tokenEndpoint":     p.TokenEndpoint,
 	}
 }
-func (p *ProviderOAuth2) Save(r req.ReqProvider) any {
+func (p *ProviderOAuth2) Save(r req.Provider) any {
 	return &ProviderOAuth2{
 		ProviderId:        r.ProviderId,
 		TenantId:          r.TenantId,
@@ -114,7 +114,7 @@ func (p *ProviderWeCom) Dto() any {
 		"appSecret":  p.AppSecret,
 	}
 }
-func (p *ProviderWeCom) Save(r req.ReqProvider) any {
+func (p *ProviderWeCom) Save(r req.Provider) any {
 	return &ProviderWeCom{
 		ProviderId: r.ProviderId,
 		TenantId:   r.TenantId,
@@ -140,7 +140,7 @@ func (p *ProviderSms) Dto() any {
 		"type":       p.Provider.Type,
 	}
 }
-func (p *ProviderSms) Save(r req.ReqProvider) any {
+func (p *ProviderSms) Save(r req.Provider) any {
 	return &ProviderSms{
 		ProviderId: r.ProviderId,
 	}

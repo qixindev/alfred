@@ -2,7 +2,7 @@ package req
 
 import "github.com/gin-gonic/gin"
 
-type ReqProvider struct {
+type Provider struct {
 	Id           uint   `json:"id"`
 	ProviderId   uint   `json:"providerId"`
 	Name         string `json:"name"`
@@ -23,7 +23,7 @@ type ReqProvider struct {
 	TenantId uint `json:"-"`
 }
 
-func (r *ReqProvider) Dto() any {
+func (r *Provider) Dto() any {
 	return &gin.H{
 		"name": r.Name,
 		"type": r.Type,

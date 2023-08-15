@@ -17,7 +17,6 @@ import (
 //	@Schemes
 //	@Description	list tenants
 //	@Tags			admin-tenants
-//	@Param			tenant	path	string	true	"tenant"	default(default)
 //	@Success		200
 //	@Router			/accounts/admin/tenants [get]
 func ListTenants(c *gin.Context) {
@@ -27,8 +26,7 @@ func ListTenants(c *gin.Context) {
 		Joins("LEFT JOIN tenants as t ON t.id = users.tenant_id").
 		Where("users.username = ?", username).
 		Find(&tenants).Error; err != nil {
-		c.Status(http.StatusInternalServerError)
-		global.LOG.Error("get tenants err: " + err.Error())
+		resp.ErrorSqlSelect(c, err, "list tenants err", true)
 		return
 	}
 
@@ -57,6 +55,7 @@ func ListUserTenants(c *gin.Context) {
 	if err := global.DB.Where("sub = ?", userId).Find(&tenants).Error; err != nil {
 		c.Status(http.StatusInternalServerError)
 		global.LOG.Error("get tenants err: " + err.Error())
+		resp.ErrorSqlSelect(c, err, "list tenant users err", true)
 		return
 	}
 	c.JSON(http.StatusOK, utils.Filter(tenants, model.Tenant2Dto))
@@ -76,8 +75,7 @@ func GetTenant(c *gin.Context) {
 	tenantId := c.Param("tenantId")
 	var tenant model.Tenant
 	if err := global.DB.First(&tenant, "id = ?", tenantId).Error; err != nil {
-		c.Status(http.StatusNotFound)
-		global.LOG.Error("get tenant err: " + err.Error())
+		resp.ErrorSqlFirst(c, err, "get tenant err")
 		return
 	}
 	c.JSON(http.StatusOK, tenant.Dto())
@@ -95,7 +93,7 @@ func GetTenant(c *gin.Context) {
 func NewTenant(c *gin.Context) {
 	var tenant model.Tenant
 	if err := c.BindJSON(&tenant); err != nil {
-		resp.ErrReqPara(c, err)
+		resp.ErrorRequest(c, err, "bind new tenant err")
 		return
 	}
 	if tenant.Sub == "" {
@@ -104,14 +102,12 @@ func NewTenant(c *gin.Context) {
 	}
 
 	if err := global.DB.Create(&tenant).Error; err != nil {
-		c.Status(http.StatusConflict)
-		global.LOG.Error("new tenants err: " + err.Error())
+		resp.ErrorSqlCreate(c, err, "new tenant err")
 		return
 	}
 
 	if err := service.CopyUser(tenant.Sub, tenant.Id); err != nil {
-		c.Status(http.StatusInternalServerError)
-		global.LOG.Error("new tenants user err: " + err.Error())
+		resp.ErrorSqlCreate(c, err, "copy tenant err")
 		return
 	}
 
@@ -132,19 +128,17 @@ func UpdateTenant(c *gin.Context) {
 	tenantId := c.Param("tenantId")
 	var tenant model.Tenant
 	if err := global.DB.First(&tenant, "id = ?", tenantId).Error; err != nil {
-		c.Status(http.StatusNotFound)
-		global.LOG.Error("get tenant err: " + err.Error())
+		resp.ErrorSqlFirst(c, err, "get tenant err")
 		return
 	}
 	var t model.Tenant
 	if err := c.BindJSON(&t); err != nil {
-		resp.ErrReqPara(c, err)
+		resp.ErrorRequest(c, err, "bind update tenant err")
 		return
 	}
 	tenant.Name = t.Name
 	if err := global.DB.Save(&tenant).Error; err != nil {
-		c.Status(http.StatusInternalServerError)
-		global.LOG.Error("update tenant err: " + err.Error())
+		resp.ErrorSqlUpdate(c, err, "update tenant err")
 		return
 	}
 	c.JSON(http.StatusOK, tenant.Dto())
@@ -164,13 +158,11 @@ func DeleteTenant(c *gin.Context) {
 	tenantId := c.Param("tenantId")
 	var tenant model.Tenant
 	if err := global.DB.First(&tenant, "id = ?", tenantId).Error; err != nil {
-		c.Status(http.StatusNotFound)
-		global.LOG.Error("get tenant err: " + err.Error())
+		resp.ErrorSqlFirst(c, err, "get tenant err")
 		return
 	}
 	if err := global.DB.Delete(&tenant).Error; err != nil {
-		c.Status(http.StatusInternalServerError)
-		global.LOG.Error("delete tenant err: " + err.Error())
+		resp.ErrorSqlDelete(c, err, "delete tenant err")
 		return
 	}
 	c.Status(http.StatusNoContent)
@@ -190,14 +182,12 @@ func DeleteTenantSecret(c *gin.Context) {
 	tenantId := c.Param("tenantId")
 	var tenant model.Tenant
 	if err := global.DB.First(&tenant, "id = ?", tenantId).Error; err != nil {
-		c.Status(http.StatusNotFound)
-		global.LOG.Error("get tenant err: " + err.Error())
+		resp.ErrorSqlFirst(c, err, "get tenant err")
 		return
 	}
 
 	if err := utils.SetJWKS(tenant.Name, c.Param("secretId"), nil); err != nil {
-		c.String(http.StatusInternalServerError, "delete failed")
-		global.LOG.Error("delete tenant secret err: " + err.Error())
+		resp.ErrorUnknown(c, err, "delete jwks secret err")
 	}
 
 	c.Status(http.StatusNoContent)
@@ -217,8 +207,7 @@ func NewTenantSecret(c *gin.Context) {
 	tenantId := c.Param("tenantId")
 	var tenant model.Tenant
 	if err := global.DB.First(&tenant, "id = ?", tenantId).Error; err != nil {
-		c.Status(http.StatusNotFound)
-		global.LOG.Error("get tenant err: " + err.Error())
+		resp.ErrorSqlFirst(c, err, "get tenant err")
 		return
 	}
 
@@ -226,13 +215,12 @@ func NewTenantSecret(c *gin.Context) {
 		Secret string `json:"secret"`
 	}
 	if err := c.ShouldBindJSON(&in); err != nil {
-		resp.ErrReqPara(c, err)
+		resp.ErrorRequest(c, err, "bind new tenant secret err")
 		return
 	}
 
 	if err := utils.SetJWKS(tenant.Name, c.Param("secretId"), []byte(in.Secret)); err != nil {
-		c.String(http.StatusInternalServerError, "delete failed")
-		global.LOG.Error("delete tenant secret err: " + err.Error())
+		resp.ErrorUnknown(c, err, "create tenant secrete err")
 	}
 
 	c.Status(http.StatusNoContent)

@@ -5,9 +5,7 @@ import (
 	"accounts/internal/endpoint/resp"
 	"accounts/internal/model"
 	"accounts/internal/service/iam"
-	"accounts/pkg/global"
 	"github.com/gin-gonic/gin"
-	"go.uber.org/zap"
 	"net/http"
 )
 
@@ -27,8 +25,7 @@ func ListIamAction(c *gin.Context) {
 	tenant := internal.GetTenant(c)
 	actions, err := iam.ListResourceTypeActions(tenant.Id, typeId)
 	if err != nil {
-		resp.ErrorSqlResponse(c, "failed to get resource type action")
-		global.LOG.Error("list resource type action err: " + err.Error())
+		resp.ErrorSqlSelect(c, err, "get resource type action err", true)
 		return
 	}
 	c.JSON(http.StatusOK, actions)
@@ -49,7 +46,7 @@ func ListIamAction(c *gin.Context) {
 func NewIamAction(c *gin.Context) {
 	var action []model.ResourceTypeAction
 	if err := c.BindJSON(&action); err != nil {
-		resp.ErrReqPara(c, err)
+		resp.ErrorRequest(c, err, "bind new iam action err")
 		return
 	}
 
@@ -57,14 +54,12 @@ func NewIamAction(c *gin.Context) {
 	tenant := internal.GetTenant(c)
 	typ, err := iam.GetIamType(tenant.Id, typeId)
 	if err != nil {
-		resp.ErrReqParaCustom(c, "no such iam resource type")
-		global.LOG.Error("get iam type err: " + err.Error())
+		resp.ErrorSqlFirst(c, err, "get iam resource type err")
 		return
 	}
 
 	if err = iam.CreateResourceTypeAction(tenant.Id, typ.Id, action); err != nil {
-		resp.ErrorSqlResponse(c, "failed to create resource type action")
-		global.LOG.Error("create resource type action err: " + err.Error())
+		resp.ErrorSqlCreate(c, err, "create resource type action err")
 		return
 	}
 	c.Status(http.StatusOK)
@@ -88,14 +83,12 @@ func DeleteIamAction(c *gin.Context) {
 	tenant := internal.GetTenant(c)
 	action, err := iam.GetIamAction(tenant.Id, typeId, actionId)
 	if err != nil {
-		resp.ErrReqParaCustom(c, "no such action")
-		global.LOG.Error("get iam action err: " + err.Error())
+		resp.ErrorSqlFirst(c, err, "get action err")
 		return
 	}
 
 	if err = iam.DeleteResourceTypeAction(tenant.Id, action.Id); err != nil {
-		resp.ErrorSqlResponse(c, "failed to delete resource type action")
-		global.LOG.Error("delete resource type action err: " + err.Error())
+		resp.ErrorSqlDelete(c, err, "delete resource type action err")
 		return
 	}
 	c.Status(http.StatusNoContent)
@@ -118,8 +111,7 @@ func ListIamRoleAction(c *gin.Context) {
 	tenant := internal.GetTenant(c)
 	roleActions, err := iam.ListResourceTypeRoleActions(tenant.Id, roleId)
 	if err != nil {
-		resp.ErrorSqlResponse(c, "failed to get resource type role action list")
-		global.LOG.Error("list resource type role action err: " + err.Error())
+		resp.ErrorSqlSelect(c, err, "list resource type role action err", true)
 		return
 	}
 	c.JSON(http.StatusOK, roleActions)
@@ -141,7 +133,7 @@ func ListIamRoleAction(c *gin.Context) {
 func NewIamRoleAction(c *gin.Context) {
 	var roleAction []model.ResourceTypeRoleAction
 	if err := c.BindJSON(&roleAction); err != nil {
-		resp.ErrReqPara(c, err)
+		resp.ErrorRequest(c, err, "bind new iam role action err")
 		return
 	}
 
@@ -150,14 +142,12 @@ func NewIamRoleAction(c *gin.Context) {
 	tenant := internal.GetTenant(c)
 	role, err := iam.GetIamRole(tenant.Id, typeId, roleId)
 	if err != nil {
-		resp.ErrReqParaCustom(c, "no such role")
-		global.LOG.Error("get iam role err: ", zap.Error(err))
+		resp.ErrorSqlFirst(c, err, "get role err")
 		return
 	}
 
 	if err = iam.CreateResourceTypeRoleAction(tenant.Id, role.Id, roleAction); err != nil {
-		resp.ErrorSqlResponse(c, "failed to create role action")
-		global.LOG.Error("create resource type role action err: " + err.Error())
+		resp.ErrorSqlCreate(c, err, "create role action err")
 		return
 	}
 	c.Status(http.StatusOK)
@@ -181,13 +171,11 @@ func DeleteIamRoleAction(c *gin.Context) {
 	roleId := c.Param("roleId")
 	var roleAction model.ResourceTypeRoleAction
 	if err := internal.TenantDB(c).First(&roleAction, "role_id = ? AND action_id = ?", roleId, actionId).Error; err != nil {
-		resp.ErrReqParaCustom(c, "no such role action")
-		global.LOG.Error("get resource type role action err: " + err.Error())
+		resp.ErrorSqlFirst(c, err, "get role action err")
 		return
 	}
 	if err := iam.DeleteResourceTypeRoleAction(roleAction.TenantId, roleAction.Id); err != nil {
-		resp.ErrorSqlResponse(c, "failed to delete resource role action")
-		global.LOG.Error("delete resource type role action err: " + err.Error())
+		resp.ErrorSqlDelete(c, err, "delete resource role action err")
 		return
 	}
 	c.Status(http.StatusNoContent)

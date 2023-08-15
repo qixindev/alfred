@@ -26,8 +26,7 @@ import (
 func ListDevices(c *gin.Context) {
 	var devices []model.Device
 	if err := internal.TenantDB(c).Find(&devices).Error; err != nil {
-		c.Status(http.StatusInternalServerError)
-		global.LOG.Error("get device err: " + err.Error())
+		resp.ErrorSqlSelect(c, err, "list device err", true)
 		return
 	}
 	c.JSON(http.StatusOK, utils.Filter(devices, model.Device2Dto))
@@ -47,8 +46,7 @@ func GetDevice(c *gin.Context) {
 	deviceId := c.Param("deviceId")
 	var device model.Device
 	if err := internal.TenantDB(c).First(&device, "id = ?", deviceId).Error; err != nil {
-		c.Status(http.StatusNotFound)
-		global.LOG.Error("get device err: " + err.Error())
+		resp.ErrorSqlFirst(c, err, "get device err")
 		return
 	}
 	c.JSON(http.StatusOK, device.Dto())
@@ -67,7 +65,7 @@ func NewDevice(c *gin.Context) {
 	tenant := internal.GetTenant(c)
 	var device model.Device
 	if err := c.BindJSON(&device); err != nil {
-		resp.ErrReqPara(c, err)
+		resp.ErrorRequest(c, err, "bind new device err")
 		return
 	}
 	if device.Id == "" {
@@ -75,8 +73,7 @@ func NewDevice(c *gin.Context) {
 	}
 	device.TenantId = tenant.Id
 	if err := global.DB.Create(&device).Error; err != nil {
-		c.Status(http.StatusConflict)
-		global.LOG.Error("new device err: " + err.Error())
+		resp.ErrorSqlCreate(c, err, "create device err")
 		return
 	}
 
@@ -87,8 +84,7 @@ func NewDevice(c *gin.Context) {
 		TenantId: tenant.Id,
 	}
 	if err := internal.TenantDB(c).Create(&secret).Error; err != nil {
-		c.Status(http.StatusConflict)
-		global.LOG.Error("new device secret err: " + err.Error())
+		resp.ErrorSqlCreate(c, err, "create device secret err")
 		return
 	}
 	c.JSON(http.StatusOK, &gin.H{
@@ -113,19 +109,17 @@ func UpdateDevice(c *gin.Context) {
 	deviceId := c.Param("deviceId")
 	var device model.Device
 	if err := internal.TenantDB(c).First(&device, "id = ?", deviceId).Error; err != nil {
-		c.Status(http.StatusNotFound)
-		global.LOG.Error("get device err: " + err.Error())
+		resp.ErrorSqlFirst(c, err, "get device err")
 		return
 	}
 	var d model.Device
 	if err := c.BindJSON(&d); err != nil {
-		resp.ErrReqPara(c, err)
+		resp.ErrorRequest(c, err, "bind update device err")
 		return
 	}
 	device.Name = d.Name
 	if err := global.DB.Save(&device).Error; err != nil {
-		c.Status(http.StatusInternalServerError)
-		global.LOG.Error("update device err: " + err.Error())
+		resp.ErrorSqlUpdate(c, err, "update device err")
 		return
 	}
 	c.JSON(http.StatusOK, device.Dto())
@@ -145,8 +139,7 @@ func DeleteDevice(c *gin.Context) {
 	deviceId := c.Param("deviceId")
 	tenant := internal.GetTenant(c)
 	if err := service.DeleteDevice(tenant.Id, deviceId); err != nil {
-		c.Status(http.StatusInternalServerError)
-		global.LOG.Error("delete device err: " + err.Error())
+		resp.ErrorSqlDelete(c, err, "delete device err")
 		return
 	}
 	c.Status(http.StatusNoContent)
@@ -166,14 +159,12 @@ func ListDeviceSecret(c *gin.Context) {
 	deviceId := c.Param("deviceId")
 	var device model.Device
 	if err := internal.TenantDB(c).First(&device, "id = ?", deviceId).Error; err != nil {
-		c.Status(http.StatusNotFound)
-		global.LOG.Error("get device err: " + err.Error())
+		resp.ErrorSqlFirst(c, err, "get device err", true)
 		return
 	}
 	var secrets []model.DeviceSecret
 	if err := internal.TenantDB(c).Find(&secrets, "device_id = ?", device.Id).Error; err != nil {
-		c.Status(http.StatusInternalServerError)
-		global.LOG.Error("get device secret err: " + err.Error())
+		resp.ErrorSqlSelect(c, err, "list devices err", true)
 		return
 	}
 	c.JSON(http.StatusOK, utils.Filter(secrets, model.DeviceSecret2Dto))
@@ -193,20 +184,18 @@ func NewDeviceSecret(c *gin.Context) {
 	deviceId := c.Param("deviceId")
 	var device model.Device
 	if err := internal.TenantDB(c).First(&device, "id = ?", deviceId).Error; err != nil {
-		c.Status(http.StatusNotFound)
-		global.LOG.Error("get device err: " + err.Error())
+		resp.ErrorSqlFirst(c, err, "get device err")
 		return
 	}
 	var secret model.DeviceSecret
 	if err := c.BindJSON(&secret); err != nil {
-		resp.ErrReqPara(c, err)
+		resp.ErrorRequest(c, err, "bind new device secret err")
 		return
 	}
 	secret.DeviceId = device.Id
 	secret.TenantId = device.TenantId
 	if err := global.DB.Create(&secret).Error; err != nil {
-		c.Status(http.StatusInternalServerError)
-		global.LOG.Error("create device secret err: " + err.Error())
+		resp.ErrorSqlCreate(c, err, "create device secret err")
 		return
 	}
 	c.JSON(http.StatusOK, secret.Dto())
@@ -229,14 +218,12 @@ func DeleteDeviceSecret(c *gin.Context) {
 	tenant := internal.GetTenant(c)
 	var secret model.DeviceSecret
 	if err := internal.TenantDB(c).First(&secret, "tenant_id = ? AND device_id = ? AND id = ?", tenant.Id, deviceId, secretId).Error; err != nil {
-		c.Status(http.StatusNotFound)
-		global.LOG.Error("get device secret err: " + err.Error())
+		resp.ErrorSqlFirst(c, err, "get device secret err")
 		return
 	}
 
 	if err := global.DB.Delete(&secret).Error; err != nil {
-		c.Status(http.StatusInternalServerError)
-		global.LOG.Error("delete client secret err: " + err.Error())
+		resp.ErrorSqlDelete(c, err, "delete client secret err")
 		return
 	}
 
@@ -257,15 +244,13 @@ func GetDeviceGroups(c *gin.Context) {
 	deviceId := c.Param("deviceId")
 	var device model.Device
 	if err := internal.TenantDB(c).First(&device, "id = ?", deviceId).Error; err != nil {
-		c.Status(http.StatusNotFound)
-		global.LOG.Error("get device err: " + err.Error())
+		resp.ErrorSqlFirst(c, err, "get device err", true)
 		return
 	}
 	var groupDevices []model.GroupDevice
 	if err := global.DB.Joins("Group", "group_devices.group_id = groups.id AND group_devices.tenant_id = groups.tenant_id").
 		Find(&groupDevices, "group_devices.tenant_id = ? AND device_id = ?", device.TenantId, device.Id).Error; err != nil {
-		c.Status(http.StatusInternalServerError)
-		global.LOG.Error("get device group err: " + err.Error())
+		resp.ErrorSqlSelect(c, err, "list device group err")
 		return
 	}
 	groups := utils.Filter(groupDevices, func(gd model.GroupDevice) dto.GroupMemberDto {
@@ -291,22 +276,20 @@ func NewDeviceGroup(c *gin.Context) {
 	deviceId := c.Param("deviceId")
 	var deviceGroup model.GroupDevice
 	if err := c.BindJSON(&deviceGroup); err != nil {
-		resp.ErrReqPara(c, err)
+		resp.ErrorRequest(c, err, "bind new device group err")
 		return
 	}
 
 	var device model.Device
 	if err := internal.TenantDB(c).First(&device, "id = ?", deviceId).Error; err != nil {
-		c.Status(http.StatusNotFound)
-		global.LOG.Error("get device err: " + err.Error())
+		resp.ErrorSqlFirst(c, err, "get device err")
 		return
 	}
 
 	deviceGroup.TenantId = device.TenantId
 	deviceGroup.DeviceId = device.Id
 	if err := global.DB.Create(&deviceGroup).Error; err != nil {
-		c.Status(http.StatusConflict)
-		global.LOG.Error("new device group err: " + err.Error())
+		resp.ErrorSqlCreate(c, err, "create device err")
 		return
 	}
 
@@ -328,34 +311,27 @@ func UpdateDeviceGroup(c *gin.Context) {
 	deviceId := c.Param("deviceId")
 	var device model.Device
 	if err := internal.TenantDB(c).First(&device, "id = ?", deviceId).Error; err != nil {
-		c.Status(http.StatusNotFound)
-		global.LOG.Error("get device err: " + err.Error())
+		resp.ErrorSqlFirst(c, err, "get device err")
 		return
 	}
 
 	groupId := c.Param("groupId")
 	var group model.Group
 	if err := internal.TenantDB(c).First(&group, "id = ?", groupId).Error; err != nil {
-		c.Status(http.StatusNotFound)
-		global.LOG.Error("get group err: " + err.Error())
+		resp.ErrorSqlFirst(c, err, "get group err")
 		return
 	}
 
 	var groupDevice model.GroupDevice
 	if err := internal.TenantDB(c).First(groupDevice, "group_id = ? AND device_id = ?", group.Id, device.Id).Error; err != nil {
-		global.LOG.Error("get group device err: " + err.Error())
-		// Not found, create one.
-		groupDevice.DeviceId = device.Id
-		groupDevice.GroupId = group.Id
-		groupDevice.TenantId = device.TenantId
-	} else {
-		// Found, update it.
-		if err := internal.TenantDB(c).Save(&groupDevice).Error; err != nil {
-			c.Status(http.StatusInternalServerError)
-			global.LOG.Error("get device group err: " + err.Error())
-			return
-		}
+		resp.ErrorSqlFirst(c, err, "get group device err")
+		return
 	}
+	if err := internal.TenantDB(c).Save(&groupDevice).Error; err != nil {
+		resp.ErrorSqlUpdate(c, err, "update group device err")
+		return
+	}
+
 	c.JSON(http.StatusOK, groupDevice.GroupMemberDto())
 }
 
@@ -374,22 +350,19 @@ func DeleteDeviceGroup(c *gin.Context) {
 	deviceId := c.Param("deviceId")
 	var device model.Device
 	if err := internal.TenantDB(c).First(&device, "id = ?", deviceId).Error; err != nil {
-		c.Status(http.StatusNotFound)
-		global.LOG.Error("get device err: " + err.Error())
+		resp.ErrorSqlFirst(c, err, "get device err")
 		return
 	}
 
 	groupId := c.Param("groupId")
 	var groupDevice model.GroupDevice
 	if err := internal.TenantDB(c).First(&groupDevice, "device_id = ? AND group_id = ?", device.Id, groupId).Error; err != nil {
-		c.Status(http.StatusNotFound)
-		global.LOG.Error("get group device err: " + err.Error())
+		resp.ErrorSqlFirst(c, err, "get group device err")
 		return
 	}
 
 	if err := internal.TenantDB(c).Delete(&groupDevice).Error; err != nil {
-		c.Status(http.StatusInternalServerError)
-		global.LOG.Error("delete device group err: " + err.Error())
+		resp.ErrorSqlDelete(c, err, "delete device group err")
 		return
 	}
 	c.Status(http.StatusNoContent)
@@ -409,19 +382,17 @@ func VerifyDeviceCode(c *gin.Context) {
 	userCode := c.Param("userCode")
 	deviceCode := model.DeviceCode{}
 	if err := internal.TenantDB(c).Where("user_code = ?", userCode).First(&deviceCode).Error; err != nil {
-		c.String(http.StatusInternalServerError, "failed to get user code")
-		global.LOG.Error("set device code err: " + err.Error())
+		resp.ErrorSqlFirst(c, err, "get device code err")
 		return
 	}
 
 	if deviceCode.CreatedAt.Add(2 * time.Minute).Before(time.Now()) {
-		c.String(http.StatusGone, "user code expired")
 		service.ClearDeviceCode(userCode)
+		resp.ErrorUnknown(c, nil, "user code expired")
 		return
 	}
 	if err := internal.TenantDB(c).Table("device_codes").Where("user_code = ?", userCode).Update("status", "verified").Error; err != nil {
-		c.String(http.StatusInternalServerError, "failed to verify user code")
-		global.LOG.Error("set device code err: " + err.Error())
+		resp.ErrorSqlUpdate(c, err, "update device code err")
 		return
 	}
 

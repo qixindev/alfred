@@ -3,6 +3,7 @@ package controller
 import (
 	"accounts/internal/controller/auth"
 	"accounts/internal/controller/internal"
+	"accounts/internal/endpoint/resp"
 	"accounts/internal/model"
 	"accounts/pkg/global"
 	"accounts/pkg/middlewares"
@@ -31,7 +32,7 @@ func Login(c *gin.Context) {
 	login := c.PostForm("login")
 	password := c.PostForm("password")
 	if strings.TrimSpace(login) == "" || strings.TrimSpace(password) == "" {
-		c.Status(http.StatusBadRequest)
+		resp.ErrorRequest(c, nil, "username or password should not be empty")
 		return
 	}
 
@@ -39,14 +40,12 @@ func Login(c *gin.Context) {
 
 	var user model.User
 	if err := global.DB.First(&user, "tenant_id = ? AND username = ?", tenant.Id, login).Error; err != nil {
-		c.Status(http.StatusUnauthorized)
-		global.LOG.Error("get user err: " + err.Error())
+		resp.ErrorSqlFirst(c, err, "get user err")
 		return
 	}
 
 	if utils.CheckPasswordHash(password, user.PasswordHash) == false {
-		c.Status(http.StatusUnauthorized)
-		global.LOG.Error("incorrect password")
+		resp.ErrorUnauthorized(c, nil, "incorrect password")
 		return
 	}
 
@@ -55,8 +54,10 @@ func Login(c *gin.Context) {
 	session.Set("user", user.Username)
 	session.Set("userId", user.Id)
 	if err := session.Save(); err != nil {
-		c.JSON(http.StatusInternalServerError, err)
+		resp.ErrorSaveSession(c, err)
+		return
 	}
+
 	next := c.Query("next")
 	if next == "" {
 		next = c.PostForm("next")
@@ -83,15 +84,14 @@ func LoginToProvider(c *gin.Context) {
 	providerName := c.Param("provider")
 	authProvider, err := auth.GetAuthProvider(tenant.Id, providerName)
 	if err != nil {
-		c.Status(http.StatusNotFound)
-		global.LOG.Error("get provider err: " + err.Error())
+		resp.ErrorSqlFirst(c, err, "get provider err")
 		return
 	}
+
 	redirectUri := fmt.Sprintf("%s/%s/logged-in/%s", utils.GetHostWithScheme(c), tenant.Name, providerName)
 	location, err := authProvider.Auth(redirectUri)
 	if err != nil {
-		c.Status(http.StatusInternalServerError)
-		global.LOG.Error("provider auth err: " + err.Error())
+		resp.ErrorUnknown(c, err, "provider auth err")
 		return
 	}
 
@@ -116,8 +116,7 @@ func LoginToProvider(c *gin.Context) {
 func ListProviders(c *gin.Context) {
 	var providers []model.Provider
 	if err := internal.TenantDB(c).Find(&providers).Error; err != nil {
-		c.Status(http.StatusInternalServerError)
-		global.LOG.Error("get provider list err: " + err.Error())
+		resp.ErrorSqlSelect(c, err, "list provider err", true)
 		return
 	}
 	c.JSON(http.StatusOK, utils.Filter(providers, model.Provider2Dto))
@@ -138,8 +137,7 @@ func GetProvider(c *gin.Context) {
 	providerName := c.Param("provider")
 	authProvider, err := auth.GetAuthProvider(tenant.Id, providerName)
 	if err != nil {
-		c.Status(http.StatusNotFound)
-		global.LOG.Error("get provider err: " + err.Error())
+		resp.ErrorSqlFirst(c, err, "get provider err")
 		return
 	}
 
@@ -163,15 +161,13 @@ func Register(c *gin.Context) {
 	password := c.PostForm("password")
 	var user model.User
 	if err := global.DB.First(&user, "tenant_id = ? AND username = ?", tenant.Id, login).Error; err == nil {
-		c.Status(http.StatusConflict)
-		global.LOG.Error("user is exist: " + err.Error())
+		resp.ErrorSqlFirst(c, err, "get user err")
 		return
 	}
 
 	hash, err := utils.HashPassword(password)
 	if err != nil {
-		c.Status(http.StatusInternalServerError)
-		global.LOG.Error("hashPassword err: " + err.Error())
+		resp.ErrorUnauthorized(c, nil, "hashPassword err")
 		return
 	}
 
@@ -181,10 +177,10 @@ func Register(c *gin.Context) {
 		PasswordHash: hash,
 	}
 	if err = global.DB.Create(&newUser).Error; err != nil {
-		c.Status(http.StatusInternalServerError)
-		global.LOG.Error("create user err: " + err.Error())
+		resp.ErrorUnknown(c, err, "create user err")
 		return
 	}
+	resp.Success(c)
 }
 
 // Logout godoc
@@ -200,14 +196,16 @@ func Logout(c *gin.Context) {
 	session := sessions.Default(c)
 	user := session.Get("user")
 	if user == nil {
-		c.Status(http.StatusBadRequest)
+		resp.ErrorUnknown(c, nil, "session user is nil")
 		return
 	}
 	session.Delete("tenant")
 	session.Delete("user")
 	if err := session.Save(); err != nil {
-		c.JSON(http.StatusInternalServerError, err)
+		resp.ErrorSaveSession(c, err)
+		return
 	}
+	resp.Success(c)
 }
 
 // ProviderCallback godoc
@@ -226,19 +224,18 @@ func ProviderCallback(c *gin.Context) {
 	providerName := c.Param("provider")
 	var provider model.Provider
 	if err := internal.TenantDB(c).First(&provider, "name = ?", providerName).Error; err != nil {
-		c.Status(http.StatusNotFound)
-		global.LOG.Error("get provider err: " + err.Error())
+		resp.ErrorSqlFirst(c, err, "get provider err")
 		return
 	}
 
 	authProvider, err := auth.GetAuthProvider(provider.TenantId, provider.Name)
 	if err != nil {
-		c.String(http.StatusNotFound, "provider not found")
+		resp.ErrorSqlFirst(c, err, "get auth provider err")
 		return
 	}
 	userInfo, err := authProvider.Login(c)
 	if err != nil {
-		c.Status(http.StatusUnauthorized)
+		resp.ErrorUnknown(c, err, "login err")
 		return
 	}
 
@@ -265,8 +262,7 @@ func ProviderCallback(c *gin.Context) {
 				TenantId:         provider.TenantId,
 			}
 			if err = global.DB.Create(&newUser).Error; err != nil {
-				c.Status(http.StatusConflict)
-				global.LOG.Error("create user err: " + err.Error())
+				resp.ErrorSqlCreate(c, err, "create user err")
 				return
 			}
 			user = &newUser
@@ -277,13 +273,13 @@ func ProviderCallback(c *gin.Context) {
 		providerUser.UserId = user.Id
 		providerUser.Name = userInfo.Sub
 		if err = global.DB.Create(&providerUser).Error; err != nil {
-			c.Status(http.StatusInternalServerError)
+			resp.ErrorSqlCreate(c, err, "create provider user err")
 			return
 		}
 		existingUser = user
 	} else {
 		if err = internal.TenantDB(c).First(existingUser, "id = ?", providerUser.UserId).Error; err != nil {
-			c.Status(http.StatusInternalServerError)
+			resp.ErrorSqlFirst(c, err, "get provider user err")
 			return
 		}
 	}

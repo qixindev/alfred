@@ -48,6 +48,7 @@ func migrateDB() error {
 		&model.Resource{},
 		&model.ResourceRoleUser{},
 		&model.SendInfo{},
+		&model.PhoneVerification{},
 	}
 
 	if err := global.DB.AutoMigrate(migrateList...); err != nil {

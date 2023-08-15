@@ -21,8 +21,7 @@ func (s *SmsTcloud) Send(number string, contents []string) error {
 	request.TemplateParamSet = common.StringPtrs(contents)
 	request.PhoneNumberSet = common.StringPtrs([]string{number})
 
-	_, err := client.SendSms(request)
-	if err != nil {
+	if _, err := client.SendSms(request); err != nil {
 		return err
 	}
 	return nil
