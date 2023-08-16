@@ -22,7 +22,7 @@ import (
 //	@Schemes
 //	@Description	login using username and password
 //	@Tags			login
-//	@Param			tenant		path		string	true	"tenant"
+//	@Param			tenant		path		string	true	"tenant"	default(default)
 //	@Param			login		formData	string	true	"username"
 //	@Param			password	formData	string	true	"password"
 //	@Param			next		query		string	false	"next"
@@ -74,7 +74,7 @@ func Login(c *gin.Context) {
 //	@Schemes
 //	@Description	login via a provider
 //	@Tags			login
-//	@Param			tenant		path	string	true	"tenant"
+//	@Param			tenant		path	string	true	"tenant"	default(default)
 //	@Param			provider	path	string	true	"provider"
 //	@Param			next		query	string	false	"next"
 //	@Success		302
@@ -110,7 +110,7 @@ func LoginToProvider(c *gin.Context) {
 //	@Schemes
 //	@Description	list login providers
 //	@Tags			login
-//	@Param			tenant	path		string	true	"tenant"
+//	@Param			tenant	path		string	true	"tenant"	default(default)
 //	@Success		200		{object}	[]dto.ProviderDto
 //	@Router			/accounts/{tenant}/providers [get]
 func ListProviders(c *gin.Context) {
@@ -128,7 +128,7 @@ func ListProviders(c *gin.Context) {
 //	@Schemes
 //	@Description	get a login provider
 //	@Tags			login
-//	@Param			tenant		path		string	true	"tenant"
+//	@Param			tenant		path		string	true	"tenant"	default(default)
 //	@Param			provider	path		string	true	"provider"
 //	@Success		200			{object}	dto.ProviderDto
 //	@Router			/accounts/{tenant}/providers/{provider} [get]
@@ -150,7 +150,7 @@ func GetProvider(c *gin.Context) {
 //	@Schemes
 //	@Description	register using username and password
 //	@Tags			login
-//	@Param			tenant		path		string	true	"tenant"
+//	@Param			tenant		path		string	true	"tenant"	default(default)
 //	@Param			login		formData	string	true	"username"
 //	@Param			password	formData	string	true	"password"
 //	@Success		200
@@ -189,7 +189,7 @@ func Register(c *gin.Context) {
 //	@Schemes
 //	@Description	logout current user
 //	@Tags			login
-//	@Param			tenant	path	string	true	"tenant"
+//	@Param			tenant	path	string	true	"tenant"	default(default)
 //	@Success		200
 //	@Router			/accounts/{tenant}/logout [get]
 func Logout(c *gin.Context) {
@@ -214,7 +214,7 @@ func Logout(c *gin.Context) {
 //	@Schemes
 //	@Description	provider callback
 //	@Tags			login
-//	@Param			tenant		path	string	true	"tenant"
+//	@Param			tenant		path	string	true	"tenant"	default(default)
 //	@Param			provider	path	string	true	"provider"
 //	@Param			code		query	string	true	"code"
 //	@Success		302

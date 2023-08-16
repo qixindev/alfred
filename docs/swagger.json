@@ -2825,6 +2825,7 @@
                 "parameters": [
                     {
                         "type": "string",
+                        "default": "default",
                         "description": "tenant",
                         "name": "tenant",
                         "in": "path",
@@ -2865,6 +2866,7 @@
                 "parameters": [
                     {
                         "type": "string",
+                        "default": "default",
                         "description": "tenant",
                         "name": "tenant",
                         "in": "path",
@@ -2908,6 +2910,7 @@
                 "parameters": [
                     {
                         "type": "string",
+                        "default": "default",
                         "description": "tenant",
                         "name": "tenant",
                         "in": "path",
@@ -2944,6 +2947,7 @@
                 "parameters": [
                     {
                         "type": "string",
+                        "default": "default",
                         "description": "tenant",
                         "name": "tenant",
                         "in": "path",
@@ -3320,6 +3324,7 @@
                 "parameters": [
                     {
                         "type": "string",
+                        "default": "default",
                         "description": "tenant",
                         "name": "tenant",
                         "in": "path",
@@ -3349,6 +3354,7 @@
                 "parameters": [
                     {
                         "type": "string",
+                        "default": "default",
                         "description": "tenant",
                         "name": "tenant",
                         "in": "path",
@@ -3382,6 +3388,7 @@
                 "parameters": [
                     {
                         "type": "string",
+                        "default": "default",
                         "description": "tenant",
                         "name": "tenant",
                         "in": "path",

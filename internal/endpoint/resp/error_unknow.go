@@ -68,34 +68,3 @@ func ErrorSqlDelete(c *gin.Context, err error, msg string, isArray ...bool) {
 		errorResponse(c, http.StatusInternalServerError, CodeSqlDelete, err, msg, isArray)
 	}
 }
-
-// 请求相关错误
-
-func ErrorRequest(c *gin.Context, err error, msg string, isArray ...bool) {
-	errorResponse(c, http.StatusBadRequest, CodeRequest, err, msg, isArray)
-}
-func ErrorUnauthorized(c *gin.Context, err error, msg string, isArray ...bool) {
-	errorResponse(c, http.StatusUnauthorized, CodeUnauthorized, err, msg, isArray)
-}
-func ErrorIamPermissionDeny(c *gin.Context, err error, msg string, isArray ...bool) {
-	errorResponse(c, http.StatusForbidden, CodeIamDeny, err, msg, isArray)
-}
-func ErrorForbidden(c *gin.Context, err error, msg string, isArray ...bool) {
-	errorResponse(c, http.StatusForbidden, CodeForbidden, err, msg, isArray)
-}
-func ErrorNotFound(c *gin.Context, msg string, isArray ...bool) {
-	errorResponse(c, http.StatusNotFound, CodeNotFound, nil, msg, isArray)
-}
-
-func ErrReqPara(c *gin.Context, err error, isArray ...bool) {
-	errorResponse(c, http.StatusInternalServerError, http.StatusInternalServerError,
-		nil, "req para err: "+err.Error(), isArray)
-}
-
-func ErrReqParaCustom(c *gin.Context, err string, isArray ...bool) {
-	errorResponse(c, http.StatusBadRequest, http.StatusBadRequest, nil, "req para err: "+err, isArray)
-}
-
-func ErrorNotLogin(c *gin.Context) {
-	errorResponse(c, http.StatusInternalServerError, CodeNotLogin, nil, "user not login", []bool{})
-}

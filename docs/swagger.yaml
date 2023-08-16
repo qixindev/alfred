@@ -1025,7 +1025,8 @@ paths:
     get:
       description: provider callback
       parameters:
-      - description: tenant
+      - default: default
+        description: tenant
         in: path
         name: tenant
         required: true
@@ -1052,7 +1053,8 @@ paths:
     post:
       description: login using username and password
       parameters:
-      - description: tenant
+      - default: default
+        description: tenant
         in: path
         name: tenant
         required: true
@@ -1081,7 +1083,8 @@ paths:
     get:
       description: login via a provider
       parameters:
-      - description: tenant
+      - default: default
+        description: tenant
         in: path
         name: tenant
         required: true
@@ -1105,7 +1108,8 @@ paths:
     get:
       description: logout current user
       parameters:
-      - description: tenant
+      - default: default
+        description: tenant
         in: path
         name: tenant
         required: true
@@ -1356,7 +1360,8 @@ paths:
     get:
       description: list login providers
       parameters:
-      - description: tenant
+      - default: default
+        description: tenant
         in: path
         name: tenant
         required: true
@@ -1375,7 +1380,8 @@ paths:
     get:
       description: get a login provider
       parameters:
-      - description: tenant
+      - default: default
+        description: tenant
         in: path
         name: tenant
         required: true
@@ -1397,7 +1403,8 @@ paths:
     post:
       description: register using username and password
       parameters:
-      - description: tenant
+      - default: default
+        description: tenant
         in: path
         name: tenant
         required: true

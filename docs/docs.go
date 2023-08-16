@@ -2836,6 +2836,7 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "string",
+                        "default": "default",
                         "description": "tenant",
                         "name": "tenant",
                         "in": "path",
@@ -2876,6 +2877,7 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "string",
+                        "default": "default",
                         "description": "tenant",
                         "name": "tenant",
                         "in": "path",
@@ -2919,6 +2921,7 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "string",
+                        "default": "default",
                         "description": "tenant",
                         "name": "tenant",
                         "in": "path",
@@ -2955,6 +2958,7 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "string",
+                        "default": "default",
                         "description": "tenant",
                         "name": "tenant",
                         "in": "path",
@@ -3331,6 +3335,7 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "string",
+                        "default": "default",
                         "description": "tenant",
                         "name": "tenant",
                         "in": "path",
@@ -3360,6 +3365,7 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "string",
+                        "default": "default",
                         "description": "tenant",
                         "name": "tenant",
                         "in": "path",
@@ -3393,6 +3399,7 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "string",
+                        "default": "default",
                         "description": "tenant",
                         "name": "tenant",
                         "in": "path",

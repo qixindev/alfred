@@ -6,7 +6,6 @@ import (
 	"accounts/pkg/global"
 	"accounts/pkg/utils"
 	"crypto/rsa"
-	"errors"
 	"fmt"
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-gonic/gin"
@@ -26,7 +25,7 @@ func MultiTenancy(c *gin.Context) {
 		tenantName = "default"
 	}
 	if tenantName == "" {
-		c.AbortWithStatusJSON(http.StatusBadRequest, &gin.H{"message": "tenant should not be null"})
+		resp.ErrorRequest(c, nil, "tenant should not be null")
 		return
 	}
 
@@ -37,7 +36,7 @@ func MultiTenancy(c *gin.Context) {
 		return
 	}
 
-	c.AbortWithStatusJSON(http.StatusNotFound, gin.H{"message": "Tenant not found."})
+	resp.ErrorNotFound(c, "Tenant not found.")
 	return
 }
 
@@ -47,8 +46,7 @@ func GetUserStandalone(c *gin.Context) (*model.User, error) {
 	session := sessions.Default(c)
 	username := session.Get("user")
 	if err := global.DB.First(&user, "tenant_id = ? AND username = ?", tenant.Id, username).Error; err != nil {
-		global.LOG.Error("get tenant user err: " + err.Error())
-		return nil, errors.New("")
+		return nil, err
 	}
 	return &user, nil
 }
@@ -62,7 +60,7 @@ func AuthorizedAdmin(c *gin.Context) {
 	username := sessions.Default(c).Get("user")
 	tenantName := c.Param("tenant")
 	if username == nil {
-		resp.ErrorNotLogin(c)
+		resp.ErrorNotLogin(c, nil)
 		return
 	}
 	if tenantName == "" {
@@ -78,7 +76,7 @@ func AuthorizedAdmin(c *gin.Context) {
 	}
 
 	if user.Role != "owner" && user.Role != "admin" {
-		c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"message": "非管理员无权访问"})
+		resp.ErrorUnauthorized(c, nil, "非管理员无权访问")
 		return
 	}
 	c.Set("user", user)
@@ -105,7 +103,7 @@ func AuthAccessToken(c *gin.Context) {
 		global.LOG.Warn(fmt.Sprintf("%s token valid err: %s", "default", err))
 	}
 
-	c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"message": "token invalidate"})
+	resp.ErrorUnauthorized(c, nil, "token invalidate")
 }
 
 func Authorized(redirectToLogin bool) gin.HandlerFunc {
@@ -121,7 +119,7 @@ func Authorized(redirectToLogin bool) gin.HandlerFunc {
 				c.Redirect(http.StatusFound, location)
 				c.Abort()
 			} else {
-				c.AbortWithStatus(http.StatusUnauthorized)
+				resp.ErrorNotLogin(c, err)
 			}
 			return
 		}

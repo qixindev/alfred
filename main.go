@@ -64,7 +64,7 @@ func main() {
 	store := cookie.NewStore(cookieSecret)
 	store.Options(sessions.Options{
 		MaxAge: 60 * 60 * 24,
-		Path:   "/accounts",
+		Path:   "/",
 	})
 	r.Use(sessions.Sessions("QixinAuth", store))
 	internal.AddRoutes(r)
