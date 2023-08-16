@@ -1730,6 +1730,78 @@ paths:
       summary: client
       tags:
       - client
+  /accounts/admin/{tenant}/connectors:
+    get:
+      description: create connector
+      parameters:
+      - default: default
+        description: tenant
+        in: path
+        name: tenant
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+      summary: create connector
+      tags:
+      - admin-tenants
+    post:
+      description: create connector
+      parameters:
+      - default: default
+        description: tenant
+        in: path
+        name: tenant
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+      summary: create connector
+      tags:
+      - admin-tenants
+  /accounts/admin/{tenant}/connectors/{connectorId}:
+    get:
+      description: create connector
+      parameters:
+      - default: default
+        description: tenant
+        in: path
+        name: tenant
+        required: true
+        type: string
+      - description: connectorId
+        in: path
+        name: connectorId
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+      summary: create connector
+      tags:
+      - admin-tenants
+    put:
+      description: modify connector
+      parameters:
+      - default: default
+        description: tenant
+        in: path
+        name: tenant
+        required: true
+        type: string
+      - description: connectorId
+        in: path
+        name: connector
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+      summary: modify connector
+      tags:
+      - admin-tenants
   /accounts/admin/{tenant}/devices:
     get:
       description: list device
@@ -2427,37 +2499,6 @@ paths:
         "200":
           description: OK
       summary: tenants
-      tags:
-      - admin-tenants
-  /accounts/admin/tenants/{tenant}/connectors:
-    get:
-      description: create connector
-      parameters:
-      - default: default
-        description: tenant
-        in: path
-        name: tenant
-        required: true
-        type: string
-      responses:
-        "200":
-          description: OK
-      summary: create connector
-      tags:
-      - admin-tenants
-    post:
-      description: create connector
-      parameters:
-      - default: default
-        description: tenant
-        in: path
-        name: tenant
-        required: true
-        type: string
-      responses:
-        "200":
-          description: OK
-      summary: create connector
       tags:
       - admin-tenants
   /accounts/admin/tenants/{tenantId}:

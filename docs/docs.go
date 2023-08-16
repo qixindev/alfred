@@ -182,52 +182,6 @@ const docTemplate = `{
                 }
             }
         },
-        "/accounts/admin/tenants/{tenant}/connectors": {
-            "get": {
-                "description": "create connector",
-                "tags": [
-                    "admin-tenants"
-                ],
-                "summary": "create connector",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "default": "default",
-                        "description": "tenant",
-                        "name": "tenant",
-                        "in": "path",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK"
-                    }
-                }
-            },
-            "post": {
-                "description": "create connector",
-                "tags": [
-                    "admin-tenants"
-                ],
-                "summary": "create connector",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "default": "default",
-                        "description": "tenant",
-                        "name": "tenant",
-                        "in": "path",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK"
-                    }
-                }
-            }
-        },
         "/accounts/admin/{tenant}/clients": {
             "get": {
                 "description": "get client list",
@@ -665,6 +619,112 @@ const docTemplate = `{
                         "type": "string",
                         "description": "tenant",
                         "name": "subId",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/accounts/admin/{tenant}/connectors": {
+            "get": {
+                "description": "create connector",
+                "tags": [
+                    "admin-tenants"
+                ],
+                "summary": "create connector",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "default": "default",
+                        "description": "tenant",
+                        "name": "tenant",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            },
+            "post": {
+                "description": "create connector",
+                "tags": [
+                    "admin-tenants"
+                ],
+                "summary": "create connector",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "default": "default",
+                        "description": "tenant",
+                        "name": "tenant",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/accounts/admin/{tenant}/connectors/{connectorId}": {
+            "get": {
+                "description": "create connector",
+                "tags": [
+                    "admin-tenants"
+                ],
+                "summary": "create connector",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "default": "default",
+                        "description": "tenant",
+                        "name": "tenant",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "connectorId",
+                        "name": "connectorId",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            },
+            "put": {
+                "description": "modify connector",
+                "tags": [
+                    "admin-tenants"
+                ],
+                "summary": "modify connector",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "default": "default",
+                        "description": "tenant",
+                        "name": "tenant",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "connectorId",
+                        "name": "connector",
                         "in": "path",
                         "required": true
                     }

@@ -5,7 +5,7 @@ type SmsConnector struct {
 	Name     string `json:"name"`
 	Type     string `json:"type"`
 	TenantId uint   `gorm:"primaryKey"`
-	Tenant   Tenant
+	Tenant   Tenant `json:"-"`
 }
 
 type SmsTcloud struct {
