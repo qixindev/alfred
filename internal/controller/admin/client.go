@@ -81,7 +81,7 @@ func NewClient(c *gin.Context) {
 	tenant := internal.GetTenant(c)
 	var client model.Client
 	if err := c.BindJSON(&client); err != nil {
-		resp.ErrorRequest(c, err, "bind new client err")
+		resp.ErrorRequestWithMsg(c, err, "bind new client err")
 		return
 	}
 	client.TenantId = tenant.Id
@@ -123,7 +123,7 @@ func UpdateClient(c *gin.Context) {
 	}
 	var cli model.Client
 	if err := c.BindJSON(&cli); err != nil {
-		resp.ErrorRequest(c, err, "bind update client err")
+		resp.ErrorRequestWithMsg(c, err, "bind update client err")
 		return
 	}
 	client.Name = cli.Name
@@ -203,7 +203,7 @@ func NewClientRedirectUri(c *gin.Context) {
 	}
 	var uri model.RedirectUri
 	if err := c.BindJSON(&uri); err != nil {
-		resp.ErrorRequest(c, err, "bind new redirect uri err")
+		resp.ErrorRequestWithMsg(c, err, "bind new redirect uri err")
 		return
 	}
 	uri.TenantId = client.TenantId
@@ -229,7 +229,7 @@ func UpdateClientRedirectUri(c *gin.Context) {
 	uriId := c.Param("uriId")
 	var newUri model.RedirectUri
 	if err := c.BindJSON(&newUri); err != nil {
-		resp.ErrorRequest(c, err, "bind update redirect uri err")
+		resp.ErrorRequestWithMsg(c, err, "bind update redirect uri err")
 		return
 	}
 
@@ -321,7 +321,7 @@ func NewClientSecret(c *gin.Context) {
 	}
 	var secret model.ClientSecret
 	if err := c.BindJSON(&secret); err != nil {
-		resp.ErrorRequest(c, err, "bind new client secret err")
+		resp.ErrorRequestWithMsg(c, err, "bind new client secret err")
 		return
 	}
 	secret.TenantId = client.TenantId

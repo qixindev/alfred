@@ -48,7 +48,7 @@ func ListIamRole(c *gin.Context) {
 func NewIamRole(c *gin.Context) {
 	var role model.ResourceTypeRole
 	if err := c.BindJSON(&role); err != nil {
-		resp.ErrorRequest(c, err, "bind new iam role err")
+		resp.ErrorRequestWithMsg(c, err, "bind new iam role err")
 		return
 	}
 
@@ -133,7 +133,7 @@ func ListIamResourceRole(c *gin.Context) {
 func NewIamResourceRole(c *gin.Context) {
 	var roleUser []model.ResourceRoleUser
 	if err := c.BindJSON(&roleUser); err != nil {
-		resp.ErrorRequest(c, err, "bind new iam resource role err")
+		resp.ErrorRequestWithMsg(c, err, "bind new iam resource role err")
 		return
 	}
 

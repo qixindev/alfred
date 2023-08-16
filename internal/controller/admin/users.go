@@ -63,11 +63,11 @@ func NewUser(c *gin.Context) {
 	tenant := internal.GetTenant(c)
 	var user model.User
 	if err := c.BindJSON(&user); err != nil {
-		resp.ErrorRequest(c, err, "bind new user err")
+		resp.ErrorRequestWithMsg(c, err, "bind new user err")
 		return
 	}
 	if user.PasswordHash == "" {
-		resp.ErrorRequest(c, nil, "password should not be null")
+		resp.ErrorRequestWithMsg(c, nil, "password should not be null")
 		return
 	}
 
@@ -105,7 +105,7 @@ func UpdateUser(c *gin.Context) {
 	}
 	var u model.User
 	if err := c.BindJSON(&u); err != nil {
-		resp.ErrorRequest(c, err, "bind update user err")
+		resp.ErrorRequestWithMsg(c, err, "bind update user err")
 		return
 	}
 	user.Username = u.Username
@@ -198,7 +198,7 @@ func NewUserGroup(c *gin.Context) {
 	userId := c.Param("userId")
 	var groupUser model.GroupUser
 	if err := c.BindJSON(&groupUser); err != nil {
-		resp.ErrorRequest(c, err, "bind new user group err")
+		resp.ErrorRequestWithMsg(c, err, "bind new user group err")
 		return
 	}
 
@@ -245,7 +245,7 @@ func UpdateUserGroup(c *gin.Context) {
 	}
 	var gu dto.GroupMemberDto
 	if err := c.BindJSON(&gu); err != nil {
-		resp.ErrorRequest(c, err, "bind update user group err")
+		resp.ErrorRequestWithMsg(c, err, "bind update user group err")
 		return
 	}
 	var groupUser model.GroupUser

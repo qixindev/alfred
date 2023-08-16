@@ -1,8 +1,8 @@
 package auth
 
 import (
-	"accounts/internal/controller/connectors"
 	"accounts/internal/model"
+	"accounts/internal/service"
 	"accounts/pkg/global"
 	"errors"
 	"fmt"
@@ -16,7 +16,7 @@ type ProviderSms struct {
 }
 
 func (p *ProviderSms) Auth(number string) (string, error) {
-	connector, err := connectors.GetConnector(p.Config.TenantId, p.Config.SmsConnectorId)
+	connector, err := service.GetConnector(p.Config.TenantId, p.Config.SmsConnectorId)
 	if err != nil {
 		return "", err
 	}

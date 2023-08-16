@@ -7,9 +7,13 @@ import (
 
 // 请求相关错误
 
-func ErrorRequest(c *gin.Context, err error, msg string, isArray ...bool) {
+func ErrorRequestWithMsg(c *gin.Context, err error, msg string, isArray ...bool) {
 	errorResponse(c, http.StatusBadRequest, CodeRequest, err, msg, isArray)
 }
+func ErrorRequest(c *gin.Context, err error, isArray ...bool) {
+	errorResponse(c, http.StatusBadRequest, CodeRequest, err, "req para err", isArray)
+}
+
 func ErrorUnauthorized(c *gin.Context, err error, msg string, isArray ...bool) {
 	errorResponse(c, http.StatusUnauthorized, CodeUnauthorized, err, msg, isArray)
 }
