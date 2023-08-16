@@ -81,7 +81,7 @@ func ErrorIamPermissionDeny(c *gin.Context, err error, msg string, isArray ...bo
 	errorResponse(c, http.StatusForbidden, CodeIamDeny, err, msg, isArray)
 }
 func ErrorForbidden(c *gin.Context, err error, msg string, isArray ...bool) {
-	errorResponse(c, http.StatusForbidden, CodeIamDeny, err, msg, isArray)
+	errorResponse(c, http.StatusForbidden, CodeForbidden, err, msg, isArray)
 }
 func ErrorNotFound(c *gin.Context, msg string, isArray ...bool) {
 	errorResponse(c, http.StatusNotFound, CodeNotFound, nil, msg, isArray)

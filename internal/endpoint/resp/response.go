@@ -36,10 +36,11 @@ func response(c *gin.Context, code int, errCode int, msg string, data any, total
 }
 
 func errorResponse(ctx *gin.Context, code int, errCode int, err error, msg string, isArray []bool) {
+	sendMsg := msg
 	if err != nil {
-		msg += ": " + err.Error()
+		sendMsg += ": " + err.Error()
 	}
-	response(ctx, code, errCode, msg, nil, 0, isArray)
+	response(ctx, code, errCode, sendMsg, nil, 0, isArray)
 	msg = ctx.Request.Method + " " + ctx.Request.URL.Path + ": " + msg
 	if err != nil {
 		global.LOG.Error(msg + ": " + err.Error())
