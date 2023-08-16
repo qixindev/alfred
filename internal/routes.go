@@ -5,12 +5,12 @@ import (
 	"accounts/internal/controller"
 	"accounts/internal/controller/admin"
 	"accounts/internal/controller/iam"
+	"accounts/internal/endpoint/resp"
 	"accounts/pkg/middlewares"
 	"github.com/gin-contrib/static"
 	"github.com/gin-gonic/gin"
 	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
-	"net/http"
 	"strings"
 )
 
@@ -52,7 +52,7 @@ func AddWebRoutes(r *gin.Engine) {
 
 	r.NoRoute(func(c *gin.Context) {
 		if strings.HasPrefix(c.Request.URL.Path, "/accounts") {
-			c.JSON(http.StatusNotFound, gin.H{"message": "no such router"})
+			resp.ErrorNotFound(c, "no such router")
 			return
 		}
 		c.File("./web/.output/public/404.html")

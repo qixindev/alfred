@@ -5,13 +5,16 @@ import (
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
 	"net/http"
+	"strings"
 )
 
 const (
 	CodeOk          = 200
 	SuccessMsg      = ""
-	CodeUnknown     = 1000
+	CodeNotLogin    = 1000
 	CodeSaveSession = 1001
+	CodeNotFound    = 1002
+	CodeUnknown     = 1003
 
 	CodeSqlFirst  = 2000
 	CodeSqlSelect = 2001
@@ -21,7 +24,8 @@ const (
 
 	CodeRequest      = 3000 // 请求参数错误
 	CodeUnauthorized = 3001 // 未授权
-	CodeIamDeny      = 3002 // 无权访问
+	CodeForbidden    = 3002 // 无权访问
+	CodeIamDeny      = 3003 // 无iam权限
 )
 
 func ErrorUnknown(c *gin.Context, err error, msg string, isArray ...bool) {
@@ -45,13 +49,25 @@ func ErrorSqlSelect(c *gin.Context, err error, msg string, isArray ...bool) {
 	errorResponse(c, http.StatusInternalServerError, CodeSqlSelect, err, msg, isArray)
 }
 func ErrorSqlCreate(c *gin.Context, err error, msg string, isArray ...bool) {
-	errorResponse(c, http.StatusInternalServerError, CodeSqlCreate, err, msg, isArray)
+	if err != nil && strings.HasPrefix(err.Error(), "ERROR: duplicate key value violates unique constraint") {
+		errorResponse(c, http.StatusConflict, CodeSqlCreate, err, msg, isArray)
+	} else {
+		errorResponse(c, http.StatusInternalServerError, CodeSqlCreate, err, msg, isArray)
+	}
 }
 func ErrorSqlUpdate(c *gin.Context, err error, msg string, isArray ...bool) {
-	errorResponse(c, http.StatusInternalServerError, CodeSqlUpdate, err, msg, isArray)
+	if err != nil && strings.HasPrefix(err.Error(), "ERROR: duplicate key value violates unique constraint") {
+		errorResponse(c, http.StatusConflict, CodeSqlUpdate, err, msg, isArray)
+	} else {
+		errorResponse(c, http.StatusInternalServerError, CodeSqlUpdate, err, msg, isArray)
+	}
 }
 func ErrorSqlDelete(c *gin.Context, err error, msg string, isArray ...bool) {
-	errorResponse(c, http.StatusInternalServerError, CodeSqlDelete, err, msg, isArray)
+	if err == gorm.ErrForeignKeyViolated { // 外键依赖导致无法删除
+		errorResponse(c, http.StatusConflict, CodeSqlDelete, err, msg, isArray)
+	} else {
+		errorResponse(c, http.StatusInternalServerError, CodeSqlDelete, err, msg, isArray)
+	}
 }
 
 // 请求相关错误
@@ -65,12 +81,11 @@ func ErrorUnauthorized(c *gin.Context, err error, msg string, isArray ...bool) {
 func ErrorIamPermissionDeny(c *gin.Context, err error, msg string, isArray ...bool) {
 	errorResponse(c, http.StatusForbidden, CodeIamDeny, err, msg, isArray)
 }
-func ErrorNotFound(c *gin.Context, msg string, isArray ...bool) {
-	errorResponse(c, http.StatusNotFound, CodeIamDeny, nil, msg, isArray)
+func ErrorForbidden(c *gin.Context, err error, msg string, isArray ...bool) {
+	errorResponse(c, http.StatusForbidden, CodeIamDeny, err, msg, isArray)
 }
-
-func ErrorSqlResponse(c *gin.Context, msg string, isArray ...bool) {
-	errorResponse(c, http.StatusInternalServerError, http.StatusInternalServerError, nil, msg, isArray)
+func ErrorNotFound(c *gin.Context, msg string, isArray ...bool) {
+	errorResponse(c, http.StatusNotFound, CodeNotFound, nil, msg, isArray)
 }
 
 func ErrReqPara(c *gin.Context, err error, isArray ...bool) {
@@ -81,4 +96,8 @@ func ErrReqPara(c *gin.Context, err error, isArray ...bool) {
 
 func ErrReqParaCustom(c *gin.Context, err string, isArray ...bool) {
 	errorResponse(c, http.StatusBadRequest, http.StatusBadRequest, nil, "req para err: "+err, isArray)
+}
+
+func ErrorNotLogin(c *gin.Context) {
+	errorResponse(c, http.StatusInternalServerError, CodeNotLogin, nil, "user not login", []bool{})
 }

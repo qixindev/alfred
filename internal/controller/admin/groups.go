@@ -8,7 +8,6 @@ import (
 	"accounts/pkg/global"
 	"accounts/pkg/utils"
 	"github.com/gin-gonic/gin"
-	"net/http"
 )
 
 // ListGroups godoc
@@ -26,7 +25,7 @@ func ListGroups(c *gin.Context) {
 		resp.ErrorSqlSelect(c, err, "list groups err", true)
 		return
 	}
-	c.JSON(http.StatusOK, utils.Filter(groups, model.Group2Dto))
+	resp.SuccessWithData(c, utils.Filter(groups, model.Group2Dto))
 }
 
 // GetGroup godoc
@@ -46,7 +45,7 @@ func GetGroup(c *gin.Context) {
 		resp.ErrorSqlFirst(c, err, "get group err")
 		return
 	}
-	c.JSON(http.StatusOK, group.Dto())
+	resp.SuccessWithData(c, group.Dto())
 }
 
 // NewGroup godoc
@@ -70,7 +69,7 @@ func NewGroup(c *gin.Context) {
 		resp.ErrorSqlCreate(c, err, "create group err")
 		return
 	}
-	c.JSON(http.StatusOK, group.Dto())
+	resp.SuccessWithData(c, group.Dto())
 }
 
 // UpdateGroup godoc
@@ -101,7 +100,7 @@ func UpdateGroup(c *gin.Context) {
 		resp.ErrorSqlUpdate(c, err, "update group err")
 		return
 	}
-	c.JSON(http.StatusOK, group.Dto())
+	resp.SuccessWithData(c, group.Dto())
 }
 
 // DeleteGroup godoc
@@ -125,7 +124,7 @@ func DeleteGroup(c *gin.Context) {
 		resp.ErrorSqlDelete(c, err, "delete group err")
 		return
 	}
-	c.Status(http.StatusNoContent)
+	resp.Success(c)
 }
 
 // GetGroupMembers godoc
@@ -176,7 +175,7 @@ func GetGroupMembers(c *gin.Context) {
 		members = append(members, d.GroupMemberDto())
 	}
 
-	c.JSON(http.StatusOK, members)
+	resp.SuccessWithData(c, members)
 }
 
 func AddAdminGroupsRoutes(rg *gin.RouterGroup) {

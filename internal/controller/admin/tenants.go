@@ -8,7 +8,6 @@ import (
 	"accounts/pkg/utils"
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-gonic/gin"
-	"net/http"
 )
 
 // ListTenants godoc
@@ -36,7 +35,7 @@ func ListTenants(c *gin.Context) {
 			res = append(res, tenant)
 		}
 	}
-	c.JSON(http.StatusOK, utils.Filter(res, model.Tenant2Dto))
+	resp.SuccessWithData(c, utils.Filter(res, model.Tenant2Dto))
 }
 
 // ListUserTenants godoc
@@ -53,12 +52,10 @@ func ListUserTenants(c *gin.Context) {
 	userId := c.Param("user")
 	var tenants []model.Tenant
 	if err := global.DB.Where("sub = ?", userId).Find(&tenants).Error; err != nil {
-		c.Status(http.StatusInternalServerError)
-		global.LOG.Error("get tenants err: " + err.Error())
 		resp.ErrorSqlSelect(c, err, "list tenant users err", true)
 		return
 	}
-	c.JSON(http.StatusOK, utils.Filter(tenants, model.Tenant2Dto))
+	resp.SuccessWithData(c, utils.Filter(tenants, model.Tenant2Dto))
 }
 
 // GetTenant godoc
@@ -78,7 +75,7 @@ func GetTenant(c *gin.Context) {
 		resp.ErrorSqlFirst(c, err, "get tenant err")
 		return
 	}
-	c.JSON(http.StatusOK, tenant.Dto())
+	resp.SuccessWithData(c, tenant.Dto())
 }
 
 // NewTenant godoc
@@ -111,7 +108,7 @@ func NewTenant(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, tenant.Dto())
+	resp.SuccessWithData(c, tenant.Dto())
 }
 
 // UpdateTenant godoc
@@ -141,7 +138,7 @@ func UpdateTenant(c *gin.Context) {
 		resp.ErrorSqlUpdate(c, err, "update tenant err")
 		return
 	}
-	c.JSON(http.StatusOK, tenant.Dto())
+	resp.SuccessWithData(c, tenant.Dto())
 }
 
 // DeleteTenant godoc
@@ -165,7 +162,7 @@ func DeleteTenant(c *gin.Context) {
 		resp.ErrorSqlDelete(c, err, "delete tenant err")
 		return
 	}
-	c.Status(http.StatusNoContent)
+	resp.Success(c)
 }
 
 // DeleteTenantSecret godoc
@@ -190,7 +187,7 @@ func DeleteTenantSecret(c *gin.Context) {
 		resp.ErrorUnknown(c, err, "delete jwks secret err")
 	}
 
-	c.Status(http.StatusNoContent)
+	resp.Success(c)
 }
 
 // NewTenantSecret godoc
@@ -223,7 +220,7 @@ func NewTenantSecret(c *gin.Context) {
 		resp.ErrorUnknown(c, err, "create tenant secrete err")
 	}
 
-	c.Status(http.StatusNoContent)
+	resp.Success(c)
 }
 
 func AddAdminTenantsRoutes(rg *gin.RouterGroup) {

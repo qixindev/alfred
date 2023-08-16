@@ -8,7 +8,6 @@ import (
 	"accounts/pkg/global"
 	"accounts/pkg/utils"
 	"github.com/gin-gonic/gin"
-	"net/http"
 	"strconv"
 )
 
@@ -31,7 +30,7 @@ func ListIamRole(c *gin.Context) {
 		resp.ErrorSqlSelect(c, err, "list resource type role err", true)
 		return
 	}
-	c.JSON(http.StatusOK, roles)
+	resp.SuccessWithData(c, roles)
 }
 
 // NewIamRole godoc
@@ -60,7 +59,7 @@ func NewIamRole(c *gin.Context) {
 		resp.ErrorSqlCreate(c, err, "create resource role err")
 		return
 	}
-	c.JSON(http.StatusOK, r)
+	resp.SuccessWithData(c, r)
 }
 
 // DeleteIamRole godoc
@@ -81,7 +80,7 @@ func DeleteIamRole(c *gin.Context) {
 	tenant := internal.GetTenant(c)
 	role, err := iam.GetIamRole(tenant.Id, typeId, roleId)
 	if err != nil {
-		resp.ErrReqParaCustom(c, "no such role")
+		resp.ErrorSqlFirst(c, err, "get role err")
 		return
 	}
 
@@ -89,7 +88,7 @@ func DeleteIamRole(c *gin.Context) {
 		resp.ErrorSqlDelete(c, err, "delete resource role err")
 		return
 	}
-	c.Status(http.StatusNoContent)
+	resp.Success(c)
 }
 
 // ListIamResourceRole godoc
@@ -114,7 +113,7 @@ func ListIamResourceRole(c *gin.Context) {
 		resp.ErrorSqlSelect(c, err, "list resources role user err", true)
 		return
 	}
-	c.JSON(http.StatusOK, utils.Filter(roleUsers, model.ResourceRoleUserDto))
+	resp.SuccessWithData(c, utils.Filter(roleUsers, model.ResourceRoleUserDto))
 }
 
 // NewIamResourceRole godoc
@@ -155,7 +154,7 @@ func NewIamResourceRole(c *gin.Context) {
 		resp.ErrorSqlCreate(c, err, "create resource role user err")
 		return
 	}
-	c.Status(http.StatusOK)
+	resp.Success(c)
 }
 
 // DeleteIamResourceRoleUser godoc
@@ -193,7 +192,7 @@ func DeleteIamResourceRoleUser(c *gin.Context) {
 		resp.ErrorSqlDelete(c, err, "delete resource role user err")
 		return
 	}
-	c.Status(http.StatusNoContent)
+	resp.Success(c)
 }
 
 // CreateAllTypeRole godoc

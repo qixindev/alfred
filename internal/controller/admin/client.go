@@ -26,7 +26,7 @@ func ListClients(c *gin.Context) {
 		resp.ErrorSqlSelect(c, err, "list client err", true)
 		return
 	}
-	c.JSON(http.StatusOK, utils.Filter(clients, model.Client2Dto))
+	resp.SuccessWithData(c, utils.Filter(clients, model.Client2Dto))
 }
 
 // GetClient godoc
@@ -46,7 +46,7 @@ func GetClient(c *gin.Context) {
 		resp.ErrorSqlFirst(c, err, "get client err")
 		return
 	}
-	c.JSON(http.StatusOK, client.Dto())
+	resp.SuccessWithData(c, client.Dto())
 }
 
 // GetDefaultClient godoc
@@ -64,7 +64,7 @@ func GetDefaultClient(c *gin.Context) {
 		resp.ErrorSqlFirst(c, err, "get default client err")
 		return
 	}
-	c.JSON(http.StatusOK, client.Dto())
+	resp.SuccessWithData(c, client.Dto())
 }
 
 // NewClient godoc
@@ -101,7 +101,7 @@ func NewClient(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, client.Dto())
+	resp.SuccessWithData(c, client.Dto())
 }
 
 // UpdateClient godoc
@@ -131,7 +131,7 @@ func UpdateClient(c *gin.Context) {
 		resp.ErrorSqlUpdate(c, err, "update clients err")
 		return
 	}
-	c.JSON(http.StatusOK, client.Dto())
+	resp.SuccessWithData(c, client.Dto())
 }
 
 // DeleteClient godoc
@@ -178,13 +178,11 @@ func ListClientRedirectUri(c *gin.Context) {
 
 	var uris []model.RedirectUri
 	if err := internal.TenantDB(c).Find(&uris, "client_id = ?", client.Id).Error; err != nil {
-		c.Status(http.StatusInternalServerError)
-		global.LOG.Error("get redirect-uris err: " + err.Error())
 		resp.ErrorSqlSelect(c, err, "list redirect-uris err", true)
 		return
 	}
 
-	c.JSON(http.StatusOK, utils.Filter(uris, model.RedirectUri2Dto))
+	resp.SuccessWithData(c, utils.Filter(uris, model.RedirectUri2Dto))
 }
 
 // NewClientRedirectUri godoc
@@ -214,7 +212,7 @@ func NewClientRedirectUri(c *gin.Context) {
 		resp.ErrorSqlCreate(c, err, "create redirect uri err")
 		return
 	}
-	c.JSON(http.StatusOK, uri.Dto())
+	resp.SuccessWithData(c, uri.Dto())
 }
 
 // UpdateClientRedirectUri godoc
@@ -243,12 +241,11 @@ func UpdateClientRedirectUri(c *gin.Context) {
 
 	uri.RedirectUri = newUri.RedirectUri
 	if err := internal.TenantDB(c).Updates(&uri).Error; err != nil {
-		c.Status(http.StatusConflict)
 		resp.ErrorSqlUpdate(c, err, "update redirect uri err")
 		return
 	}
 
-	c.JSON(http.StatusOK, newUri.Dto())
+	resp.SuccessWithData(c, newUri.Dto())
 }
 
 // DeleteClientRedirectUri godoc
@@ -302,7 +299,7 @@ func ListClientSecret(c *gin.Context) {
 		resp.ErrorSqlSelect(c, err, "list clients secret err", true)
 		return
 	}
-	c.JSON(http.StatusOK, utils.Filter(secrets, model.ClientSecret2Dto))
+	resp.SuccessWithData(c, utils.Filter(secrets, model.ClientSecret2Dto))
 }
 
 // NewClientSecret godoc
@@ -333,7 +330,7 @@ func NewClientSecret(c *gin.Context) {
 		resp.ErrorSqlCreate(c, err, "create new client secret err")
 		return
 	}
-	c.JSON(http.StatusOK, secret.Dto())
+	resp.SuccessWithData(c, secret.Dto())
 }
 
 // DeleteClientSecret godoc
@@ -390,7 +387,7 @@ func ListClientUsers(c *gin.Context) {
 		resp.ErrorSqlSelect(c, err, "list client user err", true)
 		return
 	}
-	c.JSON(http.StatusOK, clientUser)
+	resp.SuccessWithData(c, clientUser)
 }
 
 // GetClientUsers godoc
@@ -425,7 +422,7 @@ func GetClientUsers(c *gin.Context) {
 		resp.ErrorNotFound(c, "no such client user")
 		return
 	}
-	c.JSON(http.StatusOK, clientUser)
+	resp.SuccessWithData(c, clientUser)
 }
 
 func AddAdminClientsRoutes(rg *gin.RouterGroup) {

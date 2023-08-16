@@ -27,7 +27,7 @@ func ListUsers(c *gin.Context) {
 		resp.ErrorSqlSelect(c, err, "list tenant users err", true)
 		return
 	}
-	c.JSON(http.StatusOK, utils.Filter(users, model.User2AdminDto))
+	resp.SuccessWithData(c, utils.Filter(users, model.User2AdminDto))
 }
 
 // GetUser godoc
@@ -47,7 +47,7 @@ func GetUser(c *gin.Context) {
 		resp.ErrorSqlFirst(c, err, "get user err")
 		return
 	}
-	c.JSON(http.StatusOK, user.AdminDto())
+	resp.SuccessWithData(c, user.AdminDto())
 }
 
 // NewUser godoc
@@ -83,7 +83,7 @@ func NewUser(c *gin.Context) {
 		resp.ErrorSqlCreate(c, err, "new tenant user err")
 		return
 	}
-	c.JSON(http.StatusOK, user.AdminDto())
+	resp.SuccessWithData(c, user.AdminDto())
 }
 
 // UpdateUser godoc
@@ -123,7 +123,7 @@ func UpdateUser(c *gin.Context) {
 		resp.ErrorSqlUpdate(c, err, "update tenant user err")
 		return
 	}
-	c.JSON(http.StatusOK, user.AdminDto())
+	resp.SuccessWithData(c, user.AdminDto())
 }
 
 // DeleteUser godoc
@@ -181,7 +181,7 @@ func GetUserGroups(c *gin.Context) {
 			Role: gu.Role,
 		}
 	})
-	c.JSON(http.StatusOK, groups)
+	resp.SuccessWithData(c, groups)
 }
 
 // NewUserGroup godoc
@@ -216,7 +216,7 @@ func NewUserGroup(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, groupUser.Dto())
+	resp.SuccessWithData(c, groupUser.Dto())
 }
 
 // UpdateUserGroup godoc
@@ -260,7 +260,7 @@ func UpdateUserGroup(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, groupUser.GroupMemberDto())
+	resp.SuccessWithData(c, groupUser.GroupMemberDto())
 }
 
 // DeleteUserGroup godoc

@@ -1,6 +1,7 @@
 package middlewares
 
 import (
+	"accounts/internal/endpoint/resp"
 	"accounts/internal/model"
 	"accounts/pkg/global"
 	"accounts/pkg/utils"
@@ -61,7 +62,7 @@ func AuthorizedAdmin(c *gin.Context) {
 	username := sessions.Default(c).Get("user")
 	tenantName := c.Param("tenant")
 	if username == nil {
-		c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"code": "1000", "message": "user not login"})
+		resp.ErrorNotLogin(c)
 		return
 	}
 	if tenantName == "" {
@@ -72,8 +73,7 @@ func AuthorizedAdmin(c *gin.Context) {
 	if err := global.DB.Table("users as u").Select("u.username, u.role, u.phone, u.email").
 		Joins("LEFT JOIN tenants as t ON t.id = u.tenant_id").
 		First(&user, "t.name = ? AND u.username = ?", tenantName, username).Error; err != nil {
-		c.AbortWithStatusJSON(http.StatusForbidden, gin.H{"message": "failed to get user"})
-		global.LOG.Error("get tenant user err: " + err.Error())
+		resp.ErrorForbidden(c, err, "get tenant user err")
 		return
 	}
 
@@ -88,8 +88,7 @@ func AuthAccessToken(c *gin.Context) {
 	tokenString := c.GetHeader("Authorization")
 	keys, err := utils.LoadRsaPrivateKeys("default")
 	if err != nil {
-		c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"message": "load key err"})
-		global.LOG.Error("get private key err")
+		resp.ErrorUnauthorized(c, err, "load private key err")
 		return
 	}
 

@@ -10,7 +10,6 @@ import (
 	"accounts/pkg/utils"
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
-	"net/http"
 	"time"
 )
 
@@ -29,7 +28,7 @@ func ListDevices(c *gin.Context) {
 		resp.ErrorSqlSelect(c, err, "list device err", true)
 		return
 	}
-	c.JSON(http.StatusOK, utils.Filter(devices, model.Device2Dto))
+	resp.SuccessWithData(c, utils.Filter(devices, model.Device2Dto))
 }
 
 // GetDevice godoc
@@ -49,7 +48,7 @@ func GetDevice(c *gin.Context) {
 		resp.ErrorSqlFirst(c, err, "get device err")
 		return
 	}
-	c.JSON(http.StatusOK, device.Dto())
+	resp.SuccessWithData(c, device.Dto())
 }
 
 // NewDevice godoc
@@ -87,7 +86,7 @@ func NewDevice(c *gin.Context) {
 		resp.ErrorSqlCreate(c, err, "create device secret err")
 		return
 	}
-	c.JSON(http.StatusOK, &gin.H{
+	resp.SuccessWithData(c, &gin.H{
 		"id":                 device.Id,
 		"device_name":        device.Name,
 		"device_secret":      secret.Secret,
@@ -122,7 +121,7 @@ func UpdateDevice(c *gin.Context) {
 		resp.ErrorSqlUpdate(c, err, "update device err")
 		return
 	}
-	c.JSON(http.StatusOK, device.Dto())
+	resp.SuccessWithData(c, device.Dto())
 }
 
 // DeleteDevice godoc
@@ -142,7 +141,7 @@ func DeleteDevice(c *gin.Context) {
 		resp.ErrorSqlDelete(c, err, "delete device err")
 		return
 	}
-	c.Status(http.StatusNoContent)
+	resp.Success(c)
 }
 
 // ListDeviceSecret godoc
@@ -167,7 +166,7 @@ func ListDeviceSecret(c *gin.Context) {
 		resp.ErrorSqlSelect(c, err, "list devices err", true)
 		return
 	}
-	c.JSON(http.StatusOK, utils.Filter(secrets, model.DeviceSecret2Dto))
+	resp.SuccessWithData(c, utils.Filter(secrets, model.DeviceSecret2Dto))
 }
 
 // NewDeviceSecret godoc
@@ -198,7 +197,7 @@ func NewDeviceSecret(c *gin.Context) {
 		resp.ErrorSqlCreate(c, err, "create device secret err")
 		return
 	}
-	c.JSON(http.StatusOK, secret.Dto())
+	resp.SuccessWithData(c, secret.Dto())
 }
 
 // DeleteDeviceSecret godoc
@@ -227,7 +226,7 @@ func DeleteDeviceSecret(c *gin.Context) {
 		return
 	}
 
-	c.Status(http.StatusNoContent)
+	resp.Success(c)
 }
 
 // GetDeviceGroups godoc
@@ -259,7 +258,7 @@ func GetDeviceGroups(c *gin.Context) {
 			Name: gd.Group.Name,
 		}
 	})
-	c.JSON(http.StatusOK, groups)
+	resp.SuccessWithData(c, groups)
 }
 
 // NewDeviceGroup godoc
@@ -293,7 +292,7 @@ func NewDeviceGroup(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, deviceGroup.Dto())
+	resp.SuccessWithData(c, deviceGroup.Dto())
 }
 
 // UpdateDeviceGroup godoc
@@ -332,7 +331,7 @@ func UpdateDeviceGroup(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, groupDevice.GroupMemberDto())
+	resp.SuccessWithData(c, groupDevice.GroupMemberDto())
 }
 
 // DeleteDeviceGroup godoc
@@ -365,7 +364,7 @@ func DeleteDeviceGroup(c *gin.Context) {
 		resp.ErrorSqlDelete(c, err, "delete device group err")
 		return
 	}
-	c.Status(http.StatusNoContent)
+	resp.Success(c)
 }
 
 // VerifyDeviceCode godoc
@@ -396,7 +395,7 @@ func VerifyDeviceCode(c *gin.Context) {
 		return
 	}
 
-	c.Status(http.StatusNoContent)
+	resp.Success(c)
 }
 
 func AddAdminDevicesRoutes(rg *gin.RouterGroup) {

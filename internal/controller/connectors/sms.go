@@ -42,7 +42,7 @@ func GetConnectorList(c *gin.Context) {
 	tenant := internal.GetTenant(c)
 	var conn model.SmsConnector
 	if err := global.DB.Where("tenant_id = ?", tenant.Id).Find(&conn).Error; err != nil {
-		resp.ErrorSqlResponse(c, "")
+		resp.ErrorSqlSelect(c, err, "")
 		return
 	}
 }

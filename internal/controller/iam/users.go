@@ -8,7 +8,6 @@ import (
 	"accounts/pkg/global"
 	"accounts/pkg/utils"
 	"github.com/gin-gonic/gin"
-	"net/http"
 )
 
 // IsUserActionPermission godoc
@@ -44,7 +43,7 @@ func IsUserActionPermission(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{"permission": result})
+	resp.SuccessAuth(c, gin.H{"permission": result})
 }
 
 // GetIamActionResource godoc
@@ -79,7 +78,7 @@ func GetIamActionResource(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, utils.Filter(res, model.ResourceRoleUserDto))
+	resp.SuccessWithArrayData(c, utils.Filter(res, model.ResourceRoleUserDto), 0)
 }
 
 // GetResourceUserList godoc
@@ -111,5 +110,5 @@ func GetResourceUserList(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, utils.Filter(res, model.ResourceRoleUserDto))
+	resp.SuccessWithArrayData(c, utils.Filter(res, model.ResourceRoleUserDto), 0)
 }

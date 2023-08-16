@@ -119,7 +119,7 @@ func ListProviders(c *gin.Context) {
 		resp.ErrorSqlSelect(c, err, "list provider err", true)
 		return
 	}
-	c.JSON(http.StatusOK, utils.Filter(providers, model.Provider2Dto))
+	resp.SuccessWithData(c, utils.Filter(providers, model.Provider2Dto))
 }
 
 // GetProvider godoc
@@ -141,7 +141,7 @@ func GetProvider(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, authProvider.LoginConfig())
+	resp.SuccessWithData(c, authProvider.LoginConfig())
 }
 
 // Register godoc
@@ -290,7 +290,7 @@ func ProviderCallback(c *gin.Context) {
 	next := utils.GetString(session.Get("next"))
 	session.Delete("next")
 	if err = session.Save(); err != nil {
-		c.JSON(http.StatusInternalServerError, err)
+		resp.ErrorSaveSession(c, err)
 		return
 	}
 	if next != "" {

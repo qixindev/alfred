@@ -2,11 +2,11 @@ package controller
 
 import (
 	"accounts/internal/endpoint/dto"
+	"accounts/internal/endpoint/resp"
 	"accounts/internal/model"
 	"accounts/pkg/global"
 	"accounts/pkg/middlewares"
 	"github.com/gin-gonic/gin"
-	"net/http"
 )
 
 func GetUser(c *gin.Context) *model.User {
@@ -24,7 +24,7 @@ func GetUser(c *gin.Context) *model.User {
 //	@Router			/accounts/{tenant}/me [get]
 func GetUserDetail(c *gin.Context) {
 	user := GetUser(c)
-	c.JSON(http.StatusOK, user.Dto())
+	resp.SuccessWithData(c, user.Dto())
 }
 
 // UpdateUserDetail godoc
@@ -59,7 +59,7 @@ func UpdateUserDetail(c *gin.Context) {
 //	@Router			/accounts/{tenant}/me/profile [get]
 func GetUserProfile(c *gin.Context) {
 	user := GetUser(c)
-	c.JSON(http.StatusOK, user.ProfileDto())
+	resp.SuccessWithData(c, user.ProfileDto())
 }
 
 func AddUsersRoutes(rg *gin.RouterGroup) {

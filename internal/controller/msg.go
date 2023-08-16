@@ -32,16 +32,14 @@ func SendMsg(c *gin.Context) {
 	providerId := c.Param("providerId")
 	var p model.Provider
 	if err := internal.TenantDB(c).First(&p, "id = ?", providerId).Error; err != nil {
-		resp.ErrorSqlResponse(c, "no such provider")
-		global.LOG.Error("get provider err: " + err.Error())
+		resp.ErrorSqlFirst(c, err, "get provider err")
 		return
 	}
 
 	tenant := internal.GetTenant(c)
 	authProvider, err := auth.GetAuthProvider(tenant.Id, p.Name)
 	if err != nil {
-		global.LOG.Error("get provider err: " + err.Error())
-		resp.ErrorSqlResponse(c, "no such provider")
+		resp.ErrorUnknown(c, err, "get provider err")
 		return
 	}
 
@@ -55,16 +53,14 @@ func SendMsg(c *gin.Context) {
 		Joins("LEFT JOIN client_users as cu ON cu.user_id = pu.user_id").
 		Where("pu.tenant_id = ? AND pu.provider_id = ? AND cu.sub IN (?)", tenant.Id, providerConfig["providerId"], usersSlice).
 		Find(&providerUser).Error; err != nil {
-		global.LOG.Error("get provider user err")
-		resp.ErrorSqlResponse(c, "failed to get provider user")
+		resp.ErrorSqlSelect(c, err, "get provider user err")
 		return
 	}
 
 	in.TenantId = tenant.Id
 	// 调用InsertSendInfo函数插入数据到数据库
 	if createErr := global.DB.Create(&in).Error; createErr != nil {
-		global.LOG.Error("failed to insert SendInfo: " + createErr.Error())
-		resp.ErrorSqlResponse(c, "failed to insert SendInfo")
+		resp.ErrorSqlCreate(c, err, "failed to insert SendInfo")
 		return
 	}
 
@@ -76,8 +72,7 @@ func SendMsg(c *gin.Context) {
 		return
 	}
 	if err = notify.SendMsgToUsers(&in, providerConfig); err != nil {
-		global.LOG.Error("send msg err: " + err.Error())
-		resp.ErrorSqlResponse(c, "failed to send msg")
+		resp.ErrorUnknown(c, err, "failed to send msg")
 		return
 	}
 	resp.SuccessWithMessage(c, "ok")
@@ -96,14 +91,12 @@ func GetMsg(c *gin.Context) {
 	subId := c.Param("subId")
 	var SendInfo []model.SendInfo
 	if err := internal.TenantDB(c).Model(&model.SendInfo{}).Where("? = ANY(users)", subId).Find(&SendInfo).Error; err != nil {
-		resp.ErrorSqlResponse(c, "failed to get msg")
-		global.LOG.Error("get msg err: " + err.Error())
+		resp.ErrorSqlSelect(c, err, "failed to get msg")
 		return
 	}
 	var count int64
 	if err := internal.TenantDB(c).Model(&model.SendInfo{}).Where("? = ANY(users)", subId).Count(&count).Error; err != nil {
-		resp.ErrorSqlResponse(c, "failed to get msg")
-		global.LOG.Error("get msg err: " + err.Error())
+		resp.ErrorSqlSelect(c, err, "failed to get msg")
 		return
 	}
 	resp.SuccessWithDataAndTotal(c, SendInfo, count)
@@ -125,8 +118,7 @@ func MarkMsg(c *gin.Context) {
 		return
 	}
 	if err := internal.TenantDB(c).Model(&model.SendInfo{}).Where("msg = ?", in.Msg).Update("is_read", in.IsRead).Error; err != nil {
-		resp.ErrorSqlResponse(c, "failed to mark msg read")
-		global.LOG.Error("mark msg read err: " + err.Error())
+		resp.ErrorSqlUpdate(c, err, "failed to mark msg read")
 		return
 	}
 	resp.SuccessWithMessage(c, "mark msg read success")
@@ -145,8 +137,7 @@ func GetUnreadMsgCount(c *gin.Context) {
 	subId := c.Param("subId")
 	var count int64
 	if err := internal.TenantDB(c).Debug().Model(&model.SendInfo{}).Where("? = ANY(users)", subId).Where("is_read = ?", false).Count(&count).Error; err != nil {
-		resp.ErrorSqlResponse(c, "failed to get unread msg count")
-		global.LOG.Error("get unread msg count err: " + err.Error())
+		resp.ErrorSqlSelect(c, err, "failed to get unread msg count")
 		return
 	}
 	resp.SuccessWithMessageAndData(c, "查询成功", count)

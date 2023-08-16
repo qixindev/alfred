@@ -6,7 +6,6 @@ import (
 	"accounts/internal/model"
 	"accounts/internal/service/iam"
 	"github.com/gin-gonic/gin"
-	"net/http"
 )
 
 // ListIamType godoc
@@ -31,7 +30,7 @@ func ListIamType(c *gin.Context) {
 		resp.ErrorSqlSelect(c, err, "list resource type err", true)
 		return
 	}
-	c.JSON(http.StatusOK, types)
+	resp.SuccessWithData(c, types)
 }
 
 // NewIamType godoc
@@ -62,7 +61,7 @@ func NewIamType(c *gin.Context) {
 		resp.ErrorSqlCreate(c, err, "create resource type err")
 		return
 	}
-	c.JSON(http.StatusOK, t)
+	resp.SuccessWithData(c, t)
 }
 
 // DeleteIamType godoc
@@ -90,7 +89,7 @@ func DeleteIamType(c *gin.Context) {
 		resp.ErrorSqlDelete(c, err, "delete resource type err")
 		return
 	}
-	c.Status(http.StatusNoContent)
+	resp.Success(c)
 }
 
 // ListIamResource godoc
@@ -112,7 +111,7 @@ func ListIamResource(c *gin.Context) {
 		resp.ErrorSqlSelect(c, err, "list resource err", true)
 		return
 	}
-	c.JSON(http.StatusOK, resources)
+	resp.SuccessWithData(c, resources)
 }
 
 // NewIamResource godoc
@@ -146,7 +145,7 @@ func NewIamResource(c *gin.Context) {
 		resp.ErrorSqlCreate(c, err, "create resource err")
 		return
 	}
-	c.JSON(http.StatusOK, r)
+	resp.SuccessWithData(c, r)
 }
 
 // UpdateIamResource godoc
@@ -177,7 +176,7 @@ func UpdateIamResource(c *gin.Context) {
 		resp.ErrorSqlUpdate(c, err, "modify resource err")
 		return
 	}
-	c.JSON(http.StatusOK, r)
+	resp.SuccessWithData(c, r)
 }
 
 // DeleteIamResource godoc
@@ -198,12 +197,12 @@ func DeleteIamResource(c *gin.Context) {
 	resourceId := c.Param("resourceId")
 	resource, err := iam.GetIamResource(tenant.Id, typeId, resourceId)
 	if err != nil {
-		resp.ErrReqParaCustom(c, "no such resource")
+		resp.ErrorSqlFirst(c, err, "get resource err")
 		return
 	}
 	if err = iam.DeleteResource(tenant.Id, resource.Id); err != nil {
 		resp.ErrorSqlDelete(c, err, "delete resource err")
 		return
 	}
-	c.Status(http.StatusNoContent)
+	resp.Success(c)
 }

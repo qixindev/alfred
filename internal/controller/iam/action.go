@@ -28,7 +28,7 @@ func ListIamAction(c *gin.Context) {
 		resp.ErrorSqlSelect(c, err, "get resource type action err", true)
 		return
 	}
-	c.JSON(http.StatusOK, actions)
+	resp.SuccessWithData(c, actions)
 }
 
 // NewIamAction godoc
@@ -62,7 +62,7 @@ func NewIamAction(c *gin.Context) {
 		resp.ErrorSqlCreate(c, err, "create resource type action err")
 		return
 	}
-	c.Status(http.StatusOK)
+	resp.Success(c)
 }
 
 // DeleteIamAction godoc
@@ -114,7 +114,7 @@ func ListIamRoleAction(c *gin.Context) {
 		resp.ErrorSqlSelect(c, err, "list resource type role action err", true)
 		return
 	}
-	c.JSON(http.StatusOK, roleActions)
+	resp.SuccessWithData(c, roleActions)
 }
 
 // NewIamRoleAction godoc
@@ -150,7 +150,7 @@ func NewIamRoleAction(c *gin.Context) {
 		resp.ErrorSqlCreate(c, err, "create role action err")
 		return
 	}
-	c.Status(http.StatusOK)
+	resp.Success(c)
 }
 
 // DeleteIamRoleAction godoc

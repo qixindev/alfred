@@ -56,7 +56,7 @@ func main() {
 		return
 	}
 
-	global.LOG.Info(fmt.Sprintf("### %s: %v\n", env.GetDeployType(), utils.StructToString(global.CONFIG)))
+	fmt.Println(fmt.Sprintf("### %s: %v\n", env.GetDeployType(), utils.StructToString(global.CONFIG)))
 
 	r := gin.Default()
 	r.Use(cors.Default())

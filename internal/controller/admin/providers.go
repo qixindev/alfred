@@ -8,7 +8,6 @@ import (
 	"accounts/internal/service"
 	"accounts/pkg/utils"
 	"github.com/gin-gonic/gin"
-	"net/http"
 )
 
 // ListProviders godoc
@@ -26,7 +25,7 @@ func ListProviders(c *gin.Context) {
 		resp.ErrorSqlSelect(c, err, "list provider err")
 		return
 	}
-	c.JSON(http.StatusOK, utils.Filter(providers, model.Provider2Dto))
+	resp.SuccessWithData(c, utils.Filter(providers, model.Provider2Dto))
 }
 
 // GetProvider godoc
@@ -54,7 +53,7 @@ func GetProvider(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, res)
+	resp.SuccessWithData(c, res)
 }
 
 // GetProviderUsers godoc
@@ -82,7 +81,7 @@ func GetProviderUsers(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, res)
+	resp.SuccessWithData(c, res)
 }
 
 // NewProvider godoc
@@ -109,7 +108,7 @@ func NewProvider(c *gin.Context) {
 		resp.ErrorSqlCreate(c, err, "create provider config err")
 		return
 	}
-	c.JSON(http.StatusOK, provider.Dto())
+	resp.SuccessWithData(c, provider.Dto())
 }
 
 // UpdateProvider godoc
@@ -138,7 +137,7 @@ func UpdateProvider(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, p.Dto())
+	resp.SuccessWithData(c, p.Dto())
 }
 
 // DeleteProvider godoc
@@ -169,7 +168,7 @@ func DeleteProvider(c *gin.Context) {
 		return
 	}
 
-	c.Status(http.StatusNoContent)
+	resp.Success(c)
 }
 
 func AddAdminProvidersRoutes(rg *gin.RouterGroup) {
