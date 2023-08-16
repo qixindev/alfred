@@ -19,7 +19,7 @@ func GetUser(c *gin.Context) *model.User {
 //	@Schemes
 //	@Description	get user
 //	@Tags			user
-//	@Param			tenant	path		string	true	"tenant"
+//	@Param			tenant	path		string	true	"tenant"	default(default)
 //	@Success		200		{object}	dto.UserDto
 //	@Router			/accounts/{tenant}/me [get]
 func GetUserDetail(c *gin.Context) {
@@ -33,7 +33,7 @@ func GetUserDetail(c *gin.Context) {
 //	@Schemes
 //	@Description	update user
 //	@Tags			user
-//	@Param			tenant	path		string	true	"tenant"
+//	@Param			tenant	path		string	true	"tenant"	default(default)
 //	@Body			request	body		dto.UserProfileDto	true	"request"
 //	@Success		200		{object}	dto.UserDto
 //	@Router			/accounts/{tenant}/me [put]
@@ -54,7 +54,7 @@ func UpdateUserDetail(c *gin.Context) {
 //	@Schemes
 //	@Description	get user profile
 //	@Tags			user
-//	@Param			tenant	path		string	true	"tenant"
+//	@Param			tenant	path		string	true	"tenant"	default(default)
 //	@Success		200		{object}	dto.UserProfileDto
 //	@Router			/accounts/{tenant}/me/profile [get]
 func GetUserProfile(c *gin.Context) {

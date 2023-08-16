@@ -40,7 +40,7 @@ func ListIamAction(c *gin.Context) {
 //	@Param			tenant		path	string	true	"tenant"	default(default)
 //	@Param			client		path	string	true	"client"	default(default)
 //	@Param			typeId		path	string		true	"tenant"
-//	@Param			iamBody		body	[]internal.IamNameRequest	true	"tenant"
+//	@Param			iamBody		body	[]model.ResourceTypeAction	true	"tenant"
 //	@Success		200
 //	@Router			/accounts/{tenant}/iam/clients/{client}/types/{typeId}/actions [post]
 func NewIamAction(c *gin.Context) {
@@ -127,7 +127,7 @@ func ListIamRoleAction(c *gin.Context) {
 //	@Param			client		path	string	true	"client"	default(default)
 //	@Param			typeId		path	string	true	"tenant"
 //	@Param			roleId		path	string	true	"tenant"
-//	@Param			iamBody		body	[]internal.IamActionRequest	true	"tenant"
+//	@Param			iamBody		body	[]model.ResourceTypeRoleAction	true	"tenant"
 //	@Success		200
 //	@Router			/accounts/{tenant}/iam/clients/{client}/types/{typeId}/roles/{roleId}/actions [post]
 func NewIamRoleAction(c *gin.Context) {

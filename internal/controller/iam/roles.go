@@ -42,7 +42,7 @@ func ListIamRole(c *gin.Context) {
 //	@Param			tenant		path	string	true	"tenant"	default(default)
 //	@Param			client		path	string	true	"client"	default(default)
 //	@Param			typeId		path	string	true	"tenant"
-//	@Param			iamBody		body	internal.IamNameRequest	true	"tenant"
+//	@Param			iamBody		body	model.ResourceTypeRole	true	"tenant"
 //	@Success		200
 //	@Router			/accounts/{tenant}/iam/clients/{client}/types/{typeId}/roles [post]
 func NewIamRole(c *gin.Context) {
@@ -127,7 +127,7 @@ func ListIamResourceRole(c *gin.Context) {
 //	@Param			typeId		path	string	true	"tenant"
 //	@Param			roleId		path	string	true	"tenant"
 //	@Param			resourceId	path	string	true	"tenant"
-//	@Param			iamBody		body	[]internal.IamUserRequest	true	"tenant"
+//	@Param			iamBody		body	[]model.ResourceRoleUser	true	"tenant"
 //	@Success		200
 //	@Router			/accounts/{tenant}/iam/clients/{client}/types/{typeId}/resources/{resourceId}/roles/{roleId}/users [post]
 func NewIamResourceRole(c *gin.Context) {

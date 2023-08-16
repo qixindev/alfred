@@ -19,7 +19,7 @@ import (
 //	@Schemes
 //	@Description	list device
 //	@Tags			device
-//	@Param			tenant	path	string	true	"tenant"
+//	@Param			tenant	path	string	true	"tenant"	default(default)
 //	@Success		200
 //	@Router			/accounts/admin/{tenant}/devices [get]
 func ListDevices(c *gin.Context) {
@@ -37,7 +37,7 @@ func ListDevices(c *gin.Context) {
 //	@Schemes
 //	@Description	get device
 //	@Tags			device
-//	@Param			tenant		path	string	true	"tenant"
+//	@Param			tenant		path	string	true	"tenant"	default(default)
 //	@Param			deviceId	path	integer	true	"tenant"
 //	@Success		200
 //	@Router			/accounts/admin/{tenant}/devices/{deviceId} [get]
@@ -57,7 +57,7 @@ func GetDevice(c *gin.Context) {
 //	@Schemes
 //	@Description	new device
 //	@Tags			device
-//	@Param			tenant	path	string	true	"tenant"
+//	@Param			tenant	path	string	true	"tenant"	default(default)
 //	@Success		200
 //	@Router			/accounts/admin/{tenant}/devices [post]
 func NewDevice(c *gin.Context) {
@@ -100,7 +100,7 @@ func NewDevice(c *gin.Context) {
 //	@Schemes
 //	@Description	update device
 //	@Tags			device
-//	@Param			tenant		path	string	true	"tenant"
+//	@Param			tenant		path	string	true	"tenant"	default(default)
 //	@Param			deviceId	path	integer	true	"tenant"
 //	@Success		200
 //	@Router			/accounts/admin/{tenant}/devices/{deviceId} [put]
@@ -130,7 +130,7 @@ func UpdateDevice(c *gin.Context) {
 //	@Schemes
 //	@Description	delete device
 //	@Tags			device
-//	@Param			tenant		path	string	true	"tenant"
+//	@Param			tenant		path	string	true	"tenant"	default(default)
 //	@Param			deviceId	path	integer	true	"tenant"
 //	@Success		200
 //	@Router			/accounts/admin/{tenant}/devices/{deviceId} [delete]
@@ -150,7 +150,7 @@ func DeleteDevice(c *gin.Context) {
 //	@Schemes
 //	@Description	get client secrets
 //	@Tags			client
-//	@Param			tenant		path	string	true	"tenant"
+//	@Param			tenant		path	string	true	"tenant"	default(default)
 //	@Param			clientId	path	integer	true	"tenant"
 //	@Success		200
 //	@Router			/accounts/admin/{tenant}/devices/{deviceId}/secrets [get]
@@ -175,7 +175,7 @@ func ListDeviceSecret(c *gin.Context) {
 //	@Schemes
 //	@Description	get client secrets
 //	@Tags			client
-//	@Param			tenant		path	string	true	"tenant"
+//	@Param			tenant		path	string	true	"tenant"	default(default)
 //	@Param			clientId	path	integer	true	"tenant"
 //	@Success		200
 //	@Router			/accounts/admin/{tenant}/devices/{deviceId}/secrets [post]
@@ -206,7 +206,7 @@ func NewDeviceSecret(c *gin.Context) {
 //	@Schemes
 //	@Description	get client secrets
 //	@Tags			client
-//	@Param			tenant		path	string	true	"tenant"
+//	@Param			tenant		path	string	true	"tenant"	default(default)
 //	@Param			clientId	path	integer	true	"tenant"
 //	@Param			secretId	path	integer	true	"tenant"
 //	@Success		200
@@ -235,7 +235,7 @@ func DeleteDeviceSecret(c *gin.Context) {
 //	@Schemes
 //	@Description	list device groups
 //	@Tags			device
-//	@Param			tenant		path	string	true	"tenant"
+//	@Param			tenant		path	string	true	"tenant"	default(default)
 //	@Param			deviceId	path	integer	true	"tenant"
 //	@Success		200
 //	@Router			/accounts/admin/{tenant}/devices/{deviceId}/groups [get]
@@ -267,7 +267,7 @@ func ListDeviceGroups(c *gin.Context) {
 //	@Schemes
 //	@Description	new device groups
 //	@Tags			device
-//	@Param			tenant		path	string	true	"tenant"
+//	@Param			tenant		path	string	true	"tenant"	default(default)
 //	@Param			deviceId	path	integer	true	"tenant"
 //	@Success		200
 //	@Router			/accounts/admin/{tenant}/devices/{deviceId}/groups [post]
@@ -301,7 +301,7 @@ func NewDeviceGroup(c *gin.Context) {
 //	@Schemes
 //	@Description	update device groups
 //	@Tags			device
-//	@Param			tenant		path	string	true	"tenant"
+//	@Param			tenant		path	string	true	"tenant"	default(default)
 //	@Param			deviceId	path	integer	true	"tenant"
 //	@Param			groupId		path	integer	true	"tenant"
 //	@Success		200
@@ -340,7 +340,7 @@ func UpdateDeviceGroup(c *gin.Context) {
 //	@Schemes
 //	@Description	delete device groups
 //	@Tags			device
-//	@Param			tenant		path	string	true	"tenant"
+//	@Param			tenant		path	string	true	"tenant"	default(default)
 //	@Param			deviceId	path	integer	true	"tenant"
 //	@Param			groupId		path	integer	true	"tenant"
 //	@Success		200
@@ -373,7 +373,7 @@ func DeleteDeviceGroup(c *gin.Context) {
 //	@Schemes
 //	@Description	delete device groups
 //	@Tags			device
-//	@Param			tenant		path	string	true	"tenant"
+//	@Param			tenant		path	string	true	"tenant"	default(default)
 //	@Param			userCode	path	string	true	"tenant"
 //	@Success		200
 //	@Router			/accounts/admin/{tenant}/devices/code/{userCode} [post]

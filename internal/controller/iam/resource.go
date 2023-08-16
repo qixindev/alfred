@@ -41,7 +41,7 @@ func ListIamType(c *gin.Context) {
 //	@Tags			iam-resource
 //	@Param			tenant		path	string	true	"tenant"	default(default)
 //	@Param			client		path	string	true	"client"	default(default)
-//	@Param			iamBody		body	internal.IamNameRequest	true	"tenant"
+//	@Param			iamBody		body	model.ResourceType	true	"tenant"
 //	@Success		200
 //	@Router			/accounts/{tenant}/iam/clients/{client}/types [post]
 func NewIamType(c *gin.Context) {
@@ -123,7 +123,7 @@ func ListIamResource(c *gin.Context) {
 //	@Param			tenant		path	string	true	"tenant"	default(default)
 //	@Param			client		path	string	true	"client"	default(default)
 //	@Param			typeId		path	string	true	"tenant"
-//	@Param			iamBody		body	internal.IamNameRequest	true	"tenant"
+//	@Param			iamBody		body	model.Resource	true	"tenant"
 //	@Success		200
 //	@Router			/accounts/{tenant}/iam/clients/{client}/types/{typeId}/resources [post]
 func NewIamResource(c *gin.Context) {
@@ -158,7 +158,7 @@ func NewIamResource(c *gin.Context) {
 //	@Param			client		path	string	true	"client"	default(default)
 //	@Param			typeId		path	string	true	"typeId"
 //	@Param			resourceId	path	string	true	"resourceId"
-//	@Param			iamBody		body	internal.IamNameRequest	true	"tenant"
+//	@Param			iamBody		body	model.Resource	true	"tenant"
 //	@Success		200
 //	@Router			/accounts/{tenant}/iam/clients/{client}/types/{typeId}/resources/{resourceId} [put]
 func UpdateIamResource(c *gin.Context) {

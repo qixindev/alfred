@@ -44,8 +44,7 @@ func ListTenants(c *gin.Context) {
 //	@Schemes
 //	@Description	list tenants
 //	@Tags			admin-tenants
-//	@Param			tenant	path	string	true	"tenant"	default(default)
-//	@Param			userId	path	string	true	"tenant"
+//	@Param			user	path	string	true	"tenant"
 //	@Success		200
 //	@Router			/accounts/admin/tenants/users/{user} [get]
 func ListUserTenants(c *gin.Context) {
@@ -64,7 +63,6 @@ func ListUserTenants(c *gin.Context) {
 //	@Schemes
 //	@Description	get tenants
 //	@Tags			admin-tenants
-//	@Param			tenant		path	string	true	"tenant"	default(default)
 //	@Param			tenantId	path	integer	true	"tenant"
 //	@Success		200
 //	@Router			/accounts/admin/tenants/{tenantId} [get]
@@ -84,7 +82,6 @@ func GetTenant(c *gin.Context) {
 //	@Schemes
 //	@Description	new tenants
 //	@Tags			admin-tenants
-//	@Param			tenant	path	string	true	"tenant"	default(default)
 //	@Success		200
 //	@Router			/accounts/admin/tenants [post]
 func NewTenant(c *gin.Context) {
@@ -117,7 +114,6 @@ func NewTenant(c *gin.Context) {
 //	@Schemes
 //	@Description	update tenants
 //	@Tags			admin-tenants
-//	@Param			tenant		path	string	true	"tenant"
 //	@Param			tenantId	path	integer	true	"tenant"
 //	@Success		200
 //	@Router			/accounts/admin/tenants/{tenantId} [put]
@@ -147,7 +143,6 @@ func UpdateTenant(c *gin.Context) {
 //	@Schemes
 //	@Description	delete tenants
 //	@Tags			admin-tenants
-//	@Param			tenant		path	string	true	"tenant"
 //	@Param			tenantId	path	integer	true	"tenant"
 //	@Success		200
 //	@Router			/accounts/admin/tenants/{tenantId} [delete]
@@ -171,8 +166,8 @@ func DeleteTenant(c *gin.Context) {
 //	@Schemes
 //	@Description	delete tenants
 //	@Tags			admin-tenants
-//	@Param			tenant		path	string	true	"tenant"
-//	@Param			tenantId	path	integer	true	"tenant"
+//	@Param			tenantId		path	integer	true	"tenant"
+//	@Param			secretId		path	integer	true	"tenant"
 //	@Success		200
 //	@Router			/accounts/admin/tenants/{tenantId}/secrets/{secretId} [delete]
 func DeleteTenantSecret(c *gin.Context) {
@@ -196,7 +191,6 @@ func DeleteTenantSecret(c *gin.Context) {
 //	@Schemes
 //	@Description	delete tenants
 //	@Tags			admin-tenants
-//	@Param			tenant		path	string	true	"tenant"
 //	@Param			tenantId	path	integer	true	"tenant"
 //	@Success		200
 //	@Router			/accounts/admin/tenants/{tenantId}/secrets [post]

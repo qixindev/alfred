@@ -35,7 +35,7 @@ func ListClients(c *gin.Context) {
 //	@Schemes
 //	@Description	get client
 //	@Tags			client
-//	@Param			tenant		path		string	true	"tenant"
+//	@Param			tenant		path		string	true	"tenant"	default(default)
 //	@Param			clientId	path		integer	true	"clientId"
 //	@Success		200
 //	@Router			/accounts/admin/{tenant}/clients/{clientId} [get]
@@ -55,7 +55,7 @@ func GetClient(c *gin.Context) {
 //	@Schemes
 //	@Description	get client
 //	@Tags			client
-//	@Param			tenant		path		string	true	"tenant"
+//	@Param			tenant		path		string	true	"tenant"	default(default)
 //	@Success		200
 //	@Router			/accounts/admin/{tenant}/clients/default [get]
 func GetDefaultClient(c *gin.Context) {
@@ -73,7 +73,7 @@ func GetDefaultClient(c *gin.Context) {
 //	@Schemes
 //	@Description	new client
 //	@Tags			client
-//	@Param			tenant	path	string	true	"tenant"
+//	@Param			tenant	path	string	true	"tenant"	default(default)
 //	@Param			name	body	object	true	"{"name": "main"}"
 //	@Success		200
 //	@Router			/accounts/admin/{tenant}/clients [post]
@@ -110,7 +110,7 @@ func NewClient(c *gin.Context) {
 //	@Schemes
 //	@Description	update client
 //	@Tags			client
-//	@Param			tenant		path	string	true	"tenant"
+//	@Param			tenant		path	string	true	"tenant"	default(default)
 //	@Param			clientId	path	integer	true	"clientId"
 //	@Success		200
 //	@Router			/accounts/admin/{tenant}/clients/{clientId} [put]
@@ -140,7 +140,7 @@ func UpdateClient(c *gin.Context) {
 //	@Schemes
 //	@Description	delete client
 //	@Tags			client
-//	@Param			tenant		path	string	true	"tenant"
+//	@Param			tenant		path	string	true	"tenant"	default(default)
 //	@Param			clientId	path	integer	true	"clientId"
 //	@Success		200
 //	@Router			/accounts/admin/{tenant}/clients/{clientId} [delete]
@@ -164,7 +164,7 @@ func DeleteClient(c *gin.Context) {
 //	@Schemes
 //	@Description	get client redirect uris
 //	@Tags			client
-//	@Param			tenant		path	string	true	"tenant"
+//	@Param			tenant		path	string	true	"tenant"	default(default)
 //	@Param			clientId	path	integer	true	"tenant"
 //	@Success		200
 //	@Router			/accounts/admin/{tenant}/clients/{clientId}/redirect-uris [get]
@@ -191,7 +191,7 @@ func ListClientRedirectUri(c *gin.Context) {
 //	@Schemes
 //	@Description	new client redirect uri
 //	@Tags			client
-//	@Param			tenant	path	string	true	"tenant"
+//	@Param			tenant	path	string	true	"tenant"	default(default)
 //	@Success		200
 //	@Router			/accounts/admin/{tenant}/clients/{clientId}/redirect-uris [post]
 func NewClientRedirectUri(c *gin.Context) {
@@ -221,7 +221,7 @@ func NewClientRedirectUri(c *gin.Context) {
 //	@Schemes
 //	@Description	new client redirect uri
 //	@Tags			client
-//	@Param			tenant	path	string	true	"tenant"
+//	@Param			tenant	path	string	true	"tenant"	default(default)
 //	@Success		200
 //	@Router			/accounts/admin/{tenant}/clients/{clientId}/redirect-uris/{uriId} [post]
 func UpdateClientRedirectUri(c *gin.Context) {
@@ -254,7 +254,7 @@ func UpdateClientRedirectUri(c *gin.Context) {
 //	@Schemes
 //	@Description	delete client redirect uris
 //	@Tags			client
-//	@Param			tenant		path	string	true	"tenant"
+//	@Param			tenant		path	string	true	"tenant"	default(default)
 //	@Param			clientId	path	integer	true	"tenant"
 //	@Param			uriId		path	integer	true	"tenant"
 //	@Success		200
@@ -283,7 +283,7 @@ func DeleteClientRedirectUri(c *gin.Context) {
 //	@Schemes
 //	@Description	get client secrets
 //	@Tags			client
-//	@Param			tenant		path	string	true	"tenant"
+//	@Param			tenant		path	string	true	"tenant"	default(default)
 //	@Param			clientId	path	integer	true	"tenant"
 //	@Success		200
 //	@Router			/accounts/admin/{tenant}/clients/{clientId}/secrets [get]
@@ -308,7 +308,7 @@ func ListClientSecret(c *gin.Context) {
 //	@Schemes
 //	@Description	new client secret
 //	@Tags			client
-//	@Param			tenant		path	string	true	"tenant"
+//	@Param			tenant		path	string	true	"tenant"	default(default)
 //	@Param			clientId	path	integer	true	"tenant"
 //	@Success		200
 //	@Router			/accounts/admin/{tenant}/clients/{clientId}/secrets [post]
@@ -339,7 +339,7 @@ func NewClientSecret(c *gin.Context) {
 //	@Schemes
 //	@Description	delete client secret
 //	@Tags			client
-//	@Param			tenant		path	string	true	"tenant"
+//	@Param			tenant		path	string	true	"tenant"	default(default)
 //	@Param			clientId	path	integer	true	"tenant"
 //	@Param			secretId	path	integer	true	"tenant"
 //	@Success		200
@@ -368,7 +368,7 @@ func DeleteClientSecret(c *gin.Context) {
 //	@Schemes
 //	@Description	get client user list
 //	@Tags			client
-//	@Param			tenant		path	string	true	"tenant"
+//	@Param			tenant		path	string	true	"tenant"	default(default)
 //	@Param			clientId	path	string	true	"tenant"
 //	@Success		200
 //	@Router			/accounts/admin/{tenant}/clients/{clientId}/users [get]
@@ -396,7 +396,7 @@ func ListClientUsers(c *gin.Context) {
 //	@Schemes
 //	@Description	get client user list
 //	@Tags			client
-//	@Param			tenant		path	string	true	"tenant"
+//	@Param			tenant		path	string	true	"tenant"	default(default)
 //	@Param			clientId	path	string	true	"tenant"
 //	@Param			subId		path	string	true	"tenant"
 //	@Success		200

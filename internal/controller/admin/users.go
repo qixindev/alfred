@@ -56,7 +56,7 @@ func GetUser(c *gin.Context) {
 //	@Schemes
 //	@Description	new user
 //	@Tags			user
-//	@Param			tenant	path	string	true	"tenant"
+//	@Param			tenant	path	string	true	"tenant"	default(default)
 //	@Success		200
 //	@Router			/accounts/admin/{tenant}/users [post]
 func NewUser(c *gin.Context) {
@@ -92,7 +92,7 @@ func NewUser(c *gin.Context) {
 //	@Schemes
 //	@Description	update user
 //	@Tags			user
-//	@Param			tenant	path	string	true	"tenant"
+//	@Param			tenant	path	string	true	"tenant"	default(default)
 //	@Param			userId	path	integer	true	"tenant"
 //	@Success		200
 //	@Router			/accounts/admin/{tenant}/users/{userId} [put]
@@ -132,7 +132,7 @@ func UpdateUser(c *gin.Context) {
 //	@Schemes
 //	@Description	delete user
 //	@Tags			user
-//	@Param			tenant	path	string	true	"tenant"
+//	@Param			tenant	path	string	true	"tenant"	default(default)
 //	@Param			userId	path	integer	true	"tenant"
 //	@Success		200
 //	@Router			/accounts/admin/{tenant}/users/{userId} [delete]
@@ -157,7 +157,7 @@ func DeleteUser(c *gin.Context) {
 //	@Schemes
 //	@Description	get user groups
 //	@Tags			user
-//	@Param			tenant	path	string	true	"tenant"
+//	@Param			tenant	path	string	true	"tenant"	default(default)
 //	@Param			userId	path	integer	true	"tenant"
 //	@Success		200
 //	@Router			/accounts/admin/{tenant}/users/{userId}/groups [get]
@@ -190,7 +190,7 @@ func ListUserGroups(c *gin.Context) {
 //	@Schemes
 //	@Description	get user groups
 //	@Tags			user
-//	@Param			tenant	path	string	true	"tenant"
+//	@Param			tenant	path	string	true	"tenant"	default(default)
 //	@Param			userId	path	integer	true	"tenant"
 //	@Success		200
 //	@Router			/accounts/admin/{tenant}/users/{userId}/groups [post]
@@ -225,7 +225,7 @@ func NewUserGroup(c *gin.Context) {
 //	@Schemes
 //	@Description	update user groups
 //	@Tags			user
-//	@Param			tenant	path	string	true	"tenant"
+//	@Param			tenant	path	string	true	"tenant"	default(default)
 //	@Param			userId	path	integer	true	"tenant"
 //	@Param			groupId	path	integer	true	"tenant"
 //	@Success		200
@@ -269,7 +269,7 @@ func UpdateUserGroup(c *gin.Context) {
 //	@Schemes
 //	@Description	update user groups
 //	@Tags			user
-//	@Param			tenant	path	string	true	"tenant"
+//	@Param			tenant	path	string	true	"tenant"	default(default)
 //	@Param			userId	path	integer	true	"tenant"
 //	@Param			groupId	path	integer	true	"tenant"
 //	@Success		200

@@ -19,7 +19,7 @@ import (
 //	@Tags			msg
 //	@Param			tenant		path	string			true	"tenant name"
 //	@Param			providerId	path	integer			true	"provider id"
-//	@Param			by			body	models.SendInfo	true	"msg body"
+//	@Param			by			body	model.SendInfo	true	"msg body"
 //	@Success		200
 //	@Router			/accounts/{tenant}/message/{providerId} [post]
 func SendMsg(c *gin.Context) {
