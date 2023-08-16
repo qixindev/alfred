@@ -28,7 +28,7 @@ func ListDevices(c *gin.Context) {
 		resp.ErrorSqlSelect(c, err, "list device err", true)
 		return
 	}
-	resp.SuccessWithData(c, utils.Filter(devices, model.Device2Dto))
+	resp.SuccessWithArrayData(c, utils.Filter(devices, model.Device2Dto), 0)
 }
 
 // GetDevice godoc
@@ -166,7 +166,7 @@ func ListDeviceSecret(c *gin.Context) {
 		resp.ErrorSqlSelect(c, err, "list devices err", true)
 		return
 	}
-	resp.SuccessWithData(c, utils.Filter(secrets, model.DeviceSecret2Dto))
+	resp.SuccessWithArrayData(c, utils.Filter(secrets, model.DeviceSecret2Dto), 0)
 }
 
 // NewDeviceSecret godoc
@@ -229,7 +229,7 @@ func DeleteDeviceSecret(c *gin.Context) {
 	resp.Success(c)
 }
 
-// GetDeviceGroups godoc
+// ListDeviceGroups godoc
 //
 //	@Summary	device groups
 //	@Schemes
@@ -239,7 +239,7 @@ func DeleteDeviceSecret(c *gin.Context) {
 //	@Param			deviceId	path	integer	true	"tenant"
 //	@Success		200
 //	@Router			/accounts/admin/{tenant}/devices/{deviceId}/groups [get]
-func GetDeviceGroups(c *gin.Context) {
+func ListDeviceGroups(c *gin.Context) {
 	deviceId := c.Param("deviceId")
 	var device model.Device
 	if err := internal.TenantDB(c).First(&device, "id = ?", deviceId).Error; err != nil {
@@ -258,7 +258,7 @@ func GetDeviceGroups(c *gin.Context) {
 			Name: gd.Group.Name,
 		}
 	})
-	resp.SuccessWithData(c, groups)
+	resp.SuccessWithArrayData(c, groups, 0)
 }
 
 // NewDeviceGroup godoc
@@ -409,7 +409,7 @@ func AddAdminDevicesRoutes(rg *gin.RouterGroup) {
 	rg.POST("/devices/:deviceId/secrets", NewDeviceSecret)
 	rg.DELETE("/devices/:deviceId/secret/:secretId", DeleteDeviceSecret)
 
-	rg.GET("/devices/:deviceId/groups", GetDeviceGroups)
+	rg.GET("/devices/:deviceId/groups", ListDeviceGroups)
 	rg.POST("/devices/:deviceId/groups", NewDeviceGroup)
 	rg.PUT("/devices/:deviceId/groups/:groupId", UpdateDeviceGroup)
 	rg.DELETE("/devices/:deviceId/groups/:groupId", DeleteDeviceGroup)

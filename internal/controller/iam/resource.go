@@ -30,7 +30,7 @@ func ListIamType(c *gin.Context) {
 		resp.ErrorSqlSelect(c, err, "list resource type err", true)
 		return
 	}
-	resp.SuccessWithData(c, types)
+	resp.SuccessWithArrayData(c, types, 0)
 }
 
 // NewIamType godoc
@@ -111,7 +111,7 @@ func ListIamResource(c *gin.Context) {
 		resp.ErrorSqlSelect(c, err, "list resource err", true)
 		return
 	}
-	resp.SuccessWithData(c, resources)
+	resp.SuccessWithArrayData(c, resources, 0)
 }
 
 // NewIamResource godoc

@@ -28,7 +28,7 @@ func ListIamAction(c *gin.Context) {
 		resp.ErrorSqlSelect(c, err, "get resource type action err", true)
 		return
 	}
-	resp.SuccessWithData(c, actions)
+	resp.SuccessWithArrayData(c, actions, 0)
 }
 
 // NewIamAction godoc
@@ -114,7 +114,7 @@ func ListIamRoleAction(c *gin.Context) {
 		resp.ErrorSqlSelect(c, err, "list resource type role action err", true)
 		return
 	}
-	resp.SuccessWithData(c, roleActions)
+	resp.SuccessWithArrayData(c, roleActions, 0)
 }
 
 // NewIamRoleAction godoc

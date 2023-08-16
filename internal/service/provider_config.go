@@ -71,7 +71,7 @@ func GetProvider(tenantId uint, providerId uint, t string) (any, error) {
 	return pr.Dto(), nil
 }
 
-func GetProviderUsers(tenantId uint, providerId uint) (any, error) {
+func GetProviderUsers(tenantId uint, providerId uint) ([]model.ProviderUser, error) {
 	var users []model.ProviderUser
 	if err := global.DB.Table("provider_users as pu").
 		Select("pu.provider_id", "cu.sub", "u.display_name").

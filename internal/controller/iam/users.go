@@ -81,7 +81,7 @@ func GetIamActionResource(c *gin.Context) {
 	resp.SuccessWithArrayData(c, utils.Filter(res, model.ResourceRoleUserDto), 0)
 }
 
-// GetResourceUserList godoc
+// ListResourceUser godoc
 //
 //	@Summary		iam users roles
 //	@Schemes
@@ -93,7 +93,7 @@ func GetIamActionResource(c *gin.Context) {
 //	@Param			resourceId		path	string	true	"tenant"
 //	@Success		200
 //	@Router			/accounts/{tenant}/iam/clients/{client}/types/{typeId}/resources/{resourceId}/users [get]
-func GetResourceUserList(c *gin.Context) {
+func ListResourceUser(c *gin.Context) {
 	typeId := c.Param("typeId")
 	resourceId := c.Param("resourceId")
 	tenant := internal.GetTenant(c)

@@ -26,7 +26,7 @@ func ListClients(c *gin.Context) {
 		resp.ErrorSqlSelect(c, err, "list client err", true)
 		return
 	}
-	resp.SuccessWithData(c, utils.Filter(clients, model.Client2Dto))
+	resp.SuccessWithArrayData(c, utils.Filter(clients, model.Client2Dto), 0)
 }
 
 // GetClient godoc
@@ -182,7 +182,7 @@ func ListClientRedirectUri(c *gin.Context) {
 		return
 	}
 
-	resp.SuccessWithData(c, utils.Filter(uris, model.RedirectUri2Dto))
+	resp.SuccessWithArrayData(c, utils.Filter(uris, model.RedirectUri2Dto), 0)
 }
 
 // NewClientRedirectUri godoc
@@ -299,7 +299,7 @@ func ListClientSecret(c *gin.Context) {
 		resp.ErrorSqlSelect(c, err, "list clients secret err", true)
 		return
 	}
-	resp.SuccessWithData(c, utils.Filter(secrets, model.ClientSecret2Dto))
+	resp.SuccessWithArrayData(c, utils.Filter(secrets, model.ClientSecret2Dto), 0)
 }
 
 // NewClientSecret godoc
@@ -387,7 +387,7 @@ func ListClientUsers(c *gin.Context) {
 		resp.ErrorSqlSelect(c, err, "list client user err", true)
 		return
 	}
-	resp.SuccessWithData(c, clientUser)
+	resp.SuccessWithArrayData(c, clientUser, 0)
 }
 
 // GetClientUsers godoc

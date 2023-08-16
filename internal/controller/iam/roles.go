@@ -30,7 +30,7 @@ func ListIamRole(c *gin.Context) {
 		resp.ErrorSqlSelect(c, err, "list resource type role err", true)
 		return
 	}
-	resp.SuccessWithData(c, roles)
+	resp.SuccessWithArrayData(c, roles, 0)
 }
 
 // NewIamRole godoc
@@ -113,7 +113,7 @@ func ListIamResourceRole(c *gin.Context) {
 		resp.ErrorSqlSelect(c, err, "list resources role user err", true)
 		return
 	}
-	resp.SuccessWithData(c, utils.Filter(roleUsers, model.ResourceRoleUserDto))
+	resp.SuccessWithArrayData(c, utils.Filter(roleUsers, model.ResourceRoleUserDto), 0)
 }
 
 // NewIamResourceRole godoc

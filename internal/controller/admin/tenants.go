@@ -35,7 +35,7 @@ func ListTenants(c *gin.Context) {
 			res = append(res, tenant)
 		}
 	}
-	resp.SuccessWithData(c, utils.Filter(res, model.Tenant2Dto))
+	resp.SuccessWithArrayData(c, utils.Filter(res, model.Tenant2Dto), 0)
 }
 
 // ListUserTenants godoc
@@ -55,7 +55,7 @@ func ListUserTenants(c *gin.Context) {
 		resp.ErrorSqlSelect(c, err, "list tenant users err", true)
 		return
 	}
-	resp.SuccessWithData(c, utils.Filter(tenants, model.Tenant2Dto))
+	resp.SuccessWithArrayData(c, utils.Filter(tenants, model.Tenant2Dto), 0)
 }
 
 // GetTenant godoc

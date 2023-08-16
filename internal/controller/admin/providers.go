@@ -25,7 +25,7 @@ func ListProviders(c *gin.Context) {
 		resp.ErrorSqlSelect(c, err, "list provider err")
 		return
 	}
-	resp.SuccessWithData(c, utils.Filter(providers, model.Provider2Dto))
+	resp.SuccessWithArrayData(c, utils.Filter(providers, model.Provider2Dto), 0)
 }
 
 // GetProvider godoc
@@ -56,7 +56,7 @@ func GetProvider(c *gin.Context) {
 	resp.SuccessWithData(c, res)
 }
 
-// GetProviderUsers godoc
+// ListProviderUsers godoc
 //
 //	@Summary	get provider user list
 //	@Schemes
@@ -66,7 +66,7 @@ func GetProvider(c *gin.Context) {
 //	@Param			providerId	path	integer	true	"provider id"
 //	@Success		200
 //	@Router			/accounts/admin/{tenant}/providers/{providerId}/users [get]
-func GetProviderUsers(c *gin.Context) {
+func ListProviderUsers(c *gin.Context) {
 	providerId := c.Param("providerId")
 	tenant := internal.GetTenant(c)
 	var p model.Provider
@@ -81,7 +81,7 @@ func GetProviderUsers(c *gin.Context) {
 		return
 	}
 
-	resp.SuccessWithData(c, res)
+	resp.SuccessWithArrayData(c, res, 0)
 }
 
 // NewProvider godoc
@@ -174,7 +174,7 @@ func DeleteProvider(c *gin.Context) {
 func AddAdminProvidersRoutes(rg *gin.RouterGroup) {
 	rg.GET("/providers", ListProviders)
 	rg.GET("/providers/:providerId", GetProvider)
-	rg.GET("/providers/:providerId/users", GetProviderUsers)
+	rg.GET("/providers/:providerId/users", ListProviderUsers)
 	rg.POST("/providers", NewProvider)
 	rg.PUT("/providers/:providerId", UpdateProvider)
 	rg.DELETE("/providers/:providerId", DeleteProvider)

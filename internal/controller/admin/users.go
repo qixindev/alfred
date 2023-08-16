@@ -27,7 +27,7 @@ func ListUsers(c *gin.Context) {
 		resp.ErrorSqlSelect(c, err, "list tenant users err", true)
 		return
 	}
-	resp.SuccessWithData(c, utils.Filter(users, model.User2AdminDto))
+	resp.SuccessWithArrayData(c, utils.Filter(users, model.User2AdminDto), 0)
 }
 
 // GetUser godoc
@@ -151,7 +151,7 @@ func DeleteUser(c *gin.Context) {
 	c.Status(http.StatusNoContent)
 }
 
-// GetUserGroups godoc
+// ListUserGroups godoc
 //
 //	@Summary	user
 //	@Schemes
@@ -161,7 +161,7 @@ func DeleteUser(c *gin.Context) {
 //	@Param			userId	path	integer	true	"tenant"
 //	@Success		200
 //	@Router			/accounts/admin/{tenant}/users/{userId}/groups [get]
-func GetUserGroups(c *gin.Context) {
+func ListUserGroups(c *gin.Context) {
 	userId := c.Param("userId")
 	var user model.User
 	if err := internal.TenantDB(c).First(&user, "id = ?", userId).Error; err != nil {
@@ -181,7 +181,7 @@ func GetUserGroups(c *gin.Context) {
 			Role: gu.Role,
 		}
 	})
-	resp.SuccessWithData(c, groups)
+	resp.SuccessWithArrayData(c, groups, 0)
 }
 
 // NewUserGroup godoc
@@ -301,7 +301,7 @@ func AddAdminUsersRoutes(rg *gin.RouterGroup) {
 	rg.PUT("/users/:userId", UpdateUser)
 	rg.DELETE("/users/:userId", DeleteUser)
 
-	rg.GET("/users/:userId/groups", GetUserGroups)
+	rg.GET("/users/:userId/groups", ListUserGroups)
 	rg.POST("/users/:userId/groups", NewUserGroup)
 	rg.PUT("/users/:userId/groups/:groupId", UpdateUserGroup)
 	rg.DELETE("/users/:userId/groups/:groupId", DeleteUserGroup)
