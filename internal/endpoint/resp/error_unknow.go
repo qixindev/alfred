@@ -1,7 +1,6 @@
 package resp
 
 import (
-	"accounts/pkg/global"
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
 	"net/http"
@@ -90,8 +89,7 @@ func ErrorNotFound(c *gin.Context, msg string, isArray ...bool) {
 
 func ErrReqPara(c *gin.Context, err error, isArray ...bool) {
 	errorResponse(c, http.StatusInternalServerError, http.StatusInternalServerError,
-		nil, "req para err: failed to bind json, "+err.Error(), isArray)
-	global.LOG.Error("req para err: " + err.Error())
+		nil, "req para err: "+err.Error(), isArray)
 }
 
 func ErrReqParaCustom(c *gin.Context, err string, isArray ...bool) {
