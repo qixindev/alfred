@@ -36,17 +36,11 @@ func response(c *gin.Context, code int, errCode int, msg string, data any, total
 }
 
 func errorResponse(ctx *gin.Context, code int, errCode int, err error, msg string, isArray []bool) {
-	sendMsg := msg
 	if err != nil {
-		sendMsg += ": " + err.Error()
+		msg += ": " + err.Error()
 	}
-	response(ctx, code, errCode, sendMsg, nil, 0, isArray)
-	msg = ctx.Request.Method + " " + ctx.Request.URL.Path + ": " + msg
-	if err != nil {
-		global.LOG.Error(msg + ": " + err.Error())
-	} else {
-		global.LOG.Error(msg)
-	}
+	response(ctx, code, errCode, msg, nil, 0, isArray)
+	global.LOG.Error(ctx.Request.Method + " " + ctx.Request.URL.Path + ": " + msg)
 }
 
 func success(ctx *gin.Context, msg string, data any, total int64, isArray ...bool) {

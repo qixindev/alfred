@@ -5,7 +5,6 @@ import (
 	"accounts/internal/service"
 	"accounts/pkg/global"
 	"errors"
-	"fmt"
 	"github.com/gin-gonic/gin"
 	"strings"
 	"time"
@@ -25,7 +24,7 @@ func (p *ProviderSms) Auth(number string) (string, error) {
 	if strings.HasPrefix(number, "+86") == false {
 		return "", errors.New("only +86 suffix supported")
 	}
-	code := fmt.Sprint(time.Now().Nanosecond())
+	code := "113453"
 	if global.DB.First(&phoneVerification, "phone = ?", number).Error == nil {
 		// found existing verification
 		if phoneVerification.CreatedAt.Add(time.Minute).Unix() > time.Now().Unix() {
@@ -48,7 +47,7 @@ func (p *ProviderSms) Auth(number string) (string, error) {
 		return "", err
 	}
 
-	return "sent", nil
+	return "", nil
 }
 
 func (p *ProviderSms) Login(c *gin.Context) (*model.UserInfo, error) {

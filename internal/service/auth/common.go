@@ -54,5 +54,17 @@ func GetAuthProvider(tenantId uint, providerName string) (Provider, error) {
 		p := ProviderWeCom{Config: config}
 		return p, nil
 	}
+	if provider.Type == "sms" {
+		var coon model.SmsConnector
+		if err := global.DB.First(&coon, "tenant_id = ?", tenantId).Error; err != nil {
+			return nil, err
+		}
+		return &ProviderSms{Config: model.ProviderSms{
+			SmsConnectorId: coon.Id,
+			SmsConnector:   coon,
+			TenantId:       provider.TenantId,
+		}}, nil
+	}
+
 	return nil, errors.New("provider config not found")
 }

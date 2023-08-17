@@ -1,10 +1,10 @@
 package controller
 
 import (
-	"accounts/internal/controller/auth"
 	"accounts/internal/controller/internal"
 	"accounts/internal/endpoint/resp"
 	"accounts/internal/model"
+	"accounts/internal/service/auth"
 	"accounts/pkg/client/msg/notify"
 	"accounts/pkg/global"
 	"github.com/gin-gonic/gin"

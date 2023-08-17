@@ -1,10 +1,10 @@
 package authentication
 
 import (
-	"accounts/internal/controller/auth"
 	"accounts/internal/controller/internal"
 	"accounts/internal/endpoint/resp"
 	"accounts/internal/model"
+	"accounts/internal/service/auth"
 	"accounts/pkg/global"
 	"accounts/pkg/middlewares"
 	"accounts/pkg/utils"
@@ -63,6 +63,7 @@ func GetProvider(c *gin.Context) {
 //	@Tags			login
 //	@Param			tenant		path	string	true	"tenant"	default(default)
 //	@Param			provider	path	string	true	"provider"
+//	@Param			phone		query	string	false	"phone"
 //	@Param			next		query	string	false	"next"
 //	@Success		302
 //	@Router			/accounts/{tenant}/login/{provider} [get]
@@ -75,8 +76,12 @@ func LoginToProvider(c *gin.Context) {
 		return
 	}
 
-	redirectUri := fmt.Sprintf("%s/%s/logged-in/%s", utils.GetHostWithScheme(c), tenant.Name, providerName)
-	location, err := authProvider.Auth(redirectUri)
+	authStr := fmt.Sprintf("%s/%s/logged-in/%s", utils.GetHostWithScheme(c), tenant.Name, providerName)
+	if providerName == "sms" {
+		authStr = c.Query("phone")
+	}
+
+	location, err := authProvider.Auth(authStr)
 	if err != nil {
 		resp.ErrorUnknown(c, err, "provider auth err")
 		return
@@ -88,6 +93,12 @@ func LoginToProvider(c *gin.Context) {
 		session.Set("next", next)
 		_ = session.Save()
 	}
+
+	if providerName == "sms" {
+		resp.Success(c)
+		return
+	}
+
 	c.Redirect(http.StatusFound, location)
 }
 

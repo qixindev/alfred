@@ -130,11 +130,11 @@ func Logout(c *gin.Context) {
 }
 
 func AddLoginRoutes(rg *gin.RouterGroup) {
-	rg.POST("/login", Login)
-	rg.GET("/login/:provider", LoginToProvider)
-	rg.GET("/providers", ListProviders)
-	rg.GET("/providers/:provider", GetProvider)
+	rg.POST("/login", Login)                    // 账号密码登录
+	rg.GET("/login/:provider", LoginToProvider) // 第三方登录重定向
+	rg.GET("/providers", ListProviders)         // 第三方信息
+	rg.GET("/providers/:provider", GetProvider) // 第三方具体信息
 	rg.GET("/logout", middlewares.Authorized(false), Logout)
-	rg.POST("/register", Register)
-	rg.GET("/logged-in/:provider", ProviderCallback)
+	rg.POST("/register", Register)                   // 注册
+	rg.GET("/logged-in/:provider", ProviderCallback) // 验证第三方登录是否成功
 }

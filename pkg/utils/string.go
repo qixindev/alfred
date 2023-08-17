@@ -64,3 +64,7 @@ func MergeString(obj []string, s string) string {
 
 	return res[:len(res)-len(s)]
 }
+
+func GetCode() string {
+	return strconv.Itoa(rand.Int())
+}

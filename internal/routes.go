@@ -36,7 +36,6 @@ func AddRoutes(r *gin.Engine) {
 		admin.AddAdminDevicesRoutes(adminApi)
 		admin.AddAdminProvidersRoutes(adminApi)
 		admin.AddAdminClientsRoutes(adminApi)
-		admin.AddConnectorRoute(adminApi)
 	}
 
 	adminRouter := r.RouterGroup.Group("/accounts/admin", middlewares.MultiTenancy, middlewares.AuthorizedAdmin)
