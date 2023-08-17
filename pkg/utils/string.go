@@ -66,5 +66,10 @@ func MergeString(obj []string, s string) string {
 }
 
 func GetCode() string {
-	return strconv.Itoa(rand.Int())
+	code := strconv.Itoa(rand.Int())
+	if len(code) > 5 {
+		return code[:6]
+	}
+	zeroCode := "000000"
+	return zeroCode[:6-len(code)] + code
 }

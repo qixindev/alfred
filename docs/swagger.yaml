@@ -220,6 +220,8 @@ definitions:
         type: boolean
       username:
         type: string
+    required:
+    - displayName
     type: object
 info:
   contact: {}
@@ -2257,6 +2259,12 @@ paths:
         name: tenant
         required: true
         type: string
+      - description: user body
+        in: body
+        name: bd
+        required: true
+        schema:
+          type: object
       responses:
         "200":
           description: OK

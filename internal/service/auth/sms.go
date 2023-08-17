@@ -4,6 +4,7 @@ import (
 	"accounts/internal/model"
 	"accounts/internal/service"
 	"accounts/pkg/global"
+	"accounts/pkg/utils"
 	"errors"
 	"github.com/gin-gonic/gin"
 	"strings"
@@ -24,7 +25,7 @@ func (p *ProviderSms) Auth(number string) (string, error) {
 	if strings.HasPrefix(number, "+86") == false {
 		return "", errors.New("only +86 suffix supported")
 	}
-	code := "113453"
+	code := utils.GetCode()
 	if global.DB.First(&phoneVerification, "phone = ?", number).Error == nil {
 		// found existing verification
 		if phoneVerification.CreatedAt.Add(time.Minute).Unix() > time.Now().Unix() {

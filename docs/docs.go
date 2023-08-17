@@ -1400,6 +1400,15 @@ const docTemplate = `{
                         "name": "tenant",
                         "in": "path",
                         "required": true
+                    },
+                    {
+                        "description": "user body",
+                        "name": "bd",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "object"
+                        }
                     }
                 ],
                 "responses": {
@@ -3681,6 +3690,9 @@ const docTemplate = `{
         },
         "model.User": {
             "type": "object",
+            "required": [
+                "displayName"
+            ],
             "properties": {
                 "disabled": {
                     "type": "boolean"

@@ -57,6 +57,7 @@ func GetUser(c *gin.Context) {
 //	@Description	new user
 //	@Tags			user
 //	@Param			tenant	path	string	true	"tenant"	default(default)
+//	@Param			bd		body	object	true	"user body"
 //	@Success		200
 //	@Router			/accounts/admin/{tenant}/users [post]
 func NewUser(c *gin.Context) {
