@@ -4,14 +4,14 @@ import (
 	"accounts/internal/controller/internal"
 	"accounts/internal/endpoint/resp"
 	"accounts/internal/model"
+	"accounts/internal/service"
 	"accounts/internal/service/auth"
 	"accounts/pkg/global"
-	"accounts/pkg/middlewares"
 	"accounts/pkg/utils"
 	"fmt"
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-gonic/gin"
-	"github.com/google/uuid"
+	"gorm.io/gorm"
 	"net/http"
 )
 
@@ -111,6 +111,8 @@ func LoginToProvider(c *gin.Context) {
 //	@Param			tenant		path	string	true	"tenant"	default(default)
 //	@Param			provider	path	string	true	"provider"
 //	@Param			code		query	string	true	"code"
+//	@Param			phone		query	string	false	"phone"
+//	@Param			next		query	string	false	"next"
 //	@Success		302
 //	@Success		200
 //	@Router			/accounts/{tenant}/logged-in/{provider} [get]
@@ -134,34 +136,14 @@ func ProviderCallback(c *gin.Context) {
 	}
 
 	var providerUser model.ProviderUser
-	existingUser := &model.User{}
-	if err = internal.TenantDB(c).First(&providerUser, "provider_id = ? AND name = ?", provider.Id, userInfo.Sub).Error; err != nil {
-		global.LOG.Error("get user err: " + err.Error())
-		// Current bind not found.
-		// If logged in, bind to current user.
-		user, err := middlewares.GetUserStandalone(c)
+	var user *model.User
+	if err = internal.TenantDB(c).First(&providerUser, "provider_id = ? AND name = ?", provider.Id, userInfo.Sub).
+		Error; err == gorm.ErrRecordNotFound { // provider user不存在，直接创建
+		user, err = service.BindLoginUser(userInfo, provider.TenantId)
 		if err != nil {
-			// If not logged in, create new user.
-			newUser := model.User{
-				Username:         uuid.NewString(),
-				FirstName:        userInfo.FirstName,
-				LastName:         userInfo.LastName,
-				DisplayName:      userInfo.DisplayName,
-				Email:            userInfo.Email,
-				EmailVerified:    false,
-				Phone:            userInfo.Phone,
-				PhoneVerified:    false,
-				TwoFactorEnabled: false,
-				Disabled:         false,
-				TenantId:         provider.TenantId,
-			}
-			if err = global.DB.Create(&newUser).Error; err != nil {
-				resp.ErrorSqlCreate(c, err, "create user err")
-				return
-			}
-			user = &newUser
+			resp.ErrorSqlFirst(c, err, "bind login user err")
+			return
 		}
-
 		providerUser.TenantId = provider.TenantId
 		providerUser.ProviderId = provider.Id
 		providerUser.UserId = user.Id
@@ -170,17 +152,15 @@ func ProviderCallback(c *gin.Context) {
 			resp.ErrorSqlCreate(c, err, "create provider user err")
 			return
 		}
-		existingUser = user
-	} else {
-		if err = internal.TenantDB(c).First(existingUser, "id = ?", providerUser.UserId).Error; err != nil {
-			resp.ErrorSqlFirst(c, err, "get provider user err")
-			return
-		}
+	} else if err != nil {
+		resp.ErrorSqlSelect(c, err, "get user err")
+		return
 	}
+
 	session := sessions.Default(c)
 	tenant := internal.GetTenant(c)
 	session.Set("tenant", tenant.Name)
-	session.Set("user", existingUser.Username)
+	session.Set("user", user.Username)
 	next := utils.GetString(session.Get("next"))
 	session.Delete("next")
 	if err = session.Save(); err != nil {

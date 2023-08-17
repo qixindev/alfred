@@ -3,6 +3,9 @@ package service
 import (
 	"accounts/internal/model"
 	"accounts/pkg/global"
+	"errors"
+	"github.com/google/uuid"
+	"gorm.io/gorm"
 )
 
 func CopyUser(sub string, tenantId uint) error {
@@ -47,4 +50,72 @@ func DeleteUser(id uint) error {
 	}
 
 	return nil
+}
+
+func CreateUser(user model.User) (*model.User, error) {
+	if user.DisplayName == "" || user.Username == "" {
+		return nil, errors.New("invalid user parameter")
+	}
+	if err := global.DB.Create(&user).Error; err != nil {
+		return nil, err
+	}
+	return &user, nil
+}
+
+func GetUserByPhone(phone string, tenantId uint) (*model.User, error) {
+	var user model.User
+	if err := global.DB.Where("tenant_id = ? AND phone = ?", tenantId, phone).First(&user).Error; err != nil {
+		return nil, err
+	}
+	return &user, nil
+}
+func GetUserByEmail(email string, tenantId uint) (*model.User, error) {
+	var user model.User
+	if err := global.DB.Where("tenant_id AND email = ?", tenantId, email).First(&user).Error; err != nil {
+		return nil, err
+	}
+	return &user, nil
+}
+
+func BindLoginUser(userInfo *model.UserInfo, tenantId uint) (user *model.User, err error) {
+	newUser := model.User{
+		Username:         userInfo.Name,
+		FirstName:        userInfo.FirstName,
+		LastName:         userInfo.LastName,
+		DisplayName:      userInfo.DisplayName,
+		Email:            userInfo.Email,
+		EmailVerified:    false,
+		Phone:            userInfo.Phone,
+		PhoneVerified:    false,
+		TwoFactorEnabled: false,
+		Disabled:         false,
+		TenantId:         tenantId,
+	}
+	if newUser.Username == "" {
+		newUser.Username = uuid.NewString()
+	}
+	if userInfo.Phone == "" && userInfo.Email == "" {
+		return CreateUser(newUser) // 无需绑定，直接创建
+	}
+
+	if userInfo.Email != "" {
+		user, err = GetUserByEmail(userInfo.Email, tenantId)
+		if err == gorm.ErrRecordNotFound {
+			global.LOG.Info("no such email user, creating")
+			return CreateUser(newUser)
+		} else if err != nil {
+			return nil, err
+		}
+		return user, nil
+	}
+
+	user, err = GetUserByPhone(userInfo.Phone, tenantId)
+	if err == gorm.ErrRecordNotFound {
+		global.LOG.Info("no such phone user, creating")
+		return CreateUser(newUser)
+	} else if err != nil {
+		return nil, err
+	}
+
+	return user, nil
 }

@@ -52,8 +52,11 @@ func (p *ProviderSms) Auth(number string) (string, error) {
 }
 
 func (p *ProviderSms) Login(c *gin.Context) (*model.UserInfo, error) {
-	phone := c.PostForm("phone")
-	code := c.PostForm("code")
+	phone := c.Query("phone")
+	code := c.Query("code")
+	if phone == "" || code == "" {
+		return nil, errors.New("invalid phone or code")
+	}
 	var v model.PhoneVerification
 	if err := global.DB.First(&v, "phone = ? AND code = ?", phone, code).Error; err != nil {
 		return nil, err
@@ -61,9 +64,15 @@ func (p *ProviderSms) Login(c *gin.Context) (*model.UserInfo, error) {
 	if err := global.DB.Delete(&v).Error; err != nil {
 		return nil, err
 	}
+	phoneNumber := phone
+	if strings.HasPrefix(phoneNumber, "+86") {
+		phoneNumber = phoneNumber[3:]
+	}
 	u := model.UserInfo{
-		Sub:   phone,
-		Phone: phone,
+		Name:        phoneNumber,
+		Sub:         phone,
+		Phone:       phoneNumber,
+		DisplayName: "-",
 	}
 	return &u, nil
 }

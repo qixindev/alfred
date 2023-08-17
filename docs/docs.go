@@ -2818,6 +2818,18 @@ const docTemplate = `{
                         "name": "code",
                         "in": "query",
                         "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "phone",
+                        "name": "phone",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "next",
+                        "name": "next",
+                        "in": "query"
                     }
                 ],
                 "responses": {

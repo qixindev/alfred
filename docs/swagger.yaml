@@ -1043,6 +1043,14 @@ paths:
         name: code
         required: true
         type: string
+      - description: phone
+        in: query
+        name: phone
+        type: string
+      - description: next
+        in: query
+        name: next
+        type: string
       responses:
         "200":
           description: OK
