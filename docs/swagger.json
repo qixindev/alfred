@@ -3021,7 +3021,7 @@
                 }
             }
         },
-        "/accounts/{tenant}/message/MarkMsg": {
+        "/accounts/{tenant}/message/{msgId}": {
             "put": {
                 "description": "mark message read",
                 "tags": [
@@ -3030,32 +3030,16 @@
                 "summary": "mark message read",
                 "parameters": [
                     {
-                        "type": "integer",
-                        "description": "sub id",
-                        "name": "subId",
+                        "type": "string",
+                        "description": "tenant name",
+                        "name": "tenant",
                         "in": "path",
                         "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK"
-                    }
-                }
-            }
-        },
-        "/accounts/{tenant}/message/unreadMsgCount/{subId}": {
-            "get": {
-                "description": "get unread message count",
-                "tags": [
-                    "msg"
-                ],
-                "summary": "get unread message count",
-                "parameters": [
+                    },
                     {
                         "type": "integer",
-                        "description": "sub id",
-                        "name": "subId",
+                        "description": "msg id",
+                        "name": "msgId",
                         "in": "path",
                         "required": true
                     }
@@ -3120,6 +3104,18 @@
                         "name": "subId",
                         "in": "path",
                         "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "pageNum",
+                        "name": "page",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "pageSize",
+                        "name": "pageSize",
+                        "in": "query"
                     }
                 ],
                 "responses": {
@@ -3387,6 +3383,29 @@
                         "description": "password",
                         "name": "password",
                         "in": "formData",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/accounts/{tenant}/unreadMsgCount/{subId}": {
+            "get": {
+                "description": "get unread message count",
+                "tags": [
+                    "msg"
+                ],
+                "summary": "get unread message count",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "sub id",
+                        "name": "subId",
+                        "in": "path",
                         "required": true
                     }
                 ],
@@ -3670,7 +3689,63 @@
             }
         },
         "model.SendInfo": {
-            "type": "object"
+            "type": "object",
+            "properties": {
+                "isRead": {
+                    "type": "boolean"
+                },
+                "link": {
+                    "description": "点击跳转链接",
+                    "type": "string"
+                },
+                "msg": {
+                    "description": "要发送的消息",
+                    "type": "string"
+                },
+                "msgType": {
+                    "description": "消息类型：图文，markdown，文字",
+                    "type": "string"
+                },
+                "platform": {
+                    "description": "发送到哪个平台",
+                    "type": "string"
+                },
+                "pngLink": {
+                    "description": "消息图片链接",
+                    "type": "string"
+                },
+                "receiverName": {
+                    "description": "接收者名字",
+                    "type": "string"
+                },
+                "sender": {
+                    "description": "发送者",
+                    "type": "string"
+                },
+                "senderName": {
+                    "description": "发送者名字",
+                    "type": "string"
+                },
+                "title": {
+                    "description": "标题",
+                    "type": "string"
+                },
+                "titleColor": {
+                    "description": "标题颜色",
+                    "type": "string"
+                },
+                "users": {
+                    "description": "发送给谁，使用字符串数组存储",
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "usersDB": {
+                    "description": "发送给谁，使用字符串数组存储",
+                    "type": "string"
+                }
+            }
         },
         "model.Tenant": {
             "type": "object",

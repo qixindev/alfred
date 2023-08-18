@@ -176,6 +176,47 @@ definitions:
         type: integer
     type: object
   model.SendInfo:
+    properties:
+      isRead:
+        type: boolean
+      link:
+        description: 点击跳转链接
+        type: string
+      msg:
+        description: 要发送的消息
+        type: string
+      msgType:
+        description: 消息类型：图文，markdown，文字
+        type: string
+      platform:
+        description: 发送到哪个平台
+        type: string
+      pngLink:
+        description: 消息图片链接
+        type: string
+      receiverName:
+        description: 接收者名字
+        type: string
+      sender:
+        description: 发送者
+        type: string
+      senderName:
+        description: 发送者名字
+        type: string
+      title:
+        description: 标题
+        type: string
+      titleColor:
+        description: 标题颜色
+        type: string
+      users:
+        description: 发送给谁，使用字符串数组存储
+        items:
+          type: string
+        type: array
+      usersDB:
+        description: 发送给谁，使用字符串数组存储
+        type: string
     type: object
   model.Tenant:
     properties:
@@ -1187,6 +1228,26 @@ paths:
       summary: get user profile
       tags:
       - user
+  /accounts/{tenant}/message/{msgId}:
+    put:
+      description: mark message read
+      parameters:
+      - description: tenant name
+        in: path
+        name: tenant
+        required: true
+        type: string
+      - description: msg id
+        in: path
+        name: msgId
+        required: true
+        type: integer
+      responses:
+        "200":
+          description: OK
+      summary: mark message read
+      tags:
+      - msg
   /accounts/{tenant}/message/{providerId}:
     post:
       description: send message
@@ -1222,40 +1283,18 @@ paths:
         name: subId
         required: true
         type: integer
+      - description: pageNum
+        in: query
+        name: page
+        type: integer
+      - description: pageSize
+        in: query
+        name: pageSize
+        type: integer
       responses:
         "200":
           description: OK
       summary: get message
-      tags:
-      - msg
-  /accounts/{tenant}/message/MarkMsg:
-    put:
-      description: mark message read
-      parameters:
-      - description: sub id
-        in: path
-        name: subId
-        required: true
-        type: integer
-      responses:
-        "200":
-          description: OK
-      summary: mark message read
-      tags:
-      - msg
-  /accounts/{tenant}/message/unreadMsgCount/{subId}:
-    get:
-      description: get unread message count
-      parameters:
-      - description: sub id
-        in: path
-        name: subId
-        required: true
-        type: integer
-      responses:
-        "200":
-          description: OK
-      summary: get unread message count
       tags:
       - msg
   /accounts/{tenant}/oauth2/auth:
@@ -1439,6 +1478,21 @@ paths:
       summary: register a user
       tags:
       - login
+  /accounts/{tenant}/unreadMsgCount/{subId}:
+    get:
+      description: get unread message count
+      parameters:
+      - description: sub id
+        in: path
+        name: subId
+        required: true
+        type: integer
+      responses:
+        "200":
+          description: OK
+      summary: get unread message count
+      tags:
+      - msg
   /accounts/admin/{tenant}/clients:
     get:
       description: get client list
