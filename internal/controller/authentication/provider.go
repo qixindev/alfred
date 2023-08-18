@@ -141,7 +141,7 @@ func ProviderCallback(c *gin.Context) {
 		Error; err == gorm.ErrRecordNotFound { // provider user不存在，直接创建
 		user, err = service.BindLoginUser(userInfo, provider.TenantId)
 		if err != nil {
-			resp.ErrorSqlFirst(c, err, "bind login user err")
+			resp.ErrorSqlCreate(c, err, "bind login user err")
 			return
 		}
 		providerUser.TenantId = provider.TenantId

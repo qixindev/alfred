@@ -95,6 +95,7 @@ func BindLoginUser(userInfo *model.UserInfo, tenantId uint) (user *model.User, e
 		newUser.Username = uuid.NewString()
 	}
 	if userInfo.Phone == "" && userInfo.Email == "" {
+		global.LOG.Info("create user: " + userInfo.Name + " " + userInfo.DisplayName)
 		return CreateUser(newUser) // 无需绑定，直接创建
 	}
 
@@ -106,6 +107,7 @@ func BindLoginUser(userInfo *model.UserInfo, tenantId uint) (user *model.User, e
 		} else if err != nil {
 			return nil, err
 		}
+		global.LOG.Info("bind email user: " + user.Email)
 		return user, nil
 	}
 
