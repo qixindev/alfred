@@ -1,13 +1,14 @@
 // const tenant =  import.meta.env.VITE_APP_TENANT
 
-const tenant = computed(() => useTenant().value) ||localStorage.getItem('tenantValue')
+const tenant = computed(() => useTenant().value).value ||localStorage.getItem('tenantValue')
 export const getClient = async () => {
-  // console.log(tenant,useTenant().value,"接口tenant111",localStorage.getItem('tenantValue'));
+  console.log(tenant,computed(() => useTenant().value),"接口tenant111getClient",localStorage.getItem('tenantValue'));
   console.log(import.meta)
-  return await useHttp.get(`/admin/${tenant.value}/clients`)
+  return await useHttp.get(`/admin/${tenant}/clients`)
 }
 
 export const saveClient = async (data: any) => {
+  console.log(tenant,computed(() => useTenant().value),"接口tenant111saveClient",localStorage.getItem('tenantValue'));
   return await useHttp.post(`/admin/${tenant}/clients`, data)
 }
 

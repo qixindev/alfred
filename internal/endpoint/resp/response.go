@@ -2,8 +2,9 @@ package resp
 
 import (
 	"accounts/pkg/global"
-	"github.com/gin-gonic/gin"
 	"net/http"
+
+	"github.com/gin-gonic/gin"
 )
 
 type Response struct {
