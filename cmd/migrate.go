@@ -7,8 +7,8 @@ import (
 	"os"
 )
 
-func migrateDB() {
-	migrateList := []any{
+func getMigrateModel() []any {
+	return []any{
 		&model.Tenant{},
 		&model.User{},
 		&model.Group{},
@@ -38,11 +38,20 @@ func migrateDB() {
 		&model.SendInfo{},
 		&model.PhoneVerification{},
 	}
+}
 
+func migrateDB() {
+	if err := initSystem(); err != nil {
+		fmt.Println("init system err:", err)
+		os.Exit(1)
+		return
+	}
+	migrateList := getMigrateModel()
 	if err := global.DB.AutoMigrate(migrateList...); err != nil {
-		fmt.Println("migrate db err: ", err)
+		fmt.Println("[Error] migrate db err: ", err)
 		os.Exit(2)
 		return
 	}
+
 	fmt.Println("===== Success =====")
 }

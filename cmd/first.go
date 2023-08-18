@@ -1,10 +1,12 @@
-package initial
+package cmd
 
 import (
 	"accounts/internal/model"
-	"accounts/pkg/config/env"
 	"accounts/pkg/global"
 	"accounts/pkg/utils"
+	"fmt"
+	"gorm.io/gorm"
+	"os"
 )
 
 const (
@@ -14,34 +16,27 @@ const (
 	DefaultPwd    = "admin"
 )
 
-func CheckFirstRun() error {
-	if env.GetReleaseType() == "first" {
-		var tenant model.Tenant
-		if err := global.DB.First(&tenant, "name = ?", DefaultTenant).Error; err != nil {
-			return initFirstRun()
-		}
-		if err := migrateDB(); err != nil {
-			return err
-		}
-	}
-
-	return nil
-}
-
-func initFirstRun() error {
-	if err := migrateDB(); err != nil {
-		return err
+func initFirstRun() {
+	var tenant model.Tenant
+	if err := global.DB.First(&tenant, "name = ?", DefaultTenant).Error; err == gorm.ErrRecordNotFound {
+		return
+	} else if err != nil {
+		return
 	}
 
 	if err := insertDB(); err != nil {
-		return err
+		fmt.Println("insert database error:", err)
+		os.Exit(2)
+		return
 	}
 
 	if _, err := utils.LoadRsaPublicKeys(DefaultTenant); err != nil {
-		return err
+		fmt.Println("load rsa public keys error:", err)
+		os.Exit(2)
+		return
 	}
 
-	return nil
+	fmt.Println("===== Success =====")
 }
 
 func insertDB() error {

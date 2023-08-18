@@ -23,10 +23,19 @@ var (
 			migrateDB()
 		},
 	}
+	initFirstCmd = &cobra.Command{
+		Use:   "init",
+		Short: "Init tenant.",
+		Long:  `Init tenant.`,
+		Run: func(cmd *cobra.Command, args []string) {
+			initFirstRun()
+		},
+	}
 )
 
 func init() {
 	rootCmd.AddCommand(migrateDbCmd)
+	rootCmd.AddCommand(initFirstCmd)
 }
 
 func Execute() {

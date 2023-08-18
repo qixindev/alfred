@@ -8,7 +8,6 @@ const (
 	DefaultServiceConfigMap = "service-config"
 	DefaultConfigPath       = "config.dev.yaml"
 	DefaultDeployType       = "k8s"
-	DefaultReleaseType      = "release"
 	DefaultCmJWKS           = "accounts.jwks"
 )
 
@@ -34,8 +33,4 @@ func GetNameSpace() string {
 
 func GetServiceConfigMapName() string {
 	return getEnv("SERVICE_CONFIG_MAP", DefaultServiceConfigMap)
-}
-
-func GetReleaseType() string {
-	return getEnv("RELEASE_TYPE", DefaultReleaseType)
 }

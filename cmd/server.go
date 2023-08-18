@@ -13,6 +13,7 @@ import (
 	"github.com/gin-contrib/sessions/cookie"
 	"github.com/gin-gonic/gin"
 	"go.uber.org/zap"
+	"os"
 	"time"
 )
 
@@ -47,6 +48,7 @@ func startServer() {
 
 	if err != nil {
 		fmt.Println("init system err:", err)
+		os.Exit(1)
 		return
 	}
 
