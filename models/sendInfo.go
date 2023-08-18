@@ -16,7 +16,7 @@ type SendInfo struct {
 	Title        string   `json:"title" gorm:"not null"`   // 标题
 	TitleColor   string   `json:"titleColor" `             // 标题颜色
 	PngLink      string   `json:"pngLink"`                 // 消息图片链接
-	IsRead       bool     `json:"-" gorm:"default:false"`
+	IsRead       bool     `json:"isRead" gorm:"default:false"`
 }
 
 type SendInfoDB struct {
@@ -34,7 +34,7 @@ type SendInfoDB struct {
 	Title        string  `json:"title" gorm:"not null"`   // 标题
 	TitleColor   string  `json:"titleColor" `             // 标题颜色
 	PngLink      string  `json:"pngLink"`                 // 消息图片链接
-	IsRead       bool    `json:"-" gorm:"default:false"`
+	IsRead       bool    `json:"isRead" gorm:"default:false"`
 }
 
 func (SendInfo) TableName() string {

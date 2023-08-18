@@ -19,7 +19,7 @@ import (
 //	@Tags			msg
 //	@Param			tenant		path	string			true	"tenant name"
 //	@Param			providerId	path	integer			true	"provider id"
-//	@Param			by			body	notify.SendInfo	true	"msg body"
+//	@Param			by			body	models.SendInfo	true	"msg body"
 //	@Success		200
 //	@Router			/accounts/{tenant}/message/{providerId} [post]
 func SendMsg(c *gin.Context) {
@@ -122,7 +122,7 @@ func GetMsg(c *gin.Context) {
 
 	// 通过JOIN查询获取Message数据和发送者、接收者的显示名
 	if err := global.DB.Debug().
-		Table("message").
+		Table("message").Debug().
 		Select("message.*, u1.display_name as sender_name, u2.display_name as receiver_name").
 		Joins("LEFT JOIN client_users cu1 ON message.sender = cu1.sub").
 		Joins("LEFT JOIN client_users cu2 ON message.users_db = cu2.sub").
@@ -200,7 +200,7 @@ func MarkMsg(c *gin.Context) {
 //	@Tags			msg
 //	@Param			subId		path	integer			true	"sub id"
 //	@Success		200
-//	@Router			/accounts/{tenant}/message/{subId} [get]
+//	@Router			/accounts/{tenant}/unreadMsgCount/{subId} [get]
 func GetUnreadMsgCount(c *gin.Context) {
 	subId := c.Param("subId")
 	var count int64
