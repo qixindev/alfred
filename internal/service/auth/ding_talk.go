@@ -17,7 +17,7 @@ type ProviderDingTalk struct {
 	Config model.ProviderDingTalk
 }
 
-func (p ProviderDingTalk) Auth(redirectUri string) (string, error) {
+func (p ProviderDingTalk) Auth(redirectUri string, _ uint) (string, error) {
 	query := url.Values{}
 	query.Set("client_id", p.Config.AppKey)
 	query.Set("scope", "openid corpid")

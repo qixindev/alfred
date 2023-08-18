@@ -20,7 +20,7 @@ func (ProviderOAuth2) TableName() string {
 	return "provider_oauth2"
 }
 
-func (p ProviderOAuth2) Auth(redirectUri string) (string, error) {
+func (p ProviderOAuth2) Auth(redirectUri string, _ uint) (string, error) {
 	query := url.Values{}
 	query.Set("client_id", p.Config.ClientId)
 	query.Set("scope", p.Config.Scope)

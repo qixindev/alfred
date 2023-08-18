@@ -81,7 +81,7 @@ func LoginToProvider(c *gin.Context) {
 		authStr = c.Query("phone")
 	}
 
-	location, err := authProvider.Auth(authStr)
+	location, err := authProvider.Auth(authStr, tenant.Id)
 	if err != nil {
 		resp.ErrorUnknown(c, err, "provider auth err")
 		return

@@ -15,7 +15,7 @@ type ProviderSms struct {
 	Config model.ProviderSms
 }
 
-func (p *ProviderSms) Auth(number string) (string, error) {
+func (p *ProviderSms) Auth(number string, tenantId uint) (string, error) {
 	connector, err := service.GetConnector(p.Config.TenantId, p.Config.SmsConnectorId)
 	if err != nil {
 		return "", err

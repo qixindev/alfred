@@ -16,7 +16,7 @@ type ProviderWeCom struct {
 	Config model.ProviderWeCom
 }
 
-func (p ProviderWeCom) Auth(redirectUri string) (string, error) {
+func (p ProviderWeCom) Auth(redirectUri string, _ uint) (string, error) {
 	query := url.Values{}
 	query.Set("appid", p.Config.CorpId)
 	query.Set("scope", "snsapi_base")
