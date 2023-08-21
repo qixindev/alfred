@@ -9,6 +9,7 @@ import (
 	"accounts/pkg/global"
 	"strconv"
 	"strings"
+	"time"
 
 	"github.com/gin-gonic/gin"
 )
@@ -73,6 +74,7 @@ func SendMsg(c *gin.Context) {
 			Title:      in.Title,
 			TitleColor: in.TitleColor,
 			PngLink:    in.PngLink,
+			SendAt:     time.Now(),
 		})
 	}
 
@@ -112,12 +114,22 @@ func GetMsg(c *gin.Context) {
 	var SendInfo []model.SendInfo
 	var SendInfoDB []model.SendInfoDB
 
+	tenant := internal.GetTenant(c)
+
 	// 获取页码，默认为1
 	pageNum, _ := strconv.Atoi(c.DefaultQuery("pageNum", "1"))
 	// 获取每页显示的数据数量，默认为10
 	pageSize, _ := strconv.Atoi(c.DefaultQuery("pageSize", "10"))
 
-	// 通过JOIN查询获取Message数据和发送者、接收者的显示名
+	//// 获取消息
+	var total int64
+	if err := internal.TenantDB(c).Debug().Model(&model.SendInfo{}).
+		Where("users_db = ?", subId).
+		Find(&SendInfo).Count(&total).Debug().Error; err != nil {
+		resp.ErrorSqlSelect(c, err, "failed to get msg")
+		return
+	}
+
 	if err := global.DB.Debug().
 		Table("message").Debug().
 		Select("message.*, u1.display_name as sender_name, u2.display_name as receiver_name").
@@ -125,24 +137,15 @@ func GetMsg(c *gin.Context) {
 		Joins("LEFT JOIN client_users cu2 ON message.users_db = cu2.sub").
 		Joins("LEFT JOIN users u1 ON cu1.user_id = u1.id").
 		Joins("LEFT JOIN users u2 ON cu2.user_id = u2.id").
-		Where("message.users_db = ?", subId).
+		Where("message.users_db = ? AND message.tenant_id = ?", subId, tenant.Id).
 		Limit(pageSize).Offset((pageNum - 1) * pageSize).
 		Find(&SendInfoDB).Error; err != nil {
 		resp.ErrorSqlSelect(c, err, "failed to get msg")
 		return
 	}
 
-	// 获取消息
-	var total int64
-	if err := internal.TenantDB(c).Debug().Model(&model.SendInfo{}).
-		Where("users_db = ?", subId).Limit(pageSize).Offset((pageNum - 1) * pageSize).
-		Find(&SendInfo).Count(&total).Error; err != nil {
-		resp.ErrorSqlSelect(c, err, "failed to get msg")
-		return
-	}
-
-	for i, v := range SendInfo {
-		for _, v2 := range SendInfoDB {
+	for i, v := range SendInfoDB {
+		for _, v2 := range SendInfo {
 			if v.Id == v2.Id {
 				SendInfo[i].SenderName = v2.SenderName
 				SendInfo[i].ReceiverName = v2.ReceiverName
@@ -150,7 +153,7 @@ func GetMsg(c *gin.Context) {
 		}
 	}
 
-	resp.SuccessWithDataAndTotal(c, SendInfo, total)
+	resp.SuccessWithDataAndTotal(c, SendInfoDB, total)
 }
 
 // MarkMsg godoc

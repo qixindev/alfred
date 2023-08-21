@@ -3702,6 +3702,9 @@ const docTemplate = `{
         "model.SendInfo": {
             "type": "object",
             "properties": {
+                "id": {
+                    "type": "integer"
+                },
                 "isRead": {
                     "type": "boolean"
                 },
@@ -3727,6 +3730,10 @@ const docTemplate = `{
                 },
                 "receiverName": {
                     "description": "接收者名字",
+                    "type": "string"
+                },
+                "sendAt": {
+                    "description": "发送时间",
                     "type": "string"
                 },
                 "sender": {
