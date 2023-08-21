@@ -130,7 +130,6 @@ func GetMsg(c *gin.Context) {
 		return
 	}
 
-	// 通过JOIN查询获取Message数据和发送者、接收者的显示名
 	if err := global.DB.Debug().
 		Table("message").Debug().
 		Select("message.*, u1.display_name as sender_name, u2.display_name as receiver_name").
