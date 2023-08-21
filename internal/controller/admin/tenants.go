@@ -87,7 +87,7 @@ func GetTenant(c *gin.Context) {
 func NewTenant(c *gin.Context) {
 	var tenant model.Tenant
 	if err := c.BindJSON(&tenant); err != nil {
-		resp.ErrorRequestWithMsg(c, err, "bind new tenant err")
+		resp.ErrorRequest(c, err)
 		return
 	}
 	if tenant.Sub == "" {
@@ -126,7 +126,7 @@ func UpdateTenant(c *gin.Context) {
 	}
 	var t model.Tenant
 	if err := c.BindJSON(&t); err != nil {
-		resp.ErrorRequestWithMsg(c, err, "bind update tenant err")
+		resp.ErrorRequest(c, err)
 		return
 	}
 	tenant.Name = t.Name
@@ -206,7 +206,7 @@ func NewTenantSecret(c *gin.Context) {
 		Secret string `json:"secret"`
 	}
 	if err := c.ShouldBindJSON(&in); err != nil {
-		resp.ErrorRequestWithMsg(c, err, "bind new tenant secret err")
+		resp.ErrorRequest(c, err)
 		return
 	}
 

@@ -25,7 +25,7 @@ func MultiTenancy(c *gin.Context) {
 		tenantName = "default"
 	}
 	if tenantName == "" {
-		resp.ErrorRequestWithMsg(c, nil, "tenant should not be null")
+		resp.ErrorRequest(c, nil)
 		return
 	}
 

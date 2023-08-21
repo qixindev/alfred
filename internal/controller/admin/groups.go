@@ -61,7 +61,7 @@ func NewGroup(c *gin.Context) {
 	tenant := internal.GetTenant(c)
 	var group model.Group
 	if err := c.BindJSON(&group); err != nil {
-		resp.ErrorRequestWithMsg(c, err, "bind new group err")
+		resp.ErrorRequest(c, err)
 		return
 	}
 	group.TenantId = tenant.Id
@@ -91,7 +91,7 @@ func UpdateGroup(c *gin.Context) {
 	}
 	var g model.Group
 	if err := c.BindJSON(&g); err != nil {
-		resp.ErrorRequestWithMsg(c, err, "bind update group err")
+		resp.ErrorRequest(c, err)
 		return
 	}
 	group.Name = g.Name

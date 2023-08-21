@@ -35,6 +35,7 @@ func AddRoutes(r *gin.Engine) {
 		admin.AddAdminUsersRoutes(adminApi)
 		admin.AddAdminDevicesRoutes(adminApi)
 		admin.AddAdminProvidersRoutes(adminApi)
+		admin.AddAdminSmsRoutes(adminApi)
 		admin.AddAdminClientsRoutes(adminApi)
 	}
 

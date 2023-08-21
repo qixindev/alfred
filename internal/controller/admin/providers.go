@@ -98,7 +98,7 @@ func NewProvider(c *gin.Context) {
 	tenant := internal.GetTenant(c)
 	var provider req.Provider
 	if err := c.BindJSON(&provider); err != nil {
-		resp.ErrorRequestWithMsg(c, err, "bind new provider err")
+		resp.ErrorRequest(c, err)
 		return
 	}
 
@@ -126,7 +126,7 @@ func UpdateProvider(c *gin.Context) {
 	providerId := c.Param("providerId")
 	var p req.Provider
 	if err := c.BindJSON(&p); err != nil {
-		resp.ErrorRequestWithMsg(c, err, "bind update provider err")
+		resp.ErrorRequest(c, err)
 		return
 	}
 

@@ -29,3 +29,17 @@ func (r *Provider) Dto() any {
 		"type": r.Type,
 	}
 }
+
+type Sms struct {
+	Id       uint   `json:"id"`
+	TenantId uint   `json:"-"`
+	Name     string `json:"name"`
+	Type     string `json:"type"`
+
+	SecretId   int64
+	SecretKey  string `json:"secretKey"`
+	Region     string `json:"region"`
+	SdkAppId   string `json:"sdkAppId"`
+	SignName   string `json:"signName"`
+	TemplateId uint   `json:"templateId"`
+}
