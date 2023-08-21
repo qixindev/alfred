@@ -19,7 +19,7 @@ type SendInfo struct {
 	TitleColor   string    `json:"titleColor" `             // 标题颜色
 	PngLink      string    `json:"pngLink"`                 // 消息图片链接
 	IsRead       bool      `json:"isRead" gorm:"default:false"`
-	SendAt       time.Time `json:"sendAt" gorm:"type:timestamp default:CURRENT_TIMESTAMP"` // 发送时间
+	SendAt       time.Time `json:"sendAt" gorm:"type:timestamp with time zone; default:now()"` // 发送时间
 }
 
 type SendInfoDB struct {
@@ -38,7 +38,7 @@ type SendInfoDB struct {
 	TitleColor   string    `json:"titleColor" `             // 标题颜色
 	PngLink      string    `json:"pngLink"`                 // 消息图片链接
 	IsRead       bool      `json:"isRead" gorm:"default:false"`
-	SendAt       time.Time `json:"sendAt" gorm:"type:timestamp default:CURRENT_TIMESTAMP"` // 发送时间
+	SendAt       time.Time `json:"sendAt" gorm:"type:timestamp with time zone; default:now()"` // 发送时间
 }
 
 func (SendInfo) TableName() string {
