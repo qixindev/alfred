@@ -9,6 +9,7 @@ import (
 	"accounts/pkg/global"
 	"strconv"
 	"strings"
+	"time"
 
 	"github.com/gin-gonic/gin"
 )
@@ -73,6 +74,7 @@ func SendMsg(c *gin.Context) {
 			Title:      in.Title,
 			TitleColor: in.TitleColor,
 			PngLink:    in.PngLink,
+			SendAt:     time.Now(),
 		})
 	}
 

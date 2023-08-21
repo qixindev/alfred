@@ -16,7 +16,7 @@ var (
 		},
 	}
 	migrateDbCmd = &cobra.Command{
-		Use:   "migrate db",
+		Use:   "migrate-db",
 		Short: "Auto migrate database by gorm.",
 		Long:  `Auto migrate database by gorm.`,
 		Run: func(cmd *cobra.Command, args []string) {

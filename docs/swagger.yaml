@@ -177,6 +177,8 @@ definitions:
     type: object
   model.SendInfo:
     properties:
+      id:
+        type: integer
       isRead:
         type: boolean
       link:
@@ -196,6 +198,9 @@ definitions:
         type: string
       receiverName:
         description: 接收者名字
+        type: string
+      sendAt:
+        description: 发送时间
         type: string
       sender:
         description: 发送者
