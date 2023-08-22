@@ -7,8 +7,8 @@ import (
 
 // 请求相关错误
 
-func ErrorRequestWithMsg(c *gin.Context, err error, msg string, isArray ...bool) {
-	errorResponse(c, http.StatusBadRequest, CodeRequest, err, msg, isArray)
+func ErrorRequestWithMsg(c *gin.Context, msg string, isArray ...bool) {
+	errorResponse(c, http.StatusBadRequest, CodeRequest, nil, msg, isArray)
 }
 func ErrorRequest(c *gin.Context, err error, isArray ...bool) {
 	errorResponse(c, http.StatusBadRequest, CodeRequest, err, "req para err", isArray)

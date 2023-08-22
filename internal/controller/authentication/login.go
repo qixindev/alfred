@@ -29,7 +29,7 @@ func Login(c *gin.Context) {
 	login := c.PostForm("login")
 	password := c.PostForm("password")
 	if strings.TrimSpace(login) == "" || strings.TrimSpace(password) == "" {
-		resp.ErrorRequestWithMsg(c, nil, "username or password should not be empty")
+		resp.ErrorRequestWithMsg(c, "username or password should not be empty")
 		return
 	}
 
