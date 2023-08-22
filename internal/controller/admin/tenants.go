@@ -153,7 +153,7 @@ func DeleteTenant(c *gin.Context) {
 		resp.ErrorSqlFirst(c, err, "get tenant err")
 		return
 	}
-	if err := global.DB.Delete(&tenant).Error; err != nil {
+	if err := service.DeleteTenant(tenant); err != nil {
 		resp.ErrorSqlDelete(c, err, "delete tenant err")
 		return
 	}

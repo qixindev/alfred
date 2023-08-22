@@ -4,6 +4,7 @@ import (
 	"accounts/internal/controller/internal"
 	"accounts/internal/endpoint/resp"
 	"accounts/internal/model"
+	"accounts/internal/service"
 	"accounts/pkg/global"
 	"accounts/pkg/utils"
 	"github.com/gin-gonic/gin"
@@ -151,7 +152,8 @@ func DeleteClient(c *gin.Context) {
 		resp.ErrorSqlFirst(c, err, "get client err")
 		return
 	}
-	if err := global.DB.Delete(&client).Error; err != nil {
+	tenant := internal.GetTenant(c)
+	if err := service.DeleteClient(tenant.Id, clientId); err != nil {
 		resp.ErrorSqlDelete(c, err, "delete client err")
 		return
 	}
