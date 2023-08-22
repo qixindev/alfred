@@ -1,5 +1,11 @@
 package model
 
+import "accounts/internal/endpoint/req"
+
+type InterfaceSms interface {
+	Save(sms req.Sms) any
+}
+
 type SmsConnector struct {
 	Id       uint   `gorm:"primaryKey;autoIncrement" json:"id"`
 	Name     string `json:"name"`
@@ -20,4 +26,17 @@ type SmsTcloud struct {
 	TemplateId     string       `json:"templateId"`
 
 	TenantId uint `gorm:"primaryKey" json:"tenantId"`
+}
+
+func (s *SmsTcloud) Save(r req.Sms) any {
+	return &SmsTcloud{
+		SmsConnectorId: r.Id,
+		SecretId:       r.SecretId,
+		SecretKey:      r.SecretKey,
+		Region:         r.Region,
+		SdkAppId:       r.SdkAppId,
+		SignName:       r.SignName,
+		TemplateId:     r.TemplateId,
+		TenantId:       r.TenantId,
+	}
 }

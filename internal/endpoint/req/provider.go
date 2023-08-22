@@ -36,10 +36,10 @@ type Sms struct {
 	Name     string `json:"name"`
 	Type     string `json:"type"`
 
-	SecretId   int64
+	SecretId   string `json:"secretId"`
 	SecretKey  string `json:"secretKey"`
 	Region     string `json:"region"`
 	SdkAppId   string `json:"sdkAppId"`
 	SignName   string `json:"signName"`
-	TemplateId uint   `json:"templateId"`
+	TemplateId string `json:"templateId"`
 }

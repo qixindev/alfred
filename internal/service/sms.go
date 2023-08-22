@@ -7,10 +7,10 @@ import (
 	"errors"
 )
 
-func GetSmsModel(t string) (any, error) {
+func GetSmsModel(t string) (model.InterfaceSms, error) {
 	switch t {
 	case "tcloud":
-		return model.SmsTcloud{}, nil
+		return &model.SmsTcloud{}, nil
 	}
 	return nil, errors.New("no such type")
 }
@@ -29,29 +29,33 @@ func GetSmsConfig(tenantId uint, connId uint, t string) (any, error) {
 }
 
 func CreateSmsConfig(t string, sms req.Sms) error {
-	_, err := GetSmsModel(t)
+	md, err := GetSmsModel(t)
 	if err != nil {
 		return err
 	}
-	if err = global.DB.Create(model.SmsConnector{
+
+	conn := model.SmsConnector{
 		TenantId: sms.TenantId,
 		Name:     sms.Name,
 		Type:     t,
-	}).Error; err != nil {
+	}
+	if err = global.DB.Create(&conn).Error; err != nil {
 		return err
 	}
 
-	// todo: save to sms
-
+	sms.Id = conn.Id
+	if err = global.DB.Create(md.Save(sms)).Error; err != nil {
+		return err
+	}
 	return nil
 }
 
 func UpdateSmsConfig(tenantId uint, connId uint, t string, sms req.Sms) error {
-	_, err := GetSmsModel(t)
+	md, err := GetSmsModel(t)
 	if err != nil {
 		return err
 	}
-	if err = global.DB.Where("tenant_id = ? AND sms_connector_id = ?", tenantId, connId).Updates(model.SmsConnector{
+	if err = global.DB.Where("tenant_id = ? AND id = ?", tenantId, connId).Updates(model.SmsConnector{
 		TenantId: sms.TenantId,
 		Name:     sms.Name,
 		Type:     t,
@@ -59,7 +63,10 @@ func UpdateSmsConfig(tenantId uint, connId uint, t string, sms req.Sms) error {
 		return err
 	}
 
-	// todo: save to sms
+	if err = global.DB.Where("tenant_id = ? AND sms_connector_id = ?", tenantId, connId).
+		Updates(md.Save(sms)).Error; err != nil {
+		return err
+	}
 
 	return nil
 }

@@ -41,13 +41,13 @@ func ListSMS(c *gin.Context) {
 func GetSMS(c *gin.Context) {
 	tenant := internal.GetTenant(c)
 	smsId := c.Param("smsId")
-	var p model.Provider
-	if err := internal.TenantDB(c).First(&p, "id = ?", smsId).Error; err != nil {
+	var s model.SmsConnector
+	if err := internal.TenantDB(c).First(&s, "id = ?", smsId).Error; err != nil {
 		resp.ErrorSqlFirst(c, err, "get sms err")
 		return
 	}
 
-	res, err := service.GetSmsConfig(tenant.Id, p.Id, p.Type)
+	res, err := service.GetSmsConfig(tenant.Id, s.Id, s.Type)
 	if err != nil {
 		resp.ErrorSqlFirst(c, err, "get sms config err")
 		return
@@ -63,7 +63,7 @@ func GetSMS(c *gin.Context) {
 //	@Description	new sms
 //	@Tags			sms
 //	@Param			tenant	path	string	true	"tenant"	default(default)
-//	@Param			req		body	object	true	"body"
+//	@Param			req		body	req.Sms	true	"body"
 //	@Success		200
 //	@Router			/accounts/admin/{tenant}/sms [post]
 func NewSMS(c *gin.Context) {
@@ -91,6 +91,7 @@ func NewSMS(c *gin.Context) {
 //	@Tags			sms
 //	@Param			tenant		path	string	true	"tenant"	default(default)
 //	@Param			smsId		path	integer	true	"sms id"
+//	@Param			req			body	req.Sms	true	"body"
 //	@Success		200
 //	@Router			/accounts/admin/{tenant}/sms/{smsId} [put]
 func UpdateSMS(c *gin.Context) {
@@ -124,7 +125,7 @@ func UpdateSMS(c *gin.Context) {
 //	@Router			/accounts/admin/{tenant}/sms/{smsId} [delete]
 func DeleteSMS(c *gin.Context) {
 	smsId := c.Param("smsId")
-	var sms model.Provider
+	var sms model.SmsConnector
 	if err := internal.TenantDB(c).First(&sms, "id = ?", smsId).Error; err != nil {
 		resp.ErrorSqlFirst(c, err, "get sms err")
 		return

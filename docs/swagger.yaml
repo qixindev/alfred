@@ -269,6 +269,27 @@ definitions:
     required:
     - displayName
     type: object
+  req.Sms:
+    properties:
+      id:
+        type: integer
+      name:
+        type: string
+      region:
+        type: string
+      sdkAppId:
+        type: string
+      secretId:
+        type: string
+      secretKey:
+        type: string
+      signName:
+        type: string
+      templateId:
+        type: string
+      type:
+        type: string
+    type: object
 info:
   contact: {}
 paths:
@@ -2301,6 +2322,110 @@ paths:
       summary: get provider user list
       tags:
       - provider
+  /accounts/admin/{tenant}/sms:
+    get:
+      description: list sms
+      parameters:
+      - default: default
+        description: tenant
+        in: path
+        name: tenant
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+      summary: sms
+      tags:
+      - sms
+    post:
+      description: new sms
+      parameters:
+      - default: default
+        description: tenant
+        in: path
+        name: tenant
+        required: true
+        type: string
+      - description: body
+        in: body
+        name: req
+        required: true
+        schema:
+          $ref: '#/definitions/req.Sms'
+      responses:
+        "200":
+          description: OK
+      summary: sms
+      tags:
+      - sms
+  /accounts/admin/{tenant}/sms/{smsId}:
+    delete:
+      description: delete sms
+      parameters:
+      - default: default
+        description: tenant
+        in: path
+        name: tenant
+        required: true
+        type: string
+      - description: sms id
+        in: path
+        name: smsId
+        required: true
+        type: integer
+      responses:
+        "200":
+          description: OK
+      summary: sms
+      tags:
+      - sms
+    get:
+      description: get sms
+      parameters:
+      - default: default
+        description: tenant
+        in: path
+        name: tenant
+        required: true
+        type: string
+      - description: sms id
+        in: path
+        name: smsId
+        required: true
+        type: integer
+      responses:
+        "200":
+          description: OK
+      summary: sms
+      tags:
+      - sms
+    put:
+      description: update sms
+      parameters:
+      - default: default
+        description: tenant
+        in: path
+        name: tenant
+        required: true
+        type: string
+      - description: sms id
+        in: path
+        name: smsId
+        required: true
+        type: integer
+      - description: body
+        in: body
+        name: req
+        required: true
+        schema:
+          $ref: '#/definitions/req.Sms'
+      responses:
+        "200":
+          description: OK
+      summary: sms
+      tags:
+      - sms
   /accounts/admin/{tenant}/users:
     get:
       description: get user list
