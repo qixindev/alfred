@@ -138,7 +138,7 @@ func GetMsg(c *gin.Context) {
 		Joins("LEFT JOIN users u1 ON cu1.user_id = u1.id").
 		Joins("LEFT JOIN users u2 ON cu2.user_id = u2.id").
 		Where("message.users_db = ? AND message.tenant_id = ?", subId, tenant.Id).
-		Limit(pageSize).Offset((pageNum - 1) * pageSize).
+		Limit(pageSize).Offset((pageNum - 1) * pageSize).Order("send_at desc").
 		Find(&SendInfoDB).Error; err != nil {
 		resp.ErrorSqlSelect(c, err, "failed to get msg")
 		return
