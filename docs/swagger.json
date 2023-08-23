@@ -1607,7 +1607,7 @@
                     },
                     {
                         "type": "integer",
-                        "description": "tenant",
+                        "description": "user id",
                         "name": "userId",
                         "in": "path",
                         "required": true
@@ -1639,6 +1639,44 @@
                         "description": "tenant",
                         "name": "userId",
                         "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/accounts/admin/{tenant}/users/{userId}/avatar": {
+            "put": {
+                "description": "update user",
+                "tags": [
+                    "user"
+                ],
+                "summary": "user",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "default": "default",
+                        "description": "tenant",
+                        "name": "tenant",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "user id",
+                        "name": "userId",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "file",
+                        "description": "file stream",
+                        "name": "file",
+                        "in": "formData",
                         "required": true
                     }
                 ],
@@ -1772,6 +1810,37 @@
                         "type": "integer",
                         "description": "tenant",
                         "name": "groupId",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/accounts/admin/{tenant}/users/{userId}/password": {
+            "put": {
+                "description": "update user",
+                "tags": [
+                    "user"
+                ],
+                "summary": "user",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "default": "default",
+                        "description": "tenant",
+                        "name": "tenant",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "user id",
+                        "name": "userId",
                         "in": "path",
                         "required": true
                     }
@@ -3930,6 +3999,9 @@
                 "displayName"
             ],
             "properties": {
+                "avatar": {
+                    "type": "string"
+                },
                 "disabled": {
                     "type": "boolean"
                 },

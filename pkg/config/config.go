@@ -8,4 +8,10 @@ type Config struct {
 	TencentCOS *TencentCOS `mapstructure:"tencent-cos" json:"tencent-cos" yaml:"tencent-cos"`
 	AzureBlob  *AzureBlob  `mapstructure:"azure-blob" json:"azure-blob" yaml:"azure-blob"`
 	RabbitMq   *RabbitMq   `mapstructure:"rabbit-mq" json:"rabbit-mq" yaml:"rabbit-mq"`
+	Urls       Urls        `mapstructure:"urls" json:"urls" yaml:"urls"`
+}
+
+type Urls struct {
+	Airflow   string `mapstructure:"airflow" json:"airflow" yaml:"airflow"`
+	AzureBlob string `mapstructure:"blob-url" json:"blob-url" yaml:"blob-url"`
 }

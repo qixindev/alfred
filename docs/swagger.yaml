@@ -236,6 +236,8 @@ definitions:
     type: object
   model.User:
     properties:
+      avatar:
+        type: string
       disabled:
         type: boolean
       displayName:
@@ -2513,11 +2515,37 @@ paths:
         name: tenant
         required: true
         type: string
-      - description: tenant
+      - description: user id
         in: path
         name: userId
         required: true
         type: integer
+      responses:
+        "200":
+          description: OK
+      summary: user
+      tags:
+      - user
+  /accounts/admin/{tenant}/users/{userId}/avatar:
+    put:
+      description: update user
+      parameters:
+      - default: default
+        description: tenant
+        in: path
+        name: tenant
+        required: true
+        type: string
+      - description: user id
+        in: path
+        name: userId
+        required: true
+        type: integer
+      - description: file stream
+        in: formData
+        name: file
+        required: true
+        type: file
       responses:
         "200":
           description: OK
@@ -2608,6 +2636,27 @@ paths:
       - description: tenant
         in: path
         name: groupId
+        required: true
+        type: integer
+      responses:
+        "200":
+          description: OK
+      summary: user
+      tags:
+      - user
+  /accounts/admin/{tenant}/users/{userId}/password:
+    put:
+      description: update user
+      parameters:
+      - default: default
+        description: tenant
+        in: path
+        name: tenant
+        required: true
+        type: string
+      - description: user id
+        in: path
+        name: userId
         required: true
         type: integer
       responses:

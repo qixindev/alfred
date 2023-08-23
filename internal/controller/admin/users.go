@@ -7,7 +7,13 @@ import (
 	"accounts/internal/service"
 	"accounts/pkg/global"
 	"accounts/pkg/utils"
+	"context"
+	"fmt"
+	"github.com/Azure/azure-storage-blob-go/azblob"
 	"github.com/gin-gonic/gin"
+	"github.com/google/uuid"
+	"net/url"
+	"strings"
 )
 
 // ListUsers godoc
@@ -92,7 +98,7 @@ func NewUser(c *gin.Context) {
 //	@Description	update user
 //	@Tags			user
 //	@Param			tenant	path	string	true	"tenant"	default(default)
-//	@Param			userId	path	integer	true	"tenant"
+//	@Param			userId	path	integer	true	"user id"
 //	@Success		200
 //	@Router			/accounts/admin/{tenant}/users/{userId} [put]
 func UpdateUser(c *gin.Context) {
@@ -129,7 +135,7 @@ func UpdateUser(c *gin.Context) {
 //	@Description	update user
 //	@Tags			user
 //	@Param			tenant	path	string	true	"tenant"	default(default)
-//	@Param			userId	path	integer	true	"tenant"
+//	@Param			userId	path	integer	true	"user id"
 //	@Success		200
 //	@Router			/accounts/admin/{tenant}/users/{userId}/password [put]
 func UpdateUserPassword(c *gin.Context) {
@@ -175,6 +181,57 @@ func UpdateUserPassword(c *gin.Context) {
 	resp.Success(c)
 }
 
+// UpdateAvatar godoc
+//
+//	@Summary	user
+//	@Schemes
+//	@Description	update user
+//	@Tags			user
+//	@Param			tenant	path		string	true	"tenant"	default(default)
+//	@Param			userId	path		integer	true	"user id"
+//	@Param			file	formData	file	true	"file stream"
+//	@Success		200
+//	@Router			/accounts/admin/{tenant}/users/{userId}/avatar [put]
+func UpdateAvatar(c *gin.Context) {
+	file, err := c.FormFile("file")
+	if err != nil {
+		resp.ErrorRequest(c, err)
+		return
+	}
+
+	fileParts := strings.Split(file.Filename, ".")
+	fileType := fileParts[len(fileParts)-1]
+	src, err := file.Open()
+	if err != nil {
+		resp.ErrorUnknown(c, err, "can not open file")
+		return
+	}
+	defer utils.DeferErr(src.Close)
+
+	credential, err := azblob.NewSharedKeyCredential(global.CONFIG.AzureBlob.AccountName, global.CONFIG.AzureBlob.AccountKey)
+	if err != nil {
+		resp.ErrorUnknown(c, err, "can not upload file")
+		return
+	}
+
+	p := azblob.NewPipeline(credential, azblob.PipelineOptions{})
+	URL, err := url.Parse(global.CONFIG.Urls.AzureBlob)
+	if err != nil {
+		resp.ErrorUnknown(c, err, "could not parse url")
+		return
+	}
+
+	fileName := fmt.Sprintf("%s.%s", uuid.New().String(), fileType)
+	blobURL := azblob.NewContainerURL(*URL, p).NewBlockBlobURL(fileName)
+	_, err = azblob.UploadStreamToBlockBlob(context.Background(), src, blobURL, azblob.UploadStreamToBlockBlobOptions{})
+	if err != nil {
+		resp.ErrorUnknown(c, err, "upload file failed")
+		return
+	}
+
+	resp.Success(c)
+}
+
 // DeleteUser godoc
 //
 //	@Summary	user
@@ -206,6 +263,7 @@ func AddAdminUsersRoutes(rg *gin.RouterGroup) {
 	rg.POST("/users", NewUser)
 	rg.PUT("/users/:userId", UpdateUser)
 	rg.PUT("/users/:userId/password", UpdateUserPassword)
+	rg.PUT("/users/:userId/avatar", UpdateAvatar)
 	rg.DELETE("/users/:userId", DeleteUser)
 
 	rg.GET("/users/:userId/groups", ListUserGroups)

@@ -1618,7 +1618,7 @@ const docTemplate = `{
                     },
                     {
                         "type": "integer",
-                        "description": "tenant",
+                        "description": "user id",
                         "name": "userId",
                         "in": "path",
                         "required": true
@@ -1650,6 +1650,44 @@ const docTemplate = `{
                         "description": "tenant",
                         "name": "userId",
                         "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/accounts/admin/{tenant}/users/{userId}/avatar": {
+            "put": {
+                "description": "update user",
+                "tags": [
+                    "user"
+                ],
+                "summary": "user",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "default": "default",
+                        "description": "tenant",
+                        "name": "tenant",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "user id",
+                        "name": "userId",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "file",
+                        "description": "file stream",
+                        "name": "file",
+                        "in": "formData",
                         "required": true
                     }
                 ],
@@ -1783,6 +1821,37 @@ const docTemplate = `{
                         "type": "integer",
                         "description": "tenant",
                         "name": "groupId",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/accounts/admin/{tenant}/users/{userId}/password": {
+            "put": {
+                "description": "update user",
+                "tags": [
+                    "user"
+                ],
+                "summary": "user",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "default": "default",
+                        "description": "tenant",
+                        "name": "tenant",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "user id",
+                        "name": "userId",
                         "in": "path",
                         "required": true
                     }
@@ -3941,6 +4010,9 @@ const docTemplate = `{
                 "displayName"
             ],
             "properties": {
+                "avatar": {
+                    "type": "string"
+                },
                 "disabled": {
                     "type": "boolean"
                 },
