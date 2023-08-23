@@ -364,69 +364,6 @@ func DeleteClientSecret(c *gin.Context) {
 	c.Status(http.StatusNoContent)
 }
 
-// ListClientUsers godoc
-//
-//	@Summary		client user
-//	@Schemes
-//	@Description	get client user list
-//	@Tags			client
-//	@Param			tenant		path	string	true	"tenant"	default(default)
-//	@Param			clientId	path	string	true	"tenant"
-//	@Success		200
-//	@Router			/accounts/admin/{tenant}/clients/{clientId}/users [get]
-func ListClientUsers(c *gin.Context) {
-	var clientUser []struct {
-		Sub      string `json:"sub"`
-		ClientId string `json:"clientId"`
-		model.User
-	}
-	clientId := c.Param("clientId")
-	if err := global.DB.Table("client_users cu").
-		Select("cu.id, cu.sub sub, cu.client_id, u.username username, u.phone, u.email, u.first_name, u.last_name, u.display_name, u.role").
-		Joins("LEFT JOIN users u ON u.id = cu.user_id").
-		Where("cu.tenant_id = ? AND cu.client_id = ?", internal.GetTenant(c).Id, clientId).
-		Find(&clientUser).Error; err != nil {
-		resp.ErrorSqlSelect(c, err, "list client user err", true)
-		return
-	}
-	resp.SuccessWithArrayData(c, clientUser, 0)
-}
-
-// GetClientUsers godoc
-//
-//	@Summary		client user
-//	@Schemes
-//	@Description	get client user list
-//	@Tags			client
-//	@Param			tenant		path	string	true	"tenant"	default(default)
-//	@Param			clientId	path	string	true	"tenant"
-//	@Param			subId		path	string	true	"tenant"
-//	@Success		200
-//	@Router			/accounts/admin/{tenant}/clients/{clientId}/users/{subId} [get]
-func GetClientUsers(c *gin.Context) {
-	var clientUser struct {
-		Sub      string `json:"sub"`
-		ClientId string `json:"clientId"`
-		model.User
-	}
-	clientId := c.Param("clientId")
-	subId := c.Param("subId")
-	if err := global.DB.Table("client_users cu").
-		Select("cu.id, cu.sub sub, cu.client_id, u.username username, u.phone, u.email, u.first_name, u.last_name, u.display_name, u.role").
-		Joins("LEFT JOIN users u ON u.id = cu.user_id").
-		Where("cu.tenant_id = ? AND cu.client_id = ? AND cu.sub = ?", internal.GetTenant(c).Id, clientId, subId).
-		Find(&clientUser).Error; err != nil {
-		resp.ErrorSqlSelect(c, err, "get client user err")
-		return
-	}
-
-	if clientUser.Username == "" {
-		resp.ErrorNotFound(c, "no such client user")
-		return
-	}
-	resp.SuccessWithData(c, clientUser)
-}
-
 func AddAdminClientsRoutes(rg *gin.RouterGroup) {
 	rg.GET("/clients", ListClients)
 	rg.GET("/clients/:clientId", GetClient)
@@ -441,6 +378,4 @@ func AddAdminClientsRoutes(rg *gin.RouterGroup) {
 	rg.GET("/clients/:clientId/secrets", ListClientSecret)
 	rg.POST("/clients/:clientId/secrets", NewClientSecret)
 	rg.DELETE("/clients/:clientId/secret/:secretId", DeleteClientSecret)
-	rg.GET("/clients/:clientId/users", ListClientUsers)
-	rg.GET("/clients/:clientId/users/:subId", GetClientUsers)
 }

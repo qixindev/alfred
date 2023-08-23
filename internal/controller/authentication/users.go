@@ -1,4 +1,4 @@
-package controller
+package authentication
 
 import (
 	"accounts/internal/endpoint/dto"
