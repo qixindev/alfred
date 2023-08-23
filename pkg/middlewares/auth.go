@@ -9,7 +9,7 @@ import (
 	"fmt"
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-gonic/gin"
-	"github.com/golang-jwt/jwt"
+	"github.com/golang-jwt/jwt/v5"
 	"net/http"
 	"net/url"
 	"strings"
@@ -25,7 +25,7 @@ func MultiTenancy(c *gin.Context) {
 		tenantName = "default"
 	}
 	if tenantName == "" {
-		resp.ErrorRequestWithMsg(c, nil, "tenant should not be null")
+		resp.ErrorRequest(c, nil)
 		return
 	}
 

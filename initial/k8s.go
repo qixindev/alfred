@@ -16,6 +16,7 @@ const (
 	CMKeyAliyunOss  = "aliyun-oss"
 	CMKeyAzureBlob  = "azure-blob"
 	CMKeyRabbitMq   = "rabbit-mq"
+	CMUrls          = "urls"
 )
 
 func GetK8sConfig() (*config.Config, error) {
@@ -44,6 +45,9 @@ func GetK8sConfig() (*config.Config, error) {
 		return nil, err
 	}
 	if err = utils.GetAnyString(&(conf.RabbitMq), cm[CMKeyRabbitMq]); err != nil {
+		return nil, err
+	}
+	if err = utils.GetAnyString(&(conf.Urls), cm[CMUrls]); err != nil {
 		return nil, err
 	}
 

@@ -64,7 +64,7 @@ func NewDevice(c *gin.Context) {
 	tenant := internal.GetTenant(c)
 	var device model.Device
 	if err := c.BindJSON(&device); err != nil {
-		resp.ErrorRequestWithMsg(c, err, "bind new device err")
+		resp.ErrorRequest(c, err)
 		return
 	}
 	if device.Id == "" {
@@ -113,7 +113,7 @@ func UpdateDevice(c *gin.Context) {
 	}
 	var d model.Device
 	if err := c.BindJSON(&d); err != nil {
-		resp.ErrorRequestWithMsg(c, err, "bind update device err")
+		resp.ErrorRequest(c, err)
 		return
 	}
 	device.Name = d.Name
@@ -188,7 +188,7 @@ func NewDeviceSecret(c *gin.Context) {
 	}
 	var secret model.DeviceSecret
 	if err := c.BindJSON(&secret); err != nil {
-		resp.ErrorRequestWithMsg(c, err, "bind new device secret err")
+		resp.ErrorRequest(c, err)
 		return
 	}
 	secret.DeviceId = device.Id
@@ -275,7 +275,7 @@ func NewDeviceGroup(c *gin.Context) {
 	deviceId := c.Param("deviceId")
 	var deviceGroup model.GroupDevice
 	if err := c.BindJSON(&deviceGroup); err != nil {
-		resp.ErrorRequestWithMsg(c, err, "bind new device group err")
+		resp.ErrorRequest(c, err)
 		return
 	}
 

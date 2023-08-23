@@ -236,6 +236,8 @@ definitions:
     type: object
   model.User:
     properties:
+      avatar:
+        type: string
       disabled:
         type: boolean
       displayName:
@@ -268,6 +270,27 @@ definitions:
         type: string
     required:
     - displayName
+    type: object
+  req.Sms:
+    properties:
+      id:
+        type: integer
+      name:
+        type: string
+      region:
+        type: string
+      sdkAppId:
+        type: string
+      secretId:
+        type: string
+      secretKey:
+        type: string
+      signName:
+        type: string
+      templateId:
+        type: string
+      type:
+        type: string
     type: object
 info:
   contact: {}
@@ -1787,6 +1810,89 @@ paths:
       summary: client user
       tags:
       - client
+  /accounts/admin/{tenant}/clients/{clientId}/users/{subId}/avatar:
+    put:
+      description: update user
+      parameters:
+      - default: default
+        description: tenant
+        in: path
+        name: tenant
+        required: true
+        type: string
+      - description: tenant
+        in: path
+        name: clientId
+        required: true
+        type: string
+      - description: user id
+        in: path
+        name: userId
+        required: true
+        type: integer
+      - description: file stream
+        in: formData
+        name: file
+        required: true
+        type: file
+      responses:
+        "200":
+          description: OK
+      summary: user
+      tags:
+      - user
+  /accounts/admin/{tenant}/clients/{clientId}/users/{subId}/password:
+    put:
+      description: update user
+      parameters:
+      - default: default
+        description: tenant
+        in: path
+        name: tenant
+        required: true
+        type: string
+      - description: tenant
+        in: path
+        name: clientId
+        required: true
+        type: string
+      - description: user id
+        in: path
+        name: userId
+        required: true
+        type: integer
+      responses:
+        "200":
+          description: OK
+      summary: user
+      tags:
+      - user
+  /accounts/admin/{tenant}/clients/{clientId}/users/{subId}/profile:
+    put:
+      description: update user
+      parameters:
+      - default: default
+        description: tenant
+        in: path
+        name: tenant
+        required: true
+        type: string
+      - description: tenant
+        in: path
+        name: clientId
+        required: true
+        type: string
+      - description: user id
+        in: path
+        name: userId
+        required: true
+        type: integer
+      responses:
+        "200":
+          description: OK
+      summary: user
+      tags:
+      - user
   /accounts/admin/{tenant}/clients/default:
     get:
       description: get client
@@ -2301,6 +2407,110 @@ paths:
       summary: get provider user list
       tags:
       - provider
+  /accounts/admin/{tenant}/sms:
+    get:
+      description: list sms
+      parameters:
+      - default: default
+        description: tenant
+        in: path
+        name: tenant
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+      summary: sms
+      tags:
+      - sms
+    post:
+      description: new sms
+      parameters:
+      - default: default
+        description: tenant
+        in: path
+        name: tenant
+        required: true
+        type: string
+      - description: body
+        in: body
+        name: req
+        required: true
+        schema:
+          $ref: '#/definitions/req.Sms'
+      responses:
+        "200":
+          description: OK
+      summary: sms
+      tags:
+      - sms
+  /accounts/admin/{tenant}/sms/{smsId}:
+    delete:
+      description: delete sms
+      parameters:
+      - default: default
+        description: tenant
+        in: path
+        name: tenant
+        required: true
+        type: string
+      - description: sms id
+        in: path
+        name: smsId
+        required: true
+        type: integer
+      responses:
+        "200":
+          description: OK
+      summary: sms
+      tags:
+      - sms
+    get:
+      description: get sms
+      parameters:
+      - default: default
+        description: tenant
+        in: path
+        name: tenant
+        required: true
+        type: string
+      - description: sms id
+        in: path
+        name: smsId
+        required: true
+        type: integer
+      responses:
+        "200":
+          description: OK
+      summary: sms
+      tags:
+      - sms
+    put:
+      description: update sms
+      parameters:
+      - default: default
+        description: tenant
+        in: path
+        name: tenant
+        required: true
+        type: string
+      - description: sms id
+        in: path
+        name: smsId
+        required: true
+        type: integer
+      - description: body
+        in: body
+        name: req
+        required: true
+        schema:
+          $ref: '#/definitions/req.Sms'
+      responses:
+        "200":
+          description: OK
+      summary: sms
+      tags:
+      - sms
   /accounts/admin/{tenant}/users:
     get:
       description: get user list
@@ -2388,7 +2598,7 @@ paths:
         name: tenant
         required: true
         type: string
-      - description: tenant
+      - description: user id
         in: path
         name: userId
         required: true

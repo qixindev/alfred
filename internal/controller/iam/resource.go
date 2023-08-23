@@ -47,7 +47,7 @@ func ListIamType(c *gin.Context) {
 func NewIamType(c *gin.Context) {
 	var typ model.ResourceType
 	if err := c.BindJSON(&typ); err != nil {
-		resp.ErrorRequestWithMsg(c, err, "bind new iam type err")
+		resp.ErrorRequest(c, err)
 		return
 	}
 	client, err := GetClientFromCid(c)
@@ -129,7 +129,7 @@ func ListIamResource(c *gin.Context) {
 func NewIamResource(c *gin.Context) {
 	var resource model.Resource
 	if err := c.BindJSON(&resource); err != nil {
-		resp.ErrorRequestWithMsg(c, err, "bind new iam resource err")
+		resp.ErrorRequest(c, err)
 		return
 	}
 	tenant := internal.GetTenant(c)
@@ -164,7 +164,7 @@ func NewIamResource(c *gin.Context) {
 func UpdateIamResource(c *gin.Context) {
 	var resource model.Resource
 	if err := c.BindJSON(&resource); err != nil {
-		resp.ErrorRequestWithMsg(c, err, "bind update iam resource err")
+		resp.ErrorRequest(c, err)
 		return
 	}
 

@@ -10,7 +10,7 @@ import (
 	"errors"
 	"fmt"
 	"github.com/go-jose/go-jose/v3"
-	"github.com/golang-jwt/jwt"
+	"github.com/golang-jwt/jwt/v5"
 	"github.com/google/uuid"
 	k8sErr "k8s.io/apimachinery/pkg/api/errors"
 	"os"

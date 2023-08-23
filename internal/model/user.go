@@ -17,10 +17,11 @@ type User struct {
 	PhoneVerified    bool   `json:"phoneVerified"`
 	TwoFactorEnabled bool   `json:"twoFactorEnabled"`
 	Disabled         bool   `json:"disabled"`
+	Avatar           string `json:"avatar"`
+	Role             string `json:"role"`
 
 	TenantId uint `gorm:"primaryKey"`
 	Tenant   Tenant
-	Role     string
 }
 
 func (u *User) Name() string {

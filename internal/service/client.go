@@ -7,7 +7,7 @@ import (
 	"net/url"
 )
 
-func DeleteClient(clientId string) error {
+func DeleteClient(tenantId uint, clientId string) error {
 	if clientId == "" {
 		return errors.New("delete invalid client")
 	}
@@ -24,7 +24,10 @@ func DeleteClient(clientId string) error {
 		model.ClientUser{}, model.ClientSecret{},
 	}
 
-	if err := deleteSource(model.Client{}, delList, clientId, "client_id"); err != nil {
+	if err := deleteSource(tenantId, delList, clientId, "client_id"); err != nil {
+		return err
+	}
+	if err := global.DB.Where("tenant_id = ? AND id = ?", tenantId, clientId).Delete(model.Client{}).Error; err != nil {
 		return err
 	}
 	return nil

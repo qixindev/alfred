@@ -121,3 +121,13 @@ func BindLoginUser(userInfo *model.UserInfo, tenantId uint) (user *model.User, e
 
 	return user, nil
 }
+
+func GetUserBySubId(tenantId uint, clientId string, subId string) (user *model.User, err error) {
+	if err = global.DB.Table("users as u").
+		Select("u.id", "u.username", "u.display_name", "u.email", "u.phone", "u.disabled", "u.role", "u.avatar", "u.tenant_id").
+		Joins("LEFT JOIN client_users as cu ON cu.user_id = u.id").
+		Where("cu.sub = ? AND cu.id = ? AND u.tenant_id = ?", subId, clientId, tenantId).Error; err != nil {
+		return nil, err
+	}
+	return
+}

@@ -2,6 +2,7 @@ package service
 
 import (
 	"accounts/internal/model"
+	"accounts/pkg/global"
 	"errors"
 )
 
@@ -23,8 +24,14 @@ func DeleteTenant(tenant model.Tenant) error {
 		model.User{},
 	}
 
-	if err := deleteSource(model.Tenant{}, delList, tenant.Id, "tenant_id"); err != nil {
+	for _, v := range delList {
+		if err := global.DB.Model(v).Where("tenant_id = ?", tenant.Id).Error; err != nil {
+			return err
+		}
+	}
+	if err := global.DB.Where("id = ?", tenant.Id).Error; err != nil {
 		return err
 	}
+
 	return nil
 }
