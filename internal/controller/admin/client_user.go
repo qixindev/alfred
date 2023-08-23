@@ -16,14 +16,20 @@ import (
 	"strings"
 )
 
+type ModifyPassword struct {
+	OldPassword         string `json:"oldPassword"`
+	NewPassword         string `json:"newPassword"`
+	PasswordEncryptType string `json:"passwordEncryptType"`
+}
+
 // ListClientUsers godoc
 //
 //	@Summary		client user
 //	@Schemes
 //	@Description	get client user list
-//	@Tags			client
+//	@Tags			client-user
 //	@Param			tenant		path	string	true	"tenant"	default(default)
-//	@Param			clientId	path	string	true	"tenant"
+//	@Param			clientId	path	string	true	"client id"	default(default)
 //	@Success		200
 //	@Router			/accounts/admin/{tenant}/clients/{clientId}/users [get]
 func ListClientUsers(c *gin.Context) {
@@ -49,10 +55,10 @@ func ListClientUsers(c *gin.Context) {
 //	@Summary		client user
 //	@Schemes
 //	@Description	get client user list
-//	@Tags			client
+//	@Tags			client-user
 //	@Param			tenant		path	string	true	"tenant"	default(default)
-//	@Param			clientId	path	string	true	"tenant"
-//	@Param			subId		path	string	true	"tenant"
+//	@Param			clientId	path	string	true	"client id"	default(default)
+//	@Param			subId		path	string	true	"subId"
 //	@Success		200
 //	@Router			/accounts/admin/{tenant}/clients/{clientId}/users/{subId} [get]
 func GetClientUsers(c *gin.Context) {
@@ -84,18 +90,15 @@ func GetClientUsers(c *gin.Context) {
 //	@Summary	user
 //	@Schemes
 //	@Description	update user
-//	@Tags			user
-//	@Param			tenant		path	string	true	"tenant"	default(default)
-//	@Param			clientId	path	string	true	"tenant"
-//	@Param			userId		path	integer	true	"user id"
+//	@Tags			user-user
+//	@Param			tenant		path	string			true	"tenant"	default(default)
+//	@Param			clientId	path	string			true	"client id"	default(default)
+//	@Param			subId		path	string			true	"sub id"
+//	@Param			bd			body	ModifyPassword	true	"user body"
 //	@Success		200
 //	@Router			/accounts/admin/{tenant}/clients/{clientId}/users/{subId}/password [put]
 func UpdateUserPassword(c *gin.Context) {
-	var u struct {
-		OldPassword         string `json:"oldPassword"`
-		NewPassword         string `json:"newPassword"`
-		PasswordEncryptType string `json:"passwordEncryptType"`
-	}
+	var u ModifyPassword
 	if err := c.BindJSON(&u); err != nil {
 		resp.ErrorRequest(c, err)
 		return
@@ -138,52 +141,38 @@ func UpdateUserPassword(c *gin.Context) {
 //	@Summary	user
 //	@Schemes
 //	@Description	update user
-//	@Tags			user
-//	@Param			tenant		path	string	true	"tenant"	default(default)
-//	@Param			clientId	path	string	true	"tenant"
-//	@Param			userId		path	integer	true	"user id"
+//	@Tags			client-user
+//	@Param			tenant		path	string				true	"tenant"	default(default)
+//	@Param			clientId	path	string				true	"client id"	default(default)
+//	@Param			subId		path	string				true	"sub id"
+//	@Param			bd			body	dto.UserAdminDto	true	"user body"
 //	@Success		200
 //	@Router			/accounts/admin/{tenant}/clients/{clientId}/users/{subId}/profile [put]
 func UpdateUserProfile(c *gin.Context) {
-	var u struct {
-		OldPassword         string `json:"oldPassword"`
-		NewPassword         string `json:"newPassword"`
-		PasswordEncryptType string `json:"passwordEncryptType"`
-	}
+	var u model.User
 	if err := c.BindJSON(&u); err != nil {
 		resp.ErrorRequest(c, err)
 		return
 	}
-	if u.NewPassword != u.PasswordEncryptType {
-		resp.ErrorRequestWithMsg(c, "PasswordEncrypt failed")
+	tenant := internal.GetTenant(c)
+	user, err := service.GetUserBySubId(tenant.Id, c.Param("clientId"), c.Param("subId"))
+	if err != nil {
+		resp.ErrorSqlSelect(c, err, "service.GetUserBySubId err")
+		return
+	}
+	user.Username = u.Username
+	user.FirstName = u.FirstName
+	user.LastName = u.LastName
+	user.DisplayName = u.DisplayName
+	user.Email = u.Email
+	user.Phone = u.Phone
+	user.Avatar = u.Avatar
+	if err = global.DB.Debug().Select("username", "first_name", "last_name", "display_name", "email", "phone", "avatar").
+		Where("id = ?", user.Id).Updates(user).Error; err != nil {
+		resp.ErrorSqlUpdate(c, err, "update tenant user err")
+		return
 	}
 
-	user, err := service.GetUserBySubId(internal.GetTenant(c).Id, c.Param("clientId"), c.Param("subId"))
-	if err != nil {
-		resp.ErrorSqlSelect(c, err, "no such user")
-	}
-
-	// 检查旧密码
-	oldHash, err := utils.HashPassword(u.OldPassword)
-	if err != nil {
-		resp.ErrorUnknown(c, err, "password hash err")
-		return
-	}
-	if oldHash != user.PasswordHash {
-		resp.ErrorRequestWithMsg(c, "invalid old password")
-		return
-	}
-
-	newHash, err := utils.HashPassword(u.NewPassword)
-	if err != nil {
-		resp.ErrorUnknown(c, err, "password hash err")
-		return
-	}
-	user.PasswordHash = newHash
-	if err = global.DB.Select("password_hash").Save(&user).Error; err != nil {
-		resp.ErrorSqlUpdate(c, err, "update user password err")
-		return
-	}
 	resp.Success(c)
 }
 
@@ -192,10 +181,10 @@ func UpdateUserProfile(c *gin.Context) {
 //	@Summary	user
 //	@Schemes
 //	@Description	update user
-//	@Tags			user
+//	@Tags			client-user
 //	@Param			tenant		path		string	true	"tenant"	default(default)
-//	@Param			clientId	path	string	true	"tenant"
-//	@Param			userId		path		integer	true	"user id"
+//	@Param			clientId	path		string	true	"client id"	default(default)
+//	@Param			subId		path		string	true	"sub id"
 //	@Param			file		formData	file	true	"file stream"
 //	@Success		200
 //	@Router			/accounts/admin/{tenant}/clients/{clientId}/users/{subId}/avatar [put]

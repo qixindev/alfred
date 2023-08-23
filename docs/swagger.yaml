@@ -1,4 +1,13 @@
 definitions:
+  admin.ModifyPassword:
+    properties:
+      newPassword:
+        type: string
+      oldPassword:
+        type: string
+      passwordEncryptType:
+        type: string
+    type: object
   dto.AccessTokenDto:
     properties:
       access_token:
@@ -11,6 +20,33 @@ definitions:
       name:
         type: string
       type:
+        type: string
+    type: object
+  dto.UserAdminDto:
+    properties:
+      disabled:
+        type: boolean
+      displayName:
+        type: string
+      email:
+        type: string
+      emailVerified:
+        type: boolean
+      firstName:
+        type: string
+      id:
+        type: integer
+      lastName:
+        type: string
+      passwordHash:
+        type: string
+      phone:
+        type: string
+      phoneVerified:
+        type: boolean
+      twoFactorEnabled:
+        type: boolean
+      username:
         type: string
     type: object
   dto.UserDto:
@@ -260,8 +296,6 @@ definitions:
         type: boolean
       role:
         type: string
-      tenant:
-        $ref: '#/definitions/model.Tenant'
       tenantId:
         type: integer
       twoFactorEnabled:
@@ -1568,11 +1602,12 @@ paths:
         name: tenant
         required: true
         type: string
-      - description: clientId
+      - default: default
+        description: clientId
         in: path
         name: clientId
         required: true
-        type: integer
+        type: string
       responses:
         "200":
           description: OK
@@ -1588,11 +1623,12 @@ paths:
         name: tenant
         required: true
         type: string
-      - description: clientId
+      - default: default
+        description: clientId
         in: path
         name: clientId
         required: true
-        type: integer
+        type: string
       responses:
         "200":
           description: OK
@@ -1608,11 +1644,12 @@ paths:
         name: tenant
         required: true
         type: string
-      - description: clientId
+      - default: default
+        description: clientId
         in: path
         name: clientId
         required: true
-        type: integer
+        type: string
       responses:
         "200":
           description: OK
@@ -1629,11 +1666,12 @@ paths:
         name: tenant
         required: true
         type: string
-      - description: tenant
+      - default: default
+        description: clientId
         in: path
         name: clientId
         required: true
-        type: integer
+        type: string
       responses:
         "200":
           description: OK
@@ -1647,6 +1685,12 @@ paths:
         description: tenant
         in: path
         name: tenant
+        required: true
+        type: string
+      - default: default
+        description: clientId
+        in: path
+        name: clientId
         required: true
         type: string
       responses:
@@ -1665,11 +1709,12 @@ paths:
         name: tenant
         required: true
         type: string
-      - description: tenant
+      - default: default
+        description: clientId
         in: path
         name: clientId
         required: true
-        type: integer
+        type: string
       - description: tenant
         in: path
         name: uriId
@@ -1690,6 +1735,12 @@ paths:
         name: tenant
         required: true
         type: string
+      - default: default
+        description: clientId
+        in: path
+        name: clientId
+        required: true
+        type: string
       responses:
         "200":
           description: OK
@@ -1706,11 +1757,12 @@ paths:
         name: tenant
         required: true
         type: string
-      - description: tenant
+      - default: default
+        description: clientId
         in: path
         name: clientId
         required: true
-        type: integer
+        type: string
       - description: tenant
         in: path
         name: secretId
@@ -1732,11 +1784,12 @@ paths:
         name: tenant
         required: true
         type: string
-      - description: tenant
+      - default: default
+        description: clientId
         in: path
         name: clientId
         required: true
-        type: integer
+        type: string
       responses:
         "200":
           description: OK
@@ -1752,11 +1805,12 @@ paths:
         name: tenant
         required: true
         type: string
-      - description: tenant
+      - default: default
+        description: clientId
         in: path
         name: clientId
         required: true
-        type: integer
+        type: string
       responses:
         "200":
           description: OK
@@ -1773,7 +1827,8 @@ paths:
         name: tenant
         required: true
         type: string
-      - description: tenant
+      - default: default
+        description: client id
         in: path
         name: clientId
         required: true
@@ -1783,7 +1838,7 @@ paths:
           description: OK
       summary: client user
       tags:
-      - client
+      - client-user
   /accounts/admin/{tenant}/clients/{clientId}/users/{subId}:
     get:
       description: get client user list
@@ -1794,12 +1849,13 @@ paths:
         name: tenant
         required: true
         type: string
-      - description: tenant
+      - default: default
+        description: client id
         in: path
         name: clientId
         required: true
         type: string
-      - description: tenant
+      - description: subId
         in: path
         name: subId
         required: true
@@ -1809,7 +1865,7 @@ paths:
           description: OK
       summary: client user
       tags:
-      - client
+      - client-user
   /accounts/admin/{tenant}/clients/{clientId}/users/{subId}/avatar:
     put:
       description: update user
@@ -1820,16 +1876,17 @@ paths:
         name: tenant
         required: true
         type: string
-      - description: tenant
+      - default: default
+        description: client id
         in: path
         name: clientId
         required: true
         type: string
-      - description: user id
+      - description: sub id
         in: path
-        name: userId
+        name: subId
         required: true
-        type: integer
+        type: string
       - description: file stream
         in: formData
         name: file
@@ -1840,7 +1897,7 @@ paths:
           description: OK
       summary: user
       tags:
-      - user
+      - client-user
   /accounts/admin/{tenant}/clients/{clientId}/users/{subId}/password:
     put:
       description: update user
@@ -1851,22 +1908,29 @@ paths:
         name: tenant
         required: true
         type: string
-      - description: tenant
+      - default: default
+        description: client id
         in: path
         name: clientId
         required: true
         type: string
-      - description: user id
+      - description: sub id
         in: path
-        name: userId
+        name: subId
         required: true
-        type: integer
+        type: string
+      - description: user body
+        in: body
+        name: bd
+        required: true
+        schema:
+          $ref: '#/definitions/admin.ModifyPassword'
       responses:
         "200":
           description: OK
       summary: user
       tags:
-      - user
+      - user-user
   /accounts/admin/{tenant}/clients/{clientId}/users/{subId}/profile:
     put:
       description: update user
@@ -1877,22 +1941,29 @@ paths:
         name: tenant
         required: true
         type: string
-      - description: tenant
+      - default: default
+        description: client id
         in: path
         name: clientId
         required: true
         type: string
-      - description: user id
+      - description: sub id
         in: path
-        name: userId
+        name: subId
         required: true
-        type: integer
+        type: string
+      - description: user body
+        in: body
+        name: bd
+        required: true
+        schema:
+          $ref: '#/definitions/dto.UserAdminDto'
       responses:
         "200":
           description: OK
       summary: user
       tags:
-      - user
+      - client-user
   /accounts/admin/{tenant}/clients/default:
     get:
       description: get client

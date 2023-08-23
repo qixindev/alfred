@@ -267,7 +267,8 @@
                         "required": true
                     },
                     {
-                        "type": "integer",
+                        "type": "string",
+                        "default": "default",
                         "description": "clientId",
                         "name": "clientId",
                         "in": "path",
@@ -296,7 +297,8 @@
                         "required": true
                     },
                     {
-                        "type": "integer",
+                        "type": "string",
+                        "default": "default",
                         "description": "clientId",
                         "name": "clientId",
                         "in": "path",
@@ -325,7 +327,8 @@
                         "required": true
                     },
                     {
-                        "type": "integer",
+                        "type": "string",
+                        "default": "default",
                         "description": "clientId",
                         "name": "clientId",
                         "in": "path",
@@ -356,8 +359,9 @@
                         "required": true
                     },
                     {
-                        "type": "integer",
-                        "description": "tenant",
+                        "type": "string",
+                        "default": "default",
+                        "description": "clientId",
                         "name": "clientId",
                         "in": "path",
                         "required": true
@@ -381,6 +385,14 @@
                         "default": "default",
                         "description": "tenant",
                         "name": "tenant",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "default": "default",
+                        "description": "clientId",
+                        "name": "clientId",
                         "in": "path",
                         "required": true
                     }
@@ -407,6 +419,14 @@
                         "name": "tenant",
                         "in": "path",
                         "required": true
+                    },
+                    {
+                        "type": "string",
+                        "default": "default",
+                        "description": "clientId",
+                        "name": "clientId",
+                        "in": "path",
+                        "required": true
                     }
                 ],
                 "responses": {
@@ -431,8 +451,9 @@
                         "required": true
                     },
                     {
-                        "type": "integer",
-                        "description": "tenant",
+                        "type": "string",
+                        "default": "default",
+                        "description": "clientId",
                         "name": "clientId",
                         "in": "path",
                         "required": true
@@ -469,8 +490,9 @@
                         "required": true
                     },
                     {
-                        "type": "integer",
-                        "description": "tenant",
+                        "type": "string",
+                        "default": "default",
+                        "description": "clientId",
                         "name": "clientId",
                         "in": "path",
                         "required": true
@@ -507,8 +529,9 @@
                         "required": true
                     },
                     {
-                        "type": "integer",
-                        "description": "tenant",
+                        "type": "string",
+                        "default": "default",
+                        "description": "clientId",
                         "name": "clientId",
                         "in": "path",
                         "required": true
@@ -536,8 +559,9 @@
                         "required": true
                     },
                     {
-                        "type": "integer",
-                        "description": "tenant",
+                        "type": "string",
+                        "default": "default",
+                        "description": "clientId",
                         "name": "clientId",
                         "in": "path",
                         "required": true
@@ -554,7 +578,7 @@
             "get": {
                 "description": "get client user list",
                 "tags": [
-                    "client"
+                    "client-user"
                 ],
                 "summary": "client user",
                 "parameters": [
@@ -568,7 +592,8 @@
                     },
                     {
                         "type": "string",
-                        "description": "tenant",
+                        "default": "default",
+                        "description": "client id",
                         "name": "clientId",
                         "in": "path",
                         "required": true
@@ -585,7 +610,7 @@
             "get": {
                 "description": "get client user list",
                 "tags": [
-                    "client"
+                    "client-user"
                 ],
                 "summary": "client user",
                 "parameters": [
@@ -599,14 +624,15 @@
                     },
                     {
                         "type": "string",
-                        "description": "tenant",
+                        "default": "default",
+                        "description": "client id",
                         "name": "clientId",
                         "in": "path",
                         "required": true
                     },
                     {
                         "type": "string",
-                        "description": "tenant",
+                        "description": "subId",
                         "name": "subId",
                         "in": "path",
                         "required": true
@@ -623,7 +649,7 @@
             "put": {
                 "description": "update user",
                 "tags": [
-                    "user"
+                    "client-user"
                 ],
                 "summary": "user",
                 "parameters": [
@@ -637,15 +663,16 @@
                     },
                     {
                         "type": "string",
-                        "description": "tenant",
+                        "default": "default",
+                        "description": "client id",
                         "name": "clientId",
                         "in": "path",
                         "required": true
                     },
                     {
-                        "type": "integer",
-                        "description": "user id",
-                        "name": "userId",
+                        "type": "string",
+                        "description": "sub id",
+                        "name": "subId",
                         "in": "path",
                         "required": true
                     },
@@ -668,7 +695,7 @@
             "put": {
                 "description": "update user",
                 "tags": [
-                    "user"
+                    "user-user"
                 ],
                 "summary": "user",
                 "parameters": [
@@ -682,17 +709,27 @@
                     },
                     {
                         "type": "string",
-                        "description": "tenant",
+                        "default": "default",
+                        "description": "client id",
                         "name": "clientId",
                         "in": "path",
                         "required": true
                     },
                     {
-                        "type": "integer",
-                        "description": "user id",
-                        "name": "userId",
+                        "type": "string",
+                        "description": "sub id",
+                        "name": "subId",
                         "in": "path",
                         "required": true
+                    },
+                    {
+                        "description": "user body",
+                        "name": "bd",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/admin.ModifyPassword"
+                        }
                     }
                 ],
                 "responses": {
@@ -706,7 +743,7 @@
             "put": {
                 "description": "update user",
                 "tags": [
-                    "user"
+                    "client-user"
                 ],
                 "summary": "user",
                 "parameters": [
@@ -720,17 +757,27 @@
                     },
                     {
                         "type": "string",
-                        "description": "tenant",
+                        "default": "default",
+                        "description": "client id",
                         "name": "clientId",
                         "in": "path",
                         "required": true
                     },
                     {
-                        "type": "integer",
-                        "description": "user id",
-                        "name": "userId",
+                        "type": "string",
+                        "description": "sub id",
+                        "name": "subId",
                         "in": "path",
                         "required": true
+                    },
+                    {
+                        "description": "user body",
+                        "name": "bd",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.UserAdminDto"
+                        }
                     }
                 ],
                 "responses": {
@@ -3692,6 +3739,20 @@
         }
     },
     "definitions": {
+        "admin.ModifyPassword": {
+            "type": "object",
+            "properties": {
+                "newPassword": {
+                    "type": "string"
+                },
+                "oldPassword": {
+                    "type": "string"
+                },
+                "passwordEncryptType": {
+                    "type": "string"
+                }
+            }
+        },
         "dto.AccessTokenDto": {
             "type": "object",
             "properties": {
@@ -3710,6 +3771,47 @@
                     "type": "string"
                 },
                 "type": {
+                    "type": "string"
+                }
+            }
+        },
+        "dto.UserAdminDto": {
+            "type": "object",
+            "properties": {
+                "disabled": {
+                    "type": "boolean"
+                },
+                "displayName": {
+                    "type": "string"
+                },
+                "email": {
+                    "type": "string"
+                },
+                "emailVerified": {
+                    "type": "boolean"
+                },
+                "firstName": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "lastName": {
+                    "type": "string"
+                },
+                "passwordHash": {
+                    "type": "string"
+                },
+                "phone": {
+                    "type": "string"
+                },
+                "phoneVerified": {
+                    "type": "boolean"
+                },
+                "twoFactorEnabled": {
+                    "type": "boolean"
+                },
+                "username": {
                     "type": "string"
                 }
             }
@@ -4086,9 +4188,6 @@
                 },
                 "role": {
                     "type": "string"
-                },
-                "tenant": {
-                    "$ref": "#/definitions/model.Tenant"
                 },
                 "tenantId": {
                     "type": "integer"

@@ -278,7 +278,8 @@ const docTemplate = `{
                         "required": true
                     },
                     {
-                        "type": "integer",
+                        "type": "string",
+                        "default": "default",
                         "description": "clientId",
                         "name": "clientId",
                         "in": "path",
@@ -307,7 +308,8 @@ const docTemplate = `{
                         "required": true
                     },
                     {
-                        "type": "integer",
+                        "type": "string",
+                        "default": "default",
                         "description": "clientId",
                         "name": "clientId",
                         "in": "path",
@@ -336,7 +338,8 @@ const docTemplate = `{
                         "required": true
                     },
                     {
-                        "type": "integer",
+                        "type": "string",
+                        "default": "default",
                         "description": "clientId",
                         "name": "clientId",
                         "in": "path",
@@ -367,8 +370,9 @@ const docTemplate = `{
                         "required": true
                     },
                     {
-                        "type": "integer",
-                        "description": "tenant",
+                        "type": "string",
+                        "default": "default",
+                        "description": "clientId",
                         "name": "clientId",
                         "in": "path",
                         "required": true
@@ -392,6 +396,14 @@ const docTemplate = `{
                         "default": "default",
                         "description": "tenant",
                         "name": "tenant",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "default": "default",
+                        "description": "clientId",
+                        "name": "clientId",
                         "in": "path",
                         "required": true
                     }
@@ -418,6 +430,14 @@ const docTemplate = `{
                         "name": "tenant",
                         "in": "path",
                         "required": true
+                    },
+                    {
+                        "type": "string",
+                        "default": "default",
+                        "description": "clientId",
+                        "name": "clientId",
+                        "in": "path",
+                        "required": true
                     }
                 ],
                 "responses": {
@@ -442,8 +462,9 @@ const docTemplate = `{
                         "required": true
                     },
                     {
-                        "type": "integer",
-                        "description": "tenant",
+                        "type": "string",
+                        "default": "default",
+                        "description": "clientId",
                         "name": "clientId",
                         "in": "path",
                         "required": true
@@ -480,8 +501,9 @@ const docTemplate = `{
                         "required": true
                     },
                     {
-                        "type": "integer",
-                        "description": "tenant",
+                        "type": "string",
+                        "default": "default",
+                        "description": "clientId",
                         "name": "clientId",
                         "in": "path",
                         "required": true
@@ -518,8 +540,9 @@ const docTemplate = `{
                         "required": true
                     },
                     {
-                        "type": "integer",
-                        "description": "tenant",
+                        "type": "string",
+                        "default": "default",
+                        "description": "clientId",
                         "name": "clientId",
                         "in": "path",
                         "required": true
@@ -547,8 +570,9 @@ const docTemplate = `{
                         "required": true
                     },
                     {
-                        "type": "integer",
-                        "description": "tenant",
+                        "type": "string",
+                        "default": "default",
+                        "description": "clientId",
                         "name": "clientId",
                         "in": "path",
                         "required": true
@@ -565,7 +589,7 @@ const docTemplate = `{
             "get": {
                 "description": "get client user list",
                 "tags": [
-                    "client"
+                    "client-user"
                 ],
                 "summary": "client user",
                 "parameters": [
@@ -579,7 +603,8 @@ const docTemplate = `{
                     },
                     {
                         "type": "string",
-                        "description": "tenant",
+                        "default": "default",
+                        "description": "client id",
                         "name": "clientId",
                         "in": "path",
                         "required": true
@@ -596,7 +621,7 @@ const docTemplate = `{
             "get": {
                 "description": "get client user list",
                 "tags": [
-                    "client"
+                    "client-user"
                 ],
                 "summary": "client user",
                 "parameters": [
@@ -610,14 +635,15 @@ const docTemplate = `{
                     },
                     {
                         "type": "string",
-                        "description": "tenant",
+                        "default": "default",
+                        "description": "client id",
                         "name": "clientId",
                         "in": "path",
                         "required": true
                     },
                     {
                         "type": "string",
-                        "description": "tenant",
+                        "description": "subId",
                         "name": "subId",
                         "in": "path",
                         "required": true
@@ -634,7 +660,7 @@ const docTemplate = `{
             "put": {
                 "description": "update user",
                 "tags": [
-                    "user"
+                    "client-user"
                 ],
                 "summary": "user",
                 "parameters": [
@@ -648,15 +674,16 @@ const docTemplate = `{
                     },
                     {
                         "type": "string",
-                        "description": "tenant",
+                        "default": "default",
+                        "description": "client id",
                         "name": "clientId",
                         "in": "path",
                         "required": true
                     },
                     {
-                        "type": "integer",
-                        "description": "user id",
-                        "name": "userId",
+                        "type": "string",
+                        "description": "sub id",
+                        "name": "subId",
                         "in": "path",
                         "required": true
                     },
@@ -679,7 +706,7 @@ const docTemplate = `{
             "put": {
                 "description": "update user",
                 "tags": [
-                    "user"
+                    "user-user"
                 ],
                 "summary": "user",
                 "parameters": [
@@ -693,17 +720,27 @@ const docTemplate = `{
                     },
                     {
                         "type": "string",
-                        "description": "tenant",
+                        "default": "default",
+                        "description": "client id",
                         "name": "clientId",
                         "in": "path",
                         "required": true
                     },
                     {
-                        "type": "integer",
-                        "description": "user id",
-                        "name": "userId",
+                        "type": "string",
+                        "description": "sub id",
+                        "name": "subId",
                         "in": "path",
                         "required": true
+                    },
+                    {
+                        "description": "user body",
+                        "name": "bd",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/admin.ModifyPassword"
+                        }
                     }
                 ],
                 "responses": {
@@ -717,7 +754,7 @@ const docTemplate = `{
             "put": {
                 "description": "update user",
                 "tags": [
-                    "user"
+                    "client-user"
                 ],
                 "summary": "user",
                 "parameters": [
@@ -731,17 +768,27 @@ const docTemplate = `{
                     },
                     {
                         "type": "string",
-                        "description": "tenant",
+                        "default": "default",
+                        "description": "client id",
                         "name": "clientId",
                         "in": "path",
                         "required": true
                     },
                     {
-                        "type": "integer",
-                        "description": "user id",
-                        "name": "userId",
+                        "type": "string",
+                        "description": "sub id",
+                        "name": "subId",
                         "in": "path",
                         "required": true
+                    },
+                    {
+                        "description": "user body",
+                        "name": "bd",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.UserAdminDto"
+                        }
                     }
                 ],
                 "responses": {
@@ -3703,6 +3750,20 @@ const docTemplate = `{
         }
     },
     "definitions": {
+        "admin.ModifyPassword": {
+            "type": "object",
+            "properties": {
+                "newPassword": {
+                    "type": "string"
+                },
+                "oldPassword": {
+                    "type": "string"
+                },
+                "passwordEncryptType": {
+                    "type": "string"
+                }
+            }
+        },
         "dto.AccessTokenDto": {
             "type": "object",
             "properties": {
@@ -3721,6 +3782,47 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "type": {
+                    "type": "string"
+                }
+            }
+        },
+        "dto.UserAdminDto": {
+            "type": "object",
+            "properties": {
+                "disabled": {
+                    "type": "boolean"
+                },
+                "displayName": {
+                    "type": "string"
+                },
+                "email": {
+                    "type": "string"
+                },
+                "emailVerified": {
+                    "type": "boolean"
+                },
+                "firstName": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "lastName": {
+                    "type": "string"
+                },
+                "passwordHash": {
+                    "type": "string"
+                },
+                "phone": {
+                    "type": "string"
+                },
+                "phoneVerified": {
+                    "type": "boolean"
+                },
+                "twoFactorEnabled": {
+                    "type": "boolean"
+                },
+                "username": {
                     "type": "string"
                 }
             }
@@ -4097,9 +4199,6 @@ const docTemplate = `{
                 },
                 "role": {
                     "type": "string"
-                },
-                "tenant": {
-                    "$ref": "#/definitions/model.Tenant"
                 },
                 "tenantId": {
                     "type": "integer"

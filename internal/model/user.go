@@ -20,8 +20,8 @@ type User struct {
 	Avatar           string `json:"avatar"`
 	Role             string `json:"role"`
 
-	TenantId uint `gorm:"primaryKey"`
-	Tenant   Tenant
+	TenantId uint   `gorm:"primaryKey"`
+	Tenant   Tenant `json:"-"`
 }
 
 func (u *User) Name() string {
