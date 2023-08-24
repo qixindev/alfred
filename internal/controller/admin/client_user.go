@@ -17,9 +17,8 @@ import (
 )
 
 type ModifyPassword struct {
-	OldPassword         string `json:"oldPassword"`
-	NewPassword         string `json:"newPassword"`
-	PasswordEncryptType string `json:"passwordEncryptType"`
+	OldPassword string `json:"oldPassword"`
+	NewPassword string `json:"newPassword"`
 }
 
 // ListClientUsers godoc
@@ -103,23 +102,16 @@ func UpdateUserPassword(c *gin.Context) {
 		resp.ErrorRequest(c, err)
 		return
 	}
-	if u.NewPassword != u.PasswordEncryptType {
-		resp.ErrorRequestWithMsg(c, "PasswordEncrypt failed")
-	}
 
 	user, err := service.GetUserBySubId(internal.GetTenant(c).Id, c.Param("clientId"), c.Param("subId"))
 	if err != nil {
 		resp.ErrorSqlSelect(c, err, "no such user")
+		return
 	}
 
 	// 检查旧密码
-	oldHash, err := utils.HashPassword(u.OldPassword)
-	if err != nil {
-		resp.ErrorUnknown(c, err, "password hash err")
-		return
-	}
-	if oldHash != user.PasswordHash {
-		resp.ErrorRequestWithMsg(c, "invalid old password")
+	if ok := utils.CheckPasswordHash(u.OldPassword, user.PasswordHash); !ok {
+		resp.ErrorRequestWithMsg(c, "password hash err")
 		return
 	}
 

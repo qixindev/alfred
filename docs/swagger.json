@@ -3747,9 +3747,6 @@
                 },
                 "oldPassword": {
                     "type": "string"
-                },
-                "passwordEncryptType": {
-                    "type": "string"
                 }
             }
         },

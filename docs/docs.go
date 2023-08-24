@@ -3758,9 +3758,6 @@ const docTemplate = `{
                 },
                 "oldPassword": {
                     "type": "string"
-                },
-                "passwordEncryptType": {
-                    "type": "string"
                 }
             }
         },
