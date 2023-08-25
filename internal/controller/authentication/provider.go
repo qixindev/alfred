@@ -155,6 +155,12 @@ func ProviderCallback(c *gin.Context) {
 	} else if err != nil {
 		resp.ErrorSqlSelect(c, err, "get user err")
 		return
+	} else {
+		if err = global.DB.Where("id = ? AND tenant_id = ?", providerUser.UserId, provider.TenantId).
+			First(&user).Error; err != nil {
+			resp.ErrorSqlFirst(c, err, "get user err")
+			return
+		}
 	}
 
 	session := sessions.Default(c)
