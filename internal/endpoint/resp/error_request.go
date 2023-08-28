@@ -10,6 +10,9 @@ import (
 func ErrorRequestWithMsg(c *gin.Context, msg string, isArray ...bool) {
 	errorResponse(c, http.StatusBadRequest, CodeRequest, nil, msg, isArray)
 }
+func ErrorPassword(c *gin.Context, msg string, isArray ...bool) {
+	errorResponse(c, http.StatusBadRequest, CodePassword, nil, msg, isArray)
+}
 func ErrorRequest(c *gin.Context, err error, isArray ...bool) {
 	errorResponse(c, http.StatusBadRequest, CodeRequest, err, "req para err", isArray)
 }

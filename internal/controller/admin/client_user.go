@@ -111,7 +111,7 @@ func UpdateUserPassword(c *gin.Context) {
 
 	// 检查旧密码
 	if ok := utils.CheckPasswordHash(u.OldPassword, user.PasswordHash); !ok {
-		resp.ErrorRequestWithMsg(c, "password hash err")
+		resp.ErrorPassword(c, "password hash err")
 		return
 	}
 

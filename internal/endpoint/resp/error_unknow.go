@@ -25,6 +25,7 @@ const (
 	CodeUnauthorized = 3001 // 未授权
 	CodeForbidden    = 3002 // 无权访问
 	CodeIamDeny      = 3003 // 无iam权限
+	CodePassword     = 3004 // 密码错误
 )
 
 func ErrorUnknown(c *gin.Context, err error, msg string, isArray ...bool) {
