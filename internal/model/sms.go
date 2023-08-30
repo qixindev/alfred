@@ -17,7 +17,7 @@ type SmsConnector struct {
 type SmsTcloud struct {
 	Id             uint         `gorm:"primaryKey;autoIncrement" json:"id"`
 	SmsConnectorId uint         `json:"smsId"`
-	SmsConnector   SmsConnector `gorm:"foreignKey:SmsConnectorId, TenantId"`
+	SmsConnector   SmsConnector `gorm:"foreignKey:SmsConnectorId, TenantId" json:"smsConnector"`
 	SecretId       string       `json:"secretId"`
 	SecretKey      string       `json:"secretKey"`
 	Region         string       `json:"region"`
