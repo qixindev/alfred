@@ -29,7 +29,16 @@ export const getThirdLoginConfigByName = async (providerName: string, currentTen
   return await useHttp.get(`/${currentTenant}/providers/${providerName}`)
 }
 
+export const thirdLoginHandle = async (providerName: string, phone: string, currentTenant='default') => {
+  return await useHttp.get(`/${currentTenant}/login/${providerName}?phone=${phone}`)
+}
+
 export const thirdLogin = async (providerName: string, data: any, currentTenant='default') => {
   return await useHttp.get(`/${currentTenant}/logged-in/${providerName}`, data)
 }
+
+export const phoneThirdLogin = async (providerName: string, params: {phone: string, code: string},  currentTenant='default') => {
+  return await useHttp.get(`/${currentTenant}/logged-in/${providerName}`, params)
+}
+
 
