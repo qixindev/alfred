@@ -39,7 +39,7 @@ func ListClientUsers(c *gin.Context) {
 	}
 	clientId := c.Param("clientId")
 	if err := global.DB.Table("client_users cu").
-		Select("cu.id, cu.sub sub, cu.client_id, u.username username, u.phone, u.email, u.first_name, u.last_name, u.display_name, u.role").
+		Select("cu.id, cu.sub sub, cu.client_id, u.username username, u.phone, u.email, u.first_name, u.last_name, u.display_name, u.role, u.avatar").
 		Joins("LEFT JOIN users u ON u.id = cu.user_id").
 		Where("cu.tenant_id = ? AND cu.client_id = ?", internal.GetTenant(c).Id, clientId).
 		Find(&clientUser).Error; err != nil {
