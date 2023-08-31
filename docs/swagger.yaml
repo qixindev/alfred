@@ -49,6 +49,8 @@ definitions:
     type: object
   dto.UserDto:
     properties:
+      avatar:
+        type: string
       disabled:
         type: boolean
       displayName:
