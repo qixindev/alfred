@@ -39,6 +39,7 @@ type SendInfoDB struct {
 	PngLink      string    `json:"pngLink"`                 // 消息图片链接
 	IsRead       bool      `json:"isRead" gorm:"default:false"`
 	SendAt       time.Time `json:"sendAt" gorm:"type:timestamp with time zone; default:now()"` // 发送时间
+	Avatar       string    `json:"avatar" gorm:"avatar"`                                       // 发送者头像
 }
 
 func (SendInfo) TableName() string {
