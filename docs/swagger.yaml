@@ -302,8 +302,6 @@ definitions:
         type: boolean
       username:
         type: string
-    required:
-    - displayName
     type: object
   req.Sms:
     properties:
@@ -1219,6 +1217,22 @@ paths:
         "302":
           description: Found
       summary: login via a provider
+      tags:
+      - login
+  /accounts/{tenant}/login/proto:
+    get:
+      description: logout current user
+      parameters:
+      - default: default
+        description: tenant
+        in: path
+        name: tenant
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+      summary: logout current user
       tags:
       - login
   /accounts/{tenant}/logout:

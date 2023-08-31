@@ -3196,6 +3196,30 @@
                 }
             }
         },
+        "/accounts/{tenant}/login/proto": {
+            "get": {
+                "description": "logout current user",
+                "tags": [
+                    "login"
+                ],
+                "summary": "logout current user",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "default": "default",
+                        "description": "tenant",
+                        "name": "tenant",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
         "/accounts/{tenant}/login/{provider}": {
             "get": {
                 "description": "login via a provider",
@@ -4149,9 +4173,6 @@
         },
         "model.User": {
             "type": "object",
-            "required": [
-                "displayName"
-            ],
             "properties": {
                 "avatar": {
                     "type": "string"
