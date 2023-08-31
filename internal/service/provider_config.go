@@ -15,6 +15,8 @@ func GetProviderModel(t string) (model.ItfProvider, error) {
 		return &model.ProviderDingTalk{}, nil
 	case "wecom":
 		return &model.ProviderWeCom{}, nil
+	case "sms":
+		return &model.ProviderSms{}, nil
 	}
 	return nil, errors.New("no such type")
 }

@@ -3816,6 +3816,9 @@
         "dto.UserDto": {
             "type": "object",
             "properties": {
+                "avatar": {
+                    "type": "string"
+                },
                 "disabled": {
                     "type": "boolean"
                 },

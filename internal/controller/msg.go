@@ -132,7 +132,7 @@ func GetMsg(c *gin.Context) {
 
 	if err := global.DB.Debug().
 		Table("message").Debug().
-		Select("message.*, u1.display_name as sender_name, u2.display_name as receiver_name").
+		Select("message.*, u1.display_name as sender_name, u2.display_name as receiver_name, u2.avatar").
 		Joins("LEFT JOIN client_users cu1 ON message.sender = cu1.sub").
 		Joins("LEFT JOIN client_users cu2 ON message.users_db = cu2.sub").
 		Joins("LEFT JOIN users u1 ON cu1.user_id = u1.id").

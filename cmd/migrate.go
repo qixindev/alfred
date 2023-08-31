@@ -27,6 +27,7 @@ func getMigrateModel() []any {
 		&model.ProviderOAuth2{},
 		&model.ProviderDingTalk{},
 		&model.ProviderWeCom{},
+		&model.ProviderSms{},
 		&model.SmsConnector{},
 		&model.SmsTcloud{},
 		&model.ResourceType{},

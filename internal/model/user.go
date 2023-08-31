@@ -53,6 +53,7 @@ func (u *User) Dto() dto.UserDto {
 		PhoneVerified:    u.PhoneVerified,
 		TwoFactorEnabled: u.TwoFactorEnabled,
 		Disabled:         u.Disabled,
+		Avatar:           u.Avatar,
 	}
 }
 
