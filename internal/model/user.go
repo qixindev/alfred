@@ -9,7 +9,7 @@ type User struct {
 	Username         string `json:"username"`
 	FirstName        string `json:"firstName"`
 	LastName         string `json:"lastName"`
-	DisplayName      string `json:"displayName" binding:"required"`
+	DisplayName      string `json:"displayName"`
 	Email            string `json:"email"`
 	EmailVerified    bool   `json:"emailVerified"`
 	PasswordHash     string `json:"passwordHash,omitempty"`
