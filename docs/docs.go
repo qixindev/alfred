@@ -22,16 +22,6 @@ const docTemplate = `{
                     "admin-tenants"
                 ],
                 "summary": "tenants",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "default": "default",
-                        "description": "tenant",
-                        "name": "tenant",
-                        "in": "path",
-                        "required": true
-                    }
-                ],
                 "responses": {
                     "200": {
                         "description": "OK"
@@ -44,16 +34,6 @@ const docTemplate = `{
                     "admin-tenants"
                 ],
                 "summary": "tenants",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "default": "default",
-                        "description": "tenant",
-                        "name": "tenant",
-                        "in": "path",
-                        "required": true
-                    }
-                ],
                 "responses": {
                     "200": {
                         "description": "OK"
@@ -71,16 +51,8 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "string",
-                        "default": "default",
                         "description": "tenant",
-                        "name": "tenant",
-                        "in": "path",
-                        "required": true
-                    },
-                    {
-                        "type": "string",
-                        "description": "tenant",
-                        "name": "userId",
+                        "name": "user",
                         "in": "path",
                         "required": true
                     }
@@ -100,14 +72,6 @@ const docTemplate = `{
                 ],
                 "summary": "tenants",
                 "parameters": [
-                    {
-                        "type": "string",
-                        "default": "default",
-                        "description": "tenant",
-                        "name": "tenant",
-                        "in": "path",
-                        "required": true
-                    },
                     {
                         "type": "integer",
                         "description": "tenant",
@@ -130,13 +94,6 @@ const docTemplate = `{
                 "summary": "tenants",
                 "parameters": [
                     {
-                        "type": "string",
-                        "description": "tenant",
-                        "name": "tenant",
-                        "in": "path",
-                        "required": true
-                    },
-                    {
                         "type": "integer",
                         "description": "tenant",
                         "name": "tenantId",
@@ -157,13 +114,6 @@ const docTemplate = `{
                 ],
                 "summary": "tenants",
                 "parameters": [
-                    {
-                        "type": "string",
-                        "description": "tenant",
-                        "name": "tenant",
-                        "in": "path",
-                        "required": true
-                    },
                     {
                         "type": "integer",
                         "description": "tenant",
@@ -188,13 +138,6 @@ const docTemplate = `{
                 "summary": "tenants",
                 "parameters": [
                     {
-                        "type": "string",
-                        "description": "tenant",
-                        "name": "tenant",
-                        "in": "path",
-                        "required": true
-                    },
-                    {
                         "type": "integer",
                         "description": "tenant",
                         "name": "tenantId",
@@ -218,16 +161,16 @@ const docTemplate = `{
                 "summary": "tenants",
                 "parameters": [
                     {
-                        "type": "string",
+                        "type": "integer",
                         "description": "tenant",
-                        "name": "tenant",
+                        "name": "tenantId",
                         "in": "path",
                         "required": true
                     },
                     {
                         "type": "integer",
                         "description": "tenant",
-                        "name": "tenantId",
+                        "name": "secretId",
                         "in": "path",
                         "required": true
                     }
@@ -271,6 +214,7 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "string",
+                        "default": "default",
                         "description": "tenant",
                         "name": "tenant",
                         "in": "path",
@@ -303,6 +247,7 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "string",
+                        "default": "default",
                         "description": "tenant",
                         "name": "tenant",
                         "in": "path",
@@ -326,13 +271,15 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "string",
+                        "default": "default",
                         "description": "tenant",
                         "name": "tenant",
                         "in": "path",
                         "required": true
                     },
                     {
-                        "type": "integer",
+                        "type": "string",
+                        "default": "default",
                         "description": "clientId",
                         "name": "clientId",
                         "in": "path",
@@ -354,13 +301,15 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "string",
+                        "default": "default",
                         "description": "tenant",
                         "name": "tenant",
                         "in": "path",
                         "required": true
                     },
                     {
-                        "type": "integer",
+                        "type": "string",
+                        "default": "default",
                         "description": "clientId",
                         "name": "clientId",
                         "in": "path",
@@ -382,13 +331,15 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "string",
+                        "default": "default",
                         "description": "tenant",
                         "name": "tenant",
                         "in": "path",
                         "required": true
                     },
                     {
-                        "type": "integer",
+                        "type": "string",
+                        "default": "default",
                         "description": "clientId",
                         "name": "clientId",
                         "in": "path",
@@ -412,14 +363,16 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "string",
+                        "default": "default",
                         "description": "tenant",
                         "name": "tenant",
                         "in": "path",
                         "required": true
                     },
                     {
-                        "type": "integer",
-                        "description": "tenant",
+                        "type": "string",
+                        "default": "default",
+                        "description": "clientId",
                         "name": "clientId",
                         "in": "path",
                         "required": true
@@ -440,8 +393,17 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "string",
+                        "default": "default",
                         "description": "tenant",
                         "name": "tenant",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "default": "default",
+                        "description": "clientId",
+                        "name": "clientId",
                         "in": "path",
                         "required": true
                     }
@@ -463,8 +425,17 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "string",
+                        "default": "default",
                         "description": "tenant",
                         "name": "tenant",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "default": "default",
+                        "description": "clientId",
+                        "name": "clientId",
                         "in": "path",
                         "required": true
                     }
@@ -484,14 +455,16 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "string",
+                        "default": "default",
                         "description": "tenant",
                         "name": "tenant",
                         "in": "path",
                         "required": true
                     },
                     {
-                        "type": "integer",
-                        "description": "tenant",
+                        "type": "string",
+                        "default": "default",
+                        "description": "clientId",
                         "name": "clientId",
                         "in": "path",
                         "required": true
@@ -521,14 +494,16 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "string",
+                        "default": "default",
                         "description": "tenant",
                         "name": "tenant",
                         "in": "path",
                         "required": true
                     },
                     {
-                        "type": "integer",
-                        "description": "tenant",
+                        "type": "string",
+                        "default": "default",
+                        "description": "clientId",
                         "name": "clientId",
                         "in": "path",
                         "required": true
@@ -558,14 +533,16 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "string",
+                        "default": "default",
                         "description": "tenant",
                         "name": "tenant",
                         "in": "path",
                         "required": true
                     },
                     {
-                        "type": "integer",
-                        "description": "tenant",
+                        "type": "string",
+                        "default": "default",
+                        "description": "clientId",
                         "name": "clientId",
                         "in": "path",
                         "required": true
@@ -586,14 +563,16 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "string",
+                        "default": "default",
                         "description": "tenant",
                         "name": "tenant",
                         "in": "path",
                         "required": true
                     },
                     {
-                        "type": "integer",
-                        "description": "tenant",
+                        "type": "string",
+                        "default": "default",
+                        "description": "clientId",
                         "name": "clientId",
                         "in": "path",
                         "required": true
@@ -610,12 +589,13 @@ const docTemplate = `{
             "get": {
                 "description": "get client user list",
                 "tags": [
-                    "client"
+                    "client-user"
                 ],
                 "summary": "client user",
                 "parameters": [
                     {
                         "type": "string",
+                        "default": "default",
                         "description": "tenant",
                         "name": "tenant",
                         "in": "path",
@@ -623,7 +603,8 @@ const docTemplate = `{
                     },
                     {
                         "type": "string",
-                        "description": "tenant",
+                        "default": "default",
+                        "description": "client id",
                         "name": "clientId",
                         "in": "path",
                         "required": true
@@ -640,12 +621,13 @@ const docTemplate = `{
             "get": {
                 "description": "get client user list",
                 "tags": [
-                    "client"
+                    "client-user"
                 ],
                 "summary": "client user",
                 "parameters": [
                     {
                         "type": "string",
+                        "default": "default",
                         "description": "tenant",
                         "name": "tenant",
                         "in": "path",
@@ -653,17 +635,160 @@ const docTemplate = `{
                     },
                     {
                         "type": "string",
-                        "description": "tenant",
+                        "default": "default",
+                        "description": "client id",
                         "name": "clientId",
                         "in": "path",
                         "required": true
                     },
                     {
                         "type": "string",
-                        "description": "tenant",
+                        "description": "subId",
                         "name": "subId",
                         "in": "path",
                         "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/accounts/admin/{tenant}/clients/{clientId}/users/{subId}/avatar": {
+            "put": {
+                "description": "update user",
+                "tags": [
+                    "client-user"
+                ],
+                "summary": "user",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "default": "default",
+                        "description": "tenant",
+                        "name": "tenant",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "default": "default",
+                        "description": "client id",
+                        "name": "clientId",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "sub id",
+                        "name": "subId",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "file",
+                        "description": "file stream",
+                        "name": "file",
+                        "in": "formData",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/accounts/admin/{tenant}/clients/{clientId}/users/{subId}/password": {
+            "put": {
+                "description": "update user",
+                "tags": [
+                    "user-user"
+                ],
+                "summary": "user",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "default": "default",
+                        "description": "tenant",
+                        "name": "tenant",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "default": "default",
+                        "description": "client id",
+                        "name": "clientId",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "sub id",
+                        "name": "subId",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "user body",
+                        "name": "bd",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/admin.ModifyPassword"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/accounts/admin/{tenant}/clients/{clientId}/users/{subId}/profile": {
+            "put": {
+                "description": "update user",
+                "tags": [
+                    "client-user"
+                ],
+                "summary": "user",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "default": "default",
+                        "description": "tenant",
+                        "name": "tenant",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "default": "default",
+                        "description": "client id",
+                        "name": "clientId",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "sub id",
+                        "name": "subId",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "user body",
+                        "name": "bd",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.UserAdminDto"
+                        }
                     }
                 ],
                 "responses": {
@@ -683,6 +808,7 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "string",
+                        "default": "default",
                         "description": "tenant",
                         "name": "tenant",
                         "in": "path",
@@ -704,6 +830,7 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "string",
+                        "default": "default",
                         "description": "tenant",
                         "name": "tenant",
                         "in": "path",
@@ -727,6 +854,7 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "string",
+                        "default": "default",
                         "description": "tenant",
                         "name": "tenant",
                         "in": "path",
@@ -757,6 +885,7 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "string",
+                        "default": "default",
                         "description": "tenant",
                         "name": "tenant",
                         "in": "path",
@@ -785,6 +914,7 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "string",
+                        "default": "default",
                         "description": "tenant",
                         "name": "tenant",
                         "in": "path",
@@ -813,6 +943,7 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "string",
+                        "default": "default",
                         "description": "tenant",
                         "name": "tenant",
                         "in": "path",
@@ -843,6 +974,7 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "string",
+                        "default": "default",
                         "description": "tenant",
                         "name": "tenant",
                         "in": "path",
@@ -871,6 +1003,7 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "string",
+                        "default": "default",
                         "description": "tenant",
                         "name": "tenant",
                         "in": "path",
@@ -901,6 +1034,7 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "string",
+                        "default": "default",
                         "description": "tenant",
                         "name": "tenant",
                         "in": "path",
@@ -936,6 +1070,7 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "string",
+                        "default": "default",
                         "description": "tenant",
                         "name": "tenant",
                         "in": "path",
@@ -973,6 +1108,7 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "string",
+                        "default": "default",
                         "description": "tenant",
                         "name": "tenant",
                         "in": "path",
@@ -1001,6 +1137,7 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "string",
+                        "default": "default",
                         "description": "tenant",
                         "name": "tenant",
                         "in": "path",
@@ -1031,6 +1168,7 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "string",
+                        "default": "default",
                         "description": "tenant",
                         "name": "tenant",
                         "in": "path",
@@ -1393,6 +1531,159 @@ const docTemplate = `{
                 }
             }
         },
+        "/accounts/admin/{tenant}/sms": {
+            "get": {
+                "description": "list sms",
+                "tags": [
+                    "sms"
+                ],
+                "summary": "sms",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "default": "default",
+                        "description": "tenant",
+                        "name": "tenant",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            },
+            "post": {
+                "description": "new sms",
+                "tags": [
+                    "sms"
+                ],
+                "summary": "sms",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "default": "default",
+                        "description": "tenant",
+                        "name": "tenant",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "body",
+                        "name": "req",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/req.Sms"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/accounts/admin/{tenant}/sms/{smsId}": {
+            "get": {
+                "description": "get sms",
+                "tags": [
+                    "sms"
+                ],
+                "summary": "sms",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "default": "default",
+                        "description": "tenant",
+                        "name": "tenant",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "sms id",
+                        "name": "smsId",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            },
+            "put": {
+                "description": "update sms",
+                "tags": [
+                    "sms"
+                ],
+                "summary": "sms",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "default": "default",
+                        "description": "tenant",
+                        "name": "tenant",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "sms id",
+                        "name": "smsId",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "body",
+                        "name": "req",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/req.Sms"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            },
+            "delete": {
+                "description": "delete sms",
+                "tags": [
+                    "sms"
+                ],
+                "summary": "sms",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "default": "default",
+                        "description": "tenant",
+                        "name": "tenant",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "sms id",
+                        "name": "smsId",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
         "/accounts/admin/{tenant}/users": {
             "get": {
                 "description": "get user list",
@@ -1425,10 +1716,20 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "string",
+                        "default": "default",
                         "description": "tenant",
                         "name": "tenant",
                         "in": "path",
                         "required": true
+                    },
+                    {
+                        "description": "user body",
+                        "name": "bd",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "object"
+                        }
                     }
                 ],
                 "responses": {
@@ -1477,6 +1778,7 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "string",
+                        "default": "default",
                         "description": "tenant",
                         "name": "tenant",
                         "in": "path",
@@ -1484,7 +1786,7 @@ const docTemplate = `{
                     },
                     {
                         "type": "integer",
-                        "description": "tenant",
+                        "description": "user id",
                         "name": "userId",
                         "in": "path",
                         "required": true
@@ -1505,6 +1807,7 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "string",
+                        "default": "default",
                         "description": "tenant",
                         "name": "tenant",
                         "in": "path",
@@ -1535,6 +1838,7 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "string",
+                        "default": "default",
                         "description": "tenant",
                         "name": "tenant",
                         "in": "path",
@@ -1563,6 +1867,7 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "string",
+                        "default": "default",
                         "description": "tenant",
                         "name": "tenant",
                         "in": "path",
@@ -1593,6 +1898,7 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "string",
+                        "default": "default",
                         "description": "tenant",
                         "name": "tenant",
                         "in": "path",
@@ -1628,6 +1934,7 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "string",
+                        "default": "default",
                         "description": "tenant",
                         "name": "tenant",
                         "in": "path",
@@ -1761,7 +2068,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/internal.IamNameRequest"
+                            "$ref": "#/definitions/model.ResourceType"
                         }
                     }
                 ],
@@ -1887,7 +2194,7 @@ const docTemplate = `{
                         "schema": {
                             "type": "array",
                             "items": {
-                                "$ref": "#/definitions/internal.IamNameRequest"
+                                "$ref": "#/definitions/model.ResourceTypeAction"
                             }
                         }
                     }
@@ -2072,7 +2379,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/internal.IamNameRequest"
+                            "$ref": "#/definitions/model.Resource"
                         }
                     }
                 ],
@@ -2180,7 +2487,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/internal.IamNameRequest"
+                            "$ref": "#/definitions/model.Resource"
                         }
                     }
                 ],
@@ -2399,7 +2706,7 @@ const docTemplate = `{
                         "schema": {
                             "type": "array",
                             "items": {
-                                "$ref": "#/definitions/internal.IamUserRequest"
+                                "$ref": "#/definitions/model.ResourceRoleUser"
                             }
                         }
                     }
@@ -2591,7 +2898,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/internal.IamNameRequest"
+                            "$ref": "#/definitions/model.ResourceTypeRole"
                         }
                     }
                 ],
@@ -2738,7 +3045,7 @@ const docTemplate = `{
                         "schema": {
                             "type": "array",
                             "items": {
-                                "$ref": "#/definitions/internal.IamActionRequest"
+                                "$ref": "#/definitions/model.ResourceTypeRoleAction"
                             }
                         }
                     }
@@ -2813,6 +3120,7 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "string",
+                        "default": "default",
                         "description": "tenant",
                         "name": "tenant",
                         "in": "path",
@@ -2831,6 +3139,18 @@ const docTemplate = `{
                         "name": "code",
                         "in": "query",
                         "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "phone",
+                        "name": "phone",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "next",
+                        "name": "next",
+                        "in": "query"
                     }
                 ],
                 "responses": {
@@ -2853,6 +3173,7 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "string",
+                        "default": "default",
                         "description": "tenant",
                         "name": "tenant",
                         "in": "path",
@@ -2886,6 +3207,30 @@ const docTemplate = `{
                 }
             }
         },
+        "/accounts/{tenant}/login/proto": {
+            "get": {
+                "description": "logout current user",
+                "tags": [
+                    "login"
+                ],
+                "summary": "logout current user",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "default": "default",
+                        "description": "tenant",
+                        "name": "tenant",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
         "/accounts/{tenant}/login/{provider}": {
             "get": {
                 "description": "login via a provider",
@@ -2896,6 +3241,7 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "string",
+                        "default": "default",
                         "description": "tenant",
                         "name": "tenant",
                         "in": "path",
@@ -2907,6 +3253,12 @@ const docTemplate = `{
                         "name": "provider",
                         "in": "path",
                         "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "phone",
+                        "name": "phone",
+                        "in": "query"
                     },
                     {
                         "type": "string",
@@ -2932,6 +3284,7 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "string",
+                        "default": "default",
                         "description": "tenant",
                         "name": "tenant",
                         "in": "path",
@@ -2955,6 +3308,7 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "string",
+                        "default": "default",
                         "description": "tenant",
                         "name": "tenant",
                         "in": "path",
@@ -2979,6 +3333,7 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "string",
+                        "default": "default",
                         "description": "tenant",
                         "name": "tenant",
                         "in": "path",
@@ -3005,6 +3360,7 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "string",
+                        "default": "default",
                         "description": "tenant",
                         "name": "tenant",
                         "in": "path",
@@ -3021,7 +3377,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/accounts/{tenant}/message/MarkMsg": {
+        "/accounts/{tenant}/message/{msgId}": {
             "put": {
                 "description": "mark message read",
                 "tags": [
@@ -3030,32 +3386,16 @@ const docTemplate = `{
                 "summary": "mark message read",
                 "parameters": [
                     {
-                        "type": "integer",
-                        "description": "sub id",
-                        "name": "subId",
+                        "type": "string",
+                        "description": "tenant name",
+                        "name": "tenant",
                         "in": "path",
                         "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK"
-                    }
-                }
-            }
-        },
-        "/accounts/{tenant}/message/unreadMsgCount/{subId}": {
-            "get": {
-                "description": "get unread message count",
-                "tags": [
-                    "msg"
-                ],
-                "summary": "get unread message count",
-                "parameters": [
+                    },
                     {
                         "type": "integer",
-                        "description": "sub id",
-                        "name": "subId",
+                        "description": "msg id",
+                        "name": "msgId",
                         "in": "path",
                         "required": true
                     }
@@ -3095,7 +3435,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/models.SendInfo"
+                            "$ref": "#/definitions/model.SendInfo"
                         }
                     }
                 ],
@@ -3120,6 +3460,18 @@ const docTemplate = `{
                         "name": "subId",
                         "in": "path",
                         "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "pageNum",
+                        "name": "page",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "pageSize",
+                        "name": "pageSize",
+                        "in": "query"
                     }
                 ],
                 "responses": {
@@ -3305,6 +3657,7 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "string",
+                        "default": "default",
                         "description": "tenant",
                         "name": "tenant",
                         "in": "path",
@@ -3334,6 +3687,7 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "string",
+                        "default": "default",
                         "description": "tenant",
                         "name": "tenant",
                         "in": "path",
@@ -3367,6 +3721,7 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "string",
+                        "default": "default",
                         "description": "tenant",
                         "name": "tenant",
                         "in": "path",
@@ -3393,9 +3748,43 @@ const docTemplate = `{
                     }
                 }
             }
+        },
+        "/accounts/{tenant}/unreadMsgCount/{subId}": {
+            "get": {
+                "description": "get unread message count",
+                "tags": [
+                    "msg"
+                ],
+                "summary": "get unread message count",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "sub id",
+                        "name": "subId",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
         }
     },
     "definitions": {
+        "admin.ModifyPassword": {
+            "type": "object",
+            "properties": {
+                "newPassword": {
+                    "type": "string"
+                },
+                "oldPassword": {
+                    "type": "string"
+                }
+            }
+        },
         "dto.AccessTokenDto": {
             "type": "object",
             "properties": {
@@ -3418,9 +3807,53 @@ const docTemplate = `{
                 }
             }
         },
+        "dto.UserAdminDto": {
+            "type": "object",
+            "properties": {
+                "disabled": {
+                    "type": "boolean"
+                },
+                "displayName": {
+                    "type": "string"
+                },
+                "email": {
+                    "type": "string"
+                },
+                "emailVerified": {
+                    "type": "boolean"
+                },
+                "firstName": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "lastName": {
+                    "type": "string"
+                },
+                "passwordHash": {
+                    "type": "string"
+                },
+                "phone": {
+                    "type": "string"
+                },
+                "phoneVerified": {
+                    "type": "boolean"
+                },
+                "twoFactorEnabled": {
+                    "type": "boolean"
+                },
+                "username": {
+                    "type": "string"
+                }
+            }
+        },
         "dto.UserDto": {
             "type": "object",
             "properties": {
+                "avatar": {
+                    "type": "string"
+                },
                 "disabled": {
                     "type": "boolean"
                 },
@@ -3479,32 +3912,357 @@ const docTemplate = `{
                 }
             }
         },
-        "internal.IamActionRequest": {
+        "model.Client": {
             "type": "object",
             "properties": {
-                "actionId": {
+                "id": {
                     "type": "string"
-                }
-            }
-        },
-        "internal.IamNameRequest": {
-            "type": "object",
-            "properties": {
+                },
                 "name": {
                     "type": "string"
+                },
+                "tenant": {
+                    "$ref": "#/definitions/model.Tenant"
+                },
+                "tenantId": {
+                    "type": "integer"
                 }
             }
         },
-        "internal.IamUserRequest": {
+        "model.ClientUser": {
             "type": "object",
             "properties": {
+                "client": {
+                    "$ref": "#/definitions/model.Client"
+                },
+                "clientId": {
+                    "type": "string"
+                },
+                "email": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "phone": {
+                    "type": "string"
+                },
+                "sub": {
+                    "type": "string"
+                },
+                "tenantId": {
+                    "type": "integer"
+                },
+                "user": {
+                    "$ref": "#/definitions/model.User"
+                },
+                "userId": {
+                    "type": "integer"
+                },
+                "userName": {
+                    "type": "string"
+                }
+            }
+        },
+        "model.Resource": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "parent": {
+                    "type": "string"
+                },
+                "tenantId": {
+                    "type": "integer"
+                },
+                "typeId": {
+                    "type": "string"
+                }
+            }
+        },
+        "model.ResourceRoleUser": {
+            "type": "object",
+            "properties": {
+                "displayName": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "resource": {
+                    "$ref": "#/definitions/model.Resource"
+                },
+                "resourceId": {
+                    "type": "string"
+                },
+                "resourceName": {
+                    "type": "string"
+                },
+                "role": {
+                    "$ref": "#/definitions/model.ResourceTypeRole"
+                },
+                "roleId": {
+                    "type": "string"
+                },
+                "roleName": {
+                    "type": "string"
+                },
+                "sub": {
+                    "type": "string"
+                },
+                "tenantId": {
+                    "type": "integer"
+                },
+                "user": {
+                    "$ref": "#/definitions/model.ClientUser"
+                },
                 "userId": {
                     "type": "integer"
                 }
             }
         },
-        "models.SendInfo": {
-            "type": "object"
+        "model.ResourceType": {
+            "type": "object",
+            "properties": {
+                "clientId": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "tenantId": {
+                    "type": "integer"
+                }
+            }
+        },
+        "model.ResourceTypeAction": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "tenantId": {
+                    "type": "integer"
+                },
+                "typeId": {
+                    "type": "string"
+                }
+            }
+        },
+        "model.ResourceTypeRole": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "tenantId": {
+                    "type": "integer"
+                },
+                "typeId": {
+                    "type": "string"
+                }
+            }
+        },
+        "model.ResourceTypeRoleAction": {
+            "type": "object",
+            "properties": {
+                "actionId": {
+                    "type": "string"
+                },
+                "actionName": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "roleId": {
+                    "type": "string"
+                },
+                "roleName": {
+                    "type": "string"
+                },
+                "tenantId": {
+                    "type": "integer"
+                }
+            }
+        },
+        "model.SendInfo": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "integer"
+                },
+                "isRead": {
+                    "type": "boolean"
+                },
+                "link": {
+                    "description": "点击跳转链接",
+                    "type": "string"
+                },
+                "msg": {
+                    "description": "要发送的消息",
+                    "type": "string"
+                },
+                "msgType": {
+                    "description": "消息类型：图文，markdown，文字",
+                    "type": "string"
+                },
+                "platform": {
+                    "description": "发送到哪个平台",
+                    "type": "string"
+                },
+                "pngLink": {
+                    "description": "消息图片链接",
+                    "type": "string"
+                },
+                "receiverName": {
+                    "description": "接收者名字",
+                    "type": "string"
+                },
+                "sendAt": {
+                    "description": "发送时间",
+                    "type": "string"
+                },
+                "sender": {
+                    "description": "发送者",
+                    "type": "string"
+                },
+                "senderName": {
+                    "description": "发送者名字",
+                    "type": "string"
+                },
+                "title": {
+                    "description": "标题",
+                    "type": "string"
+                },
+                "titleColor": {
+                    "description": "标题颜色",
+                    "type": "string"
+                },
+                "users": {
+                    "description": "发送给谁，使用字符串数组存储",
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "usersDB": {
+                    "description": "发送给谁，使用字符串数组存储",
+                    "type": "string"
+                }
+            }
+        },
+        "model.Tenant": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "integer"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "role": {
+                    "type": "string"
+                },
+                "sub": {
+                    "type": "string"
+                }
+            }
+        },
+        "model.User": {
+            "type": "object",
+            "properties": {
+                "avatar": {
+                    "type": "string"
+                },
+                "disabled": {
+                    "type": "boolean"
+                },
+                "displayName": {
+                    "type": "string"
+                },
+                "email": {
+                    "type": "string"
+                },
+                "emailVerified": {
+                    "type": "boolean"
+                },
+                "firstName": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "lastName": {
+                    "type": "string"
+                },
+                "passwordHash": {
+                    "type": "string"
+                },
+                "phone": {
+                    "type": "string"
+                },
+                "phoneVerified": {
+                    "type": "boolean"
+                },
+                "role": {
+                    "type": "string"
+                },
+                "tenantId": {
+                    "type": "integer"
+                },
+                "twoFactorEnabled": {
+                    "type": "boolean"
+                },
+                "username": {
+                    "type": "string"
+                }
+            }
+        },
+        "req.Sms": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "integer"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "region": {
+                    "type": "string"
+                },
+                "sdkAppId": {
+                    "type": "string"
+                },
+                "secretId": {
+                    "type": "string"
+                },
+                "secretKey": {
+                    "type": "string"
+                },
+                "signName": {
+                    "type": "string"
+                },
+                "templateId": {
+                    "type": "string"
+                },
+                "type": {
+                    "type": "string"
+                }
+            }
         }
     }
 }`

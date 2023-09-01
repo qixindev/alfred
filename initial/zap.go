@@ -1,9 +1,9 @@
 package initial
 
 import (
-	"accounts/global"
 	"accounts/initial/internal"
-	"accounts/utils"
+	"accounts/pkg/global"
+	"accounts/pkg/utils"
 	"fmt"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"

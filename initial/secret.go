@@ -1,8 +1,8 @@
 package initial
 
 import (
-	"accounts/config/env"
-	"accounts/utils"
+	"accounts/pkg/config/env"
+	"accounts/pkg/utils"
 	"errors"
 	"fmt"
 	"os"

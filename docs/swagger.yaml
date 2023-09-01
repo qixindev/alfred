@@ -1,4 +1,11 @@
 definitions:
+  admin.ModifyPassword:
+    properties:
+      newPassword:
+        type: string
+      oldPassword:
+        type: string
+    type: object
   dto.AccessTokenDto:
     properties:
       access_token:
@@ -13,8 +20,37 @@ definitions:
       type:
         type: string
     type: object
+  dto.UserAdminDto:
+    properties:
+      disabled:
+        type: boolean
+      displayName:
+        type: string
+      email:
+        type: string
+      emailVerified:
+        type: boolean
+      firstName:
+        type: string
+      id:
+        type: integer
+      lastName:
+        type: string
+      passwordHash:
+        type: string
+      phone:
+        type: string
+      phoneVerified:
+        type: boolean
+      twoFactorEnabled:
+        type: boolean
+      username:
+        type: string
+    type: object
   dto.UserDto:
     properties:
+      avatar:
+        type: string
       disabled:
         type: boolean
       displayName:
@@ -53,22 +89,240 @@ definitions:
       username:
         type: string
     type: object
-  internal.IamActionRequest:
+  model.Client:
     properties:
-      actionId:
+      id:
         type: string
-    type: object
-  internal.IamNameRequest:
-    properties:
       name:
         type: string
+      tenant:
+        $ref: '#/definitions/model.Tenant'
+      tenantId:
+        type: integer
     type: object
-  internal.IamUserRequest:
+  model.ClientUser:
     properties:
+      client:
+        $ref: '#/definitions/model.Client'
+      clientId:
+        type: string
+      email:
+        type: string
+      id:
+        type: integer
+      phone:
+        type: string
+      sub:
+        type: string
+      tenantId:
+        type: integer
+      user:
+        $ref: '#/definitions/model.User'
+      userId:
+        type: integer
+      userName:
+        type: string
+    type: object
+  model.Resource:
+    properties:
+      id:
+        type: string
+      name:
+        type: string
+      parent:
+        type: string
+      tenantId:
+        type: integer
+      typeId:
+        type: string
+    type: object
+  model.ResourceRoleUser:
+    properties:
+      displayName:
+        type: string
+      id:
+        type: integer
+      resource:
+        $ref: '#/definitions/model.Resource'
+      resourceId:
+        type: string
+      resourceName:
+        type: string
+      role:
+        $ref: '#/definitions/model.ResourceTypeRole'
+      roleId:
+        type: string
+      roleName:
+        type: string
+      sub:
+        type: string
+      tenantId:
+        type: integer
+      user:
+        $ref: '#/definitions/model.ClientUser'
       userId:
         type: integer
     type: object
-  models.SendInfo:
+  model.ResourceType:
+    properties:
+      clientId:
+        type: string
+      id:
+        type: string
+      name:
+        type: string
+      tenantId:
+        type: integer
+    type: object
+  model.ResourceTypeAction:
+    properties:
+      id:
+        type: string
+      name:
+        type: string
+      tenantId:
+        type: integer
+      typeId:
+        type: string
+    type: object
+  model.ResourceTypeRole:
+    properties:
+      id:
+        type: string
+      name:
+        type: string
+      tenantId:
+        type: integer
+      typeId:
+        type: string
+    type: object
+  model.ResourceTypeRoleAction:
+    properties:
+      actionId:
+        type: string
+      actionName:
+        type: string
+      id:
+        type: integer
+      roleId:
+        type: string
+      roleName:
+        type: string
+      tenantId:
+        type: integer
+    type: object
+  model.SendInfo:
+    properties:
+      id:
+        type: integer
+      isRead:
+        type: boolean
+      link:
+        description: 点击跳转链接
+        type: string
+      msg:
+        description: 要发送的消息
+        type: string
+      msgType:
+        description: 消息类型：图文，markdown，文字
+        type: string
+      platform:
+        description: 发送到哪个平台
+        type: string
+      pngLink:
+        description: 消息图片链接
+        type: string
+      receiverName:
+        description: 接收者名字
+        type: string
+      sendAt:
+        description: 发送时间
+        type: string
+      sender:
+        description: 发送者
+        type: string
+      senderName:
+        description: 发送者名字
+        type: string
+      title:
+        description: 标题
+        type: string
+      titleColor:
+        description: 标题颜色
+        type: string
+      users:
+        description: 发送给谁，使用字符串数组存储
+        items:
+          type: string
+        type: array
+      usersDB:
+        description: 发送给谁，使用字符串数组存储
+        type: string
+    type: object
+  model.Tenant:
+    properties:
+      id:
+        type: integer
+      name:
+        type: string
+      role:
+        type: string
+      sub:
+        type: string
+    type: object
+  model.User:
+    properties:
+      avatar:
+        type: string
+      disabled:
+        type: boolean
+      displayName:
+        type: string
+      email:
+        type: string
+      emailVerified:
+        type: boolean
+      firstName:
+        type: string
+      id:
+        type: integer
+      lastName:
+        type: string
+      passwordHash:
+        type: string
+      phone:
+        type: string
+      phoneVerified:
+        type: boolean
+      role:
+        type: string
+      tenantId:
+        type: integer
+      twoFactorEnabled:
+        type: boolean
+      username:
+        type: string
+    type: object
+  req.Sms:
+    properties:
+      id:
+        type: integer
+      name:
+        type: string
+      region:
+        type: string
+      sdkAppId:
+        type: string
+      secretId:
+        type: string
+      secretKey:
+        type: string
+      signName:
+        type: string
+      templateId:
+        type: string
+      type:
+        type: string
     type: object
 info:
   contact: {}
@@ -145,7 +399,7 @@ paths:
         name: iamBody
         required: true
         schema:
-          $ref: '#/definitions/internal.IamNameRequest'
+          $ref: '#/definitions/model.ResourceType'
       responses:
         "200":
           description: OK
@@ -232,7 +486,7 @@ paths:
         required: true
         schema:
           items:
-            $ref: '#/definitions/internal.IamNameRequest'
+            $ref: '#/definitions/model.ResourceTypeAction'
           type: array
       responses:
         "200":
@@ -361,7 +615,7 @@ paths:
         name: iamBody
         required: true
         schema:
-          $ref: '#/definitions/internal.IamNameRequest'
+          $ref: '#/definitions/model.Resource'
       responses:
         "200":
           description: OK
@@ -430,7 +684,7 @@ paths:
         name: iamBody
         required: true
         schema:
-          $ref: '#/definitions/internal.IamNameRequest'
+          $ref: '#/definitions/model.Resource'
       responses:
         "200":
           description: OK
@@ -552,7 +806,7 @@ paths:
         required: true
         schema:
           items:
-            $ref: '#/definitions/internal.IamUserRequest'
+            $ref: '#/definitions/model.ResourceRoleUser'
           type: array
       responses:
         "200":
@@ -723,7 +977,7 @@ paths:
         name: iamBody
         required: true
         schema:
-          $ref: '#/definitions/internal.IamNameRequest'
+          $ref: '#/definitions/model.ResourceTypeRole'
       responses:
         "200":
           description: OK
@@ -825,7 +1079,7 @@ paths:
         required: true
         schema:
           items:
-            $ref: '#/definitions/internal.IamActionRequest'
+            $ref: '#/definitions/model.ResourceTypeRoleAction'
           type: array
       responses:
         "200":
@@ -874,7 +1128,8 @@ paths:
     get:
       description: provider callback
       parameters:
-      - description: tenant
+      - default: default
+        description: tenant
         in: path
         name: tenant
         required: true
@@ -889,6 +1144,14 @@ paths:
         name: code
         required: true
         type: string
+      - description: phone
+        in: query
+        name: phone
+        type: string
+      - description: next
+        in: query
+        name: next
+        type: string
       responses:
         "200":
           description: OK
@@ -901,7 +1164,8 @@ paths:
     post:
       description: login using username and password
       parameters:
-      - description: tenant
+      - default: default
+        description: tenant
         in: path
         name: tenant
         required: true
@@ -930,7 +1194,8 @@ paths:
     get:
       description: login via a provider
       parameters:
-      - description: tenant
+      - default: default
+        description: tenant
         in: path
         name: tenant
         required: true
@@ -939,6 +1204,10 @@ paths:
         in: path
         name: provider
         required: true
+        type: string
+      - description: phone
+        in: query
+        name: phone
         type: string
       - description: next
         in: query
@@ -950,11 +1219,28 @@ paths:
       summary: login via a provider
       tags:
       - login
+  /accounts/{tenant}/login/proto:
+    get:
+      description: logout current user
+      parameters:
+      - default: default
+        description: tenant
+        in: path
+        name: tenant
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+      summary: logout current user
+      tags:
+      - login
   /accounts/{tenant}/logout:
     get:
       description: logout current user
       parameters:
-      - description: tenant
+      - default: default
+        description: tenant
         in: path
         name: tenant
         required: true
@@ -969,7 +1255,8 @@ paths:
     get:
       description: get user
       parameters:
-      - description: tenant
+      - default: default
+        description: tenant
         in: path
         name: tenant
         required: true
@@ -985,7 +1272,8 @@ paths:
     put:
       description: update user
       parameters:
-      - description: tenant
+      - default: default
+        description: tenant
         in: path
         name: tenant
         required: true
@@ -1002,7 +1290,8 @@ paths:
     get:
       description: get user profile
       parameters:
-      - description: tenant
+      - default: default
+        description: tenant
         in: path
         name: tenant
         required: true
@@ -1015,6 +1304,26 @@ paths:
       summary: get user profile
       tags:
       - user
+  /accounts/{tenant}/message/{msgId}:
+    put:
+      description: mark message read
+      parameters:
+      - description: tenant name
+        in: path
+        name: tenant
+        required: true
+        type: string
+      - description: msg id
+        in: path
+        name: msgId
+        required: true
+        type: integer
+      responses:
+        "200":
+          description: OK
+      summary: mark message read
+      tags:
+      - msg
   /accounts/{tenant}/message/{providerId}:
     post:
       description: send message
@@ -1034,7 +1343,7 @@ paths:
         name: by
         required: true
         schema:
-          $ref: '#/definitions/models.SendInfo'
+          $ref: '#/definitions/model.SendInfo'
       responses:
         "200":
           description: OK
@@ -1050,40 +1359,18 @@ paths:
         name: subId
         required: true
         type: integer
+      - description: pageNum
+        in: query
+        name: page
+        type: integer
+      - description: pageSize
+        in: query
+        name: pageSize
+        type: integer
       responses:
         "200":
           description: OK
       summary: get message
-      tags:
-      - msg
-  /accounts/{tenant}/message/MarkMsg:
-    put:
-      description: mark message read
-      parameters:
-      - description: sub id
-        in: path
-        name: subId
-        required: true
-        type: integer
-      responses:
-        "200":
-          description: OK
-      summary: mark message read
-      tags:
-      - msg
-  /accounts/{tenant}/message/unreadMsgCount/{subId}:
-    get:
-      description: get unread message count
-      parameters:
-      - description: sub id
-        in: path
-        name: subId
-        required: true
-        type: integer
-      responses:
-        "200":
-          description: OK
-      summary: get unread message count
       tags:
       - msg
   /accounts/{tenant}/oauth2/auth:
@@ -1202,7 +1489,8 @@ paths:
     get:
       description: list login providers
       parameters:
-      - description: tenant
+      - default: default
+        description: tenant
         in: path
         name: tenant
         required: true
@@ -1221,7 +1509,8 @@ paths:
     get:
       description: get a login provider
       parameters:
-      - description: tenant
+      - default: default
+        description: tenant
         in: path
         name: tenant
         required: true
@@ -1243,7 +1532,8 @@ paths:
     post:
       description: register using username and password
       parameters:
-      - description: tenant
+      - default: default
+        description: tenant
         in: path
         name: tenant
         required: true
@@ -1264,6 +1554,21 @@ paths:
       summary: register a user
       tags:
       - login
+  /accounts/{tenant}/unreadMsgCount/{subId}:
+    get:
+      description: get unread message count
+      parameters:
+      - description: sub id
+        in: path
+        name: subId
+        required: true
+        type: integer
+      responses:
+        "200":
+          description: OK
+      summary: get unread message count
+      tags:
+      - msg
   /accounts/admin/{tenant}/clients:
     get:
       description: get client list
@@ -1283,7 +1588,8 @@ paths:
     post:
       description: new client
       parameters:
-      - description: tenant
+      - default: default
+        description: tenant
         in: path
         name: tenant
         required: true
@@ -1304,16 +1610,18 @@ paths:
     delete:
       description: delete client
       parameters:
-      - description: tenant
+      - default: default
+        description: tenant
         in: path
         name: tenant
         required: true
         type: string
-      - description: clientId
+      - default: default
+        description: clientId
         in: path
         name: clientId
         required: true
-        type: integer
+        type: string
       responses:
         "200":
           description: OK
@@ -1323,16 +1631,18 @@ paths:
     get:
       description: get client
       parameters:
-      - description: tenant
+      - default: default
+        description: tenant
         in: path
         name: tenant
         required: true
         type: string
-      - description: clientId
+      - default: default
+        description: clientId
         in: path
         name: clientId
         required: true
-        type: integer
+        type: string
       responses:
         "200":
           description: OK
@@ -1342,16 +1652,18 @@ paths:
     put:
       description: update client
       parameters:
-      - description: tenant
+      - default: default
+        description: tenant
         in: path
         name: tenant
         required: true
         type: string
-      - description: clientId
+      - default: default
+        description: clientId
         in: path
         name: clientId
         required: true
-        type: integer
+        type: string
       responses:
         "200":
           description: OK
@@ -1362,16 +1674,18 @@ paths:
     get:
       description: get client redirect uris
       parameters:
-      - description: tenant
+      - default: default
+        description: tenant
         in: path
         name: tenant
         required: true
         type: string
-      - description: tenant
+      - default: default
+        description: clientId
         in: path
         name: clientId
         required: true
-        type: integer
+        type: string
       responses:
         "200":
           description: OK
@@ -1381,9 +1695,16 @@ paths:
     post:
       description: new client redirect uri
       parameters:
-      - description: tenant
+      - default: default
+        description: tenant
         in: path
         name: tenant
+        required: true
+        type: string
+      - default: default
+        description: clientId
+        in: path
+        name: clientId
         required: true
         type: string
       responses:
@@ -1396,16 +1717,18 @@ paths:
     delete:
       description: delete client redirect uris
       parameters:
-      - description: tenant
+      - default: default
+        description: tenant
         in: path
         name: tenant
         required: true
         type: string
-      - description: tenant
+      - default: default
+        description: clientId
         in: path
         name: clientId
         required: true
-        type: integer
+        type: string
       - description: tenant
         in: path
         name: uriId
@@ -1420,9 +1743,16 @@ paths:
     post:
       description: new client redirect uri
       parameters:
-      - description: tenant
+      - default: default
+        description: tenant
         in: path
         name: tenant
+        required: true
+        type: string
+      - default: default
+        description: clientId
+        in: path
+        name: clientId
         required: true
         type: string
       responses:
@@ -1435,16 +1765,18 @@ paths:
     delete:
       description: delete client secret
       parameters:
-      - description: tenant
+      - default: default
+        description: tenant
         in: path
         name: tenant
         required: true
         type: string
-      - description: tenant
+      - default: default
+        description: clientId
         in: path
         name: clientId
         required: true
-        type: integer
+        type: string
       - description: tenant
         in: path
         name: secretId
@@ -1460,16 +1792,18 @@ paths:
     get:
       description: get client secrets
       parameters:
-      - description: tenant
+      - default: default
+        description: tenant
         in: path
         name: tenant
         required: true
         type: string
-      - description: tenant
+      - default: default
+        description: clientId
         in: path
         name: clientId
         required: true
-        type: integer
+        type: string
       responses:
         "200":
           description: OK
@@ -1479,16 +1813,18 @@ paths:
     post:
       description: new client secret
       parameters:
-      - description: tenant
+      - default: default
+        description: tenant
         in: path
         name: tenant
         required: true
         type: string
-      - description: tenant
+      - default: default
+        description: clientId
         in: path
         name: clientId
         required: true
-        type: integer
+        type: string
       responses:
         "200":
           description: OK
@@ -1499,12 +1835,14 @@ paths:
     get:
       description: get client user list
       parameters:
-      - description: tenant
+      - default: default
+        description: tenant
         in: path
         name: tenant
         required: true
         type: string
-      - description: tenant
+      - default: default
+        description: client id
         in: path
         name: clientId
         required: true
@@ -1514,22 +1852,24 @@ paths:
           description: OK
       summary: client user
       tags:
-      - client
+      - client-user
   /accounts/admin/{tenant}/clients/{clientId}/users/{subId}:
     get:
       description: get client user list
       parameters:
-      - description: tenant
+      - default: default
+        description: tenant
         in: path
         name: tenant
         required: true
         type: string
-      - description: tenant
+      - default: default
+        description: client id
         in: path
         name: clientId
         required: true
         type: string
-      - description: tenant
+      - description: subId
         in: path
         name: subId
         required: true
@@ -1539,12 +1879,111 @@ paths:
           description: OK
       summary: client user
       tags:
-      - client
+      - client-user
+  /accounts/admin/{tenant}/clients/{clientId}/users/{subId}/avatar:
+    put:
+      description: update user
+      parameters:
+      - default: default
+        description: tenant
+        in: path
+        name: tenant
+        required: true
+        type: string
+      - default: default
+        description: client id
+        in: path
+        name: clientId
+        required: true
+        type: string
+      - description: sub id
+        in: path
+        name: subId
+        required: true
+        type: string
+      - description: file stream
+        in: formData
+        name: file
+        required: true
+        type: file
+      responses:
+        "200":
+          description: OK
+      summary: user
+      tags:
+      - client-user
+  /accounts/admin/{tenant}/clients/{clientId}/users/{subId}/password:
+    put:
+      description: update user
+      parameters:
+      - default: default
+        description: tenant
+        in: path
+        name: tenant
+        required: true
+        type: string
+      - default: default
+        description: client id
+        in: path
+        name: clientId
+        required: true
+        type: string
+      - description: sub id
+        in: path
+        name: subId
+        required: true
+        type: string
+      - description: user body
+        in: body
+        name: bd
+        required: true
+        schema:
+          $ref: '#/definitions/admin.ModifyPassword'
+      responses:
+        "200":
+          description: OK
+      summary: user
+      tags:
+      - user-user
+  /accounts/admin/{tenant}/clients/{clientId}/users/{subId}/profile:
+    put:
+      description: update user
+      parameters:
+      - default: default
+        description: tenant
+        in: path
+        name: tenant
+        required: true
+        type: string
+      - default: default
+        description: client id
+        in: path
+        name: clientId
+        required: true
+        type: string
+      - description: sub id
+        in: path
+        name: subId
+        required: true
+        type: string
+      - description: user body
+        in: body
+        name: bd
+        required: true
+        schema:
+          $ref: '#/definitions/dto.UserAdminDto'
+      responses:
+        "200":
+          description: OK
+      summary: user
+      tags:
+      - client-user
   /accounts/admin/{tenant}/clients/default:
     get:
       description: get client
       parameters:
-      - description: tenant
+      - default: default
+        description: tenant
         in: path
         name: tenant
         required: true
@@ -1559,7 +1998,8 @@ paths:
     get:
       description: list device
       parameters:
-      - description: tenant
+      - default: default
+        description: tenant
         in: path
         name: tenant
         required: true
@@ -1573,7 +2013,8 @@ paths:
     post:
       description: new device
       parameters:
-      - description: tenant
+      - default: default
+        description: tenant
         in: path
         name: tenant
         required: true
@@ -1588,7 +2029,8 @@ paths:
     delete:
       description: delete device
       parameters:
-      - description: tenant
+      - default: default
+        description: tenant
         in: path
         name: tenant
         required: true
@@ -1607,7 +2049,8 @@ paths:
     get:
       description: get device
       parameters:
-      - description: tenant
+      - default: default
+        description: tenant
         in: path
         name: tenant
         required: true
@@ -1626,7 +2069,8 @@ paths:
     put:
       description: update device
       parameters:
-      - description: tenant
+      - default: default
+        description: tenant
         in: path
         name: tenant
         required: true
@@ -1646,7 +2090,8 @@ paths:
     get:
       description: list device groups
       parameters:
-      - description: tenant
+      - default: default
+        description: tenant
         in: path
         name: tenant
         required: true
@@ -1665,7 +2110,8 @@ paths:
     post:
       description: new device groups
       parameters:
-      - description: tenant
+      - default: default
+        description: tenant
         in: path
         name: tenant
         required: true
@@ -1685,7 +2131,8 @@ paths:
     delete:
       description: delete device groups
       parameters:
-      - description: tenant
+      - default: default
+        description: tenant
         in: path
         name: tenant
         required: true
@@ -1709,7 +2156,8 @@ paths:
     put:
       description: update device groups
       parameters:
-      - description: tenant
+      - default: default
+        description: tenant
         in: path
         name: tenant
         required: true
@@ -1734,7 +2182,8 @@ paths:
     get:
       description: get client secrets
       parameters:
-      - description: tenant
+      - default: default
+        description: tenant
         in: path
         name: tenant
         required: true
@@ -1753,7 +2202,8 @@ paths:
     post:
       description: get client secrets
       parameters:
-      - description: tenant
+      - default: default
+        description: tenant
         in: path
         name: tenant
         required: true
@@ -1773,7 +2223,8 @@ paths:
     delete:
       description: get client secrets
       parameters:
-      - description: tenant
+      - default: default
+        description: tenant
         in: path
         name: tenant
         required: true
@@ -1798,7 +2249,8 @@ paths:
     post:
       description: delete device groups
       parameters:
-      - description: tenant
+      - default: default
+        description: tenant
         in: path
         name: tenant
         required: true
@@ -2040,6 +2492,110 @@ paths:
       summary: get provider user list
       tags:
       - provider
+  /accounts/admin/{tenant}/sms:
+    get:
+      description: list sms
+      parameters:
+      - default: default
+        description: tenant
+        in: path
+        name: tenant
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+      summary: sms
+      tags:
+      - sms
+    post:
+      description: new sms
+      parameters:
+      - default: default
+        description: tenant
+        in: path
+        name: tenant
+        required: true
+        type: string
+      - description: body
+        in: body
+        name: req
+        required: true
+        schema:
+          $ref: '#/definitions/req.Sms'
+      responses:
+        "200":
+          description: OK
+      summary: sms
+      tags:
+      - sms
+  /accounts/admin/{tenant}/sms/{smsId}:
+    delete:
+      description: delete sms
+      parameters:
+      - default: default
+        description: tenant
+        in: path
+        name: tenant
+        required: true
+        type: string
+      - description: sms id
+        in: path
+        name: smsId
+        required: true
+        type: integer
+      responses:
+        "200":
+          description: OK
+      summary: sms
+      tags:
+      - sms
+    get:
+      description: get sms
+      parameters:
+      - default: default
+        description: tenant
+        in: path
+        name: tenant
+        required: true
+        type: string
+      - description: sms id
+        in: path
+        name: smsId
+        required: true
+        type: integer
+      responses:
+        "200":
+          description: OK
+      summary: sms
+      tags:
+      - sms
+    put:
+      description: update sms
+      parameters:
+      - default: default
+        description: tenant
+        in: path
+        name: tenant
+        required: true
+        type: string
+      - description: sms id
+        in: path
+        name: smsId
+        required: true
+        type: integer
+      - description: body
+        in: body
+        name: req
+        required: true
+        schema:
+          $ref: '#/definitions/req.Sms'
+      responses:
+        "200":
+          description: OK
+      summary: sms
+      tags:
+      - sms
   /accounts/admin/{tenant}/users:
     get:
       description: get user list
@@ -2059,11 +2615,18 @@ paths:
     post:
       description: new user
       parameters:
-      - description: tenant
+      - default: default
+        description: tenant
         in: path
         name: tenant
         required: true
         type: string
+      - description: user body
+        in: body
+        name: bd
+        required: true
+        schema:
+          type: object
       responses:
         "200":
           description: OK
@@ -2074,7 +2637,8 @@ paths:
     delete:
       description: delete user
       parameters:
-      - description: tenant
+      - default: default
+        description: tenant
         in: path
         name: tenant
         required: true
@@ -2113,12 +2677,13 @@ paths:
     put:
       description: update user
       parameters:
-      - description: tenant
+      - default: default
+        description: tenant
         in: path
         name: tenant
         required: true
         type: string
-      - description: tenant
+      - description: user id
         in: path
         name: userId
         required: true
@@ -2133,7 +2698,8 @@ paths:
     get:
       description: get user groups
       parameters:
-      - description: tenant
+      - default: default
+        description: tenant
         in: path
         name: tenant
         required: true
@@ -2152,7 +2718,8 @@ paths:
     post:
       description: get user groups
       parameters:
-      - description: tenant
+      - default: default
+        description: tenant
         in: path
         name: tenant
         required: true
@@ -2172,7 +2739,8 @@ paths:
     delete:
       description: update user groups
       parameters:
-      - description: tenant
+      - default: default
+        description: tenant
         in: path
         name: tenant
         required: true
@@ -2196,7 +2764,8 @@ paths:
     get:
       description: update user groups
       parameters:
-      - description: tenant
+      - default: default
+        description: tenant
         in: path
         name: tenant
         required: true
@@ -2220,13 +2789,6 @@ paths:
   /accounts/admin/tenants:
     get:
       description: list tenants
-      parameters:
-      - default: default
-        description: tenant
-        in: path
-        name: tenant
-        required: true
-        type: string
       responses:
         "200":
           description: OK
@@ -2235,13 +2797,6 @@ paths:
       - admin-tenants
     post:
       description: new tenants
-      parameters:
-      - default: default
-        description: tenant
-        in: path
-        name: tenant
-        required: true
-        type: string
       responses:
         "200":
           description: OK
@@ -2252,11 +2807,6 @@ paths:
     delete:
       description: delete tenants
       parameters:
-      - description: tenant
-        in: path
-        name: tenant
-        required: true
-        type: string
       - description: tenant
         in: path
         name: tenantId
@@ -2271,12 +2821,6 @@ paths:
     get:
       description: get tenants
       parameters:
-      - default: default
-        description: tenant
-        in: path
-        name: tenant
-        required: true
-        type: string
       - description: tenant
         in: path
         name: tenantId
@@ -2291,11 +2835,6 @@ paths:
     put:
       description: update tenants
       parameters:
-      - description: tenant
-        in: path
-        name: tenant
-        required: true
-        type: string
       - description: tenant
         in: path
         name: tenantId
@@ -2313,11 +2852,6 @@ paths:
       parameters:
       - description: tenant
         in: path
-        name: tenant
-        required: true
-        type: string
-      - description: tenant
-        in: path
         name: tenantId
         required: true
         type: integer
@@ -2333,12 +2867,12 @@ paths:
       parameters:
       - description: tenant
         in: path
-        name: tenant
+        name: tenantId
         required: true
-        type: string
+        type: integer
       - description: tenant
         in: path
-        name: tenantId
+        name: secretId
         required: true
         type: integer
       responses:
@@ -2351,15 +2885,9 @@ paths:
     get:
       description: list tenants
       parameters:
-      - default: default
-        description: tenant
-        in: path
-        name: tenant
-        required: true
-        type: string
       - description: tenant
         in: path
-        name: userId
+        name: user
         required: true
         type: string
       responses:
