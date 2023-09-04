@@ -89,7 +89,7 @@ func GetClientUsers(c *gin.Context) {
 //	@Summary	user
 //	@Schemes
 //	@Description	update user
-//	@Tags			user-user
+//	@Tags			client-user
 //	@Param			tenant		path	string			true	"tenant"	default(default)
 //	@Param			clientId	path	string			true	"client id"	default(default)
 //	@Param			subId		path	string			true	"sub id"

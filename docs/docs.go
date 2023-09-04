@@ -706,7 +706,7 @@ const docTemplate = `{
             "put": {
                 "description": "update user",
                 "tags": [
-                    "user-user"
+                    "client-user"
                 ],
                 "summary": "user",
                 "parameters": [
@@ -2392,11 +2392,11 @@ const docTemplate = `{
         },
         "/accounts/{tenant}/iam/clients/{client}/types/{typeId}/resources/all/users/{userId}/roles/{roleId}": {
             "post": {
-                "description": "delete iam resource role",
+                "description": "授权一类资源给用户",
                 "tags": [
                     "iam-role"
                 ],
-                "summary": "iam resource role",
+                "summary": "授权一类资源给用户",
                 "parameters": [
                     {
                         "type": "string",

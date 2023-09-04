@@ -890,7 +890,7 @@ paths:
       - iam-action
   /accounts/{tenant}/iam/clients/{client}/types/{typeId}/resources/all/users/{userId}/roles/{roleId}:
     post:
-      description: delete iam resource role
+      description: 授权一类资源给用户
       parameters:
       - default: default
         description: tenant
@@ -922,7 +922,7 @@ paths:
       responses:
         "200":
           description: OK
-      summary: iam resource role
+      summary: 授权一类资源给用户
       tags:
       - iam-role
   /accounts/{tenant}/iam/clients/{client}/types/{typeId}/roles:
@@ -1944,7 +1944,7 @@ paths:
           description: OK
       summary: user
       tags:
-      - user-user
+      - client-user
   /accounts/admin/{tenant}/clients/{clientId}/users/{subId}/profile:
     put:
       description: update user
