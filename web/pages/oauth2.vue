@@ -6,6 +6,7 @@ import CountdownButton from '@/components/CountdownButton/index.vue'
 import { login, getThirdLoginConfigs, getThirdLoginConfigByName, thirdLoginHandle, phoneThirdLogin} from '~/api/user';
 
 const VITE_APP_BASE_API = import.meta.env.VITE_APP_BASE_API
+const route = useRoute()
 
 const phoneForm = reactive({
   phone: '',
@@ -19,7 +20,6 @@ const accountForm = reactive({
 
 
 const hasRegister = computed(() => {
-  const route = useRoute()
   return route.query?.platform === 'tenant'
 })
 
@@ -87,7 +87,6 @@ function accountLogin(formEl: FormInstance) {
   formEl.validate(async (valid) => {
     if (valid) {
       let formData = new URLSearchParams(accountForm)
-      const route = useRoute()
       let { redirect_uri, client_id, state: tenant } = route.query
       login(formData,tenant as string).then(res => {
         // 401 返回10000
@@ -107,9 +106,8 @@ function accountLogin(formEl: FormInstance) {
 function phoneLogin(formEl: FormInstance) {
   formEl.validate(async (valid) => {
     if (valid) {
-      const route = useRoute()
       let { redirect_uri, client_id, state: tenant } = route.query
-      await phoneThirdLogin(phoneProvider, {...phoneForm, phone: '+86' +phoneForm.phone})
+      await phoneThirdLogin(phoneProvider, {...phoneForm, phone: '+86' +phoneForm.phone}, tenant as string)
       navigateTo(`${location.origin}${VITE_APP_BASE_API}/${tenant}/oauth2/auth?client_id=${client_id}&scope=profileOpenId&response_type=code&redirect_uri=${redirect_uri}`,{ external: true })
     }
   })
@@ -119,7 +117,6 @@ const handleClick = () => {
 }
 
 const navigateToRegister = async () => {
-  const route = useRoute()
   navigateTo({
     path: '/oauth2Register',
     query: route.query
@@ -127,7 +124,6 @@ const navigateToRegister = async () => {
 }
 
 const thirdLogin = async (thirdInfo: any) => {
-  const route = useRoute()
   const query = route.query
   const redirect_uri  = location.origin + '/redirect'
   const config = await getThirdLoginConfigByName(thirdInfo.name, query.state as string)
@@ -153,7 +149,6 @@ const thirdLogin = async (thirdInfo: any) => {
 
 let phoneProvider: string;
 const getLoginConfig  = async () => {
-  const route = useRoute()
   const { state } = route.query as any
   const option = ['wecom','dingtalk']
   const data = await getThirdLoginConfigs(state) as ThirdLoginType[]
@@ -165,11 +160,12 @@ const getLoginConfig  = async () => {
 
 const countdownButtonRef = ref()
 const sendValidCode = async (phone: string) => {
+  const { state } = route.query
   phoneRuleFormRef.value?.validateField('phone', (valid:boolean) => {
     if (valid) {
       countdownButtonRef.value.startCountdown()
       phone = '%2B86' + phone
-      thirdLoginHandle(phoneProvider, phone)
+      thirdLoginHandle(phoneProvider, phone, state as string)
     }
   })
 }
