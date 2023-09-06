@@ -5,7 +5,6 @@ import { ref} from 'vue'
 import { ElMessage } from 'element-plus';
 const popoverRef = ref(null);
 const activeUser = ref(null);
-const loginVisible: Ref<boolean> = useState('loginVisible')
 const route = useRoute();
 const routerTenant = useRouter()
 //获取
@@ -108,7 +107,6 @@ watch(
       </div>
     </div>
   </div>
-  <Login :visible="loginVisible"></Login>
 </template>
 
 <style scoped lang="scss">
