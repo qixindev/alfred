@@ -28,6 +28,7 @@ RUN go build -o accounts .
 ##
 FROM alpine:latest
 RUN mkdir -p /app/web
+RUN mkdir -p /app/docs
 WORKDIR /app
 COPY --from=build-web       /app/.output ./web/.output
 #COPY --from=build-web       /app/.nuxt   ./web/.nuxt
@@ -35,6 +36,7 @@ COPY --from=build-web       /app/.output ./web/.output
 
 COPY --from=build-back   /app/accounts    ./
 COPY --from=build-back   /app/config*.yaml ./
+COPY --from=build-back   /app/docs/*.md    ./docs/
 
 EXPOSE 8086
 ENTRYPOINT ["/app/accounts"]
