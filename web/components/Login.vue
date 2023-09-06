@@ -73,10 +73,6 @@ const {
 } = toRefs(state)
 
 const submit = async (formEl: FormInstance) => {
-  if(!protocol.value) {
-    ElMessage.warning('请阅读并勾选同意《用户服务协议》以及《隐私政策》')
-    return
-  }
   switch (state.activeName) {
     case 'login':
       accountLogin(formEl)
@@ -92,6 +88,10 @@ const submit = async (formEl: FormInstance) => {
 function accountLogin(formEl: FormInstance) {
   formEl.validate(async (valid) => {
     if (valid) {
+      if(!protocol.value) {
+        ElMessage.warning('请阅读并勾选同意《用户服务协议》以及《隐私政策》')
+        return
+      }
       let formData = new URLSearchParams(accountForm)
       emit('accountLoginHandle', formData)
     }
@@ -101,8 +101,12 @@ function accountLogin(formEl: FormInstance) {
 function phoneLogin(formEl: FormInstance) {
   formEl.validate(async (valid) => {
     if (valid) {
+      if(!protocol.value) {
+        ElMessage.warning('请阅读并勾选同意《用户服务协议》以及《隐私政策》')
+        return
+      }
       const params = {...phoneForm, phone: '+86' +phoneForm.phone}
-      emit('phoneLoginHandle', phoneProvider, params)
+      emit('phoneLoginHandle', phoneProvider.value, params)
     }
   })
 }
@@ -115,14 +119,14 @@ const thirdLogin = async (params: any) => {
   emit('thirdLoginHandle', params)
 }
 
-let phoneProvider: string;
+let phoneProvider = ref('');
 const getLoginConfig  = async () => {
   const option = ['wecom','dingtalk']
   const data = await getThirdLoginConfigs(currentTenant) as ThirdLoginType[]
   const thirdLoginList = data.filter(item => option.includes(item.type))
   thirdLoginTypes.value = thirdLoginList
   thirdLoginTypesLength.value =  thirdLoginTypes.value.length
-  phoneProvider = data.find(item => item.type === 'sms')!.name
+  phoneProvider.value = data.find(item => item.type === 'sms')!.name
 }
 
 const countdownButtonRef = ref()
@@ -131,7 +135,7 @@ const sendValidCode = async (phone: string) => {
     if (valid) {
       countdownButtonRef.value.startCountdown()
       phone = '%2B86' + phone
-      thirdLoginHandle(phoneProvider, phone, currentTenant)
+      thirdLoginHandle(phoneProvider.value, phone, currentTenant)
     }
   })
 }
@@ -176,7 +180,7 @@ definePageMeta({
           </el-form>
           <el-button class="submit-btn" type="primary" @click="submit(accountRuleFormRef as FormInstance)">登 录</el-button>
         </el-tab-pane>
-        <el-tab-pane label="手机号登录" name="phone">
+        <el-tab-pane label="手机号登录" name="phone" v-if="phoneProvider">
           <el-form ref="phoneRuleFormRef" :model="phoneForm" :rules="phoneRules">
             <el-form-item prop="phone">
               <el-input v-model="phoneForm.phone" placeholder="手机号">
