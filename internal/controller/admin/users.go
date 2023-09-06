@@ -78,6 +78,7 @@ func NewUser(c *gin.Context) {
 
 	user.TenantId = tenant.Id
 	user.PasswordHash = hash
+	user.From = "admin-create"
 	if err = global.DB.Create(&user).Error; err != nil {
 		resp.ErrorSqlCreate(c, err, "new tenant user err")
 		return

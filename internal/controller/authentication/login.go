@@ -7,9 +7,11 @@ import (
 	"accounts/pkg/global"
 	"accounts/pkg/middlewares"
 	"accounts/pkg/utils"
+	"errors"
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-gonic/gin"
 	"net/http"
+	"os"
 	"strings"
 )
 
@@ -96,6 +98,7 @@ func Register(c *gin.Context) {
 		TenantId:     tenant.Id,
 		Username:     login,
 		PasswordHash: hash,
+		From:         "register",
 	}
 	if err = global.DB.Create(&newUser).Error; err != nil {
 		resp.ErrorUnknown(c, err, "create user err")
@@ -136,26 +139,41 @@ func Logout(c *gin.Context) {
 //	@Description	logout current user
 //	@Tags			login
 //	@Param			tenant	path	string	true	"tenant"	default(default)
+//	@Param			fileName	path	string	true	"fileName"	default(default)
 //	@Success		200
-//	@Router			/accounts/{tenant}/login/proto [get]
+//	@Router			/accounts/{tenant}/login/proto/{fileName} [get]
 func GetLoginProtocol(c *gin.Context) {
-	resp.SuccessWithArrayData(c, []gin.H{
-		{
-			"name": "用户服务协议",
-			"url":  "https://devbackup.blob.core.chinacloudapi.cn/picture/%E7%94%A8%E6%88%B7%E6%9C%8D%E5%8A%A1%E5%8D%8F%E8%AE%AE.md?sp=r&st=2023-08-31T07:30:43Z&se=2123-08-31T15:30:43Z&spr=https&sv=2022-11-02&sr=b&sig=PsaLy37JxY6Buhp9z9fwv6PiofeKbCwGzZNv7iI2bg4%3D",
-		}, {
-			"name": "隐私保护声明",
-			"url":  "https://devbackup.blob.core.chinacloudapi.cn/picture/%E9%9A%90%E7%A7%81%E4%BF%9D%E6%8A%A4%E5%A3%B0%E6%98%8E.md?sp=r&st=2023-08-31T07:24:53Z&se=2123-08-31T15:24:53Z&spr=https&sv=2022-11-02&sr=b&sig=Jpd16wFlwtpF7GNry%2FsH8vDQVpoDWOERRjm273QGR7I%3D",
-		},
-	}, 2)
+	fileName := c.Param("fileName")
+
+	filePaths := map[string]string{
+		"userServiceAgreement": "docs/用户服务协议.md",
+		"privacyStatement":     "docs/隐私保护声明.md",
+	}
+
+	filePath, exists := filePaths[fileName]
+	if !exists {
+		resp.ErrorUnknown(c, errors.New("invalid fileName"), "无效的文件名")
+		return
+	}
+
+	fileContent, err := os.ReadFile(filePath)
+	if err != nil {
+		resp.ErrorUnknown(c, err, "无法读取文件")
+		return
+	}
+
+	resp.SuccessWithData(c, gin.H{
+		"name":    fileName,
+		"content": string(fileContent),
+	})
 }
 
 func AddLoginRoutes(rg *gin.RouterGroup) {
-	rg.POST("/login", Login)                    // 账号密码登录
-	rg.GET("/login/proto", GetLoginProtocol)    // 获取登录隐私协议
-	rg.GET("/login/:provider", LoginToProvider) // 第三方登录重定向
-	rg.GET("/providers", ListProviders)         // 第三方信息
-	rg.GET("/providers/:provider", GetProvider) // 第三方具体信息
+	rg.POST("/login", Login)                           // 账号密码登录
+	rg.GET("/login/proto/:fileName", GetLoginProtocol) // 获取登录协议
+	rg.GET("/login/:provider", LoginToProvider)        // 第三方登录重定向
+	rg.GET("/providers", ListProviders)                // 第三方信息
+	rg.GET("/providers/:provider", GetProvider)        // 第三方具体信息
 	rg.GET("/logout", middlewares.Authorized(false), Logout)
 	rg.POST("/register", Register)                   // 注册
 	rg.GET("/logged-in/:provider", ProviderCallback) // 验证第三方登录是否成功

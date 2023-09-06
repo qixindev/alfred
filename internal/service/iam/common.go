@@ -3,6 +3,7 @@ package iam
 import (
 	"accounts/internal/model"
 	"accounts/pkg/global"
+	"errors"
 	"gorm.io/gorm"
 )
 
@@ -21,7 +22,7 @@ func CheckSinglePermission(tenantId, clientUserId uint, resourceId string, actio
 	if err := global.DB.
 		Where("tenant_id = ? AND resource_id = ? AND client_user_id = ? AND role_id IN ?", tenantId, resourceId, clientUserId, roleIds).
 		First(&user).Error; err != nil {
-		if err == gorm.ErrRecordNotFound {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
 			return false, nil // no such auth
 		}
 		return false, err

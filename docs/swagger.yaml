@@ -1219,7 +1219,7 @@ paths:
       summary: login via a provider
       tags:
       - login
-  /accounts/{tenant}/login/proto:
+  /accounts/{tenant}/login/proto/{fileName}:
     get:
       description: logout current user
       parameters:
@@ -1227,6 +1227,12 @@ paths:
         description: tenant
         in: path
         name: tenant
+        required: true
+        type: string
+      - default: default
+        description: fileName
+        in: path
+        name: fileName
         required: true
         type: string
       responses:

@@ -4,6 +4,7 @@ import (
 	"accounts/internal/model"
 	"accounts/pkg/global"
 	"accounts/pkg/utils"
+	"errors"
 	"fmt"
 	"gorm.io/gorm"
 	"os"
@@ -18,7 +19,7 @@ const (
 
 func initFirstRun() {
 	var tenant model.Tenant
-	if err := global.DB.First(&tenant, "name = ?", DefaultTenant).Error; err == gorm.ErrRecordNotFound {
+	if err := global.DB.First(&tenant, "name = ?", DefaultTenant).Error; errors.Is(err, gorm.ErrRecordNotFound) {
 		return
 	} else if err != nil {
 		return

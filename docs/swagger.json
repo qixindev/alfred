@@ -3196,7 +3196,7 @@
                 }
             }
         },
-        "/accounts/{tenant}/login/proto": {
+        "/accounts/{tenant}/login/proto/{fileName}": {
             "get": {
                 "description": "logout current user",
                 "tags": [
@@ -3209,6 +3209,14 @@
                         "default": "default",
                         "description": "tenant",
                         "name": "tenant",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "default": "default",
+                        "description": "fileName",
+                        "name": "fileName",
                         "in": "path",
                         "required": true
                     }
