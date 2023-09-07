@@ -134,3 +134,26 @@ func GetUserBySubId(tenantId uint, clientId string, subId string) (*model.User, 
 	}
 	return &user, nil
 }
+
+func IsUserPhoneOrEmailExist(user model.User, tenantId uint) (bool, error) {
+	if user.Phone == "" && user.Email == "" {
+		return false, nil
+	}
+	if user.Phone != "" {
+		if err := global.DB.Model(user).Where("tenant_id = ? AND phone = ?", tenantId, user.Phone).
+			First(&model.User{}).Error; err == nil {
+			return true, nil
+		} else if !errors.Is(err, gorm.ErrRecordNotFound) {
+			return false, err
+		}
+	}
+	if user.Email != "" {
+		if err := global.DB.Model(user).Where("tenant_id = ? AND email = ?", tenantId, user.Email).
+			First(&model.User{}).Error; err == nil {
+			return true, nil
+		} else if !errors.Is(err, gorm.ErrRecordNotFound) {
+			return false, err
+		}
+	}
+	return false, nil
+}

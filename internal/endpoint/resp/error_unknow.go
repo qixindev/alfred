@@ -27,6 +27,7 @@ const (
 	CodeForbidden    = 3002 // 无权访问
 	CodeIamDeny      = 3003 // 无iam权限
 	CodePassword     = 3004 // 密码错误
+	CodeConflict     = 3005 // 资源冲突
 )
 
 func ErrorUnknown(c *gin.Context, err error, msg string, isArray ...bool) {
