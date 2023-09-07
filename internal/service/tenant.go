@@ -16,7 +16,7 @@ func DeleteTenant(tenant model.Tenant) error {
 		model.ResourceTypeAction{}, model.Resource{}, model.ResourceTypeRole{}, model.ResourceType{},
 
 		model.ProviderUser{}, model.ProviderDingTalk{}, model.ProviderWeCom{},
-		model.ProviderOAuth2{}, model.Provider{},
+		model.ProviderSms{}, model.ProviderOAuth2{}, model.Provider{},
 
 		model.GroupUser{}, model.GroupDevice{}, model.Group{},
 		model.DeviceSecret{}, model.DeviceCode{}, model.Device{},
@@ -25,11 +25,11 @@ func DeleteTenant(tenant model.Tenant) error {
 	}
 
 	for _, v := range delList {
-		if err := global.DB.Model(v).Where("tenant_id = ?", tenant.Id).Error; err != nil {
+		if err := global.DB.Model(v).Where("tenant_id = ?", tenant.Id).Delete(v).Error; err != nil {
 			return err
 		}
 	}
-	if err := global.DB.Where("id = ?", tenant.Id).Error; err != nil {
+	if err := global.DB.Where("id = ?", tenant.Id).Delete(model.Tenant{}).Error; err != nil {
 		return err
 	}
 

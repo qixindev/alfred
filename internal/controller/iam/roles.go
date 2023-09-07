@@ -197,9 +197,9 @@ func DeleteIamResourceRoleUser(c *gin.Context) {
 
 // CreateAllTypeRole godoc
 //
-//	@Summary		iam resource role
+//	@Summary		授权一类资源给用户
 //	@Schemes
-//	@Description	delete iam resource role
+//	@Description	授权一类资源给用户
 //	@Tags			iam-role
 //	@Param			tenant		path	string	true	"tenant"	default(default)
 //	@Param			client		path	string	true	"client"	default(default)

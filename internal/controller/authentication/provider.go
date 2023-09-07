@@ -8,6 +8,7 @@ import (
 	"accounts/internal/service/auth"
 	"accounts/pkg/global"
 	"accounts/pkg/utils"
+	"errors"
 	"fmt"
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-gonic/gin"
@@ -138,8 +139,8 @@ func ProviderCallback(c *gin.Context) {
 	var providerUser model.ProviderUser
 	var user *model.User
 	if err = internal.TenantDB(c).First(&providerUser, "provider_id = ? AND name = ?", provider.Id, userInfo.Sub).
-		Error; err == gorm.ErrRecordNotFound { // provider user不存在，直接创建
-		user, err = service.BindLoginUser(userInfo, provider.TenantId)
+		Error; errors.Is(err, gorm.ErrRecordNotFound) { // provider user不存在，直接创建
+		user, err = service.BindLoginUser(userInfo, provider.TenantId, provider.Type)
 		if err != nil {
 			resp.ErrorSqlCreate(c, err, "bind login user err")
 			return

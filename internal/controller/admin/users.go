@@ -65,6 +65,14 @@ func NewUser(c *gin.Context) {
 		resp.ErrorRequest(c, err)
 		return
 	}
+	if exist, err := service.IsUserPhoneOrEmailExist(user, tenant.Id); err != nil {
+		resp.ErrorSqlFirst(c, err, "service.IsUserPhoneOrEmailExist err")
+		return
+	} else if exist {
+		resp.ErrorConflict(c, err, "user phone or email is already exist.")
+		return
+	}
+
 	if user.PasswordHash == "" {
 		resp.ErrorRequestWithMsg(c, "password should not be null")
 		return
@@ -78,6 +86,7 @@ func NewUser(c *gin.Context) {
 
 	user.TenantId = tenant.Id
 	user.PasswordHash = hash
+	user.From = "admin-create"
 	if err = global.DB.Create(&user).Error; err != nil {
 		resp.ErrorSqlCreate(c, err, "new tenant user err")
 		return

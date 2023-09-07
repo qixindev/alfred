@@ -23,9 +23,16 @@ func ErrorUnauthorized(c *gin.Context, err error, msg string, isArray ...bool) {
 func ErrorIamPermissionDeny(c *gin.Context, err error, msg string, isArray ...bool) {
 	errorResponse(c, http.StatusForbidden, CodeIamDeny, err, msg, isArray)
 }
+
+// ErrorForbidden 禁止操作
 func ErrorForbidden(c *gin.Context, err error, msg string, isArray ...bool) {
 	errorResponse(c, http.StatusForbidden, CodeForbidden, err, msg, isArray)
 }
+
+func ErrorConflict(c *gin.Context, err error, msg string, isArray ...bool) {
+	errorResponse(c, http.StatusConflict, CodeConflict, err, msg, isArray)
+}
+
 func ErrorNotFound(c *gin.Context, msg string, isArray ...bool) {
 	errorResponse(c, http.StatusNotFound, CodeNotFound, nil, msg, isArray)
 }

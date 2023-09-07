@@ -77,7 +77,7 @@ func GetUserByEmail(email string, tenantId uint) (*model.User, error) {
 	return &user, nil
 }
 
-func BindLoginUser(userInfo *model.UserInfo, tenantId uint) (user *model.User, err error) {
+func BindLoginUser(userInfo *model.UserInfo, tenantId uint, userFrom string) (user *model.User, err error) {
 	newUser := model.User{
 		Username:         userInfo.Name,
 		FirstName:        userInfo.FirstName,
@@ -90,6 +90,7 @@ func BindLoginUser(userInfo *model.UserInfo, tenantId uint) (user *model.User, e
 		TwoFactorEnabled: false,
 		Disabled:         false,
 		TenantId:         tenantId,
+		From:             userFrom,
 	}
 	if newUser.Username == "" {
 		newUser.Username = uuid.NewString()
@@ -101,7 +102,7 @@ func BindLoginUser(userInfo *model.UserInfo, tenantId uint) (user *model.User, e
 
 	if userInfo.Email != "" {
 		user, err = GetUserByEmail(userInfo.Email, tenantId)
-		if err == gorm.ErrRecordNotFound {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
 			global.LOG.Info("no such email user, creating")
 			return CreateUser(newUser)
 		} else if err != nil {
@@ -112,7 +113,7 @@ func BindLoginUser(userInfo *model.UserInfo, tenantId uint) (user *model.User, e
 	}
 
 	user, err = GetUserByPhone(userInfo.Phone, tenantId)
-	if err == gorm.ErrRecordNotFound {
+	if errors.Is(err, gorm.ErrRecordNotFound) {
 		global.LOG.Info("no such phone user, creating")
 		return CreateUser(newUser)
 	} else if err != nil {
@@ -125,11 +126,34 @@ func BindLoginUser(userInfo *model.UserInfo, tenantId uint) (user *model.User, e
 func GetUserBySubId(tenantId uint, clientId string, subId string) (*model.User, error) {
 	var user model.User
 	if err := global.DB.Table("users as u").
-		Select("u.id", "u.username", "u.display_name", "u.email", "u.phone", "u.disabled", "u.role", "u.avatar",
+		Select("u.id", "u.username", "u.display_name", "u.email", "u.phone", "u.disabled", "u.role", "u.avatar", "u.from",
 			"u.password_hash", "u.tenant_id", "u.email_verified", "u.phone_verified").
 		Joins("LEFT JOIN client_users as cu ON cu.user_id = u.id").
 		Where("cu.sub = ? AND cu.client_id = ? AND u.tenant_id = ?", subId, clientId, tenantId).First(&user).Error; err != nil {
 		return nil, err
 	}
 	return &user, nil
+}
+
+func IsUserPhoneOrEmailExist(user model.User, tenantId uint) (bool, error) {
+	if user.Phone == "" && user.Email == "" {
+		return false, nil
+	}
+	if user.Phone != "" {
+		if err := global.DB.Model(user).Where("tenant_id = ? AND phone = ?", tenantId, user.Phone).
+			First(&model.User{}).Error; err == nil {
+			return true, nil
+		} else if !errors.Is(err, gorm.ErrRecordNotFound) {
+			return false, err
+		}
+	}
+	if user.Email != "" {
+		if err := global.DB.Model(user).Where("tenant_id = ? AND email = ?", tenantId, user.Email).
+			First(&model.User{}).Error; err == nil {
+			return true, nil
+		} else if !errors.Is(err, gorm.ErrRecordNotFound) {
+			return false, err
+		}
+	}
+	return false, nil
 }

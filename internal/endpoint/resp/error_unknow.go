@@ -1,6 +1,7 @@
 package resp
 
 import (
+	"errors"
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
 	"net/http"
@@ -26,6 +27,7 @@ const (
 	CodeForbidden    = 3002 // 无权访问
 	CodeIamDeny      = 3003 // 无iam权限
 	CodePassword     = 3004 // 密码错误
+	CodeConflict     = 3005 // 资源冲突
 )
 
 func ErrorUnknown(c *gin.Context, err error, msg string, isArray ...bool) {
@@ -39,7 +41,7 @@ func ErrorSaveSession(c *gin.Context, err error, isArray ...bool) {
 // sql相关错误
 
 func ErrorSqlFirst(c *gin.Context, err error, msg string, isArray ...bool) {
-	if err == gorm.ErrRecordNotFound {
+	if errors.Is(err, gorm.ErrRecordNotFound) {
 		errorResponse(c, http.StatusNotFound, CodeSqlFirst, err, msg, isArray)
 	} else {
 		errorResponse(c, http.StatusInternalServerError, CodeSqlFirst, err, msg, isArray)
@@ -63,7 +65,7 @@ func ErrorSqlUpdate(c *gin.Context, err error, msg string, isArray ...bool) {
 	}
 }
 func ErrorSqlDelete(c *gin.Context, err error, msg string, isArray ...bool) {
-	if err == gorm.ErrForeignKeyViolated { // 外键依赖导致无法删除
+	if errors.Is(err, gorm.ErrForeignKeyViolated) { // 外键依赖导致无法删除
 		errorResponse(c, http.StatusConflict, CodeSqlDelete, err, msg, isArray)
 	} else {
 		errorResponse(c, http.StatusInternalServerError, CodeSqlDelete, err, msg, isArray)

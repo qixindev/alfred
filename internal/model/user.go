@@ -19,6 +19,7 @@ type User struct {
 	Disabled         bool   `json:"disabled"`
 	Avatar           string `json:"avatar"`
 	Role             string `json:"role"`
+	From             string `json:"from"`
 
 	TenantId uint   `gorm:"primaryKey"`
 	Tenant   Tenant `json:"-"`

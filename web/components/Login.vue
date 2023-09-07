@@ -1,12 +1,20 @@
 <script setup lang="ts">
 import type { FormInstance, FormRules } from 'element-plus'
+import { ElMessage } from 'element-plus'
+import CountdownButton from '@/components/CountdownButton/index.vue'
 
-const props = defineProps({
-  visible:{
-      type: Boolean,
-      default: false
-  }
-})
+import { getThirdLoginConfigs, getThirdLoginConfigByName, thirdLoginHandle } from '~/api/user';
+
+interface ThirdLoginType {
+  id: number,
+  name: string,
+  type: string
+}
+
+const emit = defineEmits(['accountLoginHandle', 'phoneLoginHandle', 'thirdLoginHandle'])
+const route = useRoute()
+const { state: tanent } = route.query as any
+let currentTenant = tanent ?? 'default'
 
 const phoneForm = reactive({
   phone: '',
@@ -17,7 +25,14 @@ const accountForm = reactive({
   login: '',
   password: ''
 })
+const protocol = ref(false)
 
+const hasRegister = computed(() => {
+  return route.query?.platform === 'tenant'
+})
+
+let thirdLoginTypes= ref<ThirdLoginType[]>([])
+let thirdLoginTypesLength= ref()
 const phoneRuleFormRef = ref<FormInstance>()
 const accountRuleFormRef = ref<FormInstance>()
 
@@ -50,28 +65,88 @@ const accountRules = reactive<FormRules>({
 })
 
 const state = reactive({
-  activeName: 'phone'
+  activeName: 'login'
 })
-
 
 const {
   activeName,
 } = toRefs(state)
 
 const submit = async (formEl: FormInstance) => {
-  await formEl.validate(async (valid) => {
+  switch (state.activeName) {
+    case 'login':
+      accountLogin(formEl)
+      break;
+    case 'phone':
+      phoneLogin(formEl)
+      break;
+    default:
+      break;
+  }
+}
+
+function accountLogin(formEl: FormInstance) {
+  formEl.validate(async (valid) => {
     if (valid) {
-      //TODO: 处理登录
-      useLogin(accountForm)
+      if(!protocol.value) {
+        ElMessage.warning('请阅读并勾选同意《用户服务协议》以及《隐私政策》')
+        return
+      }
+      let formData = new URLSearchParams(accountForm)
+      emit('accountLoginHandle', formData)
     }
   })
 }
 
-const handleClick = () => {
+function phoneLogin(formEl: FormInstance) {
+  formEl.validate(async (valid) => {
+    if (valid) {
+      if(!protocol.value) {
+        ElMessage.warning('请阅读并勾选同意《用户服务协议》以及《隐私政策》')
+        return
+      }
+      const params = {...phoneForm, phone: '+86' +phoneForm.phone}
+      emit('phoneLoginHandle', phoneProvider.value, params)
+    }
+  })
 }
 
-const navigate = async () => {
-  navigateTo('/tenant')
+const handleNavigate = (url: string) => {
+  window.open(url, '_blank')
+}
+
+const thirdLogin = async (params: any) => {
+  emit('thirdLoginHandle', params)
+}
+
+let phoneProvider = ref('');
+const getLoginConfig  = async () => {
+  const option = ['wecom','dingtalk']
+  const data = await getThirdLoginConfigs(currentTenant) as ThirdLoginType[]
+  const thirdLoginList = data.filter(item => option.includes(item.type))
+  thirdLoginTypes.value = thirdLoginList
+  thirdLoginTypesLength.value =  thirdLoginTypes.value.length
+  phoneProvider.value = data.find(item => item.type === 'sms')!.name
+}
+
+const countdownButtonRef = ref()
+const sendValidCode = async (phone: string) => {
+  phoneRuleFormRef.value?.validateField('phone', (valid:boolean) => {
+    if (valid) {
+      countdownButtonRef.value.startCountdown()
+      phone = '%2B86' + phone
+      thirdLoginHandle(phoneProvider.value, phone, currentTenant)
+    }
+  })
+}
+
+getLoginConfig()
+
+const navigateToRegister = async () => {
+  navigateTo({
+    path: '/oauth2Register',
+    query: route.query
+  })
 }
 
 definePageMeta({
@@ -81,35 +156,10 @@ definePageMeta({
 </script>
 
 <template>
-  <div class="container" v-if="visible">
+  <div class="container">
     <div class="login-box">
       <div class="title">登录</div>
-      <el-tabs v-model="activeName" @tab-click="handleClick">
-        <el-tab-pane label="手机号登录" name="phone">
-          <el-form ref="phoneRuleFormRef" :model="phoneForm" :rules="phoneRules">
-            <el-form-item prop="phone">
-              <el-input v-model="phoneForm.phone" placeholder="手机号">
-                <template #prefix>
-                  <svg-icon name="user"></svg-icon>
-                </template>
-              </el-input>
-            </el-form-item>
-            
-            <el-form-item prop="code">
-              <div class="verify-box">
-                <el-input v-model="phoneForm.code" placeholder="验证码" :style="{width: '280px'}">
-                  <template #prefix>
-                    <svg-icon name="password"></svg-icon>
-                  </template>
-                </el-input>
-                <el-button>获取验证码</el-button>
-              </div>
-            </el-form-item>
-          </el-form>
-
-          <el-button class="submit-btn" type="primary" @click="submit(phoneRuleFormRef as FormInstance)">登 录/注 册</el-button>
-
-        </el-tab-pane>
+      <el-tabs v-model="activeName">
         <el-tab-pane label="账户密码登录" name="login">
           <el-form ref="accountRuleFormRef" :model="accountForm" :rules="accountRules">
             <el-form-item prop="login">
@@ -129,17 +179,47 @@ definePageMeta({
             </el-form-item>
           </el-form>
           <el-button class="submit-btn" type="primary" @click="submit(accountRuleFormRef as FormInstance)">登 录</el-button>
-
+        </el-tab-pane>
+        <el-tab-pane label="手机号登录" name="phone" v-if="phoneProvider">
+          <el-form ref="phoneRuleFormRef" :model="phoneForm" :rules="phoneRules">
+            <el-form-item prop="phone">
+              <el-input v-model="phoneForm.phone" placeholder="手机号">
+                <template #prefix>
+                  <svg-icon name="phone"></svg-icon>
+                  <span>+86</span>
+                </template>
+              </el-input>
+            </el-form-item>
+            
+            <el-form-item prop="code">
+              <div class="verify-box">
+                <el-input v-model="phoneForm.code" maxlength="6" placeholder="验证码" :style="{width: '280px', marginRight: '10px'}">
+                  <template #prefix>
+                    <svg-icon name="password"></svg-icon>
+                  </template>
+                </el-input>
+                <CountdownButton ref="countdownButtonRef" @click="sendValidCode(phoneForm.phone)"></CountdownButton>
+              </div>
+            </el-form-item>
+          </el-form>
+          <el-button class="submit-btn" type="primary" @click="submit(phoneRuleFormRef as FormInstance)">登 录</el-button>
         </el-tab-pane>
       </el-tabs>
       
+      <div class="protocol-box">
+        <el-checkbox v-model="protocol" size="large" style="margin-right: 5px"/> 
+        我已同意<el-link @click="handleNavigate('/protocol/userServiceAgreement')"  type="primary">《用户服务协议》</el-link>以及<el-link @click="handleNavigate('/protocol/privacyStatement')" type="primary">《隐私政策》</el-link>
+      </div>
       <div class="option">
-        <div class="other-login">其它方式登录： 
-          <svg-icon name="ding" size="1.5em"></svg-icon>
-          <svg-icon name="wechat" size="1.5em"></svg-icon>
+        <div class="other-login" v-if="thirdLoginTypesLength>0">其它方式登录： 
+          <svg-icon v-for="item in thirdLoginTypes" :name="item.type" @click="thirdLogin(item)" size="1.5em"></svg-icon>
         </div>
-        <nuxt-link to="/register" >
+        <div v-else></div>
+        <nuxt-link v-if="currentTenant =='default'" to="/register" >
           <span>注册账户</span>
+        </nuxt-link>
+        <nuxt-link v-if="currentTenant !=='default' && hasRegister" @click="navigateToRegister">
+          <span style="cursor: pointer;">注册账户</span>
         </nuxt-link>
       </div>
     </div>
@@ -149,29 +229,26 @@ definePageMeta({
 <style scoped lang="scss">
 
 .container {
-  position: absolute;
-  z-index: 999;
-  top: 0;
-  left: 0;
   display: flex;
   justify-content: center;
   height: 100vh;
-  width: 100vw;
-  background:rgba(0, 0, 0, 0.2);
+  background-color: #eee;
   .login-box {
     position: absolute;
-    left: 50%;
-    top: 50%;
-    transform: translate(-50%, -50%);
+    top: 20%;
     width: 400px;
-    height: 300px;
     background-color: #FFF;
-    padding: 30px 20px;
+    padding: 20px 20px;
     border-radius: 8px;
     box-shadow: 0 10px 15px -3px rgb(0 0 0/0.1),0 4px 6px -4px rgb(0 0 0/0.1);
     .title {
       margin-bottom: 10px;
       font-size: 20px;
+    }
+
+    .send-code-btn {
+      width: 150px;
+      margin-left: 10px;
     }
     .submit-btn {
       width: 100%;
@@ -195,6 +272,12 @@ definePageMeta({
           cursor: pointer;
         }
       }
+    }
+    
+    .protocol-box {
+      display: flex;
+      align-items: center;
+      font-size: 14px;
     }
   }
 }
