@@ -124,6 +124,9 @@ func BindLoginUser(userInfo *model.UserInfo, tenantId uint, userFrom string) (us
 }
 
 func GetUserBySubId(tenantId uint, clientId string, subId string) (*model.User, error) {
+	if tenantId == 0 || clientId == "" || subId == "" {
+		return nil, errors.New("invalidate GetUserBySubId param")
+	}
 	var user model.User
 	if err := global.DB.Table("users as u").
 		Select("u.id", "u.username", "u.display_name", "u.email", "u.phone", "u.disabled", "u.role", "u.avatar", "u.from",
