@@ -124,6 +124,9 @@ func BindLoginUser(userInfo *model.UserInfo, tenantId uint, userFrom string) (us
 }
 
 func GetUserBySubId(tenantId uint, clientId string, subId string) (*model.User, error) {
+	if tenantId == 0 || clientId == "" || subId == "" {
+		return nil, errors.New("invalidate GetUserBySubId param")
+	}
 	var user model.User
 	if err := global.DB.Table("users as u").
 		Select("u.id", "u.username", "u.display_name", "u.email", "u.phone", "u.disabled", "u.role", "u.avatar", "u.from",
@@ -133,4 +136,27 @@ func GetUserBySubId(tenantId uint, clientId string, subId string) (*model.User, 
 		return nil, err
 	}
 	return &user, nil
+}
+
+func IsUserPhoneOrEmailExist(user model.User, tenantId uint) (bool, error) {
+	if user.Phone == "" && user.Email == "" {
+		return false, nil
+	}
+	if user.Phone != "" {
+		if err := global.DB.Model(user).Where("tenant_id = ? AND phone = ?", tenantId, user.Phone).
+			First(&model.User{}).Error; err == nil {
+			return true, nil
+		} else if !errors.Is(err, gorm.ErrRecordNotFound) {
+			return false, err
+		}
+	}
+	if user.Email != "" {
+		if err := global.DB.Model(user).Where("tenant_id = ? AND email = ?", tenantId, user.Email).
+			First(&model.User{}).Error; err == nil {
+			return true, nil
+		} else if !errors.Is(err, gorm.ErrRecordNotFound) {
+			return false, err
+		}
+	}
+	return false, nil
 }
