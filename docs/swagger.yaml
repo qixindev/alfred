@@ -284,6 +284,8 @@ definitions:
         type: boolean
       firstName:
         type: string
+      from:
+        type: string
       id:
         type: integer
       lastName:
@@ -1560,6 +1562,100 @@ paths:
       summary: register a user
       tags:
       - login
+  /accounts/{tenant}/reset/getResetPasswordToken:
+    post:
+      description: get reset password token
+      parameters:
+      - default: default
+        description: tenant
+        in: path
+        name: tenant
+        required: true
+        type: string
+      - description: code
+        in: formData
+        name: code
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+      summary: get reset password token
+      tags:
+      - reset
+  /accounts/{tenant}/reset/resetPassword:
+    post:
+      description: reset password
+      parameters:
+      - description: token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - default: default
+        description: tenant
+        in: path
+        name: tenant
+        required: true
+        type: string
+      - description: new password
+        in: formData
+        name: newPassword
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+      summary: reset password
+      tags:
+      - reset
+  /accounts/{tenant}/reset/smsAvailable:
+    get:
+      description: check sms available
+      parameters:
+      - default: default
+        description: tenant
+        in: path
+        name: tenant
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+      summary: check sms available
+      tags:
+      - reset
+  /accounts/{tenant}/reset/verifyResetPasswordRequest:
+    post:
+      description: forgot password
+      parameters:
+      - default: default
+        description: tenant
+        in: path
+        name: tenant
+        required: true
+        type: string
+      - description: verify method
+        in: formData
+        name: verifyMethod
+        required: true
+        type: string
+      - description: pass code payload
+        in: formData
+        name: passCodePayload
+        required: true
+        type: string
+      - default: "+86"
+        description: area code
+        in: formData
+        name: areaCode
+        type: string
+      responses:
+        "200":
+          description: OK
+      summary: forgot password
+      tags:
+      - reset
   /accounts/{tenant}/unreadMsgCount/{subId}:
     get:
       description: get unread message count
@@ -2786,6 +2882,28 @@ paths:
         name: groupId
         required: true
         type: integer
+      responses:
+        "200":
+          description: OK
+      summary: user
+      tags:
+      - user
+  /accounts/admin/{tenant}/users/from:
+    post:
+      description: mark user from
+      parameters:
+      - default: default
+        description: tenant
+        in: path
+        name: tenant
+        required: true
+        type: string
+      - description: user body
+        in: body
+        name: bd
+        required: true
+        schema:
+          type: object
       responses:
         "200":
           description: OK

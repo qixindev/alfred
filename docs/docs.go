@@ -1740,6 +1740,39 @@ const docTemplate = `{
                 }
             }
         },
+        "/accounts/admin/{tenant}/users/from": {
+            "post": {
+                "description": "mark user from",
+                "tags": [
+                    "user"
+                ],
+                "summary": "user",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "default": "default",
+                        "description": "tenant",
+                        "name": "tenant",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "user body",
+                        "name": "bd",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "object"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
         "/accounts/admin/{tenant}/users/{userId}": {
             "get": {
                 "description": "get user",
@@ -3758,6 +3791,144 @@ const docTemplate = `{
                 }
             }
         },
+        "/accounts/{tenant}/reset/getResetPasswordToken": {
+            "post": {
+                "description": "get reset password token",
+                "tags": [
+                    "reset"
+                ],
+                "summary": "get reset password token",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "default": "default",
+                        "description": "tenant",
+                        "name": "tenant",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "code",
+                        "name": "code",
+                        "in": "formData",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/accounts/{tenant}/reset/resetPassword": {
+            "post": {
+                "description": "reset password",
+                "tags": [
+                    "reset"
+                ],
+                "summary": "reset password",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "token",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "default": "default",
+                        "description": "tenant",
+                        "name": "tenant",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "new password",
+                        "name": "newPassword",
+                        "in": "formData",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/accounts/{tenant}/reset/smsAvailable": {
+            "get": {
+                "description": "check sms available",
+                "tags": [
+                    "reset"
+                ],
+                "summary": "check sms available",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "default": "default",
+                        "description": "tenant",
+                        "name": "tenant",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/accounts/{tenant}/reset/verifyResetPasswordRequest": {
+            "post": {
+                "description": "forgot password",
+                "tags": [
+                    "reset"
+                ],
+                "summary": "forgot password",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "default": "default",
+                        "description": "tenant",
+                        "name": "tenant",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "verify method",
+                        "name": "verifyMethod",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "pass code payload",
+                        "name": "passCodePayload",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "default": "+86",
+                        "description": "area code",
+                        "name": "areaCode",
+                        "in": "formData"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
         "/accounts/{tenant}/unreadMsgCount/{subId}": {
             "get": {
                 "description": "get unread message count",
@@ -4210,6 +4381,9 @@ const docTemplate = `{
                     "type": "boolean"
                 },
                 "firstName": {
+                    "type": "string"
+                },
+                "from": {
                     "type": "string"
                 },
                 "id": {

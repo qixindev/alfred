@@ -6,6 +6,7 @@ import (
 	"accounts/internal/controller/admin"
 	"accounts/internal/controller/authentication"
 	"accounts/internal/controller/iam"
+	"accounts/internal/controller/reset"
 	"accounts/internal/endpoint/resp"
 	"accounts/pkg/middlewares"
 	"github.com/gin-contrib/static"
@@ -27,6 +28,7 @@ func AddRoutes(r *gin.Engine) {
 		authentication.AddUsersRoutes(tenantApi)
 		controller.AddOAuth2Routes(tenantApi)
 		controller.AddMsgRouter(tenantApi)
+		reset.AddResetRouter(tenantApi)
 	}
 
 	adminApi := r.RouterGroup.Group("/accounts/admin/:tenant", middlewares.MultiTenancy, middlewares.AuthorizedAdmin)

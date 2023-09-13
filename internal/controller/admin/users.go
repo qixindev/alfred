@@ -156,6 +156,48 @@ func DeleteUser(c *gin.Context) {
 	resp.Success(c)
 }
 
+// MarkUserFrom godoc
+//
+//	@Summary	user
+//	@Schemes
+//	@Description	mark user from
+//	@Tags			user
+//	@Param			tenant	path	string	true	"tenant"	default(default)
+//	@Param			bd		body	object	true	"user body"
+//	@Success		200
+//	@Router			/accounts/admin/{tenant}/users/from [post]
+func MarkUserFrom(c *gin.Context) {
+	var request struct {
+		IdList []int64 `json:"idList"`
+		From   string  `json:"from"`
+	}
+	if err := c.BindJSON(&request); err != nil {
+		resp.ErrorRequest(c, err)
+		return
+	}
+	if len(request.IdList) == 0 {
+		resp.ErrorRequestWithMsg(c, "id list should not be null")
+		return
+	}
+	if request.From == "" {
+		resp.ErrorRequestWithMsg(c, "from should not be null")
+		return
+	}
+	for _, id := range request.IdList {
+		var user model.User
+		if err := internal.TenantDB(c).First(&user, "id = ?", id).Error; err != nil {
+			resp.ErrorSqlFirst(c, err, "get user err")
+			return
+		}
+		user.From = request.From
+		if err := global.DB.Save(&user).Error; err != nil {
+			resp.ErrorSqlUpdate(c, err, "update tenant user err")
+			return
+		}
+	}
+	resp.Success(c)
+}
+
 func AddAdminUsersRoutes(rg *gin.RouterGroup) {
 	rg.GET("/users", ListUsers)
 	rg.GET("/users/:userId", GetUser)
@@ -167,4 +209,6 @@ func AddAdminUsersRoutes(rg *gin.RouterGroup) {
 	rg.POST("/users/:userId/groups", NewUserGroup)
 	rg.PUT("/users/:userId/groups/:groupId", UpdateUserGroup)
 	rg.DELETE("/users/:userId/groups/:groupId", DeleteUserGroup)
+
+	rg.POST("/users/from", MarkUserFrom)
 }

@@ -18,6 +18,9 @@ import (
 )
 
 func LoadRsaPrivateKeys(tenant string) (map[string]*rsa.PrivateKey, error) {
+	if tenant == "" {
+		return nil, errors.New("tenant name should not be null")
+	}
 	res, err := GetJWKs(tenant)
 	if err != nil {
 		return nil, err

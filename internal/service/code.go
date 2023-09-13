@@ -19,3 +19,10 @@ func ClearTokenCode(code string) {
 		global.LOG.Error("delete token code err: " + err.Error())
 	}
 }
+
+func ClearResetPasswordTokenCode(tokenType string) {
+	earliest := time.Now().Add(-2 * time.Minute)
+	if err := global.DB.Delete(&model.TokenCode{}, "type= ? AND created_at < ?", tokenType, earliest).Error; err != nil {
+		global.LOG.Error("delete token code err: " + err.Error())
+	}
+}
