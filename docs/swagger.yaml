@@ -290,6 +290,8 @@ definitions:
         type: integer
       lastName:
         type: string
+      meta:
+        type: string
       passwordHash:
         type: string
       phone:
@@ -2014,6 +2016,39 @@ paths:
       summary: user
       tags:
       - client-user
+  /accounts/admin/{tenant}/clients/{clientId}/users/{subId}/meta:
+    put:
+      description: update user
+      parameters:
+      - default: default
+        description: tenant
+        in: path
+        name: tenant
+        required: true
+        type: string
+      - default: default
+        description: client id
+        in: path
+        name: clientId
+        required: true
+        type: string
+      - description: sub id
+        in: path
+        name: subId
+        required: true
+        type: string
+      - description: user body
+        in: body
+        name: bd
+        required: true
+        schema:
+          type: object
+      responses:
+        "200":
+          description: OK
+      summary: user
+      tags:
+      - client-user
   /accounts/admin/{tenant}/clients/{clientId}/users/{subId}/password:
     put:
       description: update user
@@ -2999,21 +3034,6 @@ paths:
         name: secretId
         required: true
         type: integer
-      responses:
-        "200":
-          description: OK
-      summary: tenants
-      tags:
-      - admin-tenants
-  /accounts/admin/tenants/users/{user}:
-    get:
-      description: list tenants
-      parameters:
-      - description: tenant
-        in: path
-        name: user
-        required: true
-        type: string
       responses:
         "200":
           description: OK

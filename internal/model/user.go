@@ -20,6 +20,7 @@ type User struct {
 	Avatar           string `json:"avatar"`
 	Role             string `json:"role"`
 	From             string `json:"from"`
+	Meta             string `json:"meta" gorm:"type:jsonb"`
 
 	TenantId uint   `gorm:"primaryKey"`
 	Tenant   Tenant `json:"-"`

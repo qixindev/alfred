@@ -42,29 +42,6 @@ const docTemplate = `{
                 }
             }
         },
-        "/accounts/admin/tenants/users/{user}": {
-            "get": {
-                "description": "list tenants",
-                "tags": [
-                    "admin-tenants"
-                ],
-                "summary": "tenants",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "tenant",
-                        "name": "user",
-                        "in": "path",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK"
-                    }
-                }
-            }
-        },
         "/accounts/admin/tenants/{tenantId}": {
             "get": {
                 "description": "get tenants",
@@ -694,6 +671,54 @@ const docTemplate = `{
                         "name": "file",
                         "in": "formData",
                         "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/accounts/admin/{tenant}/clients/{clientId}/users/{subId}/meta": {
+            "put": {
+                "description": "update user",
+                "tags": [
+                    "client-user"
+                ],
+                "summary": "user",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "default": "default",
+                        "description": "tenant",
+                        "name": "tenant",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "default": "default",
+                        "description": "client id",
+                        "name": "clientId",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "sub id",
+                        "name": "subId",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "user body",
+                        "name": "bd",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "object"
+                        }
                     }
                 ],
                 "responses": {
@@ -4390,6 +4415,9 @@ const docTemplate = `{
                     "type": "integer"
                 },
                 "lastName": {
+                    "type": "string"
+                },
+                "meta": {
                     "type": "string"
                 },
                 "passwordHash": {

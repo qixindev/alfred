@@ -8,6 +8,7 @@ import (
 	"accounts/pkg/global"
 	"accounts/pkg/utils"
 	"context"
+	"encoding/json"
 	"fmt"
 	"github.com/Azure/azure-storage-blob-go/azblob"
 	"github.com/gin-gonic/gin"
@@ -69,7 +70,7 @@ func GetClientUsers(c *gin.Context) {
 	clientId := c.Param("clientId")
 	subId := c.Param("subId")
 	if err := global.DB.Table("client_users cu").
-		Select("cu.id, cu.sub sub, cu.client_id, u.username username, u.phone, u.email, u.first_name, u.last_name, u.display_name, u.role, u.avatar, u.from").
+		Select("cu.id, cu.sub sub, cu.client_id, u.username username, u.phone, u.email, u.first_name, u.last_name, u.display_name, u.role, u.avatar, u.from, u.meta").
 		Joins("LEFT JOIN users u ON u.id = cu.user_id").
 		Where("cu.tenant_id = ? AND cu.client_id = ? AND cu.sub = ?", internal.GetTenant(c).Id, clientId, subId).
 		Find(&clientUser).Error; err != nil {
@@ -82,6 +83,40 @@ func GetClientUsers(c *gin.Context) {
 		return
 	}
 	resp.SuccessWithData(c, clientUser)
+}
+
+// UpdateUserMeta godoc
+//
+//	@Summary	user
+//	@Schemes
+//	@Description	update user
+//	@Tags			client-user
+//	@Param			tenant		path	string			true	"tenant"	default(default)
+//	@Param			clientId	path	string			true	"client id"	default(default)
+//	@Param			subId		path	string			true	"sub id"
+//	@Param			bd			body	object			true	"user body"
+//	@Success		200
+//	@Router			/accounts/admin/{tenant}/clients/{clientId}/users/{subId}/meta [put]
+func UpdateUserMeta(c *gin.Context) {
+	var meta map[string]interface{}
+	if err := c.BindJSON(&meta); err != nil {
+		resp.ErrorRequest(c, err)
+		return
+	}
+
+	user, err := service.GetUserBySubId(internal.GetTenant(c).Id, c.Param("clientId"), c.Param("subId"))
+	if err != nil {
+		resp.ErrorSqlSelect(c, err, "no such user")
+		return
+	}
+
+	metaMarshal, err := json.Marshal(meta)
+	user.Meta = string(metaMarshal)
+	if err = global.DB.Select("meta").Save(&user).Error; err != nil {
+		resp.ErrorSqlUpdate(c, err, "update user meta err")
+		return
+	}
+	resp.Success(c)
 }
 
 // UpdateUserPassword godoc
@@ -222,6 +257,7 @@ func UpdateAvatar(c *gin.Context) {
 func AddClientUserRoute(rg *gin.RouterGroup) {
 	rg.GET("/clients/:clientId/users", ListClientUsers)
 	rg.GET("/clients/:clientId/users/:subId", GetClientUsers)
+	rg.PUT("/clients/:clientId/users/:subId/meta", UpdateUserMeta)
 	rg.PUT("/clients/:clientId/users/:subId/password", UpdateUserPassword)
 	rg.PUT("/clients/:clientId/users/:subId/profile", UpdateUserProfile)
 	rg.PUT("/clients/:clientId/users/:subId/avatar", UpdateAvatar)
