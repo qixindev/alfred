@@ -8,11 +8,11 @@ import (
 	"accounts/pkg/global"
 	"accounts/pkg/utils"
 	"context"
-	"encoding/json"
 	"fmt"
 	"github.com/Azure/azure-storage-blob-go/azblob"
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
+	"io"
 	"net/url"
 	"strings"
 )
@@ -94,12 +94,12 @@ func GetClientUsers(c *gin.Context) {
 //	@Param			tenant		path	string			true	"tenant"	default(default)
 //	@Param			clientId	path	string			true	"client id"	default(default)
 //	@Param			subId		path	string			true	"sub id"
-//	@Param			bd			body	object			true	"user body"
+//	@Param			bd			body	string			true	"user body"
 //	@Success		200
 //	@Router			/accounts/admin/{tenant}/clients/{clientId}/users/{subId}/meta [put]
 func UpdateUserMeta(c *gin.Context) {
-	var meta map[string]interface{}
-	if err := c.BindJSON(&meta); err != nil {
+	meta, err := io.ReadAll(c.Request.Body)
+	if err != nil {
 		resp.ErrorRequest(c, err)
 		return
 	}
@@ -110,8 +110,7 @@ func UpdateUserMeta(c *gin.Context) {
 		return
 	}
 
-	metaMarshal, err := json.Marshal(meta)
-	user.Meta = string(metaMarshal)
+	user.Meta = string(meta)
 	if err = global.DB.Select("meta").Save(&user).Error; err != nil {
 		resp.ErrorSqlUpdate(c, err, "update user meta err")
 		return
