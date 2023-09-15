@@ -12,6 +12,12 @@ type Api struct {
 	Tenant *model.Tenant
 }
 
+func New(c *gin.Context) *Api {
+	return &Api{
+		c: c,
+	}
+}
+
 func (a *Api) setError(err error) *Api {
 	if a.Error != nil {
 		a.Error = err

@@ -1,13 +1,18 @@
 package req
 
-type IamNameRequest struct {
-	Name string `json:"name"`
+type IamResourceId struct {
+	Tenant   string `json:"tenant" uri:"tenant"`
+	Client   string `json:"client" uri:"client"`
+	TypeId   string `json:"typeId" uri:"typeId"`
+	RoleId   string `json:"roleId" uri:"roleId"`
+	ActionId string `json:"actionId" uri:"actionId"`
 }
 
-type IamActionRequest struct {
-	ActionId string `json:"actionId"`
-}
-
-type IamUserRequest struct {
-	UserId uint `json:"userId"`
+type IamClientUser struct {
+	Tenant       string `json:"tenant" uri:"tenant"`
+	Client       string `json:"client" uri:"client"`
+	TypeId       string `json:"typeId" uri:"typeId"`
+	RoleId       string `json:"roleId" uri:"roleId"`
+	ActionId     string `json:"actionId" uri:"actionId"`
+	ClientUserId []uint `json:"clientUserId"`
 }

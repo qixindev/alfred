@@ -705,7 +705,7 @@
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "type": "object"
+                            "type": "string"
                         }
                     }
                 ],
@@ -2057,11 +2057,10 @@
         },
         "/accounts/{tenant}/iam/clients/{client}/types": {
             "get": {
-                "description": "get iam resource type list",
                 "tags": [
                     "iam-resource"
                 ],
-                "summary": "iam resource type",
+                "summary": "获取资源类型列表",
                 "parameters": [
                     {
                         "type": "string",
@@ -2167,11 +2166,10 @@
         },
         "/accounts/{tenant}/iam/clients/{client}/types/{typeId}/actions": {
             "get": {
-                "description": "get iam action list",
                 "tags": [
                     "iam-action"
                 ],
-                "summary": "iam action",
+                "summary": "获取操作列表",
                 "parameters": [
                     {
                         "type": "string",
@@ -2301,11 +2299,10 @@
         },
         "/accounts/{tenant}/iam/clients/{client}/types/{typeId}/actions/{actionId}/users/{user}/resources": {
             "get": {
-                "description": "get iam action user",
                 "tags": [
                     "iam-action"
                 ],
-                "summary": "iam users roles",
+                "summary": "用户获取拥有某个操作的所有资源列表",
                 "parameters": [
                     {
                         "type": "string",
@@ -2325,21 +2322,21 @@
                     },
                     {
                         "type": "string",
-                        "description": "tenant",
+                        "description": "type id",
                         "name": "typeId",
                         "in": "path",
                         "required": true
                     },
                     {
                         "type": "string",
-                        "description": "tenant",
+                        "description": "action id",
                         "name": "actionId",
                         "in": "path",
                         "required": true
                     },
                     {
                         "type": "string",
-                        "description": "tenant",
+                        "description": "user sub id",
                         "name": "user",
                         "in": "path",
                         "required": true
@@ -2354,11 +2351,10 @@
         },
         "/accounts/{tenant}/iam/clients/{client}/types/{typeId}/resources": {
             "get": {
-                "description": "get iam resource list",
                 "tags": [
                     "iam-resource"
                 ],
-                "summary": "iam resource",
+                "summary": "获取资源列表",
                 "parameters": [
                     {
                         "type": "string",
@@ -2428,59 +2424,6 @@
                         "schema": {
                             "$ref": "#/definitions/model.Resource"
                         }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK"
-                    }
-                }
-            }
-        },
-        "/accounts/{tenant}/iam/clients/{client}/types/{typeId}/resources/all/users/{userId}/roles/{roleId}": {
-            "post": {
-                "description": "授权一类资源给用户",
-                "tags": [
-                    "iam-role"
-                ],
-                "summary": "授权一类资源给用户",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "default": "default",
-                        "description": "tenant",
-                        "name": "tenant",
-                        "in": "path",
-                        "required": true
-                    },
-                    {
-                        "type": "string",
-                        "default": "default",
-                        "description": "client",
-                        "name": "client",
-                        "in": "path",
-                        "required": true
-                    },
-                    {
-                        "type": "string",
-                        "description": "tenant",
-                        "name": "typeId",
-                        "in": "path",
-                        "required": true
-                    },
-                    {
-                        "type": "string",
-                        "description": "tenant",
-                        "name": "roleId",
-                        "in": "path",
-                        "required": true
-                    },
-                    {
-                        "type": "integer",
-                        "description": "tenant",
-                        "name": "userId",
-                        "in": "path",
-                        "required": true
                     }
                 ],
                 "responses": {
@@ -2591,11 +2534,10 @@
         },
         "/accounts/{tenant}/iam/clients/{client}/types/{typeId}/resources/{resourceId}/actions/{actionId}/users/{user}": {
             "get": {
-                "description": "get iam action user",
                 "tags": [
                     "iam-action"
                 ],
-                "summary": "iam action user",
+                "summary": "用户是否拥有操作某个资源的权限",
                 "parameters": [
                     {
                         "type": "string",
@@ -2651,11 +2593,11 @@
         },
         "/accounts/{tenant}/iam/clients/{client}/types/{typeId}/resources/{resourceId}/roles/{roleId}/users": {
             "get": {
-                "description": "get iam resource role list",
+                "description": "例如：获取资源1下面所有管理员的用户列表",
                 "tags": [
                     "iam-role"
                 ],
-                "summary": "iam resource role",
+                "summary": "获取某个资源下某个角色的所有用户列表",
                 "parameters": [
                     {
                         "type": "string",
@@ -2827,11 +2769,10 @@
         },
         "/accounts/{tenant}/iam/clients/{client}/types/{typeId}/resources/{resourceId}/users": {
             "get": {
-                "description": "get iam action user",
                 "tags": [
                     "iam-action"
                 ],
-                "summary": "iam users roles",
+                "summary": "获取某个资源下所有用户列表",
                 "parameters": [
                     {
                         "type": "string",
@@ -2873,11 +2814,10 @@
         },
         "/accounts/{tenant}/iam/clients/{client}/types/{typeId}/roles": {
             "get": {
-                "description": "get iam role list",
                 "tags": [
                     "iam-role"
                 ],
-                "summary": "iam role",
+                "summary": "获取角色列表",
                 "parameters": [
                     {
                         "type": "string",
@@ -2897,7 +2837,7 @@
                     },
                     {
                         "type": "string",
-                        "description": "tenant",
+                        "description": "type id",
                         "name": "typeId",
                         "in": "path",
                         "required": true
@@ -3148,6 +3088,63 @@
                         "name": "actionId",
                         "in": "path",
                         "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/accounts/{tenant}/iam/clients/{client}/types/{typeId}/roles/{roleId}/auth": {
+            "post": {
+                "tags": [
+                    "iam-role"
+                ],
+                "summary": "授权一类资源给用户",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "default": "default",
+                        "description": "tenant",
+                        "name": "tenant",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "default": "default",
+                        "description": "client",
+                        "name": "client",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "type id",
+                        "name": "typeId",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "role id",
+                        "name": "roleId",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "client user id",
+                        "name": "bd",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "integer"
+                            }
+                        }
                     }
                 ],
                 "responses": {

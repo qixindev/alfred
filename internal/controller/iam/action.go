@@ -11,9 +11,8 @@ import (
 
 // ListIamAction godoc
 //
-//	@Summary		iam action
+//	@Summary		获取操作列表
 //	@Schemes
-//	@Description	get iam action list
 //	@Tags			iam-action
 //	@Param			tenant		path	string	true	"tenant"	default(default)
 //	@Param			client		path	string	true	"client"	default(default)

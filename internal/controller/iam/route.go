@@ -50,5 +50,5 @@ func AddIamRoutes(rg *gin.RouterGroup) {
 	rg.GET("/types/:typeId/actions/:actionId/users/:user/resources", GetIamActionResource) // 针对一类资源，用户拥有哪些资源的哪些角色
 	rg.GET("/types/:typeId/resources/:resourceId/actions/:actionId/users/:user", IsUserActionPermission)
 
-	rg.POST("/types/:typeId/resources/all/users/:userId/roles/:roleId", CreateAllTypeRole)
+	rg.POST("/types/:typeId/roles/:roleId/auth", CreateAllTypeRole)
 }
