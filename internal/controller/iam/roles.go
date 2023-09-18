@@ -226,7 +226,7 @@ func CreateAllTypeRole(c *gin.Context) {
 				RoleId:       c.Param("roleId"),
 				TenantId:     tenant.Id,
 				ResourceId:   resource.Id,
-				ClientUserId: cId,
+				ClientUserId: cId.UserId,
 			})
 		}
 	}

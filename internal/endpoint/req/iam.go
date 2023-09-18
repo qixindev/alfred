@@ -14,5 +14,7 @@ type IamClientUser struct {
 	TypeId       string `json:"typeId" uri:"typeId"`
 	RoleId       string `json:"roleId" uri:"roleId"`
 	ActionId     string `json:"actionId" uri:"actionId"`
-	ClientUserId []uint `json:"clientUserId"`
+	ClientUserId []struct {
+		UserId uint `json:"userId"`
+	} `json:"clientUserId"`
 }
