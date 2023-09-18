@@ -20,6 +20,7 @@ export default defineNuxtConfig({
       proxy: {
         '/accounts': {
           target: 'https://id.qxbattery.com',  //这里是接口地址
+          // target: "http://192.168.50.56:80",
           changeOrigin: true
         },
         '/v1': {
