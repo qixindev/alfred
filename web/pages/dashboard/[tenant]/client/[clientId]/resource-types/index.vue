@@ -1,11 +1,11 @@
 <template>
   <div>
     <div class="option">
-      <el-button type="primary" icon="Plus" @click="handleAdd">新增Type</el-button>
+      <el-button type="primary" icon="Plus" @click="handleAdd('新增', '')">新增Type</el-button>
     </div>
     <el-card>
       <el-table v-loading="loading" stripe :data="dataList">
-        <el-table-column label="ID" align="center" prop="id"/>
+        <el-table-column label="ID" align="center" prop="id" />
         <el-table-column label="name" align="center" prop="name" />
         <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
           <template #default="{ row }">
@@ -15,22 +15,38 @@
             </el-button>
             <el-button size="small" type="primary" link icon="Edit" @click="viewRoles(row)">角色管理
             </el-button>
-            <!-- <el-button size="small" type="primary" link icon="Edit" @click="handleUpdate(row)">修改
-            </el-button> -->
-            <el-button size="small" type="primary" link icon="Delete" @click="handleDelete(row)" :loading="row.deleteLoading">删除
+            <el-button size="small" type="primary" link icon="Edit" @click="handleAdd('分配', row)">角色分配
+            </el-button>
+            <el-button size="small" type="primary" link icon="Delete" @click="handleDelete(row)"
+              :loading="row.deleteLoading">删除
             </el-button>
           </template>
         </el-table-column>
       </el-table>
     </el-card>
 
-    <!-- 添加或修改岗位对话框 -->
-    <el-dialog :title="`${open === Status.ADD ? '新增' : '修改'}`" titleIcon="modify" v-model="visible" width="500px" append-to-body
-      :before-close="cancel">
+    <!-- 添加或角色分配岗位对话框 -->
+    <el-dialog :title="`${state.open === Status.ADD ? '新增' : '角色分配'}`" titleIcon="modify" v-model="visible" width="500px"
+      append-to-body :before-close="cancel">
       <el-form ref="formRef" :model="form" :rules="rules" label-width="100px">
-        <el-form-item label="name" prop="name">
-          <el-input v-model="form.name" placeholder="请输入 name" />
+        <el-form-item v-if="state.open == Status.ADD">
+          <el-form-item label="name" prop="name">
+            <el-input v-model="form.name" placeholder="请输入 name" />
+          </el-form-item>
         </el-form-item>
+
+        <el-form-item label="角色" prop="region" v-if="state.open == Status.EDIT">
+          <el-select v-model="form.region" placeholder="请选择角色">
+            <el-option v-for="item in roleOptions" :key="item.value" :label="item.label" :value="item.value" />
+          </el-select>
+        </el-form-item>
+        <el-form-item label="用户" prop="user" v-if="state.open == Status.EDIT">
+          <el-select v-model="form.user" multiple placeholder="请选择用户">
+            <el-option v-for="item in userOptions" :key="item.value" :label="item.label" :value="item.value" />
+          </el-select>
+        </el-form-item>
+
+
       </el-form>
       <template #footer>
         <el-button type="primary" @click="submitForm" :loading="updateLoading">确 定</el-button>
@@ -42,16 +58,23 @@
 
 
 <script lang="ts" setup name="Users">
-import { ElForm, ElInput, ElMessage, ElMessageBox } from 'element-plus';
-
+import { ElForm, ElInput, ElMessage, ElMessageBox, ElSelect } from 'element-plus';
+import { getRoles } from '~~/api/client/resource-type/roles'
 import { getTypes, saveType, updateType, delType } from '~/api/client/resource-type/types'
-const tenant =  useTenant()
+import { getClientUsers } from '~~/api/common'
+import { addUser } from "~~/api/client/resource-type/roles-permision"
+const tenant = useTenant()
 const route = useRoute()
+// 角色用户名
+const roleOptions = ref<SelectOption[]>([])
+const userOptions = ref<SelectOption[]>([])
 const { clientId } = route.params
 
 interface Form {
   id: undefined | Number,
   name: undefined | string
+  user: string,
+  region: undefined
 }
 
 enum Status {
@@ -65,17 +88,20 @@ const state = reactive({
   loading: false,
   dataList: [],
   // 是否显示弹出层
-  open: Status.CLOSE, // 0:关闭 1:新增 2:修改
+  open: Status.CLOSE, // 0:关闭 1:新增 2:角色分配
   // 表单参数
   form: {
+    user: '',
     id: undefined,
     name: undefined,
+    region: undefined
   } as Form,
   // 表单校验
   rules: {
     name: [
       { required: true, message: 'client name 不能为空', trigger: 'blur' }
-    ]
+    ],
+    region: [{ required: true, message: '请选择角色', trigger: 'change' }],
   }
 })
 
@@ -93,12 +119,12 @@ const visible = computed(() => {
   return !!state.open
 })
 
-const viewDialogVisible = ref(false)
+const Visible = ref(false)
 
 /** 查询列表 */
 function getList() {
   state.loading = true
-  getTypes(clientId).then((res:any) => {
+  getTypes(clientId).then((res: any) => {
     state.dataList = res
   }).finally(() => {
     state.loading = false
@@ -110,6 +136,8 @@ function resetForm() {
   state.form = {
     id: undefined,
     name: undefined,
+    region: undefined,
+    user: undefined
   }
   formRef.value.resetFields()
 }
@@ -117,39 +145,49 @@ function resetForm() {
 function cancel() {
   resetForm()
   state.open = Status.CLOSE
-  viewDialogVisible.value = false
+  Visible.value = false
 }
 /** 新增按钮操作 */
-function handleAdd() {
-  state.open = Status.ADD
+const typeid = ref('')
+function handleAdd(wordname: string, e: any) {
+  typeid.value = e.id
+  const { id, } = e
+  if (wordname == "新增") {
+    state.open = Status.ADD
+  } else {
+    state.open = Status.EDIT
+    getRoles(clientId, id).then((res: any) => {
+      roleOptions.value = res.map((item: any) => ({
+        label: item.name,
+        value: item.id,
+        id: item.id
+      }))
+    })
+    getClientUsers(clientId).then((res: any) => {
+      userOptions.value = res.map((item: any) => ({
+        label: item.displayName,
+        value: item.id
+      }))
+    })
+  }
 }
-/** 修改按钮操作 */
-function handleUpdate(row: any) {
-  const {id, name } = row
-  state.open = Status.EDIT
-  nextTick(()=>{
-    state.form = {
-      id,
-      name,
-    }
-  })
-}
-
 let updateLoading = ref(false);
 /** 提交按钮 */
 function submitForm() {
+
   formRef.value.validate((valid: boolean) => {
     if (valid) {
       updateLoading.value = true
-      let { id, name } = state.form
-
+      let { name, region, user } = state.form
       const params = { name }
-
       if (state.open === Status.EDIT) {
-        updateType(clientId, id as number, params).then(() => {
+        const obj = { userId: user };
+        const params1 = Object.entries(obj)
+          .flatMap(([key, values]) => values.map((value: any) => ({ [key]: value })));
+        addUser(clientId, typeid.value, region, params1).then(() => {
           ElMessage({
             showClose: true,
-            message: '修改成功',
+            message: '添加成功',
             type: 'success',
           })
           cancel()

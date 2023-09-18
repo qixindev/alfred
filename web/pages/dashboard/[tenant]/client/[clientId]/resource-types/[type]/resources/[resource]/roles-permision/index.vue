@@ -2,18 +2,13 @@
   <div>
     <div class="option">
       <el-select v-model="query.role" placeholder="请选择角色" @change="getList">
-        <el-option
-          v-for="item in roleOptions"
-          :key="item.value"
-          :label="item.label"
-          :value="item.value"
-          />
+        <el-option v-for="item in roleOptions" :key="item.value" :label="item.label" :value="item.value" />
       </el-select>
       <el-button type="primary" @click="handleAdd">角色分配</el-button>
     </div>
     <el-card>
       <el-table v-loading="loading" stripe :data="dataList">
-        <el-table-column label="ID"  align="center" prop="id"/>
+        <el-table-column label="ID" align="center" prop="id" />
         <el-table-column label="用户" align="center" prop="user">
           <template #default="{ row }">
             <!-- {{ userNameFilter(row.id) }} -->
@@ -45,7 +40,7 @@
           </el-select>
         </el-form-item>
         <el-form-item label="用户" prop="name">
-          <el-select v-model="form.user"  multiple    placeholder="请选择用户">
+          <el-select v-model="form.user" multiple placeholder="请选择用户">
             <el-option v-for="item in userOptions" :key="item.value" :label="item.label" :value="item.value" />
           </el-select>
         </el-form-item>
@@ -154,7 +149,7 @@ function getRoleOptions() {
 function getUserOptions() {
   getClientUsers(clientId).then((res: any) => {
     userOptions.value = res.map((item: any) => ({
-      label: item.username,
+      label: item.displayName,
       value: item.id
     }))
   })
@@ -190,7 +185,7 @@ function submitForm() {
       // const params = [{ userId: user }]
       const obj = { userId: user };
       const params = Object.entries(obj)
-        .flatMap(([key, values]) => values.map((value:any) => ({ [key]: value })));
+        .flatMap(([key, values]) => values.map((value: any) => ({ [key]: value })));
       saveUser(clientId, type, resource, role, params).then(() => {
         ElMessage({
           showClose: true,
