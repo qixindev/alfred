@@ -1,6 +1,6 @@
 package model
 
-import "accounts/internal/endpoint/req"
+import "alfred/internal/endpoint/req"
 
 type InterfaceSms interface {
 	Save(sms req.Sms) any

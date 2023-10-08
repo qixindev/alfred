@@ -1,8 +1,8 @@
 package reset
 
 import (
-	"accounts/internal/model"
-	"accounts/pkg/global"
+	"alfred/internal/model"
+	"alfred/pkg/global"
 	"errors"
 )
 

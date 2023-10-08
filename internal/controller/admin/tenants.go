@@ -1,12 +1,12 @@
 package admin
 
 import (
-	"accounts/internal/endpoint/resp"
-	"accounts/internal/model"
-	"accounts/internal/service"
-	"accounts/pkg/global"
-	"accounts/pkg/middlewares"
-	"accounts/pkg/utils"
+	"alfred/internal/endpoint/resp"
+	"alfred/internal/model"
+	"alfred/internal/service"
+	"alfred/pkg/global"
+	"alfred/pkg/middlewares"
+	"alfred/pkg/utils"
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-gonic/gin"
 )

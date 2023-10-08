@@ -1,14 +1,14 @@
 package reset
 
 import (
-	"accounts/internal/controller/internal"
-	"accounts/internal/endpoint/resp"
-	"accounts/internal/model"
-	"accounts/internal/service"
-	"accounts/internal/service/reset"
-	"accounts/pkg/global"
-	"accounts/pkg/middlewares"
-	"accounts/pkg/utils"
+	"alfred/internal/controller/internal"
+	"alfred/internal/endpoint/resp"
+	"alfred/internal/model"
+	"alfred/internal/service"
+	"alfred/internal/service/reset"
+	"alfred/pkg/global"
+	"alfred/pkg/middlewares"
+	"alfred/pkg/utils"
 	"github.com/gin-gonic/gin"
 	"time"
 )

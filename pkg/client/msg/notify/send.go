@@ -1,8 +1,8 @@
 package notify
 
 import (
-	"accounts/internal/model"
-	"accounts/pkg/config/env"
+	"alfred/internal/model"
+	"alfred/pkg/config/env"
 	"errors"
 	"github.com/gin-gonic/gin"
 )

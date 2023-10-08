@@ -1,11 +1,11 @@
 package cmd
 
 import (
-	"accounts/initial"
-	"accounts/internal"
-	"accounts/pkg/config/env"
-	"accounts/pkg/global"
-	"accounts/pkg/utils"
+	"alfred/initial"
+	"alfred/internal"
+	"alfred/pkg/config/env"
+	"alfred/pkg/global"
+	"alfred/pkg/utils"
 	"errors"
 	"fmt"
 	"github.com/gin-contrib/cors"

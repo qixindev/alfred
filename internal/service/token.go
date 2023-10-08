@@ -1,9 +1,9 @@
 package service
 
 import (
-	"accounts/internal/model"
-	"accounts/pkg/global"
-	"accounts/pkg/utils"
+	"alfred/internal/model"
+	"alfred/pkg/global"
+	"alfred/pkg/utils"
 	"crypto/rsa"
 	"fmt"
 	"github.com/gin-gonic/gin"

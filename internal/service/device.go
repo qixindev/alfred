@@ -1,8 +1,8 @@
 package service
 
 import (
-	"accounts/internal/model"
-	"accounts/pkg/global"
+	"alfred/internal/model"
+	"alfred/pkg/global"
 )
 
 func DeleteDevice(tenantId uint, deviceId string) error {

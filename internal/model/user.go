@@ -1,7 +1,7 @@
 package model
 
 import (
-	"accounts/internal/endpoint/dto"
+	"alfred/internal/endpoint/dto"
 )
 
 type User struct {

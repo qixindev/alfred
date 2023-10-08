@@ -1,7 +1,7 @@
 package resp
 
 import (
-	"accounts/pkg/global"
+	"alfred/pkg/global"
 	"net/http"
 
 	"github.com/gin-gonic/gin"

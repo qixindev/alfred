@@ -1,14 +1,14 @@
 package internal
 
 import (
-	_ "accounts/docs"
-	"accounts/internal/controller"
-	"accounts/internal/controller/admin"
-	"accounts/internal/controller/authentication"
-	"accounts/internal/controller/iam"
-	"accounts/internal/controller/reset"
-	"accounts/internal/endpoint/resp"
-	"accounts/pkg/middlewares"
+	_ "alfred/docs"
+	"alfred/internal/controller"
+	"alfred/internal/controller/admin"
+	"alfred/internal/controller/authentication"
+	"alfred/internal/controller/iam"
+	"alfred/internal/controller/reset"
+	"alfred/internal/endpoint/resp"
+	"alfred/pkg/middlewares"
 	"github.com/gin-contrib/static"
 	"github.com/gin-gonic/gin"
 	swaggerFiles "github.com/swaggo/files"

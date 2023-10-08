@@ -1,9 +1,9 @@
 package middlewares
 
 import (
-	"accounts/internal/endpoint/resp"
-	"accounts/pkg/global"
-	"accounts/pkg/utils"
+	"alfred/internal/endpoint/resp"
+	"alfred/pkg/global"
+	"alfred/pkg/utils"
 	"crypto/rsa"
 	"fmt"
 	"github.com/gin-gonic/gin"

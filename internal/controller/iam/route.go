@@ -1,8 +1,8 @@
 package iam
 
 import (
-	"accounts/internal/controller/internal"
-	"accounts/internal/model"
+	"alfred/internal/controller/internal"
+	"alfred/internal/model"
 	"github.com/gin-gonic/gin"
 )
 

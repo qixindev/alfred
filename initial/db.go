@@ -1,7 +1,7 @@
 package initial
 
 import (
-	"accounts/pkg/global"
+	"alfred/pkg/global"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )

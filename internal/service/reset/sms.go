@@ -1,10 +1,10 @@
 package reset
 
 import (
-	"accounts/internal/model"
-	"accounts/internal/service"
-	"accounts/pkg/global"
-	"accounts/pkg/utils"
+	"alfred/internal/model"
+	"alfred/internal/service"
+	"alfred/pkg/global"
+	"alfred/pkg/utils"
 	"errors"
 	"strings"
 	"time"

@@ -1,7 +1,7 @@
 package api
 
 import (
-	"accounts/pkg/utils"
+	"alfred/pkg/utils"
 	"crypto/tls"
 	"encoding/json"
 	"io"

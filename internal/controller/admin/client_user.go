@@ -1,12 +1,12 @@
 package admin
 
 import (
-	"accounts/internal/controller/internal"
-	"accounts/internal/endpoint/resp"
-	"accounts/internal/model"
-	"accounts/internal/service"
-	"accounts/pkg/global"
-	"accounts/pkg/utils"
+	"alfred/internal/controller/internal"
+	"alfred/internal/endpoint/resp"
+	"alfred/internal/model"
+	"alfred/internal/service"
+	"alfred/pkg/global"
+	"alfred/pkg/utils"
 	"context"
 	"fmt"
 	"github.com/Azure/azure-storage-blob-go/azblob"

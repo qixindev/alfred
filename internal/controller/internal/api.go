@@ -1,7 +1,7 @@
 package internal
 
 import (
-	"accounts/internal/model"
+	"alfred/internal/model"
 	"errors"
 	"github.com/gin-gonic/gin"
 )

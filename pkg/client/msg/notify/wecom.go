@@ -1,10 +1,10 @@
 package notify
 
 import (
-	"accounts/internal/model"
-	"accounts/pkg/client/msg/api"
-	"accounts/pkg/config/env"
-	"accounts/pkg/utils"
+	"alfred/internal/model"
+	"alfred/pkg/client/msg/api"
+	"alfred/pkg/config/env"
+	"alfred/pkg/utils"
 	"github.com/gin-gonic/gin"
 )
 

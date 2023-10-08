@@ -1,8 +1,8 @@
 package auth
 
 import (
-	"accounts/internal/model"
-	"accounts/pkg/utils"
+	"alfred/internal/model"
+	"alfred/pkg/utils"
 	"bytes"
 	"encoding/json"
 	"errors"

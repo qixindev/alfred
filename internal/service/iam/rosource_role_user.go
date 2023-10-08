@@ -1,8 +1,8 @@
 package iam
 
 import (
-	"accounts/internal/model"
-	"accounts/pkg/global"
+	"alfred/internal/model"
+	"alfred/pkg/global"
 )
 
 func ListResourcesRoleUsers(tenantId uint, resourceId string, roleId string) ([]model.ResourceRoleUser, error) {

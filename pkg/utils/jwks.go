@@ -1,7 +1,7 @@
 package utils
 
 import (
-	"accounts/pkg/config/env"
+	"alfred/pkg/config/env"
 	"crypto/rand"
 	"crypto/rsa"
 	"crypto/x509"
