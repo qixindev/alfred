@@ -4,6 +4,7 @@ import (
 	"alfred/internal/model"
 	"alfred/pkg/global"
 	"errors"
+	"gorm.io/gorm"
 )
 
 func DeleteTenant(tenant model.Tenant) error {
@@ -24,12 +25,24 @@ func DeleteTenant(tenant model.Tenant) error {
 		model.User{},
 	}
 
-	for _, v := range delList {
-		if err := global.DB.Model(v).Where("tenant_id = ?", tenant.Id).Delete(v).Error; err != nil {
+	// 开启数据库事务
+	err := global.DB.Transaction(func(tx *gorm.DB) error {
+		for _, v := range delList {
+			if err := tx.Model(v).Where("tenant_id = ?", tenant.Id).Delete(v).Error; err != nil {
+				tx.Rollback()
+				return err
+			}
+		}
+
+		if err := tx.Where("id = ?", tenant.Id).Delete(model.Tenant{}).Error; err != nil {
+			tx.Rollback()
 			return err
 		}
-	}
-	if err := global.DB.Where("id = ?", tenant.Id).Delete(model.Tenant{}).Error; err != nil {
+
+		return nil
+	})
+
+	if err != nil {
 		return err
 	}
 

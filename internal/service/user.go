@@ -160,3 +160,20 @@ func IsUserPhoneOrEmailExist(user model.User, tenantId uint) (bool, error) {
 	}
 	return false, nil
 }
+
+func GetTenantIdByTenantName(tenantName string) (uint, error) {
+	var tenant model.Tenant
+	if err := global.DB.Model(tenant).Where("name = ?", tenantName).First(&tenant).Error; err != nil {
+		return 0, err
+	}
+	return tenant.Id, nil
+}
+
+func GetSub(clientId string, tenantId uint, userId uint) (string, error) {
+	var clientUser model.ClientUser
+	if err := global.DB.Model(clientUser).Where("client_id = ? AND tenant_id = ? AND user_id = ?", clientId, tenantId, userId).
+		First(&clientUser).Error; err != nil {
+		return "", err
+	}
+	return clientUser.Sub, nil
+}

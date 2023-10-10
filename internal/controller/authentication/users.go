@@ -4,6 +4,7 @@ import (
 	"alfred/internal/endpoint/dto"
 	"alfred/internal/endpoint/resp"
 	"alfred/internal/model"
+	"alfred/internal/service"
 	"alfred/pkg/global"
 	"alfred/pkg/middlewares"
 	"github.com/gin-gonic/gin"
@@ -24,6 +25,23 @@ func GetUser(c *gin.Context) *model.User {
 //	@Router			/accounts/{tenant}/me [get]
 func GetUserDetail(c *gin.Context) {
 	user := GetUser(c)
+	tenantName := "default"
+	clientId := "default"
+
+	tenantId, err := service.GetTenantIdByTenantName(tenantName)
+	if err != nil {
+		resp.ErrorRequest(c, err)
+		return
+	}
+
+	sub, err := service.GetSub(clientId, tenantId, user.Id)
+	if err != nil {
+		resp.ErrorRequest(c, err)
+		return
+	}
+
+	user.Sub = sub
+
 	resp.SuccessWithData(c, user.Dto())
 }
 
