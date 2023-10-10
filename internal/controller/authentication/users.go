@@ -43,6 +43,7 @@ func GetUserDetail(c *gin.Context) {
 	user.Sub = sub
 
 	resp.SuccessWithData(c, user.Dto())
+
 }
 
 // UpdateUserDetail godoc
