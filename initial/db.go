@@ -3,6 +3,7 @@ package initial
 import (
 	"alfred/internal/model"
 	"alfred/pkg/global"
+	"alfred/pkg/utils"
 	"errors"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
@@ -30,7 +31,7 @@ func InitDefaultTenant() error {
 	return global.DB.Transaction(func(tx *gorm.DB) error {
 		if err := tx.First(&model.Tenant{}).Error; errors.Is(err, gorm.ErrRecordNotFound) {
 			if err = tx.Create(&tenant).Error; err != nil {
-				return err
+				return errors.New("create tenant err")
 			}
 		}
 
@@ -41,7 +42,7 @@ func InitDefaultTenant() error {
 		}
 		if err := tx.First(&model.Client{}).Error; errors.Is(err, gorm.ErrRecordNotFound) {
 			if err = tx.Create(&client).Error; err != nil {
-				return err
+				return errors.New("create client err")
 			}
 		}
 
@@ -53,8 +54,11 @@ func InitDefaultTenant() error {
 		}
 		if err := tx.First(&model.ClientSecret{}).Error; errors.Is(err, gorm.ErrRecordNotFound) {
 			if err = tx.Create(&clientSecret).Error; err != nil {
-				return err
+				return errors.New("create secret err")
 			}
+		}
+		if _, err := utils.LoadRsaPublicKeys(tenant.Name); err != nil {
+			return errors.New("LoadRsaPublicKeys err")
 		}
 		return nil
 	})
