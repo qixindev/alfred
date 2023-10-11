@@ -57,6 +57,25 @@ func InitDefaultTenant() error {
 				return errors.New("create secret err")
 			}
 		}
+		if err := tx.First(&model.User{}).Error; errors.Is(err, gorm.ErrRecordNotFound) {
+			adminPwd, err := utils.HashPassword("admin")
+			if err != nil {
+				return err
+			}
+			if err = global.DB.Create(&model.User{
+				Username:         "admin",
+				PasswordHash:     adminPwd,
+				EmailVerified:    false,
+				PhoneVerified:    false,
+				TwoFactorEnabled: false,
+				Disabled:         false,
+				TenantId:         tenant.Id,
+				Role:             "admin",
+			}).Error; err != nil {
+				return err
+			}
+		}
+
 		if _, err := utils.LoadRsaPublicKeys(tenant.Name); err != nil {
 			return errors.New("LoadRsaPublicKeys err")
 		}
