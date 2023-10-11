@@ -4,7 +4,7 @@ import (
 	"alfred/internal/model"
 	"alfred/pkg/global"
 	"alfred/pkg/utils"
-	"errors"
+	"github.com/pkg/errors"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )
@@ -96,7 +96,7 @@ func InitDefaultTenant() error {
 		}
 
 		if _, err := utils.LoadRsaPublicKeys(tmpTenant.Name); err != nil {
-			return errors.New("LoadRsaPublicKeys err")
+			return errors.WithMessage(err, "LoadRsaPublicKeys err")
 		}
 		return nil
 	})

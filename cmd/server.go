@@ -53,11 +53,11 @@ func startServer() {
 		if err = initSystem(); err == nil {
 			break
 		}
+		fmt.Println("init system err:", err)
 		time.Sleep(time.Second * 30)
 	}
 
 	if err != nil {
-		fmt.Println("init system err:", err)
 		os.Exit(1)
 		return
 	}
