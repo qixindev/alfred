@@ -37,6 +37,7 @@ func InitDefaultTenant() error {
 				return errors.New("create tenant err")
 			}
 			tmpTenant.Id = tenant.Id
+			tmpTenant.Name = tenant.Name
 		}
 
 		if err := tx.First(&tmpClient).Error; errors.Is(err, gorm.ErrRecordNotFound) {
