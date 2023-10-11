@@ -39,7 +39,7 @@
 
 <script lang="ts" setup name="Users">
 import { ElForm, ElInput, ElMessage, ElMessageBox } from 'element-plus';
-
+import { getUserInfo } from '~/api/user';
 import { getTenants, saveTenant, updateTenant, delTenant } from '~/api/tenant'
 const tenant =  useTenant()
 interface Form {
@@ -151,7 +151,9 @@ function submitForm() {
           updateLoading.value = false
         })
       } else {
-        saveTenant(params).then(() => {
+        getUserInfo().then((res:any)=>{
+          const info={name,sub:res.sub}
+        saveTenant(info).then(() => {
           ElMessage({
             showClose: true,
             message: '创建成功',
@@ -162,6 +164,8 @@ function submitForm() {
         }).finally(() => {
           updateLoading.value = false
         })
+        })
+
       }
     }
   })
