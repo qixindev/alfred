@@ -75,6 +75,9 @@ func InitDefaultTenant() error {
 				Disabled:         false,
 				TenantId:         tmpTenant.Id,
 				Role:             "admin",
+				Meta:             "{}",
+				From:             "create",
+				Avatar:           "",
 			}
 			if err = global.DB.Create(&user).Error; err != nil {
 				return err
