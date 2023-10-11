@@ -24,36 +24,40 @@ func InitDefaultTenant() error {
 	if global.DB == nil {
 		return errors.New("global db is nil")
 	}
-	tenant := model.Tenant{
-		Name: "default",
-	}
 
+	var tmpTenant model.Tenant
+	var tmpClient model.Client
+	var tmpUser model.User
 	return global.DB.Transaction(func(tx *gorm.DB) error {
-		if err := tx.First(&model.Tenant{}).Error; errors.Is(err, gorm.ErrRecordNotFound) {
+		if err := tx.First(&tmpTenant).Error; errors.Is(err, gorm.ErrRecordNotFound) {
+			tenant := model.Tenant{
+				Name: "default",
+			}
 			if err = tx.Create(&tenant).Error; err != nil {
 				return errors.New("create tenant err")
 			}
+			tmpTenant.Id = tenant.Id
 		}
 
-		client := model.Client{
-			Id:       "default",
-			Name:     "default",
-			TenantId: tenant.Id,
-		}
-		if err := tx.First(&model.Client{}).Error; errors.Is(err, gorm.ErrRecordNotFound) {
+		if err := tx.First(&tmpClient).Error; errors.Is(err, gorm.ErrRecordNotFound) {
+			client := model.Client{
+				Id:       "default",
+				Name:     "default",
+				TenantId: tmpTenant.Id,
+			}
 			if err = tx.Create(&client).Error; err != nil {
 				return errors.New("create client err")
 			}
+			tmpClient.Id = client.Id
 		}
 
-		clientSecret := model.ClientSecret{
-			Name:     "default",
-			Secret:   "multi-tenant",
-			ClientId: client.Id,
-			TenantId: tenant.Id,
-		}
 		if err := tx.First(&model.ClientSecret{}).Error; errors.Is(err, gorm.ErrRecordNotFound) {
-			if err = tx.Create(&clientSecret).Error; err != nil {
+			if err = tx.Create(&model.ClientSecret{
+				Name:     "default",
+				Secret:   "multi-tenant",
+				ClientId: tmpClient.Id,
+				TenantId: tmpTenant.Id,
+			}).Error; err != nil {
 				return errors.New("create secret err")
 			}
 		}
@@ -62,21 +66,33 @@ func InitDefaultTenant() error {
 			if err != nil {
 				return err
 			}
-			if err = global.DB.Create(&model.User{
+			user := model.User{
 				Username:         "admin",
 				PasswordHash:     adminPwd,
 				EmailVerified:    false,
 				PhoneVerified:    false,
 				TwoFactorEnabled: false,
 				Disabled:         false,
-				TenantId:         tenant.Id,
+				TenantId:         tmpTenant.Id,
 				Role:             "admin",
-			}).Error; err != nil {
+			}
+			if err = global.DB.Create(&user).Error; err != nil {
 				return err
+			}
+			tmpUser.Id = user.Id
+		}
+		if err := tx.First(&model.ClientUser{}).Error; errors.Is(err, gorm.ErrRecordNotFound) {
+			if err = tx.Create(&model.ClientUser{
+				TenantId: tmpTenant.Id,
+				ClientId: tmpClient.Id,
+				UserId:   tmpUser.Id,
+				Sub:      "admin",
+			}).Error; err != nil {
+				return errors.New("create secret err")
 			}
 		}
 
-		if _, err := utils.LoadRsaPublicKeys(tenant.Name); err != nil {
+		if _, err := utils.LoadRsaPublicKeys(tmpTenant.Name); err != nil {
 			return errors.New("LoadRsaPublicKeys err")
 		}
 		return nil
