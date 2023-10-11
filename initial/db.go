@@ -51,7 +51,7 @@ func InitDefaultTenant() error {
 			ClientId: client.Id,
 			TenantId: tenant.Id,
 		}
-		if err := global.DB.First(&model.Client{}).Error; errors.Is(err, gorm.ErrRecordNotFound) {
+		if err := global.DB.First(&model.ClientSecret{}).Error; errors.Is(err, gorm.ErrRecordNotFound) {
 			if err = global.DB.Create(&clientSecret).Error; err != nil {
 				return err
 			}
