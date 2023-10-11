@@ -6,12 +6,12 @@ import (
 	"alfred/pkg/config/env"
 	"alfred/pkg/global"
 	"alfred/pkg/utils"
-	"errors"
 	"fmt"
 	"github.com/gin-contrib/cors"
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-contrib/sessions/cookie"
 	"github.com/gin-gonic/gin"
+	"github.com/pkg/errors"
 	"go.uber.org/zap"
 	"os"
 	"time"
@@ -31,7 +31,17 @@ func initSystem() error {
 	}
 
 	if err = initial.InitDB(); err != nil {
-		return err
+		return errors.WithMessage(err, "InitDB err")
+	}
+
+	if env.GetReleaseType() == "first" {
+		migrateList := getMigrateModel()
+		if err = global.DB.AutoMigrate(migrateList...); err != nil {
+			return errors.WithMessage(err, "migrate db err")
+		}
+		if err = initial.InitDefaultTenant(); err != nil {
+			return errors.WithMessage(err, "InitDefaultTenant err")
+		}
 	}
 
 	return nil
