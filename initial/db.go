@@ -28,8 +28,8 @@ func InitDefaultTenant() error {
 	}
 
 	return global.DB.Transaction(func(tx *gorm.DB) error {
-		if err := global.DB.First(&model.Tenant{}).Error; errors.Is(err, gorm.ErrRecordNotFound) {
-			if err = global.DB.Create(&tenant).Error; err != nil {
+		if err := tx.First(&model.Tenant{}).Error; errors.Is(err, gorm.ErrRecordNotFound) {
+			if err = tx.Create(&tenant).Error; err != nil {
 				return err
 			}
 		}
@@ -39,8 +39,8 @@ func InitDefaultTenant() error {
 			Name:     "default",
 			TenantId: tenant.Id,
 		}
-		if err := global.DB.First(&model.Client{}).Error; errors.Is(err, gorm.ErrRecordNotFound) {
-			if err = global.DB.Create(&client).Error; err != nil {
+		if err := tx.First(&model.Client{}).Error; errors.Is(err, gorm.ErrRecordNotFound) {
+			if err = tx.Create(&client).Error; err != nil {
 				return err
 			}
 		}
@@ -51,8 +51,8 @@ func InitDefaultTenant() error {
 			ClientId: client.Id,
 			TenantId: tenant.Id,
 		}
-		if err := global.DB.First(&model.ClientSecret{}).Error; errors.Is(err, gorm.ErrRecordNotFound) {
-			if err = global.DB.Create(&clientSecret).Error; err != nil {
+		if err := tx.First(&model.ClientSecret{}).Error; errors.Is(err, gorm.ErrRecordNotFound) {
+			if err = tx.Create(&clientSecret).Error; err != nil {
 				return err
 			}
 		}
