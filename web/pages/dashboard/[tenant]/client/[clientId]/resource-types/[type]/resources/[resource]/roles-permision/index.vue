@@ -40,7 +40,9 @@
           </el-select>
         </el-form-item>
         <el-form-item label="用户" prop="name">
-          <el-select v-model="form.user" multiple placeholder="请选择用户">
+          <el-select v-model="form.user" multiple placeholder="请选择用户" @change="changeSelect">
+            <el-checkbox v-model="checked1" label="全选" size="large" @change="selectAll" />
+
             <el-option v-for="item in userOptions" :key="item.value" :label="item.label" :value="item.value" />
           </el-select>
         </el-form-item>
@@ -63,7 +65,8 @@ import { getClientUsers } from '~~/api/common'
 
 const route = useRoute()
 const { clientId, type, resource } = route.params as any
-
+// 全选按钮
+const checked1 = ref(false)
 interface Form {
   user: string,
   role: string
@@ -162,6 +165,7 @@ function resetForm() {
     role: ''
   }
   formRef.value.resetFields()
+  checked1.value = false
 }
 // 取消按钮
 function cancel() {
@@ -174,7 +178,26 @@ function handleAdd() {
   state.open = Status.ADD
 }
 
+// 全选
 
+function selectAll() {
+
+  state.form.user = []
+  if (checked1.value) {
+    userOptions.value.map((item: any) => { state.form.user.push(item.value) })
+  } else {
+    state.form.user = []
+
+  }
+}
+
+function changeSelect() {
+  if (userOptions.value.length == state.form.user.length) {
+    checked1.value = true
+  } else {
+    checked1.value = false
+  }
+}
 let updateLoading = ref(false);
 /** 提交按钮 */
 function submitForm() {
