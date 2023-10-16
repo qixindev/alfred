@@ -41,7 +41,8 @@
           </el-select>
         </el-form-item>
         <el-form-item label="用户" prop="user" v-if="state.open == Status.EDIT">
-          <el-select v-model="form.user" multiple placeholder="请选择用户">
+          <el-select v-model="form.user" multiple placeholder="请选择用户" @change="changeSelect">
+            <el-checkbox v-model="checked1" label="全选" size="large" @change="selectAll" />
             <el-option v-for="item in userOptions" :key="item.value" :label="item.label" :value="item.value" />
           </el-select>
         </el-form-item>
@@ -69,7 +70,8 @@ const route = useRoute()
 const roleOptions = ref<SelectOption[]>([])
 const userOptions = ref<SelectOption[]>([])
 const { clientId } = route.params
-
+// 全选按钮
+const checked1 = ref(false)
 interface Form {
   id: undefined | Number,
   name: undefined | string
@@ -140,6 +142,7 @@ function resetForm() {
     user: undefined
   }
   formRef.value.resetFields()
+  checked1.value = false
 }
 // 取消按钮
 function cancel() {
@@ -147,8 +150,28 @@ function cancel() {
   state.open = Status.CLOSE
   Visible.value = false
 }
-/** 新增按钮操作 */
+/** 按钮操作 */
 const typeid = ref('')
+// 全选
+
+function selectAll() {
+
+  state.form.user = []
+  if (checked1.value) {
+    userOptions.value.map((item: any) => { state.form.user.push(item.value) })
+  } else {
+    state.form.user = []
+
+  }
+}
+
+function changeSelect() {
+  if (userOptions.value.length == state.form.user.length) {
+    checked1.value = true
+  } else {
+    checked1.value = false
+  }
+}
 function handleAdd(wordname: string, e: any) {
   typeid.value = e.id
   const { id, } = e
@@ -181,6 +204,7 @@ function submitForm() {
       let { name, region, user } = state.form
       const params = { name }
       if (state.open === Status.EDIT) {
+        // 全选按钮
         const obj = { userId: user };
         const params1 = Object.entries(obj)
           .flatMap(([key, values]) => values.map((value: any) => ({ [key]: value })));
@@ -246,7 +270,6 @@ function viewResourecs(row: any) {
 function viewActions(row: any) {
   navigateTo(`/dashboard/${tenant.value}/client/${clientId}/resource-types/${row.id}/actions`)
 }
-
 onMounted(() => {
   getList()
 })
