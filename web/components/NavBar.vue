@@ -51,6 +51,7 @@ function clickUser(row: any) {
   let arr = route.path.split('/')
   arr.splice(2, 1, tenant.value);
   arr.join("/")
+  window.location.reload()
   if (route.path == '/') {
     navigateTo('/')
   } else { //非主页
