@@ -1,9 +1,9 @@
 package initial
 
 import (
-	"accounts/pkg/config"
-	"accounts/pkg/config/env"
-	"accounts/pkg/utils"
+	"alfred/pkg/config"
+	"alfred/pkg/config/env"
+	"alfred/pkg/utils"
 	"context"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )

@@ -1,7 +1,7 @@
 package resp
 
 import (
-	"accounts/pkg/global"
+	"alfred/pkg/global"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -27,7 +27,7 @@ func response(c *gin.Context, code int, errCode int, msg string, data any, total
 		}
 		c.JSON(code, &Response{Code: errCode, Message: msg, Data: data})
 	} else {
-		if data == nil {
+		if data == nil || total == 0 {
 			data = []struct{}{}
 		}
 		c.JSON(code, &ArrayResponse{Code: errCode, Message: msg, Total: total, Data: data})

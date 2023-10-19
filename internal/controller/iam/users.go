@@ -1,29 +1,28 @@
 package iam
 
 import (
-	"accounts/internal/controller/internal"
-	"accounts/internal/endpoint/resp"
-	"accounts/internal/model"
-	"accounts/internal/service/iam"
-	"accounts/pkg/global"
-	"accounts/pkg/utils"
+	"alfred/internal/controller/internal"
+	"alfred/internal/endpoint/resp"
+	"alfred/internal/model"
+	"alfred/internal/service/iam"
+	"alfred/pkg/global"
+	"alfred/pkg/utils"
 	"github.com/gin-gonic/gin"
 )
 
 // IsUserActionPermission godoc
 //
-//	@Summary		iam action user
+//	@Summary	用户是否拥有操作某个资源的权限
 //	@Schemes
-//	@Description	get iam action user
-//	@Tags			iam-action
-//	@Param			tenant		path	string	true	"tenant"	default(default)
-//	@Param			client		path	string	true	"client"	default(default)
-//	@Param			typeId		path	string	true	"tenant"
-//	@Param			resourceId	path	string	true	"tenant"
-//	@Param			actionId	path	string	true	"tenant"
-//	@Param			user		path	string	true	"tenant"
-//	@Success		200
-//	@Router			/accounts/{tenant}/iam/clients/{client}/types/{typeId}/resources/{resourceId}/actions/{actionId}/users/{user} [get]
+//	@Tags		iam-action
+//	@Param		tenant		path	string	true	"tenant"	default(default)
+//	@Param		client		path	string	true	"client"	default(default)
+//	@Param		typeId		path	string	true	"tenant"
+//	@Param		resourceId	path	string	true	"tenant"
+//	@Param		actionId	path	string	true	"tenant"
+//	@Param		user		path	string	true	"tenant"
+//	@Success	200
+//	@Router		/accounts/{tenant}/iam/clients/{client}/types/{typeId}/resources/{resourceId}/actions/{actionId}/users/{user} [get]
 func IsUserActionPermission(c *gin.Context) {
 	tenant := internal.GetTenant(c)
 	resourceId := c.Param("resourceId")
@@ -48,17 +47,16 @@ func IsUserActionPermission(c *gin.Context) {
 
 // GetIamActionResource godoc
 //
-//	@Summary		iam users roles
+//	@Summary	用户获取拥有某个操作的所有资源列表
 //	@Schemes
-//	@Description	get iam action user
-//	@Tags			iam-action
-//	@Param			tenant		path	string	true	"tenant"	default(default)
-//	@Param			client		path	string	true	"client"	default(default)
-//	@Param			typeId		path	string	true	"tenant"
-//	@Param			actionId	path	string	true	"tenant"
-//	@Param			user		path	string	true	"tenant"
-//	@Success		200
-//	@Router			/accounts/{tenant}/iam/clients/{client}/types/{typeId}/actions/{actionId}/users/{user}/resources [get]
+//	@Tags		iam-action
+//	@Param		tenant		path	string	true	"tenant"	default(default)
+//	@Param		client		path	string	true	"client"	default(default)
+//	@Param		typeId		path	string	true	"type id"
+//	@Param		actionId	path	string	true	"action id"
+//	@Param		user		path	string	true	"user sub id"
+//	@Success	200
+//	@Router		/accounts/{tenant}/iam/clients/{client}/types/{typeId}/actions/{actionId}/users/{user}/resources [get]
 func GetIamActionResource(c *gin.Context) {
 	typeId := c.Param("typeId")
 	actionId := c.Param("actionId")
@@ -83,16 +81,15 @@ func GetIamActionResource(c *gin.Context) {
 
 // ListResourceUser godoc
 //
-//	@Summary		iam users roles
+//	@Summary	获取某个资源下所有用户列表
 //	@Schemes
-//	@Description	get iam action user
-//	@Tags			iam-action
-//	@Param			tenant		path	string	true	"tenant"	default(default)
-//	@Param			client		path	string	true	"client"	default(default)
-//	@Param			typeId		path	string	true	"tenant"
-//	@Param			resourceId		path	string	true	"tenant"
-//	@Success		200
-//	@Router			/accounts/{tenant}/iam/clients/{client}/types/{typeId}/resources/{resourceId}/users [get]
+//	@Tags		iam-action
+//	@Param		tenant		path	string	true	"tenant"	default(default)
+//	@Param		client		path	string	true	"client"	default(default)
+//	@Param		typeId		path	string	true	"tenant"
+//	@Param		resourceId	path	string	true	"tenant"
+//	@Success	200
+//	@Router		/accounts/{tenant}/iam/clients/{client}/types/{typeId}/resources/{resourceId}/users [get]
 func ListResourceUser(c *gin.Context) {
 	typeId := c.Param("typeId")
 	resourceId := c.Param("resourceId")

@@ -1,11 +1,12 @@
 package admin
 
 import (
-	"accounts/internal/endpoint/resp"
-	"accounts/internal/model"
-	"accounts/internal/service"
-	"accounts/pkg/global"
-	"accounts/pkg/utils"
+	"alfred/internal/endpoint/resp"
+	"alfred/internal/model"
+	"alfred/internal/service"
+	"alfred/pkg/global"
+	"alfred/pkg/middlewares"
+	"alfred/pkg/utils"
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-gonic/gin"
 )
@@ -38,20 +39,10 @@ func ListTenants(c *gin.Context) {
 	resp.SuccessWithArrayData(c, utils.Filter(res, model.Tenant2Dto), 0)
 }
 
-// ListUserTenants godoc
-//
-//	@Summary	tenants
-//	@Schemes
-//	@Description	list tenants
-//	@Tags			admin-tenants
-//	@Param			user	path	string	true	"tenant"
-//	@Success		200
-//	@Router			/accounts/admin/tenants/users/{user} [get]
-func ListUserTenants(c *gin.Context) {
-	userId := c.Param("user")
+func ListAllTenants(c *gin.Context) {
 	var tenants []model.Tenant
-	if err := global.DB.Where("sub = ?", userId).Find(&tenants).Error; err != nil {
-		resp.ErrorSqlSelect(c, err, "list tenant users err", true)
+	if err := global.DB.Find(&tenants).Error; err != nil {
+		resp.ErrorSqlSelect(c, err, "list all tenant err", true)
 		return
 	}
 	resp.SuccessWithArrayData(c, utils.Filter(tenants, model.Tenant2Dto), 0)
@@ -218,12 +209,12 @@ func NewTenantSecret(c *gin.Context) {
 }
 
 func AddAdminTenantsRoutes(rg *gin.RouterGroup) {
-	rg.GET("/tenants", ListTenants)
-	rg.GET("/tenants/users/:user", ListUserTenants)
-	rg.GET("/tenants/:tenantId", GetTenant)
-	rg.POST("/tenants", NewTenant)
-	rg.PUT("/tenants/:tenantId", UpdateTenant)
-	rg.DELETE("/tenants/:tenantId", DeleteTenant)
-	rg.DELETE("/tenants/:tenantId/secrets/:secretId", DeleteTenantSecret)
-	rg.POST("/tenants/:tenantId/secrets", NewTenantSecret)
+	rg.GET("/tenants", middlewares.AuthorizedAdmin, ListTenants)
+	rg.GET("/tenants/all", middlewares.AuthAccessToken, ListAllTenants)
+	rg.GET("/tenants/:tenantId", middlewares.AuthorizedAdmin, GetTenant)
+	rg.POST("/tenants", middlewares.AuthorizedAdmin, NewTenant)
+	rg.PUT("/tenants/:tenantId", middlewares.AuthorizedAdmin, UpdateTenant)
+	rg.DELETE("/tenants/:tenantId", middlewares.AuthorizedAdmin, DeleteTenant)
+	rg.DELETE("/tenants/:tenantId/secrets/:secretId", middlewares.AuthorizedAdmin, DeleteTenantSecret)
+	rg.POST("/tenants/:tenantId/secrets", middlewares.AuthorizedAdmin, NewTenantSecret)
 }

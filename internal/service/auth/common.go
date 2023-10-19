@@ -1,8 +1,8 @@
 package auth
 
 import (
-	"accounts/internal/model"
-	"accounts/pkg/global"
+	"alfred/internal/model"
+	"alfred/pkg/global"
 	"errors"
 	"github.com/gin-gonic/gin"
 )

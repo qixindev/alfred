@@ -1,7 +1,7 @@
 package internal
 
 import (
-	"accounts/pkg/global"
+	"alfred/pkg/global"
 	"fmt"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"

@@ -1,7 +1,7 @@
 package main
 
 import (
-	"accounts/cmd"
+	"alfred/cmd"
 )
 
 func main() {

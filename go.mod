@@ -1,4 +1,4 @@
-module accounts
+module alfred
 
 go 1.20
 

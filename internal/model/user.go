@@ -1,7 +1,7 @@
 package model
 
 import (
-	"accounts/internal/endpoint/dto"
+	"alfred/internal/endpoint/dto"
 )
 
 type User struct {
@@ -20,6 +20,8 @@ type User struct {
 	Avatar           string `json:"avatar"`
 	Role             string `json:"role"`
 	From             string `json:"from"`
+	Meta             string `json:"meta" gorm:"type:jsonb"`
+	Sub              string `json:"sub" gorm:"-"`
 
 	TenantId uint   `gorm:"primaryKey"`
 	Tenant   Tenant `json:"-"`
@@ -55,6 +57,7 @@ func (u *User) Dto() dto.UserDto {
 		TwoFactorEnabled: u.TwoFactorEnabled,
 		Disabled:         u.Disabled,
 		Avatar:           u.Avatar,
+		Sub:              u.Sub,
 	}
 }
 

@@ -1,9 +1,9 @@
 package service
 
 import (
-	"accounts/internal/endpoint/req"
-	"accounts/internal/model"
-	"accounts/pkg/global"
+	"alfred/internal/endpoint/req"
+	"alfred/internal/model"
+	"alfred/pkg/global"
 	"errors"
 )
 

@@ -1,12 +1,12 @@
 package authentication
 
 import (
-	"accounts/internal/controller/internal"
-	"accounts/internal/endpoint/resp"
-	"accounts/internal/model"
-	"accounts/pkg/global"
-	"accounts/pkg/middlewares"
-	"accounts/pkg/utils"
+	"alfred/internal/controller/internal"
+	"alfred/internal/endpoint/resp"
+	"alfred/internal/model"
+	"alfred/pkg/global"
+	"alfred/pkg/middlewares"
+	"alfred/pkg/utils"
 	"errors"
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-gonic/gin"

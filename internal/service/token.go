@@ -1,9 +1,9 @@
 package service
 
 import (
-	"accounts/internal/model"
-	"accounts/pkg/global"
-	"accounts/pkg/utils"
+	"alfred/internal/model"
+	"alfred/pkg/global"
+	"alfred/pkg/utils"
 	"crypto/rsa"
 	"fmt"
 	"github.com/gin-gonic/gin"
@@ -60,6 +60,21 @@ func GetAccessToken(c *gin.Context, client *model.Client) (string, error) {
 	claims["iat"] = now.Unix()
 	claims["name"] = user.Name()
 	claims["scope"] = scope
+
+	return getToken(tenant.Name, token)
+}
+
+// GetResetPasswordToken 生成一次性的重置密码的token
+func GetResetPasswordToken(c *gin.Context, phone string) (string, error) {
+	tenant := getTenant(c)
+	iss := fmt.Sprintf("%s/%s", utils.GetHostWithScheme(c), tenant.Name)
+	now := time.Now()
+	token := jwt.New(jwt.SigningMethodRS256)
+	claims := token.Claims.(jwt.MapClaims)
+	claims["iss"] = iss
+	claims["sub"] = phone
+	claims["exp"] = now.Add(5 * time.Minute).Unix()
+	claims["iat"] = now.Unix()
 
 	return getToken(tenant.Name, token)
 }

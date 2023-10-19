@@ -1,7 +1,7 @@
 package service
 
 import (
-	"accounts/pkg/global"
+	"alfred/pkg/global"
 	"errors"
 )
 

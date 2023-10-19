@@ -2,30 +2,30 @@ apiVersion: v1
 kind: Service
 metadata:
   labels:
-    app: accounts
-  name: accounts
+    app: alfred
+  name: alfred
 spec:
   ports:
     - port: 80
   selector:
-    app: accounts
+    app: alfred
   type: ClusterIP
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
-    app: accounts
-  name: accounts
+    app: alfred
+  name: alfred
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: accounts
+      app: alfred
   template:
     metadata:
       labels:
-        app: accounts
+        app: alfred
     spec:
       containers:
         - env:
@@ -37,8 +37,8 @@ spec:
               value: "service-config"
             - name: NANE_SPACE
               value: "default"
-          image: qixindev.azurecr.io/iot/accounts:develop-20230321.1
-          name: accounts
+          image: qixindev.azurecr.io/iot/alfred:develop-20230321.1
+          name: alfred
           ports:
             - containerPort: 80
           volumeMounts:
@@ -67,7 +67,7 @@ spec:
                 path: config
         - name: backenddata
           hostPath:
-            path: /etc/data/accounts/
+            path: /etc/data/alfred/
         - name: timezone
           configMap:
             name: timezone

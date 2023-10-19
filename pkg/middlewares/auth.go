@@ -1,10 +1,10 @@
 package middlewares
 
 import (
-	"accounts/internal/endpoint/resp"
-	"accounts/internal/model"
-	"accounts/pkg/global"
-	"accounts/pkg/utils"
+	"alfred/internal/endpoint/resp"
+	"alfred/internal/model"
+	"alfred/pkg/global"
+	"alfred/pkg/utils"
 	"crypto/rsa"
 	"fmt"
 	"github.com/gin-contrib/sessions"

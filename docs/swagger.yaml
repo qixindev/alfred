@@ -284,9 +284,13 @@ definitions:
         type: boolean
       firstName:
         type: string
+      from:
+        type: string
       id:
         type: integer
       lastName:
+        type: string
+      meta:
         type: string
       passwordHash:
         type: string
@@ -359,7 +363,6 @@ paths:
       - oauth2
   /accounts/{tenant}/iam/clients/{client}/types:
     get:
-      description: get iam resource type list
       parameters:
       - default: default
         description: tenant
@@ -376,7 +379,7 @@ paths:
       responses:
         "200":
           description: OK
-      summary: iam resource type
+      summary: 获取资源类型列表
       tags:
       - iam-resource
     post:
@@ -435,7 +438,6 @@ paths:
       - iam-resource
   /accounts/{tenant}/iam/clients/{client}/types/{typeId}/actions:
     get:
-      description: get iam action list
       parameters:
       - default: default
         description: tenant
@@ -457,7 +459,7 @@ paths:
       responses:
         "200":
           description: OK
-      summary: iam action
+      summary: 获取操作列表
       tags:
       - iam-action
     post:
@@ -528,7 +530,6 @@ paths:
       - iam-action
   /accounts/{tenant}/iam/clients/{client}/types/{typeId}/actions/{actionId}/users/{user}/resources:
     get:
-      description: get iam action user
       parameters:
       - default: default
         description: tenant
@@ -542,17 +543,17 @@ paths:
         name: client
         required: true
         type: string
-      - description: tenant
+      - description: type id
         in: path
         name: typeId
         required: true
         type: string
-      - description: tenant
+      - description: action id
         in: path
         name: actionId
         required: true
         type: string
-      - description: tenant
+      - description: user sub id
         in: path
         name: user
         required: true
@@ -560,12 +561,11 @@ paths:
       responses:
         "200":
           description: OK
-      summary: iam users roles
+      summary: 用户获取拥有某个操作的所有资源列表
       tags:
       - iam-action
   /accounts/{tenant}/iam/clients/{client}/types/{typeId}/resources:
     get:
-      description: get iam resource list
       parameters:
       - default: default
         description: tenant
@@ -587,7 +587,7 @@ paths:
       responses:
         "200":
           description: OK
-      summary: iam resource
+      summary: 获取资源列表
       tags:
       - iam-resource
     post:
@@ -693,7 +693,6 @@ paths:
       - iam-resource
   /accounts/{tenant}/iam/clients/{client}/types/{typeId}/resources/{resourceId}/actions/{actionId}/users/{user}:
     get:
-      description: get iam action user
       parameters:
       - default: default
         description: tenant
@@ -730,12 +729,12 @@ paths:
       responses:
         "200":
           description: OK
-      summary: iam action user
+      summary: 用户是否拥有操作某个资源的权限
       tags:
       - iam-action
   /accounts/{tenant}/iam/clients/{client}/types/{typeId}/resources/{resourceId}/roles/{roleId}/users:
     get:
-      description: get iam resource role list
+      description: 例如：获取资源1下面所有管理员的用户列表
       parameters:
       - default: default
         description: tenant
@@ -767,7 +766,7 @@ paths:
       responses:
         "200":
           description: OK
-      summary: iam resource role
+      summary: 获取某个资源下某个角色的所有用户列表
       tags:
       - iam-role
     post:
@@ -858,7 +857,6 @@ paths:
       - iam-role
   /accounts/{tenant}/iam/clients/{client}/types/{typeId}/resources/{resourceId}/users:
     get:
-      description: get iam action user
       parameters:
       - default: default
         description: tenant
@@ -885,49 +883,11 @@ paths:
       responses:
         "200":
           description: OK
-      summary: iam users roles
+      summary: 获取某个资源下所有用户列表
       tags:
       - iam-action
-  /accounts/{tenant}/iam/clients/{client}/types/{typeId}/resources/all/users/{userId}/roles/{roleId}:
-    post:
-      description: 授权一类资源给用户
-      parameters:
-      - default: default
-        description: tenant
-        in: path
-        name: tenant
-        required: true
-        type: string
-      - default: default
-        description: client
-        in: path
-        name: client
-        required: true
-        type: string
-      - description: tenant
-        in: path
-        name: typeId
-        required: true
-        type: string
-      - description: tenant
-        in: path
-        name: roleId
-        required: true
-        type: string
-      - description: tenant
-        in: path
-        name: userId
-        required: true
-        type: integer
-      responses:
-        "200":
-          description: OK
-      summary: 授权一类资源给用户
-      tags:
-      - iam-role
   /accounts/{tenant}/iam/clients/{client}/types/{typeId}/roles:
     get:
-      description: get iam role list
       parameters:
       - default: default
         description: tenant
@@ -941,7 +901,7 @@ paths:
         name: client
         required: true
         type: string
-      - description: tenant
+      - description: type id
         in: path
         name: typeId
         required: true
@@ -949,7 +909,7 @@ paths:
       responses:
         "200":
           description: OK
-      summary: iam role
+      summary: 获取角色列表
       tags:
       - iam-role
     post:
@@ -1124,6 +1084,45 @@ paths:
       summary: iam role action
       tags:
       - iam-action
+  /accounts/{tenant}/iam/clients/{client}/types/{typeId}/roles/{roleId}/auth:
+    post:
+      parameters:
+      - default: default
+        description: tenant
+        in: path
+        name: tenant
+        required: true
+        type: string
+      - default: default
+        description: client
+        in: path
+        name: client
+        required: true
+        type: string
+      - description: type id
+        in: path
+        name: typeId
+        required: true
+        type: string
+      - description: role id
+        in: path
+        name: roleId
+        required: true
+        type: string
+      - description: client user id
+        in: body
+        name: bd
+        required: true
+        schema:
+          items:
+            type: integer
+          type: array
+      responses:
+        "200":
+          description: OK
+      summary: 授权一类资源给用户
+      tags:
+      - iam-role
   /accounts/{tenant}/logged-in/{provider}:
     get:
       description: provider callback
@@ -1560,6 +1559,100 @@ paths:
       summary: register a user
       tags:
       - login
+  /accounts/{tenant}/reset/getResetPasswordToken:
+    post:
+      description: get reset password token
+      parameters:
+      - default: default
+        description: tenant
+        in: path
+        name: tenant
+        required: true
+        type: string
+      - description: code
+        in: formData
+        name: code
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+      summary: get reset password token
+      tags:
+      - reset
+  /accounts/{tenant}/reset/resetPassword:
+    post:
+      description: reset password
+      parameters:
+      - description: token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - default: default
+        description: tenant
+        in: path
+        name: tenant
+        required: true
+        type: string
+      - description: new password
+        in: formData
+        name: newPassword
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+      summary: reset password
+      tags:
+      - reset
+  /accounts/{tenant}/reset/smsAvailable:
+    get:
+      description: check sms available
+      parameters:
+      - default: default
+        description: tenant
+        in: path
+        name: tenant
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+      summary: check sms available
+      tags:
+      - reset
+  /accounts/{tenant}/reset/verifyResetPasswordRequest:
+    post:
+      description: forgot password
+      parameters:
+      - default: default
+        description: tenant
+        in: path
+        name: tenant
+        required: true
+        type: string
+      - description: verify method
+        in: formData
+        name: verifyMethod
+        required: true
+        type: string
+      - description: pass code payload
+        in: formData
+        name: passCodePayload
+        required: true
+        type: string
+      - default: "+86"
+        description: area code
+        in: formData
+        name: areaCode
+        type: string
+      responses:
+        "200":
+          description: OK
+      summary: forgot password
+      tags:
+      - reset
   /accounts/{tenant}/unreadMsgCount/{subId}:
     get:
       description: get unread message count
@@ -1912,6 +2005,39 @@ paths:
         name: file
         required: true
         type: file
+      responses:
+        "200":
+          description: OK
+      summary: user
+      tags:
+      - client-user
+  /accounts/admin/{tenant}/clients/{clientId}/users/{subId}/meta:
+    put:
+      description: update user
+      parameters:
+      - default: default
+        description: tenant
+        in: path
+        name: tenant
+        required: true
+        type: string
+      - default: default
+        description: client id
+        in: path
+        name: clientId
+        required: true
+        type: string
+      - description: sub id
+        in: path
+        name: subId
+        required: true
+        type: string
+      - description: user body
+        in: body
+        name: bd
+        required: true
+        schema:
+          type: string
       responses:
         "200":
           description: OK
@@ -2792,6 +2918,28 @@ paths:
       summary: user
       tags:
       - user
+  /accounts/admin/{tenant}/users/from:
+    post:
+      description: mark user from
+      parameters:
+      - default: default
+        description: tenant
+        in: path
+        name: tenant
+        required: true
+        type: string
+      - description: user body
+        in: body
+        name: bd
+        required: true
+        schema:
+          type: object
+      responses:
+        "200":
+          description: OK
+      summary: user
+      tags:
+      - user
   /accounts/admin/tenants:
     get:
       description: list tenants
@@ -2881,21 +3029,6 @@ paths:
         name: secretId
         required: true
         type: integer
-      responses:
-        "200":
-          description: OK
-      summary: tenants
-      tags:
-      - admin-tenants
-  /accounts/admin/tenants/users/{user}:
-    get:
-      description: list tenants
-      parameters:
-      - description: tenant
-        in: path
-        name: user
-        required: true
-        type: string
       responses:
         "200":
           description: OK

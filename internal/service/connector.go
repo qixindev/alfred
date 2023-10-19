@@ -1,8 +1,8 @@
 package service
 
 import (
-	"accounts/internal/model"
-	"accounts/pkg/global"
+	"alfred/internal/model"
+	"alfred/pkg/global"
 	"fmt"
 	"github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/common"
 	"github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/common/errors"

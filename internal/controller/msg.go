@@ -1,12 +1,12 @@
 package controller
 
 import (
-	"accounts/internal/controller/internal"
-	"accounts/internal/endpoint/resp"
-	"accounts/internal/model"
-	"accounts/internal/service/auth"
-	"accounts/pkg/client/msg/notify"
-	"accounts/pkg/global"
+	"alfred/internal/controller/internal"
+	"alfred/internal/endpoint/resp"
+	"alfred/internal/model"
+	"alfred/internal/service/auth"
+	"alfred/pkg/client/msg/notify"
+	"alfred/pkg/global"
 	"strconv"
 	"strings"
 	"time"

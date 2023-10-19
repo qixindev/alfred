@@ -1,7 +1,7 @@
 package model
 
 import (
-	"accounts/internal/endpoint/req"
+	"alfred/internal/endpoint/req"
 	"github.com/gin-gonic/gin"
 )
 

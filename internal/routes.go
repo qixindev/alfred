@@ -1,13 +1,14 @@
 package internal
 
 import (
-	_ "accounts/docs"
-	"accounts/internal/controller"
-	"accounts/internal/controller/admin"
-	"accounts/internal/controller/authentication"
-	"accounts/internal/controller/iam"
-	"accounts/internal/endpoint/resp"
-	"accounts/pkg/middlewares"
+	_ "alfred/docs"
+	"alfred/internal/controller"
+	"alfred/internal/controller/admin"
+	"alfred/internal/controller/authentication"
+	"alfred/internal/controller/iam"
+	"alfred/internal/controller/reset"
+	"alfred/internal/endpoint/resp"
+	"alfred/pkg/middlewares"
 	"github.com/gin-contrib/static"
 	"github.com/gin-gonic/gin"
 	swaggerFiles "github.com/swaggo/files"
@@ -27,6 +28,7 @@ func AddRoutes(r *gin.Engine) {
 		authentication.AddUsersRoutes(tenantApi)
 		controller.AddOAuth2Routes(tenantApi)
 		controller.AddMsgRouter(tenantApi)
+		reset.AddResetRouter(tenantApi)
 	}
 
 	adminApi := r.RouterGroup.Group("/accounts/admin/:tenant", middlewares.MultiTenancy, middlewares.AuthorizedAdmin)
@@ -40,7 +42,7 @@ func AddRoutes(r *gin.Engine) {
 		admin.AddClientUserRoute(adminApi)
 	}
 
-	adminRouter := r.RouterGroup.Group("/accounts/admin", middlewares.MultiTenancy, middlewares.AuthorizedAdmin)
+	adminRouter := r.RouterGroup.Group("/accounts/admin", middlewares.MultiTenancy)
 	admin.AddAdminTenantsRoutes(adminRouter) // all tenants
 
 	iamRouter := r.RouterGroup.Group("/accounts/:tenant/iam/clients/:client", middlewares.MultiTenancy, middlewares.AuthorizedAdmin)

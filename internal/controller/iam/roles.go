@@ -1,27 +1,26 @@
 package iam
 
 import (
-	"accounts/internal/controller/internal"
-	"accounts/internal/endpoint/resp"
-	"accounts/internal/model"
-	"accounts/internal/service/iam"
-	"accounts/pkg/global"
-	"accounts/pkg/utils"
+	"alfred/internal/controller/internal"
+	"alfred/internal/endpoint/req"
+	"alfred/internal/endpoint/resp"
+	"alfred/internal/model"
+	"alfred/internal/service/iam"
+	"alfred/pkg/global"
+	"alfred/pkg/utils"
 	"github.com/gin-gonic/gin"
-	"strconv"
 )
 
 // ListIamRole godoc
 //
-//	@Summary	iam role
+//	@Summary	获取角色列表
 //	@Schemes
-//	@Description	get iam role list
-//	@Tags			iam-role
-//	@Param			tenant		path	string	true	"tenant"	default(default)
-//	@Param			client		path	string	true	"client"	default(default)
-//	@Param			typeId		path	string	true	"tenant"
-//	@Success		200
-//	@Router			/accounts/{tenant}/iam/clients/{client}/types/{typeId}/roles [get]
+//	@Tags		iam-role
+//	@Param		tenant		path	string	true	"tenant"	default(default)
+//	@Param		client		path	string	true	"client"	default(default)
+//	@Param		typeId		path	string	true	"type id"
+//	@Success	200
+//	@Router		/accounts/{tenant}/iam/clients/{client}/types/{typeId}/roles [get]
 func ListIamRole(c *gin.Context) {
 	typeId := c.Param("typeId")
 	tenant := internal.GetTenant(c)
@@ -93,9 +92,9 @@ func DeleteIamRole(c *gin.Context) {
 
 // ListIamResourceRole godoc
 //
-//	@Summary		iam resource role
+//	@Summary		获取某个资源下某个角色的所有用户列表
 //	@Schemes
-//	@Description	get iam resource role list
+//	@Description	例如：获取资源1下面所有管理员的用户列表
 //	@Tags			iam-role
 //	@Param			tenant		path	string	true	"tenant"	default(default)
 //	@Param			client		path	string	true	"client"	default(default)
@@ -199,41 +198,42 @@ func DeleteIamResourceRoleUser(c *gin.Context) {
 //
 //	@Summary		授权一类资源给用户
 //	@Schemes
-//	@Description	授权一类资源给用户
 //	@Tags			iam-role
-//	@Param			tenant		path	string	true	"tenant"	default(default)
-//	@Param			client		path	string	true	"client"	default(default)
-//	@Param			typeId		path	string	true	"tenant"
-//	@Param			roleId		path	string	true	"tenant"
-//	@Param			userId		path	integer	true	"tenant"
+//	@Param			tenant		path	string		true	"tenant"	default(default)
+//	@Param			client		path	string		true	"client"	default(default)
+//	@Param			typeId		path	string		true	"type id"
+//	@Param			roleId		path	string		true	"role id"
+//	@Param			bd			body	[]integer	true	"client user id"
 //	@Success		200
-//	@Router			/accounts/{tenant}/iam/clients/{client}/types/{typeId}/resources/all/users/{userId}/roles/{roleId} [post]
+//	@Router			/accounts/{tenant}/iam/clients/{client}/types/{typeId}/roles/{roleId}/auth [post]
 func CreateAllTypeRole(c *gin.Context) {
-	tenant := internal.GetTenant(c)
-	typeId := c.Param("typeId")
-	userId := c.Param("userId")
-	userIdUint, err := strconv.ParseUint(userId, 10, 64)
-	if err != nil {
-		resp.ErrReqParaCustom(c, "user id should be a number")
+	var in req.IamClientUser
+	if err := internal.New(c).BindUri(&in).BindJson(&in.ClientUserId).Error; err != nil {
+		resp.ErrorRequest(c, err)
 		return
 	}
-
-	resources, err := iam.ListResources(tenant.Id, typeId)
+	tenant := internal.GetTenant(c)
+	resources, err := iam.ListResources(tenant.Id, in.TypeId)
 	if err != nil {
 		resp.ErrorSqlSelect(c, err, "list resource err")
 		return
 	}
-	for _, resource := range resources {
-		roleUser := []model.ResourceRoleUser{{
-			RoleId:       c.Param("roleId"),
-			TenantId:     tenant.Id,
-			ResourceId:   resource.Id,
-			ClientUserId: uint(userIdUint),
-		}}
-		if err = iam.CreateResourceRoleUser(tenant.Id, roleUser); err != nil {
-			resp.ErrorSqlCreate(c, err, "create resource role user err")
-			return
+
+	roleUser := make([]model.ResourceRoleUser, 0)
+	for _, cId := range in.ClientUserId {
+		for _, resource := range resources {
+			roleUser = append(roleUser, model.ResourceRoleUser{
+				RoleId:       c.Param("roleId"),
+				TenantId:     tenant.Id,
+				ResourceId:   resource.Id,
+				ClientUserId: cId.UserId,
+			})
 		}
+	}
+
+	if err = iam.CreateResourceRoleUser(tenant.Id, roleUser); err != nil {
+		resp.ErrorSqlCreate(c, err, "create resource role user err")
+		return
 	}
 
 	resp.Success(c)

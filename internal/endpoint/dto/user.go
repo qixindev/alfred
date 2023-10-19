@@ -12,6 +12,7 @@ type UserDto struct {
 	PhoneVerified    bool   `json:"phoneVerified"`
 	TwoFactorEnabled bool   `json:"twoFactorEnabled"`
 	Avatar           string `json:"avatar"`
+	Sub              string `json:"sub"`
 	Disabled         bool   `json:"disabled"`
 }
 

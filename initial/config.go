@@ -1,9 +1,9 @@
 package initial
 
 import (
-	"accounts/pkg/config"
-	"accounts/pkg/config/env"
-	"accounts/pkg/global"
+	"alfred/pkg/config"
+	"alfred/pkg/config/env"
+	"alfred/pkg/global"
 	"fmt"
 	"github.com/spf13/viper"
 )

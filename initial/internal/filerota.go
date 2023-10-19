@@ -1,7 +1,7 @@
 package internal
 
 import (
-	"accounts/pkg/global"
+	"alfred/pkg/global"
 	rotatelogs "github.com/lestrrat-go/file-rotatelogs"
 	"go.uber.org/zap/zapcore"
 	"os"

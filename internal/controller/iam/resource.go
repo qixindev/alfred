@@ -1,23 +1,22 @@
 package iam
 
 import (
-	"accounts/internal/controller/internal"
-	"accounts/internal/endpoint/resp"
-	"accounts/internal/model"
-	"accounts/internal/service/iam"
+	"alfred/internal/controller/internal"
+	"alfred/internal/endpoint/resp"
+	"alfred/internal/model"
+	"alfred/internal/service/iam"
 	"github.com/gin-gonic/gin"
 )
 
 // ListIamType godoc
 //
-//	@Summary	iam resource type
+//	@Summary	获取资源类型列表
 //	@Schemes
-//	@Description	get iam resource type list
-//	@Tags			iam-resource
-//	@Param			tenant		path	string	true	"tenant"	default(default)
-//	@Param			client		path	string	true	"client"	default(default)
-//	@Success		200
-//	@Router			/accounts/{tenant}/iam/clients/{client}/types [get]
+//	@Tags		iam-resource
+//	@Param		tenant		path	string	true	"tenant"	default(default)
+//	@Param		client		path	string	true	"client"	default(default)
+//	@Success	200
+//	@Router		/accounts/{tenant}/iam/clients/{client}/types [get]
 func ListIamType(c *gin.Context) {
 	client, err := GetClientFromCid(c)
 	if err != nil {
@@ -94,14 +93,13 @@ func DeleteIamType(c *gin.Context) {
 
 // ListIamResource godoc
 //
-//	@Summary		iam resource
+//	@Summary	获取资源列表
 //	@Schemes
-//	@Description	get iam resource list
-//	@Tags			iam-resource
-//	@Param			tenant		path	string	true	"tenant"	default(default)
-//	@Param			client		path	string	true	"client"	default(default)
-//	@Param			typeId		path	string	true	"tenant"
-//	@Success		200
+//	@Tags		iam-resource
+//	@Param		tenant		path	string	true	"tenant"	default(default)
+//	@Param		client		path	string	true	"client"	default(default)
+//	@Param		typeId		path	string	true	"tenant"
+//	@Success	200
 //	@Router			/accounts/{tenant}/iam/clients/{client}/types/{typeId}/resources [get]
 func ListIamResource(c *gin.Context) {
 	tenant := internal.GetTenant(c)

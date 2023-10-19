@@ -30,29 +30,6 @@
                 }
             }
         },
-        "/accounts/admin/tenants/users/{user}": {
-            "get": {
-                "description": "list tenants",
-                "tags": [
-                    "admin-tenants"
-                ],
-                "summary": "tenants",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "tenant",
-                        "name": "user",
-                        "in": "path",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK"
-                    }
-                }
-            }
-        },
         "/accounts/admin/tenants/{tenantId}": {
             "get": {
                 "description": "get tenants",
@@ -682,6 +659,54 @@
                         "name": "file",
                         "in": "formData",
                         "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/accounts/admin/{tenant}/clients/{clientId}/users/{subId}/meta": {
+            "put": {
+                "description": "update user",
+                "tags": [
+                    "client-user"
+                ],
+                "summary": "user",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "default": "default",
+                        "description": "tenant",
+                        "name": "tenant",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "default": "default",
+                        "description": "client id",
+                        "name": "clientId",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "sub id",
+                        "name": "subId",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "user body",
+                        "name": "bd",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
                     }
                 ],
                 "responses": {
@@ -1728,6 +1753,39 @@
                 }
             }
         },
+        "/accounts/admin/{tenant}/users/from": {
+            "post": {
+                "description": "mark user from",
+                "tags": [
+                    "user"
+                ],
+                "summary": "user",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "default": "default",
+                        "description": "tenant",
+                        "name": "tenant",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "user body",
+                        "name": "bd",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "object"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
         "/accounts/admin/{tenant}/users/{userId}": {
             "get": {
                 "description": "get user",
@@ -1999,11 +2057,10 @@
         },
         "/accounts/{tenant}/iam/clients/{client}/types": {
             "get": {
-                "description": "get iam resource type list",
                 "tags": [
                     "iam-resource"
                 ],
-                "summary": "iam resource type",
+                "summary": "获取资源类型列表",
                 "parameters": [
                     {
                         "type": "string",
@@ -2109,11 +2166,10 @@
         },
         "/accounts/{tenant}/iam/clients/{client}/types/{typeId}/actions": {
             "get": {
-                "description": "get iam action list",
                 "tags": [
                     "iam-action"
                 ],
-                "summary": "iam action",
+                "summary": "获取操作列表",
                 "parameters": [
                     {
                         "type": "string",
@@ -2243,11 +2299,10 @@
         },
         "/accounts/{tenant}/iam/clients/{client}/types/{typeId}/actions/{actionId}/users/{user}/resources": {
             "get": {
-                "description": "get iam action user",
                 "tags": [
                     "iam-action"
                 ],
-                "summary": "iam users roles",
+                "summary": "用户获取拥有某个操作的所有资源列表",
                 "parameters": [
                     {
                         "type": "string",
@@ -2267,21 +2322,21 @@
                     },
                     {
                         "type": "string",
-                        "description": "tenant",
+                        "description": "type id",
                         "name": "typeId",
                         "in": "path",
                         "required": true
                     },
                     {
                         "type": "string",
-                        "description": "tenant",
+                        "description": "action id",
                         "name": "actionId",
                         "in": "path",
                         "required": true
                     },
                     {
                         "type": "string",
-                        "description": "tenant",
+                        "description": "user sub id",
                         "name": "user",
                         "in": "path",
                         "required": true
@@ -2296,11 +2351,10 @@
         },
         "/accounts/{tenant}/iam/clients/{client}/types/{typeId}/resources": {
             "get": {
-                "description": "get iam resource list",
                 "tags": [
                     "iam-resource"
                 ],
-                "summary": "iam resource",
+                "summary": "获取资源列表",
                 "parameters": [
                     {
                         "type": "string",
@@ -2370,59 +2424,6 @@
                         "schema": {
                             "$ref": "#/definitions/model.Resource"
                         }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK"
-                    }
-                }
-            }
-        },
-        "/accounts/{tenant}/iam/clients/{client}/types/{typeId}/resources/all/users/{userId}/roles/{roleId}": {
-            "post": {
-                "description": "授权一类资源给用户",
-                "tags": [
-                    "iam-role"
-                ],
-                "summary": "授权一类资源给用户",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "default": "default",
-                        "description": "tenant",
-                        "name": "tenant",
-                        "in": "path",
-                        "required": true
-                    },
-                    {
-                        "type": "string",
-                        "default": "default",
-                        "description": "client",
-                        "name": "client",
-                        "in": "path",
-                        "required": true
-                    },
-                    {
-                        "type": "string",
-                        "description": "tenant",
-                        "name": "typeId",
-                        "in": "path",
-                        "required": true
-                    },
-                    {
-                        "type": "string",
-                        "description": "tenant",
-                        "name": "roleId",
-                        "in": "path",
-                        "required": true
-                    },
-                    {
-                        "type": "integer",
-                        "description": "tenant",
-                        "name": "userId",
-                        "in": "path",
-                        "required": true
                     }
                 ],
                 "responses": {
@@ -2533,11 +2534,10 @@
         },
         "/accounts/{tenant}/iam/clients/{client}/types/{typeId}/resources/{resourceId}/actions/{actionId}/users/{user}": {
             "get": {
-                "description": "get iam action user",
                 "tags": [
                     "iam-action"
                 ],
-                "summary": "iam action user",
+                "summary": "用户是否拥有操作某个资源的权限",
                 "parameters": [
                     {
                         "type": "string",
@@ -2593,11 +2593,11 @@
         },
         "/accounts/{tenant}/iam/clients/{client}/types/{typeId}/resources/{resourceId}/roles/{roleId}/users": {
             "get": {
-                "description": "get iam resource role list",
+                "description": "例如：获取资源1下面所有管理员的用户列表",
                 "tags": [
                     "iam-role"
                 ],
-                "summary": "iam resource role",
+                "summary": "获取某个资源下某个角色的所有用户列表",
                 "parameters": [
                     {
                         "type": "string",
@@ -2769,11 +2769,10 @@
         },
         "/accounts/{tenant}/iam/clients/{client}/types/{typeId}/resources/{resourceId}/users": {
             "get": {
-                "description": "get iam action user",
                 "tags": [
                     "iam-action"
                 ],
-                "summary": "iam users roles",
+                "summary": "获取某个资源下所有用户列表",
                 "parameters": [
                     {
                         "type": "string",
@@ -2815,11 +2814,10 @@
         },
         "/accounts/{tenant}/iam/clients/{client}/types/{typeId}/roles": {
             "get": {
-                "description": "get iam role list",
                 "tags": [
                     "iam-role"
                 ],
-                "summary": "iam role",
+                "summary": "获取角色列表",
                 "parameters": [
                     {
                         "type": "string",
@@ -2839,7 +2837,7 @@
                     },
                     {
                         "type": "string",
-                        "description": "tenant",
+                        "description": "type id",
                         "name": "typeId",
                         "in": "path",
                         "required": true
@@ -3090,6 +3088,63 @@
                         "name": "actionId",
                         "in": "path",
                         "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/accounts/{tenant}/iam/clients/{client}/types/{typeId}/roles/{roleId}/auth": {
+            "post": {
+                "tags": [
+                    "iam-role"
+                ],
+                "summary": "授权一类资源给用户",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "default": "default",
+                        "description": "tenant",
+                        "name": "tenant",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "default": "default",
+                        "description": "client",
+                        "name": "client",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "type id",
+                        "name": "typeId",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "role id",
+                        "name": "roleId",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "client user id",
+                        "name": "bd",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "integer"
+                            }
+                        }
                     }
                 ],
                 "responses": {
@@ -3746,6 +3801,144 @@
                 }
             }
         },
+        "/accounts/{tenant}/reset/getResetPasswordToken": {
+            "post": {
+                "description": "get reset password token",
+                "tags": [
+                    "reset"
+                ],
+                "summary": "get reset password token",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "default": "default",
+                        "description": "tenant",
+                        "name": "tenant",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "code",
+                        "name": "code",
+                        "in": "formData",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/accounts/{tenant}/reset/resetPassword": {
+            "post": {
+                "description": "reset password",
+                "tags": [
+                    "reset"
+                ],
+                "summary": "reset password",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "token",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "default": "default",
+                        "description": "tenant",
+                        "name": "tenant",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "new password",
+                        "name": "newPassword",
+                        "in": "formData",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/accounts/{tenant}/reset/smsAvailable": {
+            "get": {
+                "description": "check sms available",
+                "tags": [
+                    "reset"
+                ],
+                "summary": "check sms available",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "default": "default",
+                        "description": "tenant",
+                        "name": "tenant",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/accounts/{tenant}/reset/verifyResetPasswordRequest": {
+            "post": {
+                "description": "forgot password",
+                "tags": [
+                    "reset"
+                ],
+                "summary": "forgot password",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "default": "default",
+                        "description": "tenant",
+                        "name": "tenant",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "verify method",
+                        "name": "verifyMethod",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "pass code payload",
+                        "name": "passCodePayload",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "default": "+86",
+                        "description": "area code",
+                        "name": "areaCode",
+                        "in": "formData"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
         "/accounts/{tenant}/unreadMsgCount/{subId}": {
             "get": {
                 "description": "get unread message count",
@@ -4200,10 +4393,16 @@
                 "firstName": {
                     "type": "string"
                 },
+                "from": {
+                    "type": "string"
+                },
                 "id": {
                     "type": "integer"
                 },
                 "lastName": {
+                    "type": "string"
+                },
+                "meta": {
                     "type": "string"
                 },
                 "passwordHash": {

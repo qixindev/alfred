@@ -1,19 +1,14 @@
 <template>
   <div>
     <div class="option">
-      <el-select v-model="query.role" placeholder="请选择角色" @change="getList">
-        <el-option
-          v-for="item in roleOptions"
-          :key="item.value"
-          :label="item.label"
-          :value="item.value"
-          />
+      <el-select v-model="query.role" placeholder="请选择角色" @change="getList" >
+        <el-option v-for="item in roleOptions" :key="item.value" :label="item.label" :value="item.value"/>
       </el-select>
       <el-button type="primary" @click="handleAdd">角色分配</el-button>
     </div>
     <el-card>
       <el-table v-loading="loading" stripe :data="dataList">
-        <el-table-column label="ID"  align="center" prop="id"/>
+        <el-table-column label="ID" align="center" prop="id" />
         <el-table-column label="用户" align="center" prop="user">
           <template #default="{ row }">
             <!-- {{ userNameFilter(row.id) }} -->
@@ -45,7 +40,9 @@
           </el-select>
         </el-form-item>
         <el-form-item label="用户" prop="name">
-          <el-select v-model="form.user"  multiple    placeholder="请选择用户">
+          <el-select v-model="form.user" multiple placeholder="请选择用户" @change="changeSelect">
+            <el-checkbox v-model="checked1" label="全选" size="large" @change="selectAll" />
+
             <el-option v-for="item in userOptions" :key="item.value" :label="item.label" :value="item.value" />
           </el-select>
         </el-form-item>
@@ -68,7 +65,8 @@ import { getClientUsers } from '~~/api/common'
 
 const route = useRoute()
 const { clientId, type, resource } = route.params as any
-
+// 全选按钮
+const checked1 = ref(false)
 interface Form {
   user: string,
   role: string
@@ -148,13 +146,23 @@ function getRoleOptions() {
       value: item.id,
       id: item.id
     }))
+      roleOptions.value.map((item:any)=>{
+        if(item.label=="super-admin"){
+            state.form.role=item.value
+            state.query.role=item.value
+          }else{
+            state.form.role=roleOptions.value[0].value
+            state.query.role=roleOptions.value[0].value
+          }
+      })
+        getList()
   })
 }
 
 function getUserOptions() {
   getClientUsers(clientId).then((res: any) => {
     userOptions.value = res.map((item: any) => ({
-      label: item.username,
+      label: item.displayName,
       value: item.id
     }))
   })
@@ -167,6 +175,7 @@ function resetForm() {
     role: ''
   }
   formRef.value.resetFields()
+  checked1.value = false
 }
 // 取消按钮
 function cancel() {
@@ -179,7 +188,26 @@ function handleAdd() {
   state.open = Status.ADD
 }
 
+// 全选
 
+function selectAll() {
+
+  state.form.user = []
+  if (checked1.value) {
+    userOptions.value.map((item: any) => { state.form.user.push(item.value) })
+  } else {
+    state.form.user = []
+
+  }
+}
+
+function changeSelect() {
+  if (userOptions.value.length == state.form.user.length) {
+    checked1.value = true
+  } else {
+    checked1.value = false
+  }
+}
 let updateLoading = ref(false);
 /** 提交按钮 */
 function submitForm() {
@@ -190,7 +218,7 @@ function submitForm() {
       // const params = [{ userId: user }]
       const obj = { userId: user };
       const params = Object.entries(obj)
-        .flatMap(([key, values]) => values.map((value:any) => ({ [key]: value })));
+        .flatMap(([key, values]) => values.map((value: any) => ({ [key]: value })));
       saveUser(clientId, type, resource, role, params).then(() => {
         ElMessage({
           showClose: true,

@@ -1,8 +1,8 @@
 package service
 
 import (
-	"accounts/internal/model"
-	"accounts/pkg/global"
+	"alfred/internal/model"
+	"alfred/pkg/global"
 	"errors"
 	"github.com/google/uuid"
 	"gorm.io/gorm"
@@ -124,6 +124,9 @@ func BindLoginUser(userInfo *model.UserInfo, tenantId uint, userFrom string) (us
 }
 
 func GetUserBySubId(tenantId uint, clientId string, subId string) (*model.User, error) {
+	if tenantId == 0 || clientId == "" || subId == "" {
+		return nil, errors.New("invalidate GetUserBySubId param")
+	}
 	var user model.User
 	if err := global.DB.Table("users as u").
 		Select("u.id", "u.username", "u.display_name", "u.email", "u.phone", "u.disabled", "u.role", "u.avatar", "u.from",
@@ -156,4 +159,21 @@ func IsUserPhoneOrEmailExist(user model.User, tenantId uint) (bool, error) {
 		}
 	}
 	return false, nil
+}
+
+func GetTenantIdByTenantName(tenantName string) (uint, error) {
+	var tenant model.Tenant
+	if err := global.DB.Model(tenant).Where("name = ?", tenantName).First(&tenant).Error; err != nil {
+		return 0, err
+	}
+	return tenant.Id, nil
+}
+
+func GetSub(clientId string, tenantId uint, userId uint) (string, error) {
+	var clientUser model.ClientUser
+	if err := global.DB.Model(clientUser).Where("client_id = ? AND tenant_id = ? AND user_id = ?", clientId, tenantId, userId).
+		First(&clientUser).Error; err != nil {
+		return "", err
+	}
+	return clientUser.Sub, nil
 }

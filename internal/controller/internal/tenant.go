@@ -1,8 +1,8 @@
 package internal
 
 import (
-	"accounts/internal/model"
-	"accounts/pkg/global"
+	"alfred/internal/model"
+	"alfred/pkg/global"
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
 )

@@ -1,7 +1,7 @@
 package global
 
 import (
-	"accounts/pkg/config"
+	"alfred/pkg/config"
 	"go.uber.org/zap"
 	"gorm.io/gorm"
 )

@@ -15,7 +15,7 @@ stages:
           - task: Docker@2
             inputs:
               containerRegistry: 'acr'
-              repository: 'iot/accounts'
+              repository: 'iot/alfred'
               command: 'buildAndPush'
               Dockerfile: '**/Dockerfile'
               tags: $(Build.BuildNumber)
@@ -29,7 +29,7 @@ stages:
               steps:
                 - download: current
                   artifact: DeployDevelop
-                - script: sed -i "s/qixindev.azurecr.io\/iot\/accounts:[a-zA-Z]*[_]*[a-zA-Z]*-[0-9]*[.][0-9]*/qixindev.azurecr.io\/iot\/accounts:$(Build.BuildNumber)/g" $(Pipeline.Workspace)/DeployDevelop/develop.yaml
+                - script: sed -i "s/qixindev.azurecr.io\/iot\/alfred:[a-zA-Z]*[_]*[a-zA-Z]*-[0-9]*[.][0-9]*/qixindev.azurecr.io\/iot\/alfred:$(Build.BuildNumber)/g" $(Pipeline.Workspace)/DeployDevelop/develop.yaml
                 - task: Kubernetes@1
                   inputs:
                     connectionType: 'Kubernetes Service Connection'

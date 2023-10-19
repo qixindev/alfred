@@ -1,19 +1,18 @@
 package iam
 
 import (
-	"accounts/internal/controller/internal"
-	"accounts/internal/endpoint/resp"
-	"accounts/internal/model"
-	"accounts/internal/service/iam"
+	"alfred/internal/controller/internal"
+	"alfred/internal/endpoint/resp"
+	"alfred/internal/model"
+	"alfred/internal/service/iam"
 	"github.com/gin-gonic/gin"
 	"net/http"
 )
 
 // ListIamAction godoc
 //
-//	@Summary		iam action
+//	@Summary		获取操作列表
 //	@Schemes
-//	@Description	get iam action list
 //	@Tags			iam-action
 //	@Param			tenant		path	string	true	"tenant"	default(default)
 //	@Param			client		path	string	true	"client"	default(default)
