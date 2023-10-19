@@ -1,8 +1,8 @@
 <template>
   <div>
     <div class="option">
-      <el-select v-model="query.role" placeholder="请选择角色" @change="getList">
-        <el-option v-for="item in roleOptions" :key="item.value" :label="item.label" :value="item.value" />
+      <el-select v-model="query.role" placeholder="请选择角色" @change="getList" >
+        <el-option v-for="item in roleOptions" :key="item.value" :label="item.label" :value="item.value"/>
       </el-select>
       <el-button type="primary" @click="handleAdd">角色分配</el-button>
     </div>
@@ -146,6 +146,16 @@ function getRoleOptions() {
       value: item.id,
       id: item.id
     }))
+      roleOptions.value.map((item:any)=>{
+        if(item.label=="super-admin"){
+            state.form.role=item.value
+            state.query.role=item.value
+          }else{
+            state.form.role=roleOptions.value[0].value
+            state.query.role=roleOptions.value[0].value
+          }
+      })
+        getList()
   })
 }
 

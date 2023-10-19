@@ -185,6 +185,13 @@ function handleAdd(wordname: string, e: any) {
         value: item.id,
         id: item.id
       }))
+      roleOptions.value.map((item:any)=>{
+        if(item.label=="super-admin"){
+            state.form.region=item.value
+          }else{
+            state.form.region=roleOptions.value[0].value
+          }
+      })
     })
     getClientUsers(clientId).then((res: any) => {
       userOptions.value = res.map((item: any) => ({
