@@ -91,6 +91,7 @@ func BindLoginUser(userInfo *model.UserInfo, tenantId uint, userFrom string) (us
 		Disabled:         false,
 		TenantId:         tenantId,
 		From:             userFrom,
+		Meta:             "{}",
 	}
 	if newUser.Username == "" {
 		newUser.Username = uuid.NewString()
