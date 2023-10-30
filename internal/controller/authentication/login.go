@@ -99,6 +99,7 @@ func Register(c *gin.Context) {
 		Username:     login,
 		PasswordHash: hash,
 		From:         "register",
+		Meta:         "{}",
 	}
 	if err = global.DB.Create(&newUser).Error; err != nil {
 		resp.ErrorUnknown(c, err, "create user err")

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { register } from '~/api/user'
 import type { FormInstance, FormRules } from 'element-plus'
-
+import { ElMessage } from 'element-plus'
 const form = reactive({
   login: '',
   password: '',
@@ -9,6 +9,7 @@ const form = reactive({
 })
 
 const ruleFormRef = ref<FormInstance>()
+const protocol = ref(false)
 
 // 自定义密码确认
 function validCopyPasswordFn(rule: any, value: string, callback: any) {
@@ -45,10 +46,15 @@ const rules = reactive<FormRules>({
   ],
 })
 
+const handleNavigate = (url: string) => {
+  window.open(url, '_blank')
+}
 const submit = async (formEl: FormInstance) => {
   await formEl.validate(async (valid) => {
-    console.log(valid, form);
-    
+      if(!protocol.value) {
+        ElMessage.warning('请阅读并勾选同意《用户服务协议》以及《隐私政策》')
+        return
+      }
     if (valid) {
       const {login, password} = form
       const param = { login, password }
@@ -99,6 +105,10 @@ definePageMeta({
           </el-input>
         </el-form-item>
       </el-form>
+      <div class="protocol-box">
+        <el-checkbox v-model="protocol" size="large" style="margin-right: 5px"/> 
+        我已同意<el-link @click="handleNavigate('/protocol/userServiceAgreement')"  type="primary">《用户服务协议》</el-link>以及<el-link @click="handleNavigate('/protocol/privacyStatement')" type="primary">《隐私政策》</el-link>
+      </div>
       <el-button class="login-btn" type="primary" @click="submit(ruleFormRef as FormInstance)">注册</el-button>
       <div class="tip">
         <nuxt-link to="/login" >
@@ -137,6 +147,11 @@ definePageMeta({
       span {
         cursor: pointer;
       }
+    }
+    .protocol-box {
+      display: flex;
+      align-items: center;
+      font-size: 14px;
     }
   }
 }
