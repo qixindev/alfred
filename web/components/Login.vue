@@ -3,7 +3,7 @@ import type { FormInstance, FormRules } from 'element-plus'
 import { ElMessage } from 'element-plus'
 import CountdownButton from '@/components/CountdownButton/index.vue'
 
-import { getThirdLoginConfigs, getThirdLoginConfigByName, thirdLoginHandle } from '~/api/user';
+import { getThirdLoginConfigs, getThirdLoginConfigByName, thirdLoginHandle, smsAvailable } from '~/api/user';
 
 interface ThirdLoginType {
   id: number,
@@ -25,14 +25,13 @@ const accountForm = reactive({
   login: '',
   password: ''
 })
-const protocol = ref(false)
 
 const hasRegister = computed(() => {
   return route.query?.platform === 'tenant'
 })
 
-let thirdLoginTypes= ref<ThirdLoginType[]>([])
-let thirdLoginTypesLength= ref()
+let thirdLoginTypes = ref<ThirdLoginType[]>([])
+let thirdLoginTypesLength = ref()
 const phoneRuleFormRef = ref<FormInstance>()
 const accountRuleFormRef = ref<FormInstance>()
 
@@ -48,10 +47,10 @@ function validPhoneFn(rule: any, value: string, callback: any) {
 
 const phoneRules = reactive<FormRules>({
   phone: [
-    { required: true,  validator: validPhoneFn, trigger: 'blur'}
+    { required: true, validator: validPhoneFn, trigger: 'blur' }
   ],
   code: [
-    { required: true, message: '请输入验证码', trigger: 'blur'}
+    { required: true, message: '请输入验证码', trigger: 'blur' }
   ]
 })
 
@@ -60,7 +59,7 @@ const accountRules = reactive<FormRules>({
     { required: true, message: '请输入账号', trigger: 'blur' },
   ],
   password: [
-    { required: true, message: '请输入密码', trigger: 'blur'}
+    { required: true, message: '请输入密码', trigger: 'blur' }
   ]
 })
 
@@ -88,10 +87,6 @@ const submit = async (formEl: FormInstance) => {
 function accountLogin(formEl: FormInstance) {
   formEl.validate(async (valid) => {
     if (valid) {
-      if(!protocol.value) {
-        ElMessage.warning('请阅读并勾选同意《用户服务协议》以及《隐私政策》')
-        return
-      }
       let formData = new URLSearchParams(accountForm)
       emit('accountLoginHandle', formData)
     }
@@ -101,11 +96,7 @@ function accountLogin(formEl: FormInstance) {
 function phoneLogin(formEl: FormInstance) {
   formEl.validate(async (valid) => {
     if (valid) {
-      if(!protocol.value) {
-        ElMessage.warning('请阅读并勾选同意《用户服务协议》以及《隐私政策》')
-        return
-      }
-      const params = {...phoneForm, phone: '+86' +phoneForm.phone}
+      const params = { ...phoneForm, phone: '+86' + phoneForm.phone }
       emit('phoneLoginHandle', phoneProvider.value, params)
     }
   })
@@ -120,18 +111,18 @@ const thirdLogin = async (params: any) => {
 }
 
 let phoneProvider = ref('');
-const getLoginConfig  = async () => {
-  const option = ['wecom','dingtalk']
+const getLoginConfig = async () => {
+  const option = ['wecom', 'dingtalk']
   const data = await getThirdLoginConfigs(currentTenant) as ThirdLoginType[]
   const thirdLoginList = data.filter(item => option.includes(item.type))
   thirdLoginTypes.value = thirdLoginList
-  thirdLoginTypesLength.value =  thirdLoginTypes.value.length
+  thirdLoginTypesLength.value = thirdLoginTypes.value.length
   phoneProvider.value = data.find(item => item.type === 'sms')!.name
 }
 
 const countdownButtonRef = ref()
 const sendValidCode = async (phone: string) => {
-  phoneRuleFormRef.value?.validateField('phone', (valid:boolean) => {
+  phoneRuleFormRef.value?.validateField('phone', (valid: boolean) => {
     if (valid) {
       countdownButtonRef.value.startCountdown()
       phone = '%2B86' + phone
@@ -141,14 +132,29 @@ const sendValidCode = async (phone: string) => {
 }
 
 getLoginConfig()
-
+// 验证有手机号
+const isPhone = ref(true)
+const checkPhone = async () => {
+  const res = await smsAvailable(currentTenant)
+  if (res) {
+    isPhone.value = true
+  } else {
+    isPhone.value = false
+  }
+}
+checkPhone()
 const navigateToRegister = async () => {
   navigateTo({
     path: '/oauth2Register',
     query: route.query
   })
 }
-
+const forgetPass = async () => {
+  navigateTo({
+    path: '/forgetpass',
+    query: { currentTenant }
+  })
+}
 definePageMeta({
   layout: false
 })
@@ -169,7 +175,7 @@ definePageMeta({
                 </template>
               </el-input>
             </el-form-item>
-            
+
             <el-form-item prop="password">
               <el-input v-model="accountForm.password" placeholder="密码" type="password" show-password>
                 <template #prefix>
@@ -178,9 +184,12 @@ definePageMeta({
               </el-input>
             </el-form-item>
           </el-form>
+
+          <nuxt-link @click="forgetPass" style="cursor: pointer;font-size: small;color:#409eff ;width:60px;" v-if="isPhone">忘记密码</nuxt-link>
           <el-button class="submit-btn" type="primary" @click="submit(accountRuleFormRef as FormInstance)">登 录</el-button>
         </el-tab-pane>
-        <el-tab-pane label="手机号登录" name="phone" v-if="phoneProvider">
+
+        <el-tab-pane label="手机号登录" name="phone" v-if="phoneProvider && isPhone">
           <el-form ref="phoneRuleFormRef" :model="phoneForm" :rules="phoneRules">
             <el-form-item prop="phone">
               <el-input v-model="phoneForm.phone" placeholder="手机号">
@@ -190,10 +199,11 @@ definePageMeta({
                 </template>
               </el-input>
             </el-form-item>
-            
+
             <el-form-item prop="code">
               <div class="verify-box">
-                <el-input v-model="phoneForm.code" maxlength="6" placeholder="验证码" :style="{width: '280px', marginRight: '10px'}">
+                <el-input v-model="phoneForm.code" maxlength="6" placeholder="验证码"
+                  :style="{ width: '280px', marginRight: '10px' }">
                   <template #prefix>
                     <svg-icon name="password"></svg-icon>
                   </template>
@@ -205,20 +215,16 @@ definePageMeta({
           <el-button class="submit-btn" type="primary" @click="submit(phoneRuleFormRef as FormInstance)">登 录</el-button>
         </el-tab-pane>
       </el-tabs>
-      
-      <div class="protocol-box">
-        <el-checkbox v-model="protocol" size="large" style="margin-right: 5px"/> 
-        我已同意<el-link @click="handleNavigate('/protocol/userServiceAgreement')"  type="primary">《用户服务协议》</el-link>以及<el-link @click="handleNavigate('/protocol/privacyStatement')" type="primary">《隐私政策》</el-link>
-      </div>
+
       <div class="option">
-        <div class="other-login" v-if="thirdLoginTypesLength>0">其它方式登录： 
+        <div class="other-login" v-if="thirdLoginTypesLength > 0">其它方式登录：
           <svg-icon v-for="item in thirdLoginTypes" :name="item.type" @click="thirdLogin(item)" size="1.5em"></svg-icon>
         </div>
         <div v-else></div>
-        <nuxt-link v-if="currentTenant =='default'" to="/register" >
+        <nuxt-link v-if="currentTenant == 'default'" to="/register">
           <span>注册账户</span>
         </nuxt-link>
-        <nuxt-link v-if="currentTenant !=='default' && hasRegister" @click="navigateToRegister">
+        <nuxt-link v-if="currentTenant !== 'default' && hasRegister" @click="navigateToRegister">
           <span style="cursor: pointer;">注册账户</span>
         </nuxt-link>
       </div>
@@ -227,12 +233,12 @@ definePageMeta({
 </template>
 
 <style scoped lang="scss">
-
 .container {
   display: flex;
   justify-content: center;
   height: 100vh;
   background-color: #eee;
+
   .login-box {
     position: absolute;
     top: 20%;
@@ -240,7 +246,8 @@ definePageMeta({
     background-color: #FFF;
     padding: 20px 20px;
     border-radius: 8px;
-    box-shadow: 0 10px 15px -3px rgb(0 0 0/0.1),0 4px 6px -4px rgb(0 0 0/0.1);
+    box-shadow: 0 10px 15px -3px rgb(0 0 0/0.1), 0 4px 6px -4px rgb(0 0 0/0.1);
+
     .title {
       margin-bottom: 10px;
       font-size: 20px;
@@ -250,35 +257,35 @@ definePageMeta({
       width: 150px;
       margin-left: 10px;
     }
+
     .submit-btn {
       width: 100%;
       margin: 10px 0;
     }
+
     .verify-box {
       width: 100%;
       display: flex;
       justify-content: space-between;
     }
+
     .option {
       height: 40px;
       display: flex;
       align-items: center;
       justify-content: space-between;
+
       .other-login {
         font-size: 14px;
         line-height: 40px;
+
         .svg-icon {
           margin-right: 10px;
           cursor: pointer;
         }
       }
     }
-    
-    .protocol-box {
-      display: flex;
-      align-items: center;
-      font-size: 14px;
-    }
+
   }
 }
 </style>
