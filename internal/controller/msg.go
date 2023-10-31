@@ -41,6 +41,7 @@ func SendMsg(c *gin.Context) {
 	providerId := c.Param("providerId")
 
 	if providerId == "0" { // 站内消息
+		providerConfig = make(gin.H)
 		providerConfig["type"] = env.PlatformAlfred
 	} else {
 		var p model.Provider
