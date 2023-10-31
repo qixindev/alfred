@@ -6,6 +6,7 @@ import (
 	"alfred/internal/model"
 	"alfred/internal/service/auth"
 	"alfred/pkg/client/msg/notify"
+	"alfred/pkg/config/env"
 	"alfred/pkg/global"
 	"strconv"
 	"strings"
@@ -32,33 +33,40 @@ func SendMsg(c *gin.Context) {
 		return
 	}
 
-	providerId := c.Param("providerId")
-	var p model.Provider
-	if err := internal.TenantDB(c).First(&p, "id = ?", providerId).Error; err != nil {
-		resp.ErrorSqlFirst(c, err, "get provider err")
-		return
-	}
+	var providerUser []string
+	var providerConfig gin.H
 
 	tenant := internal.GetTenant(c)
 	in.TenantId = tenant.Id
-	authProvider, err := auth.GetAuthProvider(tenant.Id, p.Name)
-	if err != nil {
-		resp.ErrorUnknown(c, err, "get provider err")
-		return
-	}
+	providerId := c.Param("providerId")
 
-	var providerUser []string
-	providerConfig := *authProvider.ProviderConfig()
-	usersSlice := make([]string, len(in.Users))
-	for i, v := range in.Users {
-		usersSlice[i] = strings.Trim(v, "{}")
-	}
-	if err = global.DB.Table("provider_users pu").Select("pu.name").
-		Joins("LEFT JOIN client_users as cu ON cu.user_id = pu.user_id").
-		Where("pu.tenant_id = ? AND pu.provider_id = ? AND cu.sub IN (?)", tenant.Id, providerConfig["providerId"], usersSlice).
-		Find(&providerUser).Error; err != nil {
-		resp.ErrorSqlSelect(c, err, "get provider user err")
-		return
+	if providerId == "0" { // 站内消息
+		providerConfig["type"] = env.PlatformAlfred
+	} else {
+		var p model.Provider
+		if err := internal.TenantDB(c).First(&p, "id = ?", providerId).Error; err != nil {
+			resp.ErrorSqlFirst(c, err, "get provider err")
+			return
+		}
+
+		authProvider, err := auth.GetAuthProvider(tenant.Id, p.Name)
+		if err != nil {
+			resp.ErrorUnknown(c, err, "get provider err")
+			return
+		}
+
+		providerConfig = *authProvider.ProviderConfig()
+		usersSlice := make([]string, len(in.Users))
+		for i, v := range in.Users {
+			usersSlice[i] = strings.Trim(v, "{}")
+		}
+		if err = global.DB.Table("provider_users pu").Select("pu.name").
+			Joins("LEFT JOIN client_users as cu ON cu.user_id = pu.user_id").
+			Where("pu.tenant_id = ? AND pu.provider_id = ? AND cu.sub IN (?)", tenant.Id, providerConfig["providerId"], usersSlice).
+			Find(&providerUser).Error; err != nil {
+			resp.ErrorSqlSelect(c, err, "get provider user err")
+			return
+		}
 	}
 
 	var userDb []model.SendInfo
@@ -79,7 +87,7 @@ func SendMsg(c *gin.Context) {
 	}
 
 	// 调用InsertSendInfo函数插入数据到数据库
-	if createErr := global.DB.Create(&userDb).Error; createErr != nil {
+	if err := global.DB.Create(&userDb).Error; err != nil {
 		resp.ErrorSqlCreate(c, err, "failed to insert SendInfo")
 		return
 	}
@@ -91,7 +99,7 @@ func SendMsg(c *gin.Context) {
 		resp.SuccessWithMessage(c, "no provider user")
 		return
 	}
-	if err = notify.SendMsgToUsers(&in, providerConfig); err != nil {
+	if err := notify.SendMsgToUsers(&in, providerConfig); err != nil {
 		resp.ErrorUnknown(c, err, "failed to send msg")
 		return
 	}

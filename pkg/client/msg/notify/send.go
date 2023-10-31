@@ -17,6 +17,8 @@ func SendMsgToUsers(info *model.SendInfo, conf gin.H) (err error) {
 		err = SendMsgToDingTalk(info, conf)
 	case env.PlatformWecom:
 		err = SendMsgToWecom(info, conf)
+	case env.PlatformAlfred:
+		err = nil
 	default:
 		err = errors.New("platform not support: " + info.Platform)
 	}
