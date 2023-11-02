@@ -330,6 +330,59 @@ const docTemplate = `{
                 }
             }
         },
+        "/accounts/admin/{tenant}/clients/{clientId}/page/login": {
+            "get": {
+                "description": "get tenant login page",
+                "tags": [
+                    "login-page"
+                ],
+                "parameters": [
+                    {
+                        "type": "string",
+                        "default": "default",
+                        "description": "租户id",
+                        "name": "tenant",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            },
+            "put": {
+                "description": "update tenant login page",
+                "tags": [
+                    "login-page"
+                ],
+                "parameters": [
+                    {
+                        "type": "string",
+                        "default": "default",
+                        "description": "租户名",
+                        "name": "tenant",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "body",
+                        "name": "bd",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "object"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
         "/accounts/admin/{tenant}/clients/{clientId}/redirect-uris": {
             "get": {
                 "description": "get client redirect uris",
@@ -4082,6 +4135,9 @@ const docTemplate = `{
                 "phoneVerified": {
                     "type": "boolean"
                 },
+                "sub": {
+                    "type": "string"
+                },
                 "twoFactorEnabled": {
                     "type": "boolean"
                 },
@@ -4372,6 +4428,9 @@ const docTemplate = `{
                 "id": {
                     "type": "integer"
                 },
+                "loginPage": {
+                    "type": "string"
+                },
                 "name": {
                     "type": "string"
                 },
@@ -4426,6 +4485,9 @@ const docTemplate = `{
                     "type": "boolean"
                 },
                 "role": {
+                    "type": "string"
+                },
+                "sub": {
                     "type": "string"
                 },
                 "tenantId": {

@@ -217,4 +217,7 @@ func AddAdminTenantsRoutes(rg *gin.RouterGroup) {
 	rg.DELETE("/tenants/:tenantId", middlewares.AuthorizedAdmin, DeleteTenant)
 	rg.DELETE("/tenants/:tenantId/secrets/:secretId", middlewares.AuthorizedAdmin, DeleteTenantSecret)
 	rg.POST("/tenants/:tenantId/secrets", middlewares.AuthorizedAdmin, NewTenantSecret)
+
+	rg.GET("/:tenant/clients/:clientId/page/login", GetLoginPage)                                 // 获取登录页面配置
+	rg.PUT("/:tenant/clients/:clientId/page/login", middlewares.AuthorizedAdmin, UpdateLoginPage) // 更新登录页面配置
 }
