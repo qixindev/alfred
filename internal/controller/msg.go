@@ -132,15 +132,15 @@ func GetMsg(c *gin.Context) {
 
 	//// 获取消息
 	var total int64
-	if err := internal.TenantDB(c).Debug().Model(&model.SendInfo{}).
+	if err := internal.TenantDB(c).Model(&model.SendInfo{}).
 		Where("users_db = ?", subId).
-		Find(&SendInfo).Count(&total).Debug().Error; err != nil {
+		Find(&SendInfo).Count(&total).Error; err != nil {
 		resp.ErrorSqlSelect(c, err, "failed to get msg")
 		return
 	}
 
-	if err := global.DB.Debug().
-		Table("message").Debug().
+	if err := global.DB.
+		Table("message").
 		Select("message.*, u1.display_name as sender_name, u2.display_name as receiver_name, u1.avatar").
 		Joins("LEFT JOIN client_users cu1 ON message.sender = cu1.sub").
 		Joins("LEFT JOIN client_users cu2 ON message.users_db = cu2.sub").
@@ -182,7 +182,7 @@ func MarkMsg(c *gin.Context) {
 		return
 	}
 	var count int64
-	if err := internal.TenantDB(c).Debug().Model(&model.SendInfo{}).Where("id = ?", in.Id).Count(&count).Error; err != nil {
+	if err := internal.TenantDB(c).Model(&model.SendInfo{}).Where("id = ?", in.Id).Count(&count).Error; err != nil {
 		resp.ErrorSqlSelect(c, err, "failed to mark msg read")
 		return
 	}

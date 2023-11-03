@@ -330,59 +330,6 @@ const docTemplate = `{
                 }
             }
         },
-        "/accounts/admin/{tenant}/clients/{clientId}/page/login": {
-            "get": {
-                "description": "get tenant login page",
-                "tags": [
-                    "login-page"
-                ],
-                "parameters": [
-                    {
-                        "type": "string",
-                        "default": "default",
-                        "description": "租户id",
-                        "name": "tenant",
-                        "in": "path",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK"
-                    }
-                }
-            },
-            "put": {
-                "description": "update tenant login page",
-                "tags": [
-                    "login-page"
-                ],
-                "parameters": [
-                    {
-                        "type": "string",
-                        "default": "default",
-                        "description": "租户名",
-                        "name": "tenant",
-                        "in": "path",
-                        "required": true
-                    },
-                    {
-                        "description": "body",
-                        "name": "bd",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "type": "object"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK"
-                    }
-                }
-            }
-        },
         "/accounts/admin/{tenant}/clients/{clientId}/redirect-uris": {
             "get": {
                 "description": "get client redirect uris",
@@ -676,52 +623,6 @@ const docTemplate = `{
                         "description": "subId",
                         "name": "subId",
                         "in": "path",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK"
-                    }
-                }
-            }
-        },
-        "/accounts/admin/{tenant}/clients/{clientId}/users/{subId}/avatar": {
-            "put": {
-                "description": "update user",
-                "tags": [
-                    "client-user"
-                ],
-                "summary": "user",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "default": "default",
-                        "description": "tenant",
-                        "name": "tenant",
-                        "in": "path",
-                        "required": true
-                    },
-                    {
-                        "type": "string",
-                        "default": "default",
-                        "description": "client id",
-                        "name": "clientId",
-                        "in": "path",
-                        "required": true
-                    },
-                    {
-                        "type": "string",
-                        "description": "sub id",
-                        "name": "subId",
-                        "in": "path",
-                        "required": true
-                    },
-                    {
-                        "type": "file",
-                        "description": "file stream",
-                        "name": "file",
-                        "in": "formData",
                         "required": true
                     }
                 ],
@@ -1425,6 +1326,150 @@ const docTemplate = `{
                         "name": "groupId",
                         "in": "path",
                         "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/accounts/admin/{tenant}/page/login": {
+            "get": {
+                "description": "get tenant login page",
+                "tags": [
+                    "tenant-meta"
+                ],
+                "parameters": [
+                    {
+                        "type": "string",
+                        "default": "default",
+                        "description": "租户",
+                        "name": "tenant",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            },
+            "put": {
+                "description": "update tenant login page",
+                "tags": [
+                    "tenant-meta"
+                ],
+                "parameters": [
+                    {
+                        "type": "string",
+                        "default": "default",
+                        "description": "租户名",
+                        "name": "tenant",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "body",
+                        "name": "bd",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "object"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/accounts/admin/{tenant}/picture/{type}/upload": {
+            "put": {
+                "description": "上传图片",
+                "tags": [
+                    "tenant-meta"
+                ],
+                "parameters": [
+                    {
+                        "type": "string",
+                        "default": "default",
+                        "description": "租户名",
+                        "name": "tenant",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "default": "logo",
+                        "description": "图片类型(background|logo)",
+                        "name": "type",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "file",
+                        "description": "文件",
+                        "name": "file",
+                        "in": "formData",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/accounts/admin/{tenant}/proto": {
+            "get": {
+                "description": "获取用户隐私协议",
+                "tags": [
+                    "tenant-meta"
+                ],
+                "parameters": [
+                    {
+                        "type": "string",
+                        "default": "default",
+                        "description": "租户",
+                        "name": "tenant",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            },
+            "put": {
+                "description": "update tenant login page",
+                "tags": [
+                    "tenant-meta"
+                ],
+                "parameters": [
+                    {
+                        "type": "string",
+                        "default": "default",
+                        "description": "租户名",
+                        "name": "tenant",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "body",
+                        "name": "bd",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "object"
+                        }
                     }
                 ],
                 "responses": {
@@ -4432,6 +4477,9 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "name": {
+                    "type": "string"
+                },
+                "proto": {
                     "type": "string"
                 },
                 "role": {

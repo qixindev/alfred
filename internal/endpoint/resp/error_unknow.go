@@ -15,6 +15,7 @@ const (
 	CodeSaveSession = 1001
 	CodeNotFound    = 1002
 	CodeUnknown     = 1003
+	CodeUpload      = 1004
 
 	CodeSqlFirst  = 2000
 	CodeSqlSelect = 2001
@@ -28,10 +29,14 @@ const (
 	CodeIamDeny      = 3003 // 无iam权限
 	CodePassword     = 3004 // 密码错误
 	CodeConflict     = 3005 // 资源冲突
+	CodeValidate     = 3006 // 自定义请求参数错误
 )
 
 func ErrorUnknown(c *gin.Context, err error, msg string, isArray ...bool) {
 	errorResponse(c, http.StatusInternalServerError, CodeUnknown, err, msg, isArray)
+}
+func ErrorUpload(c *gin.Context, err error, msg string, isArray ...bool) {
+	errorResponse(c, http.StatusInternalServerError, CodeUpload, err, msg, isArray)
 }
 
 func ErrorSaveSession(c *gin.Context, err error, isArray ...bool) {

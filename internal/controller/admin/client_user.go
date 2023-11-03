@@ -7,14 +7,8 @@ import (
 	"alfred/internal/service"
 	"alfred/pkg/global"
 	"alfred/pkg/utils"
-	"context"
-	"fmt"
-	"github.com/Azure/azure-storage-blob-go/azblob"
 	"github.com/gin-gonic/gin"
-	"github.com/google/uuid"
 	"io"
-	"net/url"
-	"strings"
 )
 
 type ModifyPassword struct {
@@ -193,60 +187,9 @@ func UpdateUserProfile(c *gin.Context) {
 	user.Email = u.Email
 	user.Phone = u.Phone
 	user.Avatar = u.Avatar
-	if err = global.DB.Debug().Select("username", "first_name", "last_name", "display_name", "email", "phone", "avatar").
+	if err = global.DB.Select("username", "first_name", "last_name", "display_name", "email", "phone", "avatar").
 		Where("id = ?", user.Id).Updates(user).Error; err != nil {
 		resp.ErrorSqlUpdate(c, err, "update tenant user err")
-		return
-	}
-
-	resp.Success(c)
-}
-
-// UpdateAvatar godoc
-//
-//	@Summary	user
-//	@Schemes
-//	@Description	update user
-//	@Tags			client-user
-//	@Param			tenant		path		string	true	"tenant"	default(default)
-//	@Param			clientId	path		string	true	"client id"	default(default)
-//	@Param			subId		path		string	true	"sub id"
-//	@Param			file		formData	file	true	"file stream"
-//	@Success		200
-//	@Router			/accounts/admin/{tenant}/clients/{clientId}/users/{subId}/avatar [put]
-func UpdateAvatar(c *gin.Context) {
-	file, err := c.FormFile("file")
-	if err != nil {
-		resp.ErrorRequest(c, err)
-		return
-	}
-
-	fileParts := strings.Split(file.Filename, ".")
-	fileType := fileParts[len(fileParts)-1]
-	src, err := file.Open()
-	if err != nil {
-		resp.ErrorUnknown(c, err, "can not open file")
-		return
-	}
-	defer utils.DeferErr(src.Close)
-
-	credential, err := azblob.NewSharedKeyCredential(global.CONFIG.AzureBlob.AccountName, global.CONFIG.AzureBlob.AccountKey)
-	if err != nil {
-		resp.ErrorUnknown(c, err, "can not upload file")
-		return
-	}
-
-	p := azblob.NewPipeline(credential, azblob.PipelineOptions{})
-	URL, err := url.Parse(global.CONFIG.Urls.AzureBlob)
-	if err != nil {
-		resp.ErrorUnknown(c, err, "could not parse url")
-		return
-	}
-
-	fileName := fmt.Sprintf("%s.%s", uuid.New().String(), fileType)
-	blobURL := azblob.NewContainerURL(*URL, p).NewBlockBlobURL(fileName)
-	if _, err = azblob.UploadStreamToBlockBlob(context.Background(), src, blobURL, azblob.UploadStreamToBlockBlobOptions{}); err != nil {
-		resp.ErrorUnknown(c, err, "upload file failed")
 		return
 	}
 
@@ -259,5 +202,4 @@ func AddClientUserRoute(rg *gin.RouterGroup) {
 	rg.PUT("/clients/:clientId/users/:subId/meta", UpdateUserMeta)
 	rg.PUT("/clients/:clientId/users/:subId/password", UpdateUserPassword)
 	rg.PUT("/clients/:clientId/users/:subId/profile", UpdateUserProfile)
-	rg.PUT("/clients/:clientId/users/:subId/avatar", UpdateAvatar)
 }

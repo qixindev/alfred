@@ -269,6 +269,8 @@ definitions:
         type: string
       name:
         type: string
+      proto:
+        type: string
       role:
         type: string
       sub:
@@ -1775,41 +1777,6 @@ paths:
       summary: update client
       tags:
       - client
-  /accounts/admin/{tenant}/clients/{clientId}/page/login:
-    get:
-      description: get tenant login page
-      parameters:
-      - default: default
-        description: 租户id
-        in: path
-        name: tenant
-        required: true
-        type: string
-      responses:
-        "200":
-          description: OK
-      tags:
-      - login-page
-    put:
-      description: update tenant login page
-      parameters:
-      - default: default
-        description: 租户名
-        in: path
-        name: tenant
-        required: true
-        type: string
-      - description: body
-        in: body
-        name: bd
-        required: true
-        schema:
-          type: object
-      responses:
-        "200":
-          description: OK
-      tags:
-      - login-page
   /accounts/admin/{tenant}/clients/{clientId}/redirect-uris:
     get:
       description: get client redirect uris
@@ -2018,38 +1985,6 @@ paths:
         "200":
           description: OK
       summary: client user
-      tags:
-      - client-user
-  /accounts/admin/{tenant}/clients/{clientId}/users/{subId}/avatar:
-    put:
-      description: update user
-      parameters:
-      - default: default
-        description: tenant
-        in: path
-        name: tenant
-        required: true
-        type: string
-      - default: default
-        description: client id
-        in: path
-        name: clientId
-        required: true
-        type: string
-      - description: sub id
-        in: path
-        name: subId
-        required: true
-        type: string
-      - description: file stream
-        in: formData
-        name: file
-        required: true
-        type: file
-      responses:
-        "200":
-          description: OK
-      summary: user
       tags:
       - client-user
   /accounts/admin/{tenant}/clients/{clientId}/users/{subId}/meta:
@@ -2546,6 +2481,102 @@ paths:
       summary: group
       tags:
       - group
+  /accounts/admin/{tenant}/page/login:
+    get:
+      description: get tenant login page
+      parameters:
+      - default: default
+        description: 租户
+        in: path
+        name: tenant
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+      tags:
+      - tenant-meta
+    put:
+      description: update tenant login page
+      parameters:
+      - default: default
+        description: 租户名
+        in: path
+        name: tenant
+        required: true
+        type: string
+      - description: body
+        in: body
+        name: bd
+        required: true
+        schema:
+          type: object
+      responses:
+        "200":
+          description: OK
+      tags:
+      - tenant-meta
+  /accounts/admin/{tenant}/picture/{type}/upload:
+    put:
+      description: 上传图片
+      parameters:
+      - default: default
+        description: 租户名
+        in: path
+        name: tenant
+        required: true
+        type: string
+      - default: logo
+        description: 图片类型(background|logo)
+        in: path
+        name: type
+        required: true
+        type: string
+      - description: 文件
+        in: formData
+        name: file
+        required: true
+        type: file
+      responses:
+        "200":
+          description: OK
+      tags:
+      - tenant-meta
+  /accounts/admin/{tenant}/proto:
+    get:
+      description: 获取用户隐私协议
+      parameters:
+      - default: default
+        description: 租户
+        in: path
+        name: tenant
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+      tags:
+      - tenant-meta
+    put:
+      description: update tenant login page
+      parameters:
+      - default: default
+        description: 租户名
+        in: path
+        name: tenant
+        required: true
+        type: string
+      - description: body
+        in: body
+        name: bd
+        required: true
+        schema:
+          type: object
+      responses:
+        "200":
+          description: OK
+      tags:
+      - tenant-meta
   /accounts/admin/{tenant}/providers:
     get:
       description: list provider

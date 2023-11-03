@@ -17,6 +17,11 @@ func ErrorRequest(c *gin.Context, err error, isArray ...bool) {
 	errorResponse(c, http.StatusBadRequest, CodeRequest, err, "req para err", isArray)
 }
 
+// ErrorValidate 参数校验
+func ErrorValidate(c *gin.Context, msg string, isArray ...bool) {
+	errorResponse(c, http.StatusBadRequest, CodeValidate, nil, msg, isArray)
+}
+
 func ErrorUnauthorized(c *gin.Context, err error, msg string, isArray ...bool) {
 	errorResponse(c, http.StatusUnauthorized, CodeUnauthorized, err, msg, isArray)
 }

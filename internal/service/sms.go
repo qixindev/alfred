@@ -20,7 +20,7 @@ func GetSmsConfig(tenantId uint, connId uint, t string) (any, error) {
 	if err != nil {
 		return nil, err
 	}
-	if err = global.DB.Debug().Model(md).Where("tenant_id = ? AND sms_connector_id = ?", tenantId, connId).
+	if err = global.DB.Model(md).Where("tenant_id = ? AND sms_connector_id = ?", tenantId, connId).
 		Preload("SmsConnector").First(md).Error; err != nil {
 		return nil, err
 	}
