@@ -96,7 +96,7 @@ func GetTenantProto(c *gin.Context) {
 // @Success		200
 // @Router		/accounts/admin/{tenant}/proto [put]
 func UpdateTenantProto(c *gin.Context) {
-	var proto map[string]interface{}
+	var proto []map[string]interface{}
 	if err := internal.New(c).BindJson(&proto).Error; err != nil {
 		resp.ErrorRequest(c, err)
 		return
