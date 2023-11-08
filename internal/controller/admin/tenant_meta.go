@@ -80,9 +80,9 @@ func GetTenantProto(c *gin.Context) {
 		resp.ErrorSqlFirst(c, err, "get tenant err")
 		return
 	}
-	var proto map[string]interface{}
+	var proto []map[string]interface{}
 	if err := json.Unmarshal([]byte(tenant.Proto), &proto); err != nil {
-		resp.ErrorUnknown(c, err, "unmarshal login page err")
+		resp.ErrorUnknown(c, err, "unmarshal tenant proto err")
 		return
 	}
 	resp.SuccessWithData(c, proto)
@@ -92,7 +92,7 @@ func GetTenantProto(c *gin.Context) {
 // @Description	update tenant login page
 // @Tags		tenant-meta
 // @Param		tenant		path	string	true	"租户名"		default(default)
-// @Param		bd			body	object	true	"body"
+// @Param		bd			body	[]object	true	"body"
 // @Success		200
 // @Router		/accounts/admin/{tenant}/proto [put]
 func UpdateTenantProto(c *gin.Context) {
@@ -110,7 +110,7 @@ func UpdateTenantProto(c *gin.Context) {
 	}
 	protoString, err := json.Marshal(&proto)
 	if err != nil {
-		resp.ErrorUnknown(c, err, "marshal login page err")
+		resp.ErrorUnknown(c, err, "marshal tenant proto err")
 		return
 	}
 	tenant.Proto = string(protoString)

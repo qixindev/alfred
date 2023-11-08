@@ -1468,7 +1468,10 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "type": "object"
+                            "type": "array",
+                            "items": {
+                                "type": "object"
+                            }
                         }
                     }
                 ],

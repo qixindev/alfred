@@ -2571,7 +2571,9 @@ paths:
         name: bd
         required: true
         schema:
-          type: object
+          items:
+            type: object
+          type: array
       responses:
         "200":
           description: OK
