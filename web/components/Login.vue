@@ -255,6 +255,7 @@ const forgetPass = async () => {
     query: { currentTenant },
   });
 };
+
 definePageMeta({
   layout: false,
 });
@@ -445,13 +446,19 @@ definePageMeta({
 </template>
 
 <style scoped lang="scss">
+html,
+body {
+  margin: 0;
+  padding: 0;
+}
 .containerL {
   overflow: hidden;
   height: 100%;
   width: 100%;
   .login-boxL {
     flex: 1;
-    margin: 10%;
+    margin: auto;
+    margin-top: 15%;
     width: 400px;
     background-color: #fff;
     padding: 20px 20px;

@@ -132,7 +132,7 @@ const props = defineProps({
     <div class="allmain" v-if="styleSwitch == 'all'">
       <div class="top">
         <p class="bg">自定义背景</p>
-        <aside style="font-size: 14px; color: #aeaaaa; margin-left: 50px">
+        <aside style="font-size: 14px; color: #aeaaaa; margin: 10px 0 0 50px">
           登录页面展示的背景
         </aside>
         <div class="mb-2 flex items-center text-sm">
@@ -173,24 +173,25 @@ const props = defineProps({
             </template>
           </el-upload>
         </div>
-
-        <p style="font-size: 20px; margin: 0px 20px 0px 20px">自定义CSS</p>
-        <el-input
-          v-model="cssWrite"
-          :rows="3"
-          type="textarea"
-          @change="mainCss"
-          placeholder="例：.login-boxL{background:blue!important;}"
-        />
-      </div>
-      <div style="display: flex">
-        <p style="font-size: 20px; margin: 20px 20px 0px 20px">平台名称</p>
-        <el-input
-          v-model="inputTitle"
-          placeholder="请输入名称"
-          style="width: 50%; margin: 20px 20px 0px 0px"
-          @change="cellPri"
-        />
+        <div style="display: flex">
+          <p style="font-size: 20px; margin: 20px 20px 0px 20px">平台名称</p>
+          <el-input
+            v-model="inputTitle"
+            placeholder="请输入名称"
+            style="width: 50%; margin: 20px 20px 0px 0px"
+            @change="cellPri"
+          />
+        </div>
+        <p style="font-size: 20px; margin: 20px 20px 0px 20px">自定义CSS</p>
+        <p style="margin: 10px 20px 20px 20px">
+          <el-input
+            v-model="cssWrite"
+            :rows="3"
+            type="textarea"
+            @change="mainCss"
+            placeholder="例：.login-boxL{background:blue!important;}"
+          />
+        </p>
       </div>
     </div>
     <div class="conMain" v-if="styleSwitch == 'convention'">
