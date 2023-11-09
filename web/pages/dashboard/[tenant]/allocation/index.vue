@@ -16,6 +16,8 @@ const styleLogin = ref(true);
 const styleRegion = ref(true);
 const stylePass = ref(true);
 const styleCode = ref(true);
+const styleNumTop = ref(200);
+const styleNumLeft = ref(200);
 const getInfo = () => {
   getEnergy().then((res: any) => {
     styleName.value = res.styleName;
@@ -26,6 +28,8 @@ const getInfo = () => {
     styleRegion.value = res.styleRegion;
     stylePass.value = res.stylePass;
     styleCode.value = res.styleCode;
+    styleNumTop.value = res.styleNumTop;
+    styleNumLeft.value = res.styleNumLeft;
     bottom.value = [...res.bottom];
   });
 };
@@ -55,12 +59,19 @@ const stylename = (value) => {
 const stylecss = (value) => {
   styleCss.value = value;
 };
+const stylenumleft = (value) => {
+  styleNumLeft.value = value;
+};
+const stylenumtop = (value) => {
+  styleNumTop.value = value;
+};
 const zCf = (value) => {
   bottom.value = value;
 };
 const zCp = (value) => {
   top.value = value;
 };
+
 const submit = () => {
   putEnergy({
     bottom,
@@ -72,6 +83,8 @@ const submit = () => {
     styleRegion,
     stylePass,
     styleCode,
+    styleNumTop,
+    styleNumLeft,
   }).finally(() => {
     ElMessage({
       message: "保存成功",
@@ -99,6 +112,8 @@ const submit = () => {
         @style-logo="stylelogo"
         @style-name="stylename"
         @style-css="stylecss"
+        @style-numLeft="stylenumleft"
+        @style-numTop="stylenumtop"
         :bottom="bottom"
         :top="top"
     /></el-tab-pane>

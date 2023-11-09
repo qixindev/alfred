@@ -38,6 +38,14 @@ const getInfo = () => {
 getInfo();
 const protocol = ref(false);
 const props = defineProps({
+  numTop: {
+    type: Number,
+    default: 200,
+  },
+  numLeft: {
+    type: Number,
+    default: 200,
+  },
   loginSwitch: {
     type: Boolean,
     default: true,
@@ -274,7 +282,13 @@ definePageMeta({
         : info && info.styleBgcolor && info.styleBgcolor,
     }"
   >
-    <div class="login-boxL">
+    <div
+      class="login-boxL"
+      :style="{
+        marginTop: `${numTop ? numTop : info && info.styleNumTop}px`,
+        marginLeft: `${numLeft ? numLeft : info && info.styleNumLeft}px`,
+      }"
+    >
       <div class="titleL">
         <span
           class="logoL"

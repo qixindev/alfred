@@ -18,7 +18,11 @@ const emits = defineEmits([
   "style-region",
   "style-pass",
   "style-code",
+  "style-numTop",
+  "style-numLeft",
 ]);
+const numTop = ref();
+const numLeft = ref();
 const loginSwitch = ref(true);
 const regionSwitch = ref(true);
 const passSwitch = ref(true);
@@ -42,6 +46,8 @@ const getInfo = () => {
       regionSwitch.value = res.styleRegion;
       passSwitch.value = res.stylePass;
       codeSwitch.value = res.styleCode;
+      numTop.value = res.styleNumTop;
+      numLeft.value = res.styleNumLeft;
     })
     .finally(() => {});
 };
@@ -75,7 +81,12 @@ const uploadlogo = (e) => {
 const cellPri = () => {
   emits("style-name", inputTitle.value);
 };
-
+const numTopFn = () => {
+  emits("style-numTop", numTop.value);
+};
+const numLeftFn = () => {
+  emits("style-numLeft", numLeft.value);
+};
 const props = defineProps({
   top: {
     type: Array,
@@ -116,6 +127,8 @@ const props = defineProps({
       </div>
 
       <Login
+        :numTop="numTop"
+        :numLeft="numLeft"
         :inputTitle="inputTitle"
         :cssWrite="cssWrite"
         :top="props.top"
@@ -135,6 +148,23 @@ const props = defineProps({
         <aside style="font-size: 14px; color: #aeaaaa; margin: 10px 0 0 50px">
           登录页面展示的背景
         </aside>
+        <p class="bg">登录框位置</p>
+
+        <div style="margin: 10px 10px 0 20px">
+          top<el-input-number
+            v-model="numTop"
+            style="margin-left: 20px"
+            @change="numTopFn"
+          />
+        </div>
+        <div style="margin: 10px 10px 0 20px">
+          left<el-input-number
+            v-model="numLeft"
+            style="margin-left: 20px"
+            @change="numLeftFn"
+          />
+        </div>
+
         <div class="mb-2 flex items-center text-sm">
           <el-radio-group v-model="backG" class="ml-4">
             <el-radio label="1" size="large">纯色背景</el-radio>
@@ -239,6 +269,12 @@ const props = defineProps({
   position: absolute;
   top: 0;
   left: 0;
+  width: 58px;
+  .demo-tabs {
+    background-color: white;
+    border: 0;
+    border-radius: 5px;
+  }
 }
 .allmain,
 .conMain {
@@ -246,6 +282,7 @@ const props = defineProps({
   min-height: 68vh;
   background-color: white;
   border-top: 1px solid #eee;
+  overflow-y: auto;
   .text-sm {
     margin-left: 20px;
   }
