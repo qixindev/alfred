@@ -1,15 +1,15 @@
 <script setup lang="ts">
-const DELAY = 60
-const counting = ref(false)
-const countdownSeconds = ref(DELAY)
+const DELAY = 60;
+const counting = ref(false);
+const countdownSeconds = ref(DELAY);
 
 const buttonText = computed(() => {
-  return counting.value ? `${countdownSeconds.value}秒后重新发送` : '发送验证码'
-})
+  return counting.value ? `${countdownSeconds.value}秒后重新获取` : "获取验证码";
+});
 
 function startCountdown() {
   if (counting.value) return;
-  countdownSeconds.value = DELAY
+  countdownSeconds.value = DELAY;
   counting.value = true;
   countdown();
 
@@ -30,21 +30,14 @@ function countdown() {
 }
 
 defineExpose({
-  startCountdown
-})
-
+  startCountdown,
+});
 </script>
 
 <template>
-  <el-button
-    :disabled="counting"
-    :style="{width: '150px'}"
-  >
+  <el-button :disabled="counting" :style="{ width: '150px' }">
     {{ buttonText }}
   </el-button>
 </template>
 
-
-<style scoped>
-
-</style>
+<style scoped></style>
