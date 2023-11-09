@@ -326,7 +326,11 @@ definePageMeta({
           <nuxt-link
             @click="router.path.substring(0, 10) != '/dashboard' ? forgetPass : ''"
             style="cursor: pointer; font-size: small; color: #409eff; width: 60px"
-            v-if="isPhone && passSwitch && info && info.stylePass"
+            v-if="
+              router.path.substring(0, 10) == '/dashboard'
+                ? isPhone && passSwitch
+                : isPhone && info && info.stylePass
+            "
             class="forgetL"
             >忘记密码</nuxt-link
           >
@@ -341,7 +345,11 @@ definePageMeta({
         <el-tab-pane
           label="手机号登录"
           name="phone"
-          v-if="codeSwitch && info && info && info.styleCode && isPhone"
+          v-if="
+            router.path.substring(0, 10) == '/dashboard'
+              ? isPhone && codeSwitch
+              : isPhone && info && info.styleCode
+          "
         >
           <el-form ref="phoneRuleFormRef" :model="phoneForm" :rules="phoneRules">
             <el-form-item prop="phone">
@@ -409,7 +417,11 @@ definePageMeta({
       >
         <div
           class="other-loginL"
-          v-if="loginSwitch && info && info.styleLogin && thirdLoginTypesLength > 0"
+          v-if="
+            router.path.substring(0, 10) == '/dashboard'
+              ? thirdLoginTypesLength > 0 && loginSwitch
+              : thirdLoginTypesLength > 0 && info && info.styleLogin
+          "
         >
           其它方式登录：
           <svg-icon
@@ -421,18 +433,20 @@ definePageMeta({
         </div>
         <div v-else></div>
         <nuxt-link
-          v-if="regionSwitch && info && info.styleRegion && currentTenant == 'default'"
+          v-if="
+            router.path.substring(0, 10) == '/dashboard'
+              ? currentTenant == 'default' && regionSwitch
+              : currentTenant == 'default' && info && info.styleRegion
+          "
           @click="router.path.substring(0, 10) != '/dashboard' ? navigateRegister() : ''"
         >
           <span style="cursor: pointer" class="regionL">注册账户</span>
         </nuxt-link>
         <nuxt-link
           v-if="
-            regionSwitch &&
-            info &&
-            info.styleRegion &&
-            currentTenant !== 'default' &&
-            hasRegister
+            router.path.substring(0, 10) == '/dashboard'
+              ? regionSwitch && hasRegister && currentTenant !== 'default'
+              : info && info.styleRegion && hasRegister && currentTenant !== 'default'
           "
           @click="
             router.path.substring(0, 10) != '/dashboard' ? navigateToRegister() : ''
