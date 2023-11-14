@@ -18,6 +18,7 @@ interface ThirdLoginType {
   name: string;
   type: string;
 }
+const tenant = computed(() => useTenant().value);
 
 const router = useRoute();
 const routerPath = useRouter();
@@ -49,19 +50,19 @@ const props = defineProps({
   },
   loginSwitch: {
     type: Boolean,
-    default: true,
+    default: false,
   },
   regionSwitch: {
     type: Boolean,
-    default: true,
+    default: false,
   },
   passSwitch: {
     type: Boolean,
-    default: true,
+    default: false,
   },
   codeSwitch: {
     type: Boolean,
-    default: true,
+    default: false,
   },
   inputTitle: {
     type: String,
@@ -120,8 +121,9 @@ watch(
 const emit = defineEmits(["accountLoginHandle", "phoneLoginHandle", "thirdLoginHandle"]);
 const route = useRoute();
 const { state: tanent } = route.query as any;
-let currentTenant = tanent ?? "default";
 
+let currentTenant = tanent ?? "default";
+let current = tenant.value ? tenant.value : "default";
 const phoneForm = reactive({
   phone: "",
   code: "",
@@ -216,15 +218,20 @@ const handleNavigate = (url: string) => {
 const thirdLogin = async (params: any) => {
   emit("thirdLoginHandle", params);
 };
+const isPhone = ref(false);
 
 let phoneProvider = ref("");
 const getLoginConfig = async () => {
   const option = ["wecom", "dingtalk"];
-  const data = (await getThirdLoginConfigs(currentTenant)) as ThirdLoginType[];
-  const thirdLoginList = data.filter((item) => option.includes(item.type));
+  const data = (await getThirdLoginConfigs(current)) as ThirdLoginType[];
+  const thirdLoginList = data ? data.filter((item) => option.includes(item.type)) : "";
+
   thirdLoginTypes.value = thirdLoginList;
   thirdLoginTypesLength.value = thirdLoginTypes.value.length;
-  phoneProvider.value = data.find((item) => item.type === "sms")!.name;
+  phoneProvider.value = data ? data.find((item) => item.type === "sms")!.name : "";
+  if (data && data.find((item) => item.type === "sms")) {
+    checkPhone();
+  }
 };
 
 const countdownButtonRef = ref();
@@ -240,16 +247,15 @@ const sendValidCode = async (phone: string) => {
 
 getLoginConfig();
 // 验证有手机号
-const isPhone = ref(true);
 const checkPhone = async () => {
-  const res = await smsAvailable(currentTenant);
+  const res = await smsAvailable(current);
   if (res) {
     isPhone.value = true;
   } else {
     isPhone.value = false;
   }
 };
-checkPhone();
+
 const navigateToRegister = async () => {
   navigateTo({
     path: "/oauth2Register",

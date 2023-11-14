@@ -93,12 +93,7 @@ const cellPri = () => {
 
   <el-table
     :data="tablePri"
-    style="
-      width: 95%;
-      box-shadow: 2px 5px 12px rgb(0 0 0/0.2);
-      margin-left: 5px;
-      padding: 10px;
-    "
+    style="width: 95%; box-shadow: 2px 5px 12px rgb(0 0 0/0.2); margin-left: 5px"
     max-height="200"
     @change="cellPri"
   >
@@ -149,12 +144,7 @@ const cellPri = () => {
   </div>
   <el-table
     :data="tableData"
-    style="
-      width: 95%;
-      box-shadow: 2px 5px 12px rgb(0 0 0/0.2);
-      margin-left: 5px;
-      padding: 10px;
-    "
+    style="width: 95%; box-shadow: 2px 5px 12px rgb(0 0 0/0.2); margin-left: 5px"
     max-height="150"
     @change="cellHover"
   >

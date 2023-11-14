@@ -8,7 +8,7 @@ import {
 } from "@element-plus/icons-vue";
 import { genFileId } from "element-plus";
 import type { UploadInstance, UploadProps, UploadRawFile, FormRules } from "element-plus";
-
+import { getThirdLoginConfigs } from "~/api/user";
 import dayjs from "dayjs";
 import { ref, reactive, onMounted, onUnmounted } from "vue";
 import { defineProps } from "vue";
@@ -16,6 +16,7 @@ import screenfull from "screenfull";
 import { ElMessage } from "element-plus";
 import { getEnergy } from "~/api/energy";
 const tenant = computed(() => useTenant().value);
+let current = tenant.value ? tenant.value : "default";
 const VITE_APP_BASE_API = import.meta.env.VITE_APP_BASE_API;
 const emits = defineEmits([
   "style-bgColor",
@@ -31,12 +32,16 @@ const emits = defineEmits([
 ]);
 // 是否全屏
 const isFullscreen = ref(false);
+// 第三方账号登录
+const thirdLoginTypes = ref([]);
+// 短信验证
+const codePass = ref(false);
 const numTop = ref(null);
 const numLeft = ref(null);
-const loginSwitch = ref(true);
-const regionSwitch = ref(true);
-const passSwitch = ref(true);
-const codeSwitch = ref(true);
+const loginSwitch = ref(false);
+const regionSwitch = ref(false);
+const passSwitch = ref(false);
+const codeSwitch = ref(false);
 const styleSwitch = ref("all");
 const equip = ref("monitor");
 const backG = ref("1");
@@ -51,19 +56,43 @@ const getInfo = () => {
       logoUpload.value = res.styleLogo;
       backgroundColor.value = res.styleBgcolor;
       cssWrite.value = res.styleCss;
-      loginSwitch.value = res.styleLogin == undefined ? true : res.styleLogin;
-      regionSwitch.value = res.styleRegion == undefined ? true : res.styleRegion;
-      passSwitch.value = res.stylePass == undefined ? true : res.stylePass;
-      codeSwitch.value = res.styleCode == undefined ? true : res.styleCode;
+      loginSwitch.value = res.styleLogin == undefined ? false : res.styleLogin;
+      regionSwitch.value = res.styleRegion == undefined ? false : res.styleRegion;
+      passSwitch.value = res.stylePass == undefined ? false : res.stylePass;
+      codeSwitch.value = res.styleCode == undefined ? false : res.styleCode;
       numTop.value = res.styleNumTop;
       numLeft.value = res.styleNumLeft;
     })
-    .finally(() => {});
+    .finally(() => {
+      if (backgroundColor.value.substring(0, 1) != "#") {
+        backG.value = "2";
+      } else {
+        backG.value = "1";
+      }
+    });
 };
 getInfo();
-
+const getLoginConfig = async () => {
+  const option = ["wecom", "dingtalk"];
+  const data = await getThirdLoginConfigs(current);
+  const thirdLoginList = data ? data.filter((item) => option.includes(item.type)) : "";
+  thirdLoginTypes.value = thirdLoginList;
+  if (data && data.find((item) => item.type === "sms")) {
+    codePass.value = true;
+  } else {
+    codePass.value = false;
+  }
+};
+getLoginConfig();
 const cellLogin = () => {
-  emits("style-login", loginSwitch.value);
+  if (thirdLoginTypes.value.length != 0) {
+    emits("style-login", loginSwitch.value);
+  } else {
+    ElMessage({
+      message: "还未配置第三方登录方式",
+      type: "warning",
+    });
+  }
 };
 const cellRegion = () => {
   emits("style-region", regionSwitch.value);
@@ -72,7 +101,14 @@ const cellPass = () => {
   emits("style-pass", passSwitch.value);
 };
 const cellCode = () => {
-  emits("style-code", codeSwitch.value);
+  if (codePass.value) {
+    emits("style-code", codeSwitch.value);
+  } else {
+    ElMessage({
+      message: "还未配置短信验证方式",
+      type: "warning",
+    });
+  }
 };
 function changeColor() {
   emits("style-bgColor", backgroundColor.value);
@@ -97,6 +133,7 @@ const numTopFn = (e) => {
 const numLeftFn = () => {
   emits("style-numLeft", numLeft.value);
 };
+
 const props = defineProps({
   top: {
     type: Array,
@@ -327,7 +364,7 @@ onUnmounted(() => {
     width: 375px;
     height: 670px;
     background: #fff;
-    border: 20px solid #000;
+    border: 15px solid #000;
     border-radius: 40px;
   }
 }
