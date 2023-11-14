@@ -16,10 +16,10 @@ const styleBgcolor = ref<String>("");
 const styleLogo = ref("");
 const styleName = ref("");
 const styleCss = ref("");
-const styleLogin = ref(true);
-const styleRegion = ref(true);
-const stylePass = ref(true);
-const styleCode = ref(true);
+const styleLogin = ref(false);
+const styleRegion = ref(false);
+const stylePass = ref(false);
+const styleCode = ref(false);
 const styleNumTop = ref(null);
 const styleNumLeft = ref(null);
 const getInfo = () => {
@@ -28,10 +28,10 @@ const getInfo = () => {
     styleLogo.value = res.styleLogo;
     styleBgcolor.value = res.styleBgcolor;
     styleCss.value = res.styleCss;
-    styleLogin.value = res.styleLogin == undefined ? true : res.styleLogin;
-    styleRegion.value = res.styleRegion == undefined ? true : res.styleRegion;
-    stylePass.value = res.stylePass == undefined ? true : res.stylePass;
-    styleCode.value = res.styleCode == undefined ? true : res.styleCode;
+    styleLogin.value = res.styleLogin == undefined ? false : res.styleLogin;
+    styleRegion.value = res.styleRegion == undefined ? false : res.styleRegion;
+    stylePass.value = res.stylePass == undefined ? false : res.stylePass;
+    styleCode.value = res.styleCode == undefined ? false : res.styleCode;
     styleNumTop.value = res.styleNumTop;
     styleNumLeft.value = res.styleNumLeft;
     bottom.value = [...res.bottom];
@@ -70,8 +70,6 @@ const stylenumtop = (value) => {
   styleNumTop.value = value;
 };
 const zCf = (value) => {
-  console.log(value, "value");
-
   bottom.value = value;
 };
 const zCp = (value) => {
