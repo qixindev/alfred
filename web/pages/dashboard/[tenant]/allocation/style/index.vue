@@ -1,12 +1,20 @@
 <script lang="ts" setup name="Users">
-import { Monitor, Iphone, UploadFilled, Delete } from "@element-plus/icons-vue";
+import {
+  Monitor,
+  Iphone,
+  UploadFilled,
+  Delete,
+  FullScreen,
+} from "@element-plus/icons-vue";
 import { genFileId } from "element-plus";
 import type { UploadInstance, UploadProps, UploadRawFile, FormRules } from "element-plus";
-import Login from "@/components/Login.vue";
+
 import dayjs from "dayjs";
-import { ref, reactive } from "vue";
+import { ref, reactive, onMounted, onUnmounted } from "vue";
 import { defineProps } from "vue";
-import { getEnergy, putEnergy, getProto, putProto } from "~/api/energy";
+import screenfull from "screenfull";
+import { ElMessage } from "element-plus";
+import { getEnergy } from "~/api/energy";
 const tenant = computed(() => useTenant().value);
 const VITE_APP_BASE_API = import.meta.env.VITE_APP_BASE_API;
 const emits = defineEmits([
@@ -21,8 +29,10 @@ const emits = defineEmits([
   "style-numTop",
   "style-numLeft",
 ]);
-const numTop = ref();
-const numLeft = ref();
+// 是否全屏
+const isFullscreen = ref(false);
+const numTop = ref(null);
+const numLeft = ref(null);
 const loginSwitch = ref(true);
 const regionSwitch = ref(true);
 const passSwitch = ref(true);
@@ -34,7 +44,6 @@ const cssWrite = ref("");
 const inputTitle = ref("");
 const logoUpload = ref("");
 let backgroundColor = ref("");
-
 const getInfo = () => {
   getEnergy()
     .then((res: any) => {
@@ -42,16 +51,17 @@ const getInfo = () => {
       logoUpload.value = res.styleLogo;
       backgroundColor.value = res.styleBgcolor;
       cssWrite.value = res.styleCss;
-      loginSwitch.value = res.styleLogin;
-      regionSwitch.value = res.styleRegion;
-      passSwitch.value = res.stylePass;
-      codeSwitch.value = res.styleCode;
+      loginSwitch.value = res.styleLogin == undefined ? true : res.styleLogin;
+      regionSwitch.value = res.styleRegion == undefined ? true : res.styleRegion;
+      passSwitch.value = res.stylePass == undefined ? true : res.stylePass;
+      codeSwitch.value = res.styleCode == undefined ? true : res.styleCode;
       numTop.value = res.styleNumTop;
       numLeft.value = res.styleNumLeft;
     })
     .finally(() => {});
 };
 getInfo();
+
 const cellLogin = () => {
   emits("style-login", loginSwitch.value);
 };
@@ -81,7 +91,7 @@ const uploadlogo = (e) => {
 const cellPri = () => {
   emits("style-name", inputTitle.value);
 };
-const numTopFn = () => {
+const numTopFn = (e) => {
   emits("style-numTop", numTop.value);
 };
 const numLeftFn = () => {
@@ -97,17 +107,34 @@ const props = defineProps({
     default: [],
   },
 });
+// 切换事件
+const preFn = () => {
+  screenfull.toggle(document.getElementById("embedContainer"));
+};
+// 监听变化
+const change = () => {
+  isFullscreen.value = screenfull.isFullscreen;
+};
+// 设置侦听器
+onMounted(() => {
+  screenfull.on("change", change);
+});
+
+// 删除侦听器
+onUnmounted(() => {
+  screenfull.off("change", change);
+});
 </script>
 <template>
   <div class="content">
-    <el-radio-group v-model="styleSwitch" size="large">
+    <el-radio-group v-model="styleSwitch" size="large" ref="myImg">
       <el-radio-button label="all">整体样式</el-radio-button>
       <el-radio-button label="convention">常规登录</el-radio-button>
     </el-radio-group>
   </div>
-  <div class="wrap">
+  <div id="wrap">
     <div class="centerMain">
-      <div class="changeEquip">
+      <div class="changeEquip" style="margin: 10px 0 0 10px">
         <el-tabs class="demo-tabs" tab-position="left" v-model="equip">
           <el-tab-pane name="monitor">
             <template #label>
@@ -124,9 +151,16 @@ const props = defineProps({
             </template>
           </el-tab-pane>
         </el-tabs>
+        <el-button
+          @click="preFn"
+          style="margin-top: 10px; box-shadow: 2px 5px 12px rgb(0 0 0/0.2)"
+          v-if="equip == 'monitor'"
+        >
+          <el-icon :size="20"><FullScreen /></el-icon>
+        </el-button>
       </div>
-
       <Login
+        v-if="equip == 'monitor'"
         :numTop="numTop"
         :numLeft="numLeft"
         :inputTitle="inputTitle"
@@ -139,7 +173,31 @@ const props = defineProps({
         :codeSwitch="codeSwitch"
         :logoUpload="logoUpload"
         :backgroundColor="backgroundColor"
+        id="embedContainer"
+        ref="scrollBox"
+        :equip="equip"
       ></Login>
+
+      <div v-else style="background: #fff; display: flex; justify-content: center">
+        <div class="iphoneBorder">
+          <LoginIphone
+            :numTop="numTop"
+            :numLeft="numLeft"
+            :inputTitle="inputTitle"
+            :cssWrite="cssWrite"
+            :top="props.top"
+            :bottom="props.bottom"
+            :passSwitch="passSwitch"
+            :loginSwitch="loginSwitch"
+            :regionSwitch="regionSwitch"
+            :codeSwitch="codeSwitch"
+            :logoUpload="logoUpload"
+            :backgroundColor="backgroundColor"
+            style="border-radius: 20px"
+            :equip="equip"
+          />
+        </div>
+      </div>
     </div>
 
     <div class="allmain" v-if="styleSwitch == 'all'">
@@ -148,22 +206,6 @@ const props = defineProps({
         <aside style="font-size: 14px; color: #aeaaaa; margin: 10px 0 0 50px">
           登录页面展示的背景
         </aside>
-        <p class="bg">登录框位置</p>
-
-        <div style="margin: 10px 10px 0 20px">
-          top<el-input-number
-            v-model="numTop"
-            style="margin-left: 20px"
-            @change="numTopFn"
-          />
-        </div>
-        <div style="margin: 10px 10px 0 20px">
-          left<el-input-number
-            v-model="numLeft"
-            style="margin-left: 20px"
-            @change="numLeftFn"
-          />
-        </div>
 
         <div class="mb-2 flex items-center text-sm">
           <el-radio-group v-model="backG" class="ml-4">
@@ -188,6 +230,24 @@ const props = defineProps({
             <div class="el-upload__tip">jpg/png 文件不超过 2MB</div>
           </template>
         </el-upload>
+        <p class="bg">登录框位置</p>
+
+        <div style="margin: 10px 10px 0 20px">
+          top<el-input-number
+            v-model="numTop"
+            style="margin-left: 20px"
+            @change="numTopFn"
+            @blur="numTopFn"
+          />
+        </div>
+        <div style="margin: 10px 10px 0 20px">
+          left<el-input-number
+            v-model="numLeft"
+            style="margin-left: 20px"
+            @change="numLeftFn"
+            @blur="numLeftFn"
+          />
+        </div>
         <div>
           <p class="bg">自定义LOGO</p>
           <el-upload
@@ -252,7 +312,7 @@ const props = defineProps({
 .content {
   margin-bottom: 10px;
 }
-.wrap {
+#wrap {
   width: 100%;
   height: 68vh;
   overflow-y: auto;
@@ -260,20 +320,28 @@ const props = defineProps({
 }
 
 .centerMain {
-  position: relative;
   height: 68vh;
   width: 75%;
-  overflow: hidden;
+  position: relative;
+  .iphoneBorder {
+    width: 375px;
+    height: 670px;
+    background: #fff;
+    border: 20px solid #000;
+    border-radius: 40px;
+  }
 }
 .changeEquip {
   position: absolute;
   top: 0;
   left: 0;
   width: 58px;
+  z-index: 999;
   .demo-tabs {
-    background-color: white;
+    background-color: #fff;
     border: 0;
     border-radius: 5px;
+    box-shadow: 2px 5px 12px rgb(0 0 0/0.2);
   }
 }
 .allmain,

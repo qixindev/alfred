@@ -4,7 +4,18 @@ import { ElMessage } from "element-plus";
 import { login, getThirdLoginConfigByName, phoneThirdLogin } from "~/api/user";
 
 const route = useRoute();
-
+const isPhone = ref(true);
+const _isMobile = () => {
+  let flag = navigator.userAgent.match(
+    /(phone|pad|pod|iPhone|iPod|ios|iPad|Android|Mobile|BlackBerry|IEMobile|MQQBrowser|JUC|Fennec|wOSBrowser|BrowserNG|WebOS|Symbian|Windows Phone)/i
+  );
+  return flag;
+};
+if (_isMobile()) {
+  isPhone.value = true;
+} else {
+  isPhone.value = false;
+}
 const accountLoginHandle = (formData: any) => {
   login(formData).then((res) => {
     if (res == 10000) {
@@ -55,7 +66,14 @@ definePageMeta({
 
 <template>
   <div class="wrap">
+    <LoginIphone
+      v-if="isPhone"
+      @accountLoginHandle="accountLoginHandle"
+      @phoneLoginHandle="phoneLoginHandle"
+      @thirdLoginHandle="thirdLogin"
+    />
     <Login
+      v-else
       @accountLoginHandle="accountLoginHandle"
       @phoneLoginHandle="phoneLoginHandle"
       @thirdLoginHandle="thirdLogin"

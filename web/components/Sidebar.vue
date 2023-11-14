@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import "element-plus/dist/index.css";
 import * as ELIcons from "@element-plus/icons-vue";
+import logoPic from "@/assets/favicon.ico";
 // import { Tenant, usePath } from '~~/composables/useUser'
 const route = useRoute();
 
@@ -12,7 +13,6 @@ const router = ref([
     label: "主页",
     name: "home",
     path: "/",
-    icon: "home-filled",
   },
   {
     name: "client",
@@ -77,7 +77,9 @@ watch(
 <template>
   <div class="sidebar">
     <div class="top">
-      <nuxt-link to="/"> Logo </nuxt-link>
+      <nuxt-link to="/">
+        <img :src="logoPic" alt="" style="width: 50px; margin-left: 20px" />
+      </nuxt-link>
     </div>
     <div class="menu">
       <div
@@ -95,18 +97,17 @@ watch(
 
 <style scoped lang="scss">
 .sidebar {
-  background-color: #fff;
+  background-color: #f7f8fa;
   min-height: 100vh;
-
   .menu {
     .menu-item {
       height: 48px;
       line-height: 48px;
       cursor: pointer;
-
+      padding-left: 20px;
       &.active {
         background-color: #409eff;
-        color: #fff;
+        color: #f7f8fa;
       }
     }
   }

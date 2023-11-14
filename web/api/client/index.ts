@@ -1,29 +1,26 @@
-// const tenant =  import.meta.env.VITE_APP_TENANT
+// const tenant.value =  import.meta.env.VITE_APP_tenant.value
 
-const tenant = computed(() => useTenant().value).value ||localStorage.getItem('tenantValue')
+const tenant = computed(() => useTenant().value)
 export const getClient = async () => {
-  console.log(tenant,computed(() => useTenant().value),"接口tenant111getClient",localStorage.getItem('tenantValue'));
-  console.log(import.meta)
-  return await useHttp.get(`/admin/${tenant}/clients`)
+  return await useHttp.get(`/admin/${tenant.value}/clients`)
 }
 
 export const saveClient = async (data: any) => {
-  console.log(tenant,computed(() => useTenant().value),"接口tenant111saveClient",localStorage.getItem('tenantValue'));
-  return await useHttp.post(`/admin/${tenant}/clients`, data)
+  return await useHttp.post(`/admin/${tenant.value}/clients`, data)
 }
 
 export const updateClient = async (id: number, data: any) => {
-  return await useHttp.put(`/admin/${tenant}/clients/${id}`, data)
+  return await useHttp.put(`/admin/${tenant.value}/clients/${id}`, data)
 }
 
 export const delClient = async (id: number) => {
-  return await useHttp.delete(`/admin/${tenant}/clients/${id}`)
+  return await useHttp.delete(`/admin/${tenant.value}/clients/${id}`)
 }
 
 export const getSecret = async (clientId: number) => {
-  return await useHttp.get(`/admin/${tenant}/clients/${clientId}/secret`)
+  return await useHttp.get(`/admin/${tenant.value}/clients/${clientId}/secret`)
 }
 
 export const setSecret = async (clientId: number, data: any) => {
-  return await useHttp.post(`/admin/${tenant}/clients/${clientId}/secret`, data)
+  return await useHttp.post(`/admin/${tenant.value}/clients/${clientId}/secret`, data)
 }
