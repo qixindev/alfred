@@ -26,14 +26,16 @@ func SmsAvailable(c *gin.Context) {
 	tenant := internal.GetTenant(c)
 	var provider model.Provider
 	if err := global.DB.First(&provider, "tenant_id = ? AND name = ?", tenant.Id, "sms").Error; err != nil {
-		resp.ErrorSqlFirst(c, err, "get provider err")
+		resp.SuccessWithData(c, false)
+		global.LOG.Error("get sms provider err: " + err.Error())
 		return
 	}
 
 	//查询在sms_connectors表中是否存在对应的TenantId的记录
 	var connectors []model.SmsConnector
 	if err := global.DB.Where("tenant_id = ?", tenant.Id).Find(&connectors).Error; err != nil {
-		resp.ErrorSqlSelect(c, err, "get connectors err")
+		resp.SuccessWithData(c, false)
+		global.LOG.Error("get sms connector err: " + err.Error())
 		return
 	}
 
@@ -42,7 +44,7 @@ func SmsAvailable(c *gin.Context) {
 		resp.SuccessWithData(c, true)
 		return
 	} else {
-		resp.ErrorRequestWithMsg(c, "sms is not available")
+		resp.SuccessWithData(c, false)
 	}
 }
 
