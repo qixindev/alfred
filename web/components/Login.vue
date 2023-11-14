@@ -18,6 +18,7 @@ interface ThirdLoginType {
   name: string;
   type: string;
 }
+
 const router = useRoute();
 const routerPath = useRouter();
 const info = ref({});
@@ -40,11 +41,11 @@ const protocol = ref(false);
 const props = defineProps({
   numTop: {
     type: Number,
-    default: 200,
+    default: null,
   },
   numLeft: {
     type: Number,
-    default: 200,
+    default: null,
   },
   loginSwitch: {
     type: Boolean,
@@ -90,8 +91,11 @@ const props = defineProps({
     type: Array,
     default: [],
   },
+  equip: {
+    type: String,
+    default: "",
+  },
 });
-
 const style = document.createElement("style");
 watch(
   () => [info.value.styleCss, props.cssWrite],
@@ -285,8 +289,8 @@ definePageMeta({
     <div
       class="login-boxL"
       :style="{
-        marginTop: `${numTop ? numTop : info && info.styleNumTop}px`,
-        marginLeft: `${numLeft ? numLeft : info && info.styleNumLeft}px`,
+        marginTop: `${numTop != null ? numTop : info && info.styleNumTop}px`,
+        marginLeft: `${numLeft != null ? numLeft : info && info.styleNumLeft}px`,
       }"
     >
       <div class="titleL">
@@ -408,13 +412,7 @@ definePageMeta({
           >
         </div>
       </div>
-      <div
-        class="optionL"
-        v-if="
-          (loginSwitch && info && info.styleLogin) ||
-          (regionSwitch && info && info.styleRegion)
-        "
-      >
+      <div class="optionL">
         <div
           class="other-loginL"
           v-if="
@@ -474,16 +472,14 @@ definePageMeta({
 </template>
 
 <style scoped lang="scss">
-html,
-body {
-  margin: 0;
-  padding: 0;
-}
 .containerL {
-  overflow: hidden;
+  overflow-y: auto;
   height: 100%;
   width: 100%;
+  background-size: cover !important;
+  background-color: #f7f8fa;
   .login-boxL {
+    position: relative;
     flex: 1;
     margin: auto;
     margin-top: 15%;
@@ -500,6 +496,7 @@ body {
         margin-right: 10px;
         width: 30px;
         height: 30px;
+        background-size: cover !important;
       }
     }
 
@@ -520,7 +517,6 @@ body {
     }
 
     .optionL {
-      height: 40px;
       display: flex;
       align-items: center;
       justify-content: space-between;

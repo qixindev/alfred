@@ -5,7 +5,18 @@ import { login, getThirdLoginConfigByName, phoneThirdLogin } from "~/api/user";
 
 const VITE_APP_BASE_API = import.meta.env.VITE_APP_BASE_API;
 const route = useRoute();
-
+const isPhone = ref(true);
+const _isMobile = () => {
+  let flag = navigator.userAgent.match(
+    /(phone|pad|pod|iPhone|iPod|ios|iPad|Android|Mobile|BlackBerry|IEMobile|MQQBrowser|JUC|Fennec|wOSBrowser|BrowserNG|WebOS|Symbian|Windows Phone)/i
+  );
+  return flag;
+};
+if (_isMobile()) {
+  isPhone.value = true;
+} else {
+  isPhone.value = false;
+}
 const accountLoginHandle = (formData: any) => {
   let { redirect_uri, client_id, state: tenant } = route.query;
   login(formData, tenant as string).then((res) => {
@@ -75,7 +86,14 @@ definePageMeta({
 
 <template>
   <div class="wrap">
+    <LoginIphone
+      v-if="isPhone"
+      @accountLoginHandle="accountLoginHandle"
+      @phoneLoginHandle="phoneLoginHandle"
+      @thirdLoginHandle="thirdLogin"
+    />
     <Login
+      v-else
       @accountLoginHandle="accountLoginHandle"
       @phoneLoginHandle="phoneLoginHandle"
       @thirdLoginHandle="thirdLogin"

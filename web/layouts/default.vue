@@ -1,6 +1,6 @@
 <script setup lang="ts">
-const auth = useCookie('QixinAuth')
-auth.value && useGetUserInfo()
+const auth = useCookie("QixinAuth");
+auth.value && useGetUserInfo();
 </script>
 
 <template>
@@ -18,7 +18,7 @@ auth.value && useGetUserInfo()
 <style scoped lang="scss">
 .app-wrapper {
   min-height: 100vh;
-  background-color: #eee;
+  background-color: #fff;
   display: flex;
   .sidebar {
     width: 200px;
@@ -33,5 +33,4 @@ auth.value && useGetUserInfo()
     }
   }
 }
-
 </style>

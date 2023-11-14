@@ -5,6 +5,10 @@ import { ref } from "vue";
 import Style from "./style/index.vue";
 import Energy from "./energy/index.vue";
 import { getEnergy, putEnergy } from "~/api/energy";
+import { getRedirectUris } from "~/api/client/redirect-uri";
+import { useRouter } from "vue-router";
+const router = useRouter();
+const tenant = computed(() => useTenant().value);
 const activeName = ref("first");
 const top = ref([]);
 const bottom = ref([]);
@@ -16,18 +20,18 @@ const styleLogin = ref(true);
 const styleRegion = ref(true);
 const stylePass = ref(true);
 const styleCode = ref(true);
-const styleNumTop = ref(200);
-const styleNumLeft = ref(200);
+const styleNumTop = ref(null);
+const styleNumLeft = ref(null);
 const getInfo = () => {
   getEnergy().then((res: any) => {
     styleName.value = res.styleName;
     styleLogo.value = res.styleLogo;
     styleBgcolor.value = res.styleBgcolor;
     styleCss.value = res.styleCss;
-    styleLogin.value = res.styleLogin;
-    styleRegion.value = res.styleRegion;
-    stylePass.value = res.stylePass;
-    styleCode.value = res.styleCode;
+    styleLogin.value = res.styleLogin == undefined ? true : res.styleLogin;
+    styleRegion.value = res.styleRegion == undefined ? true : res.styleRegion;
+    stylePass.value = res.stylePass == undefined ? true : res.stylePass;
+    styleCode.value = res.styleCode == undefined ? true : res.styleCode;
     styleNumTop.value = res.styleNumTop;
     styleNumLeft.value = res.styleNumLeft;
     bottom.value = [...res.bottom];
@@ -66,6 +70,8 @@ const stylenumtop = (value) => {
   styleNumTop.value = value;
 };
 const zCf = (value) => {
+  console.log(value, "value");
+
   bottom.value = value;
 };
 const zCp = (value) => {
@@ -92,10 +98,28 @@ const submit = () => {
     });
   });
 };
+function getList() {
+  getRedirectUris("default").then((res: any) => {
+    if (res.length != 0) {
+      navigateTo(
+        `${location.origin}/oauth2/?redirect_uri=${res[0].redirectUri}&response_type=code&client_id=default&scope=openid&prompt=consent&state=${tenant.value}`,
+        { external: true }
+      );
+    } else {
+      ElMessage({
+        message: "体验失败",
+        type: "danger",
+      });
+    }
+  });
+}
 </script>
 <template>
   <h3>
     全局登录配置
+    <el-button type="primary" style="float: right; margin-left: 10px" @click="getList"
+      >体验登录</el-button
+    >
     <el-button type="primary" style="float: right" @click="submit">保存</el-button>
   </h3>
   <h6 style="margin: 10px 0 20px 20px; font-weight: normal">
