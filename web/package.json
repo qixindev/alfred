@@ -19,6 +19,8 @@
     "element-plus": "^2.2.32",
     "highlight.js": "^11.8.0",
     "markdown-it": "^13.0.1",
+    "qrcode": "^1.5.3",
+    "qrcode.vue": "^3.4.1",
     "sass": "^1.58.3",
     "sass-loader": "^13.2.0",
     "screenfull": "5.1.0"

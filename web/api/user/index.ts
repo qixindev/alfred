@@ -13,7 +13,6 @@ export const login = async (data: any, curTenant: string = 'default') => {
 }
 
 export const register = async (data: any, curTenant: string = 'default') => {
-  console.log(curTenant)
   return await useHttp.post(`/${curTenant}/register`, data, {
     headers: {
       'Content-Type': 'application/x-www-form-urlencoded'
@@ -21,7 +20,7 @@ export const register = async (data: any, curTenant: string = 'default') => {
   })
 }
 
-export const getThirdLoginConfigs = async (currentTenant = 'default') => {
+export const getThirdLoginConfigs = async (currentTenant: string) => {
   return await useHttp.get(`/${currentTenant}/providers`)
 }
 
@@ -60,7 +59,7 @@ export const resetPassword = async (data: any, curTenant: string = 'default', to
   })
 }
 
-export const smsAvailable = async (curTenant: string = 'default') => {
+export const smsAvailable = async (curTenant: string) => {
   return await useHttp.get(`/${curTenant}/reset/smsAvailable`)
 }
 export const verifyResetPasswordRequest = async (data: any, curTenant: string = 'default') => {

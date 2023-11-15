@@ -18,6 +18,7 @@ interface ThirdLoginType {
   name: string;
   type: string;
 }
+const tenant = computed(() => useTenant().value);
 
 const router = useRoute();
 const routerPath = useRouter();
@@ -25,10 +26,14 @@ const info = ref({});
 const bottomTitle = ref([]);
 const newPrimaryWord = ref([]);
 const newTop = ref([]);
+const login_top = ref(0);
+const login_left = ref(0);
 const getInfo = () => {
   getEnergy().then((res: any) => {
     info.value = { ...res };
     bottomTitle.value = [...res.bottom];
+    login_top.value = res.styleNumTop;
+    login_left.value = res.styleNumLeft;
   });
   getProto().then((res: any) => {
     newPrimaryWord.value = res.filter((item: any) => {
@@ -49,19 +54,19 @@ const props = defineProps({
   },
   loginSwitch: {
     type: Boolean,
-    default: true,
+    default: false,
   },
   regionSwitch: {
     type: Boolean,
-    default: true,
+    default: false,
   },
   passSwitch: {
     type: Boolean,
-    default: true,
+    default: false,
   },
   codeSwitch: {
     type: Boolean,
-    default: true,
+    default: false,
   },
   inputTitle: {
     type: String,
@@ -84,10 +89,6 @@ const props = defineProps({
     default: [],
   },
   bottom: {
-    type: Array,
-    default: [],
-  },
-  top: {
     type: Array,
     default: [],
   },
@@ -114,14 +115,39 @@ watch(
     newTop.value = props.top.filter((item: any) => {
       return item.loginSwitch;
     });
+    if (newTop.value.length == 0) {
+      newPrimaryWord.value = [];
+    }
+  },
+  { immediate: true, deep: true }
+);
+watch(
+  () => props.bottom,
+  () => {
+    if (props.bottom.length == 0) {
+      bottomTitle.value = [];
+    }
+  },
+  { immediate: true, deep: true }
+);
+watch(
+  () => [props.numTop, props.numLeft],
+  () => {
+    if (!props.numTop) {
+      login_top.value = 0;
+    }
+    if (!props.numLeft) {
+      login_left.value = 0;
+    }
   },
   { immediate: true, deep: true }
 );
 const emit = defineEmits(["accountLoginHandle", "phoneLoginHandle", "thirdLoginHandle"]);
 const route = useRoute();
 const { state: tanent } = route.query as any;
-let currentTenant = tanent ?? "default";
 
+let currentTenant = tanent ?? "default";
+let current = tenant.value ? tenant.value : "default";
 const phoneForm = reactive({
   phone: "",
   code: "",
@@ -131,7 +157,7 @@ const accountForm = reactive({
   login: "",
   password: "",
 });
-
+// ？？？？？？？？
 const hasRegister = computed(() => {
   return route.query?.platform === "tenant";
 });
@@ -216,15 +242,20 @@ const handleNavigate = (url: string) => {
 const thirdLogin = async (params: any) => {
   emit("thirdLoginHandle", params);
 };
+const isPhone = ref(false);
 
 let phoneProvider = ref("");
 const getLoginConfig = async () => {
   const option = ["wecom", "dingtalk"];
-  const data = (await getThirdLoginConfigs(currentTenant)) as ThirdLoginType[];
-  const thirdLoginList = data.filter((item) => option.includes(item.type));
+  const data = (await getThirdLoginConfigs(current)) as ThirdLoginType[];
+  const thirdLoginList = data ? data.filter((item) => option.includes(item.type)) : "";
+
   thirdLoginTypes.value = thirdLoginList;
   thirdLoginTypesLength.value = thirdLoginTypes.value.length;
-  phoneProvider.value = data.find((item) => item.type === "sms")!.name;
+  phoneProvider.value = data ? data.find((item) => item.type === "sms")!.name : "";
+  if (data && data.find((item) => item.type === "sms")) {
+    checkPhone();
+  }
 };
 
 const countdownButtonRef = ref();
@@ -240,16 +271,15 @@ const sendValidCode = async (phone: string) => {
 
 getLoginConfig();
 // 验证有手机号
-const isPhone = ref(true);
 const checkPhone = async () => {
-  const res = await smsAvailable(currentTenant);
+  const res = await smsAvailable(current);
   if (res) {
     isPhone.value = true;
   } else {
     isPhone.value = false;
   }
 };
-checkPhone();
+
 const navigateToRegister = async () => {
   navigateTo({
     path: "/oauth2Register",
@@ -289,8 +319,8 @@ definePageMeta({
     <div
       class="login-boxL"
       :style="{
-        marginTop: `${numTop != null ? numTop : info && info.styleNumTop}px`,
-        marginLeft: `${numLeft != null ? numLeft : info && info.styleNumLeft}px`,
+        marginTop: `${numTop ? numTop : login_top}%`,
+        marginLeft: `${numLeft ? numLeft : login_left}%`,
       }"
     >
       <div class="titleL">
@@ -478,12 +508,15 @@ definePageMeta({
   width: 100%;
   background-size: cover !important;
   background-color: #f7f8fa;
+  position: relative;
   .login-boxL {
-    position: relative;
+    position: absolute;
     flex: 1;
-    margin: auto;
-    margin-top: 15%;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
     width: 400px;
+    min-height: 250px;
     background-color: #fff;
     padding: 20px 20px;
     border-radius: 8px;
