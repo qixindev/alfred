@@ -25,27 +25,21 @@ import (
 func SmsAvailable(c *gin.Context) {
 	tenant := internal.GetTenant(c)
 	var provider model.Provider
-	if err := global.DB.First(&provider, "tenant_id = ? AND name = ?", tenant.Id, "sms").Error; err != nil {
+	if err := global.DB.First(&provider, "tenant_id = ? AND type = ?", tenant.Id, "sms").Error; err != nil {
 		resp.SuccessWithData(c, false)
 		global.LOG.Error("get sms provider err: " + err.Error())
 		return
 	}
 
 	//查询在sms_connectors表中是否存在对应的TenantId的记录
-	var connectors []model.SmsConnector
-	if err := global.DB.Where("tenant_id = ?", tenant.Id).Find(&connectors).Error; err != nil {
+	var connectors model.SmsConnector
+	if err := global.DB.Where("tenant_id = ?", tenant.Id).First(&connectors).Error; err != nil {
 		resp.SuccessWithData(c, false)
 		global.LOG.Error("get sms connector err: " + err.Error())
 		return
 	}
 
-	//同时满足两个条件才返回true
-	if len(connectors) > 0 && provider.Type == "sms" {
-		resp.SuccessWithData(c, true)
-		return
-	} else {
-		resp.SuccessWithData(c, false)
-	}
+	resp.SuccessWithData(c, true)
 }
 
 // VerifyResetPasswordRequest ForgotPassword godoc 发起忘记密码请求
