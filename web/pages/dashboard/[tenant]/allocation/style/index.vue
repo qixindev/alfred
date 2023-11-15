@@ -67,7 +67,7 @@ const getInfo = () => {
       numLeft.value = res.styleNumLeft;
     })
     .finally(() => {
-      if (backgroundColor.value.substring(0, 1) != "#") {
+      if (backgroundColor.value && backgroundColor.value.substring(0, 1) != "#") {
         backG.value = "2";
       } else {
         backG.value = "1";
