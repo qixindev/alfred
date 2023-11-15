@@ -2,7 +2,7 @@
 import { Monitor, Iphone, UploadFilled, Delete, Plus } from "@element-plus/icons-vue";
 import { genFileId } from "element-plus";
 import type { UploadInstance, UploadProps, UploadRawFile } from "element-plus";
-import { getEnergy, getProto, putProto } from "~/api/energy";
+import { getEnergy, getProto } from "~/api/energy";
 import dayjs from "dayjs";
 import { ref } from "vue";
 import { ElMessage } from "element-plus";
@@ -43,14 +43,6 @@ const deletePri = (index: number) => {
   tablePri.value.splice(index, 1);
   emit("child-primary", tablePri.value);
 };
-const addPri = () => {
-  putProto(tablePri.value).finally(() => {
-    ElMessage({
-      message: "保存协议成功",
-      type: "success",
-    });
-  });
-};
 
 const tableData = ref([]);
 const deleteRow = (index: number) => {
@@ -64,11 +56,25 @@ const onAddItem = () => {
   });
 };
 
+const cellPri = () => {
+  emit("child-primary", tablePri.value);
+};
 const cellHover = () => {
   emit("child-click", tableData.value);
 };
-const cellPri = () => {
-  emit("child-primary", tablePri.value);
+const change1 = (word) => {
+  let a = "https://";
+  let b = "http://";
+  if (
+    (word.slice(0, 8) == a && word.slice(0, 7) != b) ||
+    (word.slice(0, 8) != a && word.slice(0, 7) == b)
+  ) {
+  } else {
+    ElMessage({
+      message: "请输入以https://或者http://开头的地址",
+      type: "warning",
+    });
+  }
 };
 </script>
 <template>
@@ -81,14 +87,6 @@ const cellPri = () => {
       link
       ><el-icon><Plus /></el-icon>添加协议</el-button
     >
-    <el-button
-      type="primary"
-      size="large"
-      @click.prevent="addPri"
-      style="width: 100px; margin: 15px 0px 30px 60%"
-    >
-      保存协议
-    </el-button>
   </div>
 
   <el-table
@@ -155,7 +153,12 @@ const cellPri = () => {
     </el-table-column>
     <el-table-column prop="wordlink" label="链接地址" width="430">
       <template #default="scope">
-        <el-input v-model="scope.row.wordlink"> </el-input> </template
+        <el-input
+          v-model="scope.row.wordlink"
+          placeholder="请输入以https://或者http://开头的地址"
+          @change="change1(scope.row.wordlink)"
+        >
+        </el-input> </template
     ></el-table-column>
     <el-table-column fixed="right" label="删除" width="230">
       <template #default="scope">

@@ -26,10 +26,14 @@ const info = ref({});
 const bottomTitle = ref([]);
 const newPrimaryWord = ref([]);
 const newTop = ref([]);
+const login_top = ref(0);
+const login_left = ref(0);
 const getInfo = () => {
   getEnergy().then((res: any) => {
     info.value = { ...res };
     bottomTitle.value = [...res.bottom];
+    login_top.value = res.styleNumTop;
+    login_left.value = res.styleNumLeft;
   });
   getProto().then((res: any) => {
     newPrimaryWord.value = res.filter((item: any) => {
@@ -88,10 +92,6 @@ const props = defineProps({
     type: Array,
     default: [],
   },
-  top: {
-    type: Array,
-    default: [],
-  },
   equip: {
     type: String,
     default: "",
@@ -115,6 +115,30 @@ watch(
     newTop.value = props.top.filter((item: any) => {
       return item.loginSwitch;
     });
+    if (newTop.value.length == 0) {
+      newPrimaryWord.value = [];
+    }
+  },
+  { immediate: true, deep: true }
+);
+watch(
+  () => props.bottom,
+  () => {
+    if (props.bottom.length == 0) {
+      bottomTitle.value = [];
+    }
+  },
+  { immediate: true, deep: true }
+);
+watch(
+  () => [props.numTop, props.numLeft],
+  () => {
+    if (!props.numTop) {
+      login_top.value = 0;
+    }
+    if (!props.numLeft) {
+      login_left.value = 0;
+    }
   },
   { immediate: true, deep: true }
 );
@@ -133,7 +157,7 @@ const accountForm = reactive({
   login: "",
   password: "",
 });
-
+// ？？？？？？？？
 const hasRegister = computed(() => {
   return route.query?.platform === "tenant";
 });
@@ -295,8 +319,8 @@ definePageMeta({
     <div
       class="login-boxL"
       :style="{
-        marginTop: `${numTop != null ? numTop : info && info.styleNumTop}px`,
-        marginLeft: `${numLeft != null ? numLeft : info && info.styleNumLeft}px`,
+        marginTop: `${numTop ? numTop : login_top}%`,
+        marginLeft: `${numLeft ? numLeft : login_left}%`,
       }"
     >
       <div class="titleL">
@@ -484,12 +508,15 @@ definePageMeta({
   width: 100%;
   background-size: cover !important;
   background-color: #f7f8fa;
+  position: relative;
   .login-boxL {
-    position: relative;
+    position: absolute;
     flex: 1;
-    margin: auto;
-    margin-top: 15%;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
     width: 400px;
+    min-height: 250px;
     background-color: #fff;
     padding: 20px 20px;
     border-radius: 8px;

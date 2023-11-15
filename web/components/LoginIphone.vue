@@ -80,10 +80,6 @@ const props = defineProps({
     type: String,
     default: "",
   },
-  top: {
-    type: Array,
-    default: [],
-  },
   bottom: {
     type: Array,
     default: [],
@@ -112,6 +108,18 @@ watch(
     newTop.value = props.top.filter((item: any) => {
       return item.loginSwitch;
     });
+    if (newTop.value.length == 0) {
+      newPrimaryWord.value = [];
+    }
+  },
+  { immediate: true, deep: true }
+);
+watch(
+  () => props.bottom,
+  () => {
+    if (props.bottom.length == 0) {
+      bottomTitle.value = [];
+    }
   },
   { immediate: true, deep: true }
 );

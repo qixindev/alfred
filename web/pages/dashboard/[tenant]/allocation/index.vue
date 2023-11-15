@@ -4,9 +4,11 @@ import { ElMessage } from "element-plus";
 import { ref } from "vue";
 import Style from "./style/index.vue";
 import Energy from "./energy/index.vue";
-import { getEnergy, putEnergy } from "~/api/energy";
+import { getEnergy, putEnergy, putProto } from "~/api/energy";
 import { getRedirectUris } from "~/api/client/redirect-uri";
 import { useRouter } from "vue-router";
+import { onMounted } from "vue";
+import QrcodeVue from "qrcode.vue";
 const router = useRouter();
 const tenant = computed(() => useTenant().value);
 const activeName = ref("first");
@@ -22,6 +24,10 @@ const stylePass = ref(false);
 const styleCode = ref(false);
 const styleNumTop = ref(null);
 const styleNumLeft = ref(null);
+const dialogTableVisible = ref(false);
+
+const qrCode123 = ref("");
+const equipT = ref("monitor");
 const getInfo = () => {
   getEnergy().then((res: any) => {
     styleName.value = res.styleName;
@@ -75,7 +81,9 @@ const zCf = (value) => {
 const zCp = (value) => {
   top.value = value;
 };
-
+const equipFn = (value) => {
+  equipT.value = value;
+};
 const submit = () => {
   putEnergy({
     bottom,
@@ -95,19 +103,20 @@ const submit = () => {
       type: "success",
     });
   });
+  putProto(top.value);
 };
 function getList() {
   getRedirectUris("default").then((res: any) => {
     if (res.length != 0) {
-      navigateTo(
-        `${location.origin}/oauth2/?redirect_uri=${res[0].redirectUri}&response_type=code&client_id=default&scope=openid&prompt=consent&state=${tenant.value}`,
-        { external: true }
-      );
-    } else {
-      ElMessage({
-        message: "体验失败",
-        type: "danger",
-      });
+      if (equipT.value == "monitor") {
+        navigateTo(
+          `${location.origin}/oauth2/?redirect_uri=${res[0].redirectUri}&response_type=code&client_id=default&scope=openid&prompt=consent&state=${tenant.value}`,
+          { external: true }
+        );
+      } else {
+        qrCode123.value = `${location.origin}/oauth2/?redirect_uri=${res[0].redirectUri}&response_type=code&client_id=default&scope=openid&prompt=consent&state=${tenant.value}`;
+        dialogTableVisible.value = true;
+      }
     }
   });
 }
@@ -118,6 +127,15 @@ function getList() {
     <el-button type="primary" style="float: right; margin-left: 10px" @click="getList"
       >体验登录</el-button
     >
+    <el-dialog
+      v-model="dialogTableVisible"
+      title="手机二维码"
+      style="text-align: center"
+      :show-close="false"
+      :width="500"
+    >
+      <qrcode-vue :value="qrCode123" :size="400"></qrcode-vue>
+    </el-dialog>
     <el-button type="primary" style="float: right" @click="submit">保存</el-button>
   </h3>
   <h6 style="margin: 10px 0 20px 20px; font-weight: normal">
@@ -136,6 +154,7 @@ function getList() {
         @style-css="stylecss"
         @style-numLeft="stylenumleft"
         @style-numTop="stylenumtop"
+        @equip="equipFn"
         :bottom="bottom"
         :top="top"
     /></el-tab-pane>
