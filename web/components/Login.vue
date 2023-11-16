@@ -70,7 +70,7 @@ const props = defineProps({
   },
   inputTitle: {
     type: String,
-    default: "登录",
+    default: "",
   },
   cssWrite: {
     type: String,
@@ -333,10 +333,10 @@ definePageMeta({
         {{ inputTitle ? inputTitle : info && info.styleName }}
       </div>
       <el-tabs v-model="activeName">
-        <el-tab-pane label="账户密码登录" name="login">
+        <el-tab-pane label="密码登录" name="login">
           <el-form ref="accountRuleFormRef" :model="accountForm" :rules="accountRules">
             <el-form-item prop="login">
-              <el-input v-model="accountForm.login" placeholder="账号">
+              <el-input v-model="accountForm.login" placeholder="请输入手机号/用户名">
                 <template #prefix>
                   <el-icon class="icon-userL"><User /></el-icon>
                 </template>
@@ -346,7 +346,7 @@ definePageMeta({
             <el-form-item prop="password">
               <el-input
                 v-model="accountForm.password"
-                placeholder="密码"
+                placeholder="请输入登录密码"
                 type="password"
                 show-password
               >
@@ -377,7 +377,7 @@ definePageMeta({
         </el-tab-pane>
 
         <el-tab-pane
-          label="手机号登录"
+          label="验证码登录"
           name="phone"
           v-if="
             router.path.substring(0, 10) == '/dashboard'
@@ -387,10 +387,10 @@ definePageMeta({
         >
           <el-form ref="phoneRuleFormRef" :model="phoneForm" :rules="phoneRules">
             <el-form-item prop="phone">
-              <el-input v-model="phoneForm.phone" placeholder="手机号">
+              <el-input v-model="phoneForm.phone" placeholder="请输入手机号">
                 <template #prefix>
                   <el-icon class="icon-phoneL"><Iphone /></el-icon>
-                  <span>+86</span>
+                  <!-- <span>+86</span> -->
                 </template>
               </el-input>
             </el-form-item>
@@ -400,7 +400,7 @@ definePageMeta({
                 <el-input
                   v-model="phoneForm.code"
                   maxlength="6"
-                  placeholder="验证码"
+                  placeholder="请输入6位验证码"
                   :style="{ width: '280px', marginRight: '10px' }"
                 >
                   <template #prefix>
@@ -571,9 +571,8 @@ definePageMeta({
     }
   }
   .bottomL {
-    width: 80%;
+    width: 100%;
     height: 20px;
-    // margin-top: 10%;
     position: absolute;
     bottom: 5%;
     display: flex;
