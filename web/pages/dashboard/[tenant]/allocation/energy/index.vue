@@ -6,8 +6,13 @@ import { getEnergy, getProto } from "~/api/energy";
 import dayjs from "dayjs";
 import { ref } from "vue";
 import { ElMessage } from "element-plus";
+import { useRouter, useRoute } from "vue-router";
 const emit = defineEmits(["child-click"], ["child-primary"]);
-
+const tenant = computed(() => useTenant().value);
+const route = useRoute();
+const { state: tanent } = route.query as any;
+let currentTenant =
+  route.path.substring(0, 10) == "/dashboard" ? tenant.value : tanent ?? "default";
 const privacyWrite = ref("");
 const privacyWord = ref("");
 const wordCen = ref("");
@@ -25,10 +30,10 @@ const addPrivacy = () => {
   });
 };
 const getInfo = () => {
-  getEnergy().then((res: any) => {
+  getEnergy(currentTenant).then((res: any) => {
     tableData.value = [...res.bottom];
   });
-  getProto().then((res: any) => {
+  getProto(currentTenant).then((res: any) => {
     tablePri.value = [...res];
   });
 };

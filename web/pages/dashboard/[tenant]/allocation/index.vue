@@ -6,11 +6,15 @@ import Style from "./style/index.vue";
 import Energy from "./energy/index.vue";
 import { getEnergy, putEnergy, putProto } from "~/api/energy";
 import { getRedirectUris } from "~/api/client/redirect-uri";
-import { useRouter } from "vue-router";
+import { useRouter, useRoute } from "vue-router";
 import { onMounted } from "vue";
 import QrcodeVue from "qrcode.vue";
-const router = useRouter();
 const tenant = computed(() => useTenant().value);
+const route = useRoute();
+const { state: tanent } = route.query as any;
+let currentTenant =
+  route.path.substring(0, 10) == "/dashboard" ? tenant.value : tanent ?? "default";
+const router = useRouter();
 const activeName = ref("first");
 const top = ref([]);
 const bottom = ref([]);
@@ -29,7 +33,7 @@ const dialogTableVisible = ref(false);
 const qrCode123 = ref("");
 const equipT = ref("monitor");
 const getInfo = () => {
-  getEnergy().then((res: any) => {
+  getEnergy(currentTenant).then((res: any) => {
     styleName.value = res.styleName;
     styleLogo.value = res.styleLogo;
     styleBgcolor.value = res.styleBgcolor;
@@ -85,7 +89,7 @@ const equipFn = (value) => {
   equipT.value = value;
 };
 const submit = () => {
-  putEnergy({
+  putEnergy(currentTenant, {
     bottom,
     styleLogin,
     styleBgcolor,
@@ -103,7 +107,7 @@ const submit = () => {
       type: "success",
     });
   });
-  putProto(top.value);
+  putProto(currentTenant, top.value);
 };
 function getList() {
   getRedirectUris("default").then((res: any) => {

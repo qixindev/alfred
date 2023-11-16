@@ -15,8 +15,13 @@ import { defineProps } from "vue";
 import screenfull from "screenfull";
 import { ElMessage } from "element-plus";
 import { getEnergy } from "~/api/energy";
+import { useRouter, useRoute } from "vue-router";
 const tenant = computed(() => useTenant().value);
-let current = tenant.value ? tenant.value : "default";
+const route = useRoute();
+const { state: tanent } = route.query as any;
+
+let currentTenant =
+  route.path.substring(0, 10) == "/dashboard" ? tenant.value : tanent ?? "default";
 const VITE_APP_BASE_API = import.meta.env.VITE_APP_BASE_API;
 const emits = defineEmits([
   "style-bgColor",
@@ -53,7 +58,7 @@ const inputTitle = ref("");
 const logoUpload = ref("");
 let backgroundColor = ref("");
 const getInfo = () => {
-  getEnergy()
+  getEnergy(currentTenant)
     .then((res: any) => {
       inputTitle.value = res.styleName;
       logoUpload.value = res.styleLogo;
@@ -77,7 +82,7 @@ const getInfo = () => {
 getInfo();
 const getLoginConfig = async () => {
   const option = ["wecom", "dingtalk"];
-  const data = await getThirdLoginConfigs(current);
+  const data = await getThirdLoginConfigs(currentTenant);
   const thirdLoginList = data ? data.filter((item) => option.includes(item.type)) : "";
   thirdLoginTypes.value = thirdLoginList;
   if (data && data.find((item) => item.type === "sms")) {
@@ -89,7 +94,7 @@ const getLoginConfig = async () => {
 };
 getLoginConfig();
 const checkPhone = async () => {
-  const res = await smsAvailable(current);
+  const res = await smsAvailable(currentTenant);
   if (res) {
     isPhone.value = true;
   } else {

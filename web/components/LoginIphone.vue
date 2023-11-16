@@ -19,7 +19,11 @@ interface ThirdLoginType {
   type: string;
 }
 const tenant = computed(() => useTenant().value);
+const route = useRoute();
+const { state: tanent } = route.query as any;
 
+let currentTenant =
+  route.path.substring(0, 10) == "/dashboard" ? tenant.value : tanent ?? "default";
 const router = useRoute();
 const routerPath = useRouter();
 const info = ref({});
@@ -27,11 +31,11 @@ const bottomTitle = ref([]);
 const newPrimaryWord = ref([]);
 const newTop = ref([]);
 const getInfo = () => {
-  getEnergy().then((res: any) => {
+  getEnergy(currentTenant).then((res: any) => {
     info.value = { ...res };
     bottomTitle.value = [...res.bottom];
   });
-  getProto().then((res: any) => {
+  getProto(currentTenant).then((res: any) => {
     newPrimaryWord.value = res.filter((item: any) => {
       return item.loginSwitch;
     });
@@ -124,10 +128,6 @@ watch(
   { immediate: true, deep: true }
 );
 const emit = defineEmits(["accountLoginHandle", "phoneLoginHandle", "thirdLoginHandle"]);
-const route = useRoute();
-const { state: tanent } = route.query as any;
-let currentTenant = tanent ?? "default";
-let current = tenant.value ? tenant.value : "default";
 
 const phoneForm = reactive({
   phone: "",
@@ -228,7 +228,7 @@ const isPhone = ref(false);
 let phoneProvider = ref("");
 const getLoginConfig = async () => {
   const option = ["wecom", "dingtalk"];
-  const data = (await getThirdLoginConfigs(current)) as ThirdLoginType[];
+  const data = (await getThirdLoginConfigs(currentTenant)) as ThirdLoginType[];
   const thirdLoginList = data ? data.filter((item) => option.includes(item.type)) : "";
   thirdLoginTypes.value = thirdLoginList;
   thirdLoginTypesLength.value = thirdLoginTypes.value.length;
@@ -252,7 +252,7 @@ const sendValidCode = async (phone: string) => {
 getLoginConfig();
 // 验证有手机号
 const checkPhone = async () => {
-  const res = await smsAvailable(current);
+  const res = await smsAvailable(currentTenant);
   if (res) {
     isPhone.value = true;
   } else {

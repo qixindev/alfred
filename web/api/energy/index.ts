@@ -1,16 +1,16 @@
-const tenant = computed(() => useTenant().value)
-export const getEnergy = async () => {
-    return await useHttp.get(`/admin/${tenant.value ? tenant.value : 'default'}/page/login`)
+
+export const getEnergy = async (currentTenant: string) => {
+    return await useHttp.get(`/admin/${currentTenant}/page/login`)
 }
 
-export const putEnergy = async (data: any) => {
-    return await useHttp.put(`/admin/${tenant.value}/page/login`, data)
+export const putEnergy = async (currentTenant: string, data: any) => {
+    return await useHttp.put(`/admin/${currentTenant}/page/login`, data)
 }
 
-export const getProto = async () => {
-    return await useHttp.get(`/admin/${tenant.value ? tenant.value : 'default'}/proto`)
+export const getProto = async (currentTenant: string) => {
+    return await useHttp.get(`/admin/${currentTenant}/proto`)
 }
 
-export const putProto = async (data: any) => {
-    return await useHttp.put(`/admin/${tenant.value}/proto`, data)
+export const putProto = async (currentTenant: string, data: any) => {
+    return await useHttp.put(`/admin/${currentTenant}/proto`, data)
 }
