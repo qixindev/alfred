@@ -21,6 +21,8 @@ const resignSwitch = ref(true);
 const loginSwitch = ref(false);
 const tablePri = ref([]);
 const primaryCon = ref([]);
+const tableData = ref([]);
+
 const addPrivacy = () => {
   tablePri.value.push({
     resignSwitch: false,
@@ -30,26 +32,30 @@ const addPrivacy = () => {
   });
 };
 const getInfo = () => {
-  getEnergy(currentTenant).then((res: any) => {
-    tableData.value = [...res.bottom];
-  });
   getProto(currentTenant).then((res: any) => {
     tablePri.value = [...res];
   });
 };
 getInfo();
-function changeColor(e) {
-  bgcolor.value = e;
-}
-function mainCss(e) {
-  cssWrite.value = e;
-}
+const props = defineProps({
+  allInfo: {
+    type: Object,
+    default: {},
+  },
+});
+watch(
+  () => props.allInfo,
+  () => {
+    // ！！！！！！！
+    tableData.value = props.allInfo && props.allInfo.bottom;
+  },
+  { immediate: true, deep: true }
+);
 const deletePri = (index: number) => {
   tablePri.value.splice(index, 1);
   emit("child-primary", tablePri.value);
 };
 
-const tableData = ref([]);
 const deleteRow = (index: number) => {
   tableData.value.splice(index, 1);
   emit("child-click", tableData.value);

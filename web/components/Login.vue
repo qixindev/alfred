@@ -98,12 +98,17 @@ const props = defineProps({
     type: Array,
     default: [],
   },
-  equip: {
-    type: String,
-    default: "",
-  },
 });
 const style = document.createElement("style");
+// watch(
+//   () => tenant.value,
+//   () => {
+//     if (route.path.substring(0, 10) == "/dashboard") {
+//       style.textContent = "";
+//     }
+//   },
+//   { immediate: true, deep: true }
+// );
 watch(
   () => [info.value.styleCss, props.cssWrite],
   () => {
@@ -392,7 +397,6 @@ definePageMeta({
               <el-input v-model="phoneForm.phone" placeholder="请输入手机号">
                 <template #prefix>
                   <el-icon class="icon-phoneL"><Iphone /></el-icon>
-                  <!-- <span>+86</span> -->
                 </template>
               </el-input>
             </el-form-item>
@@ -497,6 +501,7 @@ definePageMeta({
         "
         v-for="item in bottom.length != 0 ? bottom : bottomTitle"
         class="linkL"
+        :style="{ cursor: item.wordlink == '' ? 'not-allowed' : 'pointer' }"
         >{{ item.wordCen }}</a
       >
     </div>

@@ -32,6 +32,7 @@ const dialogTableVisible = ref(false);
 
 const qrCode123 = ref("");
 const equipT = ref("monitor");
+const allInfo = ref({});
 const getInfo = () => {
   getEnergy(currentTenant).then((res: any) => {
     styleName.value = res.styleName;
@@ -45,6 +46,7 @@ const getInfo = () => {
     styleNumTop.value = res.styleNumTop;
     styleNumLeft.value = res.styleNumLeft;
     bottom.value = [...res.bottom];
+    allInfo.value = { ...res };
   });
 };
 getInfo();
@@ -161,9 +163,10 @@ function getList() {
         @equip="equipFn"
         :bottom="bottom"
         :top="top"
+        :allInfo="allInfo"
     /></el-tab-pane>
     <el-tab-pane label="功能配置" name="second"
-      ><Energy @child-click="zCf" @child-primary="zCp"
+      ><Energy @child-click="zCf" @child-primary="zCp" :allInfo="allInfo"
     /></el-tab-pane>
   </el-tabs>
 </template>

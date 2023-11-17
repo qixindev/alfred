@@ -95,6 +95,15 @@ const props = defineProps({
 });
 
 const style = document.createElement("style");
+// watch(
+//   () => tenant.value,
+//   () => {
+//     if (route.path.substring(0, 10) == "/dashboard") {
+//       style.textContent = "";
+//     }
+//   },
+//   { immediate: true, deep: true }
+// );
 watch(
   () => [info.value.styleCss, props.cssWrite],
   () => {
@@ -351,7 +360,6 @@ definePageMeta({
             <el-input v-model="phoneForm.phone" placeholder="请输入手机号">
               <template #prefix>
                 <el-icon class="icon-phoneL"><Iphone /></el-icon>
-                <!-- <span>+86</span> -->
               </template>
             </el-input>
           </el-form-item>
@@ -404,23 +412,7 @@ definePageMeta({
       </div>
     </div>
     <div class="optionL">
-      <div
-        class="other-loginL"
-        v-if="
-          router.path.substring(0, 10) == '/dashboard'
-            ? thirdLoginTypesLength > 0 && loginSwitch
-            : thirdLoginTypesLength > 0 && info && info.styleLogin
-        "
-      >
-        其它方式登录：
-        <svg-icon
-          v-for="item in thirdLoginTypes"
-          :name="item.type"
-          @click="router.path.substring(0, 10) != '/dashboard' ? thirdLogin(item) : ''"
-          size="1.5em"
-        ></svg-icon>
-      </div>
-      <div v-else></div>
+      <div></div>
       <nuxt-link
         v-if="
           router.path.substring(0, 10) == '/dashboard'
@@ -453,6 +445,7 @@ definePageMeta({
         "
         v-for="item in bottom.length != 0 ? bottom : bottomTitle"
         class="linkL"
+        :style="{ cursor: item.wordlink == '' ? 'not-allowed' : 'pointer' }"
         >{{ item.wordCen }}</a
       >
     </div>
@@ -519,10 +512,11 @@ definePageMeta({
   }
 }
 .bottomL {
-  width: 80%;
+  width: 100%;
   height: 30px;
   // margin-top: 10%;
   position: absolute;
+  left: 0;
   bottom: 5%;
   display: flex;
   justify-content: center;
