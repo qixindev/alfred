@@ -95,9 +95,7 @@ watch(
                   trigger="hover"
                   :offset="15"
                 >
-                  <template #reference>
-                    <span>用户</span>
-                  </template>
+                  <template #reference>用户 </template>
                   <el-menu mode="vertical" :default-active="activeUser">
                     <el-menu-item
                       v-for="(item, index) in state.dataList"
@@ -142,48 +140,6 @@ watch(
     display: flex;
     justify-content: space-between;
     align-items: center;
-    z-index: 99;
-
-    &:focus {
-      outline: none;
-    }
-
-    .right-menu-item {
-      display: inline-block;
-      padding: 0 8px;
-      height: 100%;
-      font-size: 18px;
-      color: #5a5e66;
-      vertical-align: text-bottom;
-
-      &.hover-effect {
-        cursor: pointer;
-        transition: background 0.3s;
-      }
-    }
-
-    .avatar-container {
-      margin-right: 30px;
-
-      .avatar-wrapper {
-        display: flex;
-        align-items: center;
-        height: 100%;
-
-        .user-avatar {
-          cursor: pointer;
-          width: 32px;
-          height: 32px;
-          border-radius: 50%;
-        }
-
-        .icon-msg-expand {
-          height: 10px;
-          width: 2px;
-          margin-left: 8px;
-        }
-      }
-    }
   }
 }
 </style>

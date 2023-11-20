@@ -250,9 +250,18 @@ onUnmounted(() => {
         :backgroundColor="backgroundColor"
         id="embedContainer"
         ref="scrollBox"
-      ></Login>
+      />
 
-      <div v-else style="background: #fff; display: flex; justify-content: center">
+      <div
+        v-else
+        style="
+          background: #fff;
+          display: flex;
+          justify-content: center;
+          background-color: #f7f8fa;
+          height: 100vh;
+        "
+      >
         <div class="iphoneBorder">
           <LoginIphone
             :numTop="numTop"
@@ -394,16 +403,22 @@ onUnmounted(() => {
 }
 #wrap {
   width: 100%;
-  height: 68vh;
+  height: 100vh;
   overflow-y: auto;
   display: flex;
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE10+ */
+  &::-webkit-scrollbar {
+    display: none; /* ChromeSafari */
+  }
 }
 
 .centerMain {
-  height: 68vh;
+  height: 100vh;
   width: 75%;
   position: relative;
   .iphoneBorder {
+    margin-top: 8vh;
     width: 375px;
     height: 670px;
     background: #fff;
@@ -427,7 +442,7 @@ onUnmounted(() => {
 .allmain,
 .conMain {
   flex: 1;
-  height: 68vh;
+  height: 100vh;
   background-color: white;
   border-top: 1px solid #eee;
   overflow-y: auto;

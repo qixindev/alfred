@@ -100,15 +100,6 @@ const props = defineProps({
   },
 });
 const style = document.createElement("style");
-// watch(
-//   () => tenant.value,
-//   () => {
-//     if (route.path.substring(0, 10) == "/dashboard") {
-//       style.textContent = "";
-//     }
-//   },
-//   { immediate: true, deep: true }
-// );
 watch(
   () => [info.value.styleCss, props.cssWrite],
   () => {
@@ -116,9 +107,13 @@ watch(
     ${props.cssWrite ? props.cssWrite : info && info.value && info.value.styleCss}
 `;
     style.textContent = newCSS;
-    document.head.appendChild(style);
+    const reStyle = document.body.querySelector("style");
+    if (reStyle) {
+      document.body.removeChild(reStyle);
+    }
+    document.body.appendChild(style);
   },
-  { immediate: true, deep: true }
+  { deep: true }
 );
 watch(
   () => props.top,
@@ -500,7 +495,6 @@ definePageMeta({
             : 'javascript:;'
         "
         v-for="item in bottom.length != 0 ? bottom : bottomTitle"
-        class="linkL"
         :style="{ cursor: item.wordlink == '' ? 'not-allowed' : 'pointer' }"
         >{{ item.wordCen }}</a
       >
@@ -582,13 +576,12 @@ definePageMeta({
     height: 20px;
     position: absolute;
     bottom: 5%;
-    display: flex;
-    justify-content: center;
-    .linkL {
+    text-align: center;
+    a {
       text-decoration: none;
-      margin-right: 10px;
       font-size: 16px;
       color: #000;
+      display: inline;
     }
   }
 }

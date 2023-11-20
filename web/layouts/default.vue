@@ -28,6 +28,7 @@ auth.value && useGetUserInfo();
     width: 100%;
     height: 100vh;
     flex: 1;
+    overflow-y: auto;
     .container {
       padding: 20px;
     }
