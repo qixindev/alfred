@@ -10,15 +10,12 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-// ListSMS godoc
-//
-//	@Summary	sms
-//	@Schemes
-//	@Description	list sms
-//	@Tags			sms
-//	@Param			tenant	path	string	true	"tenant"	default(default)
-//	@Success		200
-//	@Router			/accounts/admin/{tenant}/sms [get]
+// ListSMS
+// @Summary	list sms
+// @Tags	sms
+// @Param	tenant	path	string	true	"tenant"	default(default)
+// @Success	200
+// @Router	/accounts/admin/{tenant}/sms [get]
 func ListSMS(c *gin.Context) {
 	var sms []model.SmsConnector
 	if err := internal.TenantDB(c).Find(&sms).Error; err != nil {
@@ -28,16 +25,13 @@ func ListSMS(c *gin.Context) {
 	resp.SuccessWithArrayData(c, sms, 0)
 }
 
-// GetSMS godoc
-//
-//	@Summary	sms
-//	@Schemes
-//	@Description	get sms
-//	@Tags			sms
-//	@Param			tenant		path	string	true	"tenant"	default(default)
-//	@Param			smsId		path	integer	true	"sms id"
-//	@Success		200
-//	@Router			/accounts/admin/{tenant}/sms/{smsId} [get]
+// GetSMS
+// @Summary	get sms
+// @Tags	sms
+// @Param	tenant	path	string	true	"tenant"	default(default)
+// @Param	smsId	path	integer	true	"sms id"
+// @Success	200
+// @Router	/accounts/admin/{tenant}/sms/{smsId} [get]
 func GetSMS(c *gin.Context) {
 	tenant := internal.GetTenant(c)
 	smsId := c.Param("smsId")
@@ -56,16 +50,13 @@ func GetSMS(c *gin.Context) {
 	resp.SuccessWithData(c, res)
 }
 
-// NewSMS godoc
-//
-//	@Summary	sms
-//	@Schemes
-//	@Description	new sms
-//	@Tags			sms
-//	@Param			tenant	path	string	true	"tenant"	default(default)
-//	@Param			req		body	req.Sms	true	"body"
-//	@Success		200
-//	@Router			/accounts/admin/{tenant}/sms [post]
+// NewSMS
+// @Summary	new sms
+// @Tags	sms
+// @Param	tenant	path	string	true	"tenant"	default(default)
+// @Param	req	body	req.Sms	true	"body"
+// @Success	200
+// @Router	/accounts/admin/{tenant}/sms [post]
 func NewSMS(c *gin.Context) {
 	tenant := internal.GetTenant(c)
 	var sms req.Sms
@@ -83,17 +74,14 @@ func NewSMS(c *gin.Context) {
 	resp.Success(c)
 }
 
-// UpdateSMS godoc
-//
-//	@Summary	sms
-//	@Schemes
-//	@Description	update sms
-//	@Tags			sms
-//	@Param			tenant		path	string	true	"tenant"	default(default)
-//	@Param			smsId		path	integer	true	"sms id"
-//	@Param			req			body	req.Sms	true	"body"
-//	@Success		200
-//	@Router			/accounts/admin/{tenant}/sms/{smsId} [put]
+// UpdateSMS
+// @Summary	update sms
+// @Tags	sms
+// @Param	tenant	path	string	true	"tenant"	default(default)
+// @Param	smsId	path	integer	true	"sms id"
+// @Param	req	body	req.Sms	true	"body"
+// @Success	200
+// @Router	/accounts/admin/{tenant}/sms/{smsId} [put]
 func UpdateSMS(c *gin.Context) {
 	tenant := internal.GetTenant(c)
 	smsId := c.Param("smsId")
@@ -113,16 +101,13 @@ func UpdateSMS(c *gin.Context) {
 	resp.Success(c)
 }
 
-// DeleteSMS godoc
-//
-//	@Summary	sms
-//	@Schemes
-//	@Description	delete sms
-//	@Tags			sms
-//	@Param			tenant		path	string	true	"tenant"	default(default)
-//	@Param			smsId		path	integer	true	"sms id"
-//	@Success		200
-//	@Router			/accounts/admin/{tenant}/sms/{smsId} [delete]
+// DeleteSMS
+// @Summary	delete sms
+// @Tags	sms
+// @Param	tenant	path	string	true	"tenant"	default(default)
+// @Param	smsId	path	integer	true	"sms id"
+// @Success	200
+// @Router	/accounts/admin/{tenant}/sms/{smsId} [delete]
 func DeleteSMS(c *gin.Context) {
 	smsId := c.Param("smsId")
 	var sms model.SmsConnector

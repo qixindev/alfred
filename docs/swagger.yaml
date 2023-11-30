@@ -341,7 +341,6 @@ info:
 paths:
   /accounts/{tenant}/.well-known/jwks.json:
     get:
-      description: jwk
       parameters:
       - description: tenant
         in: path
@@ -356,7 +355,6 @@ paths:
       - oauth2
   /accounts/{tenant}/.well-known/openid-configuration:
     get:
-      description: openid configuration
       parameters:
       - description: tenant
         in: path
@@ -391,7 +389,6 @@ paths:
       tags:
       - iam-resource
     post:
-      description: new iam resource type
       parameters:
       - default: default
         description: tenant
@@ -414,12 +411,11 @@ paths:
       responses:
         "200":
           description: OK
-      summary: iam resource type
+      summary: new iam resource type
       tags:
       - iam-resource
   /accounts/{tenant}/iam/clients/{client}/types/{typeId}:
     delete:
-      description: delete iam resource type
       parameters:
       - default: default
         description: tenant
@@ -441,7 +437,7 @@ paths:
       responses:
         "200":
           description: OK
-      summary: iam resource type
+      summary: delete iam resource type
       tags:
       - iam-resource
   /accounts/{tenant}/iam/clients/{client}/types/{typeId}/actions:
@@ -471,7 +467,6 @@ paths:
       tags:
       - iam-action
     post:
-      description: new iam action
       parameters:
       - default: default
         description: tenant
@@ -501,12 +496,11 @@ paths:
       responses:
         "200":
           description: OK
-      summary: iam action
+      summary: new iam action
       tags:
       - iam-action
   /accounts/{tenant}/iam/clients/{client}/types/{typeId}/actions/{actionId}:
     delete:
-      description: delete iam action
       parameters:
       - default: default
         description: tenant
@@ -533,7 +527,7 @@ paths:
       responses:
         "200":
           description: OK
-      summary: iam action
+      summary: delete iam action
       tags:
       - iam-action
   /accounts/{tenant}/iam/clients/{client}/types/{typeId}/actions/{actionId}/users/{user}/resources:
@@ -599,7 +593,6 @@ paths:
       tags:
       - iam-resource
     post:
-      description: new iam resource
       parameters:
       - default: default
         description: tenant
@@ -627,12 +620,11 @@ paths:
       responses:
         "200":
           description: OK
-      summary: iam resource
+      summary: new iam resource
       tags:
       - iam-resource
   /accounts/{tenant}/iam/clients/{client}/types/{typeId}/resources/{resourceId}:
     delete:
-      description: delete iam resource
       parameters:
       - default: default
         description: tenant
@@ -659,11 +651,10 @@ paths:
       responses:
         "200":
           description: OK
-      summary: iam resource
+      summary: delete iam resource
       tags:
       - iam-resource
     put:
-      description: update iam resource name
       parameters:
       - default: default
         description: tenant
@@ -696,7 +687,7 @@ paths:
       responses:
         "200":
           description: OK
-      summary: iam resource
+      summary: update iam resource name
       tags:
       - iam-resource
   /accounts/{tenant}/iam/clients/{client}/types/{typeId}/resources/{resourceId}/actions/{actionId}/users/{user}:
@@ -742,7 +733,6 @@ paths:
       - iam-action
   /accounts/{tenant}/iam/clients/{client}/types/{typeId}/resources/{resourceId}/roles/{roleId}/users:
     get:
-      description: 例如：获取资源1下面所有管理员的用户列表
       parameters:
       - default: default
         description: tenant
@@ -778,7 +768,6 @@ paths:
       tags:
       - iam-role
     post:
-      description: new iam resource role
       parameters:
       - default: default
         description: tenant
@@ -818,12 +807,11 @@ paths:
       responses:
         "200":
           description: OK
-      summary: iam resource role
+      summary: new iam resource role
       tags:
       - iam-role
   /accounts/{tenant}/iam/clients/{client}/types/{typeId}/resources/{resourceId}/roles/{roleId}/users/{userId}:
     delete:
-      description: delete iam resource role
       parameters:
       - default: default
         description: tenant
@@ -860,7 +848,7 @@ paths:
       responses:
         "200":
           description: OK
-      summary: iam resource role
+      summary: delete iam resource role
       tags:
       - iam-role
   /accounts/{tenant}/iam/clients/{client}/types/{typeId}/resources/{resourceId}/users:
@@ -921,7 +909,6 @@ paths:
       tags:
       - iam-role
     post:
-      description: new iam role
       parameters:
       - default: default
         description: tenant
@@ -949,12 +936,11 @@ paths:
       responses:
         "200":
           description: OK
-      summary: iam role
+      summary: new iam role
       tags:
       - iam-role
   /accounts/{tenant}/iam/clients/{client}/types/{typeId}/roles/{roleId}:
     delete:
-      description: delete iam role
       parameters:
       - default: default
         description: tenant
@@ -981,12 +967,11 @@ paths:
       responses:
         "200":
           description: OK
-      summary: iam role
+      summary: delete iam role
       tags:
       - iam-role
   /accounts/{tenant}/iam/clients/{client}/types/{typeId}/roles/{roleId}/actions:
     get:
-      description: get iam role action list
       parameters:
       - default: default
         description: tenant
@@ -1013,11 +998,10 @@ paths:
       responses:
         "200":
           description: OK
-      summary: iam role action
+      summary: get iam role action list
       tags:
       - iam-action
     post:
-      description: new iam role action
       parameters:
       - default: default
         description: tenant
@@ -1052,12 +1036,11 @@ paths:
       responses:
         "200":
           description: OK
-      summary: iam role action
+      summary: new iam role action
       tags:
       - iam-action
   /accounts/{tenant}/iam/clients/{client}/types/{typeId}/roles/{roleId}/actions/{actionId}:
     delete:
-      description: delete iam role action
       parameters:
       - default: default
         description: tenant
@@ -1089,7 +1072,7 @@ paths:
       responses:
         "200":
           description: OK
-      summary: iam role action
+      summary: delete iam role action
       tags:
       - iam-action
   /accounts/{tenant}/iam/clients/{client}/types/{typeId}/roles/{roleId}/auth:
@@ -1133,7 +1116,6 @@ paths:
       - iam-role
   /accounts/{tenant}/logged-in/{provider}:
     get:
-      description: provider callback
       parameters:
       - default: default
         description: tenant
@@ -1169,7 +1151,6 @@ paths:
       - login
   /accounts/{tenant}/login:
     post:
-      description: login using username and password
       parameters:
       - default: default
         description: tenant
@@ -1194,12 +1175,11 @@ paths:
       responses:
         "302":
           description: Found
-      summary: login a user
+      summary: login using username and password
       tags:
       - login
   /accounts/{tenant}/login/{provider}:
     get:
-      description: login via a provider
       parameters:
       - default: default
         description: tenant
@@ -1228,7 +1208,6 @@ paths:
       - login
   /accounts/{tenant}/login/proto/{fileName}:
     get:
-      description: logout current user
       parameters:
       - default: default
         description: tenant
@@ -1250,7 +1229,6 @@ paths:
       - login
   /accounts/{tenant}/logout:
     get:
-      description: logout current user
       parameters:
       - default: default
         description: tenant
@@ -1266,7 +1244,6 @@ paths:
       - login
   /accounts/{tenant}/me:
     get:
-      description: get user
       parameters:
       - default: default
         description: tenant
@@ -1283,7 +1260,6 @@ paths:
       tags:
       - user
     put:
-      description: update user
       parameters:
       - default: default
         description: tenant
@@ -1301,7 +1277,6 @@ paths:
       - user
   /accounts/{tenant}/me/profile:
     get:
-      description: get user profile
       parameters:
       - default: default
         description: tenant
@@ -1319,7 +1294,6 @@ paths:
       - user
   /accounts/{tenant}/message/{msgId}:
     put:
-      description: mark message read
       parameters:
       - description: tenant name
         in: path
@@ -1339,7 +1313,6 @@ paths:
       - msg
   /accounts/{tenant}/message/{providerId}:
     post:
-      description: send message
       parameters:
       - description: tenant name
         in: path
@@ -1365,7 +1338,6 @@ paths:
       - msg
   /accounts/{tenant}/message/{subId}:
     get:
-      description: get message
       parameters:
       - description: sub id
         in: path
@@ -1388,7 +1360,6 @@ paths:
       - msg
   /accounts/{tenant}/oauth2/auth:
     get:
-      description: oauth2 authorize
       parameters:
       - description: tenant
         in: path
@@ -1433,7 +1404,6 @@ paths:
       - oauth2
   /accounts/{tenant}/oauth2/device/code:
     post:
-      description: delete device groups
       parameters:
       - description: tenant
         in: path
@@ -1448,12 +1418,11 @@ paths:
       responses:
         "200":
           description: OK
-      summary: device code
+      summary: delete device groups
       tags:
       - oauth2
   /accounts/{tenant}/oauth2/token:
     get:
-      description: oauth2 token
       parameters:
       - description: tenant
         in: path
@@ -1500,7 +1469,6 @@ paths:
       - oauth2
   /accounts/{tenant}/providers:
     get:
-      description: list login providers
       parameters:
       - default: default
         description: tenant
@@ -1520,7 +1488,6 @@ paths:
       - login
   /accounts/{tenant}/providers/{provider}:
     get:
-      description: get a login provider
       parameters:
       - default: default
         description: tenant
@@ -1538,12 +1505,11 @@ paths:
           description: OK
           schema:
             $ref: '#/definitions/dto.ProviderDto'
-      summary: get a provider
+      summary: get a login provider
       tags:
       - login
   /accounts/{tenant}/register:
     post:
-      description: register using username and password
       parameters:
       - default: default
         description: tenant
@@ -1564,12 +1530,11 @@ paths:
       responses:
         "200":
           description: OK
-      summary: register a user
+      summary: register using username and password
       tags:
       - login
   /accounts/{tenant}/reset/getResetPasswordToken:
     post:
-      description: get reset password token
       parameters:
       - default: default
         description: tenant
@@ -1590,7 +1555,6 @@ paths:
       - reset
   /accounts/{tenant}/reset/resetPassword:
     post:
-      description: reset password
       parameters:
       - description: token
         in: header
@@ -1616,7 +1580,6 @@ paths:
       - reset
   /accounts/{tenant}/reset/smsAvailable:
     get:
-      description: check sms available
       parameters:
       - default: default
         description: tenant
@@ -1632,7 +1595,6 @@ paths:
       - reset
   /accounts/{tenant}/reset/verifyResetPasswordRequest:
     post:
-      description: forgot password
       parameters:
       - default: default
         description: tenant
@@ -1663,7 +1625,6 @@ paths:
       - reset
   /accounts/{tenant}/unreadMsgCount/{subId}:
     get:
-      description: get unread message count
       parameters:
       - description: sub id
         in: path
@@ -1678,7 +1639,6 @@ paths:
       - msg
   /accounts/admin/{tenant}/clients:
     get:
-      description: get client list
       parameters:
       - default: default
         description: tenant
@@ -1689,11 +1649,10 @@ paths:
       responses:
         "200":
           description: OK
-      summary: client
+      summary: get client list
       tags:
       - client
     post:
-      description: new client
       parameters:
       - default: default
         description: tenant
@@ -1715,7 +1674,6 @@ paths:
       - client
   /accounts/admin/{tenant}/clients/{clientId}:
     delete:
-      description: delete client
       parameters:
       - default: default
         description: tenant
@@ -1736,7 +1694,6 @@ paths:
       tags:
       - client
     get:
-      description: get client
       parameters:
       - default: default
         description: tenant
@@ -1753,11 +1710,10 @@ paths:
       responses:
         "200":
           description: OK
-      summary: client
+      summary: get client
       tags:
       - client
     put:
-      description: update client
       parameters:
       - default: default
         description: tenant
@@ -1779,7 +1735,6 @@ paths:
       - client
   /accounts/admin/{tenant}/clients/{clientId}/redirect-uris:
     get:
-      description: get client redirect uris
       parameters:
       - default: default
         description: tenant
@@ -1800,7 +1755,6 @@ paths:
       tags:
       - client
     post:
-      description: new client redirect uri
       parameters:
       - default: default
         description: tenant
@@ -1822,7 +1776,6 @@ paths:
       - client
   /accounts/admin/{tenant}/clients/{clientId}/redirect-uris/{uriId}:
     delete:
-      description: delete client redirect uris
       parameters:
       - default: default
         description: tenant
@@ -1848,7 +1801,6 @@ paths:
       tags:
       - client
     post:
-      description: new client redirect uri
       parameters:
       - default: default
         description: tenant
@@ -1870,7 +1822,6 @@ paths:
       - client
   /accounts/admin/{tenant}/clients/{clientId}/secret/{secretId}:
     delete:
-      description: delete client secret
       parameters:
       - default: default
         description: tenant
@@ -1897,7 +1848,6 @@ paths:
       - client
   /accounts/admin/{tenant}/clients/{clientId}/secrets:
     get:
-      description: get client secrets
       parameters:
       - default: default
         description: tenant
@@ -1918,7 +1868,6 @@ paths:
       tags:
       - client
     post:
-      description: new client secret
       parameters:
       - default: default
         description: tenant
@@ -1940,7 +1889,6 @@ paths:
       - client
   /accounts/admin/{tenant}/clients/{clientId}/users:
     get:
-      description: get client user list
       parameters:
       - default: default
         description: tenant
@@ -1957,12 +1905,11 @@ paths:
       responses:
         "200":
           description: OK
-      summary: client user
+      summary: get client user list
       tags:
       - client-user
   /accounts/admin/{tenant}/clients/{clientId}/users/{subId}:
     get:
-      description: get client user list
       parameters:
       - default: default
         description: tenant
@@ -1984,12 +1931,11 @@ paths:
       responses:
         "200":
           description: OK
-      summary: client user
+      summary: get client user list
       tags:
       - client-user
   /accounts/admin/{tenant}/clients/{clientId}/users/{subId}/meta:
     put:
-      description: update user
       parameters:
       - default: default
         description: tenant
@@ -2017,12 +1963,11 @@ paths:
       responses:
         "200":
           description: OK
-      summary: user
+      summary: update user
       tags:
       - client-user
   /accounts/admin/{tenant}/clients/{clientId}/users/{subId}/password:
     put:
-      description: update user
       parameters:
       - default: default
         description: tenant
@@ -2050,12 +1995,11 @@ paths:
       responses:
         "200":
           description: OK
-      summary: user
+      summary: update user
       tags:
       - client-user
   /accounts/admin/{tenant}/clients/{clientId}/users/{subId}/profile:
     put:
-      description: update user
       parameters:
       - default: default
         description: tenant
@@ -2083,12 +2027,11 @@ paths:
       responses:
         "200":
           description: OK
-      summary: user
+      summary: update user
       tags:
       - client-user
   /accounts/admin/{tenant}/clients/default:
     get:
-      description: get client
       parameters:
       - default: default
         description: tenant
@@ -2099,12 +2042,11 @@ paths:
       responses:
         "200":
           description: OK
-      summary: client
+      summary: get client
       tags:
       - client
   /accounts/admin/{tenant}/devices:
     get:
-      description: list device
       parameters:
       - default: default
         description: tenant
@@ -2115,11 +2057,10 @@ paths:
       responses:
         "200":
           description: OK
-      summary: device
+      summary: list device
       tags:
       - device
     post:
-      description: new device
       parameters:
       - default: default
         description: tenant
@@ -2130,12 +2071,11 @@ paths:
       responses:
         "200":
           description: OK
-      summary: device
+      summary: new device
       tags:
       - device
   /accounts/admin/{tenant}/devices/{deviceId}:
     delete:
-      description: delete device
       parameters:
       - default: default
         description: tenant
@@ -2151,11 +2091,10 @@ paths:
       responses:
         "200":
           description: OK
-      summary: device
+      summary: delete device
       tags:
       - device
     get:
-      description: get device
       parameters:
       - default: default
         description: tenant
@@ -2171,11 +2110,10 @@ paths:
       responses:
         "200":
           description: OK
-      summary: device
+      summary: get device
       tags:
       - device
     put:
-      description: update device
       parameters:
       - default: default
         description: tenant
@@ -2191,12 +2129,11 @@ paths:
       responses:
         "200":
           description: OK
-      summary: device
+      summary: update device
       tags:
       - device
   /accounts/admin/{tenant}/devices/{deviceId}/groups:
     get:
-      description: list device groups
       parameters:
       - default: default
         description: tenant
@@ -2212,11 +2149,10 @@ paths:
       responses:
         "200":
           description: OK
-      summary: device groups
+      summary: list device groups
       tags:
       - device
     post:
-      description: new device groups
       parameters:
       - default: default
         description: tenant
@@ -2232,12 +2168,11 @@ paths:
       responses:
         "200":
           description: OK
-      summary: device groups
+      summary: new device groups
       tags:
       - device
   /accounts/admin/{tenant}/devices/{deviceId}/groups/{groupId}:
     delete:
-      description: delete device groups
       parameters:
       - default: default
         description: tenant
@@ -2258,11 +2193,10 @@ paths:
       responses:
         "200":
           description: OK
-      summary: device groups
+      summary: delete device groups
       tags:
       - device
     put:
-      description: update device groups
       parameters:
       - default: default
         description: tenant
@@ -2283,12 +2217,11 @@ paths:
       responses:
         "200":
           description: OK
-      summary: device groups
+      summary: update device groups
       tags:
       - device
   /accounts/admin/{tenant}/devices/{deviceId}/secrets:
     get:
-      description: get client secrets
       parameters:
       - default: default
         description: tenant
@@ -2308,7 +2241,6 @@ paths:
       tags:
       - client
     post:
-      description: get client secrets
       parameters:
       - default: default
         description: tenant
@@ -2329,7 +2261,6 @@ paths:
       - client
   /accounts/admin/{tenant}/devices/{deviceId}/secrets/{secretId}:
     delete:
-      description: get client secrets
       parameters:
       - default: default
         description: tenant
@@ -2355,7 +2286,6 @@ paths:
       - client
   /accounts/admin/{tenant}/devices/code/{userCode}:
     post:
-      description: delete device groups
       parameters:
       - default: default
         description: tenant
@@ -2371,12 +2301,11 @@ paths:
       responses:
         "200":
           description: OK
-      summary: device code
+      summary: delete device groups
       tags:
       - device
   /accounts/admin/{tenant}/groups:
     get:
-      description: list groups
       parameters:
       - description: tenant
         in: path
@@ -2386,11 +2315,10 @@ paths:
       responses:
         "200":
           description: OK
-      summary: group
+      summary: list groups
       tags:
       - group
     post:
-      description: new groups
       parameters:
       - description: tenant
         in: path
@@ -2400,12 +2328,11 @@ paths:
       responses:
         "200":
           description: OK
-      summary: group
+      summary: new groups
       tags:
       - group
   /accounts/admin/{tenant}/groups/{groupId}:
     delete:
-      description: delete groups
       parameters:
       - description: tenant
         in: path
@@ -2420,11 +2347,10 @@ paths:
       responses:
         "200":
           description: OK
-      summary: group
+      summary: delete groups
       tags:
       - group
     get:
-      description: get groups
       parameters:
       - description: tenant
         in: path
@@ -2439,11 +2365,10 @@ paths:
       responses:
         "200":
           description: OK
-      summary: group
+      summary: get groups
       tags:
       - group
     put:
-      description: update groups
       parameters:
       - description: tenant
         in: path
@@ -2458,12 +2383,11 @@ paths:
       responses:
         "200":
           description: OK
-      summary: group
+      summary: update groups
       tags:
       - group
   /accounts/admin/{tenant}/groups/{groupId}/member:
     get:
-      description: get groups members
       parameters:
       - description: tenant
         in: path
@@ -2478,12 +2402,11 @@ paths:
       responses:
         "200":
           description: OK
-      summary: group
+      summary: get groups members
       tags:
       - group
   /accounts/admin/{tenant}/page/login:
     get:
-      description: get tenant login page
       parameters:
       - default: default
         description: 租户
@@ -2494,10 +2417,10 @@ paths:
       responses:
         "200":
           description: OK
+      summary: get tenant login page
       tags:
       - tenant-meta
     put:
-      description: update tenant login page
       parameters:
       - default: default
         description: 租户名
@@ -2514,11 +2437,11 @@ paths:
       responses:
         "200":
           description: OK
+      summary: update tenant login page
       tags:
       - tenant-meta
   /accounts/admin/{tenant}/picture/{type}/upload:
     put:
-      description: 上传图片
       parameters:
       - default: default
         description: 租户名
@@ -2540,11 +2463,11 @@ paths:
       responses:
         "200":
           description: OK
+      summary: 上传图片
       tags:
       - tenant-meta
   /accounts/admin/{tenant}/proto:
     get:
-      description: 获取用户隐私协议
       parameters:
       - default: default
         description: 租户
@@ -2555,10 +2478,10 @@ paths:
       responses:
         "200":
           description: OK
+      summary: 获取用户隐私协议
       tags:
       - tenant-meta
     put:
-      description: update tenant login page
       parameters:
       - default: default
         description: 租户名
@@ -2577,11 +2500,11 @@ paths:
       responses:
         "200":
           description: OK
+      summary: update tenant login page
       tags:
       - tenant-meta
   /accounts/admin/{tenant}/providers:
     get:
-      description: list provider
       parameters:
       - default: default
         description: tenant
@@ -2592,11 +2515,10 @@ paths:
       responses:
         "200":
           description: OK
-      summary: provider
+      summary: list provider
       tags:
       - provider
     post:
-      description: new provider
       parameters:
       - default: default
         description: tenant
@@ -2613,12 +2535,11 @@ paths:
       responses:
         "200":
           description: OK
-      summary: provider
+      summary: new provider
       tags:
       - provider
   /accounts/admin/{tenant}/providers/{providerId}:
     delete:
-      description: delete provider
       parameters:
       - default: default
         description: tenant
@@ -2634,11 +2555,10 @@ paths:
       responses:
         "200":
           description: OK
-      summary: provider
+      summary: delete provider
       tags:
       - provider
     get:
-      description: get provider
       parameters:
       - default: default
         description: tenant
@@ -2654,11 +2574,10 @@ paths:
       responses:
         "200":
           description: OK
-      summary: provider
+      summary: get provider
       tags:
       - provider
     put:
-      description: update provider
       parameters:
       - default: default
         description: tenant
@@ -2674,12 +2593,11 @@ paths:
       responses:
         "200":
           description: OK
-      summary: provider
+      summary: update provider
       tags:
       - provider
   /accounts/admin/{tenant}/providers/{providerId}/users:
     get:
-      description: get provider user list
       parameters:
       - default: default
         description: tenant
@@ -2700,7 +2618,6 @@ paths:
       - provider
   /accounts/admin/{tenant}/sms:
     get:
-      description: list sms
       parameters:
       - default: default
         description: tenant
@@ -2711,11 +2628,10 @@ paths:
       responses:
         "200":
           description: OK
-      summary: sms
+      summary: list sms
       tags:
       - sms
     post:
-      description: new sms
       parameters:
       - default: default
         description: tenant
@@ -2732,12 +2648,11 @@ paths:
       responses:
         "200":
           description: OK
-      summary: sms
+      summary: new sms
       tags:
       - sms
   /accounts/admin/{tenant}/sms/{smsId}:
     delete:
-      description: delete sms
       parameters:
       - default: default
         description: tenant
@@ -2753,11 +2668,10 @@ paths:
       responses:
         "200":
           description: OK
-      summary: sms
+      summary: delete sms
       tags:
       - sms
     get:
-      description: get sms
       parameters:
       - default: default
         description: tenant
@@ -2773,11 +2687,10 @@ paths:
       responses:
         "200":
           description: OK
-      summary: sms
+      summary: get sms
       tags:
       - sms
     put:
-      description: update sms
       parameters:
       - default: default
         description: tenant
@@ -2799,12 +2712,11 @@ paths:
       responses:
         "200":
           description: OK
-      summary: sms
+      summary: update sms
       tags:
       - sms
   /accounts/admin/{tenant}/users:
     get:
-      description: get user list
       parameters:
       - default: default
         description: tenant
@@ -2815,11 +2727,10 @@ paths:
       responses:
         "200":
           description: OK
-      summary: user
+      summary: get user list
       tags:
       - user
     post:
-      description: new user
       parameters:
       - default: default
         description: tenant
@@ -2836,12 +2747,11 @@ paths:
       responses:
         "200":
           description: OK
-      summary: user
+      summary: new user
       tags:
       - user
   /accounts/admin/{tenant}/users/{userId}:
     delete:
-      description: delete user
       parameters:
       - default: default
         description: tenant
@@ -2857,11 +2767,10 @@ paths:
       responses:
         "200":
           description: OK
-      summary: user
+      summary: delete user
       tags:
       - user
     get:
-      description: get user
       parameters:
       - default: default
         description: tenant
@@ -2877,11 +2786,10 @@ paths:
       responses:
         "200":
           description: OK
-      summary: user
+      summary: get user
       tags:
       - user
     put:
-      description: update user
       parameters:
       - default: default
         description: tenant
@@ -2897,12 +2805,11 @@ paths:
       responses:
         "200":
           description: OK
-      summary: user
+      summary: update user
       tags:
       - user
   /accounts/admin/{tenant}/users/{userId}/groups:
     get:
-      description: get user groups
       parameters:
       - default: default
         description: tenant
@@ -2918,11 +2825,10 @@ paths:
       responses:
         "200":
           description: OK
-      summary: user
+      summary: get user groups
       tags:
       - user
     post:
-      description: get user groups
       parameters:
       - default: default
         description: tenant
@@ -2938,12 +2844,11 @@ paths:
       responses:
         "200":
           description: OK
-      summary: user
+      summary: get user groups
       tags:
       - user
   /accounts/admin/{tenant}/users/{userId}/groups/{groupId}:
     delete:
-      description: update user groups
       parameters:
       - default: default
         description: tenant
@@ -2964,11 +2869,10 @@ paths:
       responses:
         "200":
           description: OK
-      summary: user
+      summary: update user groups
       tags:
       - user
     get:
-      description: update user groups
       parameters:
       - default: default
         description: tenant
@@ -2989,12 +2893,11 @@ paths:
       responses:
         "200":
           description: OK
-      summary: user
+      summary: update user groups
       tags:
       - user
   /accounts/admin/{tenant}/users/from:
     post:
-      description: mark user from
       parameters:
       - default: default
         description: tenant
@@ -3011,29 +2914,26 @@ paths:
       responses:
         "200":
           description: OK
-      summary: user
+      summary: mark user from
       tags:
       - user
   /accounts/admin/tenants:
     get:
-      description: list tenants
       responses:
         "200":
           description: OK
-      summary: tenants
+      summary: list tenants
       tags:
       - admin-tenants
     post:
-      description: new tenants
       responses:
         "200":
           description: OK
-      summary: tenants
+      summary: new tenants
       tags:
       - admin-tenants
   /accounts/admin/tenants/{tenantId}:
     delete:
-      description: delete tenants
       parameters:
       - description: tenant
         in: path
@@ -3043,11 +2943,10 @@ paths:
       responses:
         "200":
           description: OK
-      summary: tenants
+      summary: delete tenants
       tags:
       - admin-tenants
     get:
-      description: get tenants
       parameters:
       - description: tenant
         in: path
@@ -3057,11 +2956,10 @@ paths:
       responses:
         "200":
           description: OK
-      summary: tenants
+      summary: get tenants
       tags:
       - admin-tenants
     put:
-      description: update tenants
       parameters:
       - description: tenant
         in: path
@@ -3071,12 +2969,11 @@ paths:
       responses:
         "200":
           description: OK
-      summary: tenants
+      summary: update tenants
       tags:
       - admin-tenants
   /accounts/admin/tenants/{tenantId}/secrets:
     post:
-      description: delete tenants
       parameters:
       - description: tenant
         in: path
@@ -3086,12 +2983,11 @@ paths:
       responses:
         "200":
           description: OK
-      summary: tenants
+      summary: delete tenants
       tags:
       - admin-tenants
   /accounts/admin/tenants/{tenantId}/secrets/{secretId}:
     delete:
-      description: delete tenants
       parameters:
       - description: tenant
         in: path
@@ -3106,7 +3002,7 @@ paths:
       responses:
         "200":
           description: OK
-      summary: tenants
+      summary: delete tenants
       tags:
       - admin-tenants
 swagger: "2.0"

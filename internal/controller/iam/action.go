@@ -9,16 +9,14 @@ import (
 	"net/http"
 )
 
-// ListIamAction godoc
-//
-//	@Summary		获取操作列表
-//	@Schemes
-//	@Tags			iam-action
-//	@Param			tenant		path	string	true	"tenant"	default(default)
-//	@Param			client		path	string	true	"client"	default(default)
-//	@Param			typeId		path	string	true	"tenant"
-//	@Success		200
-//	@Router			/accounts/{tenant}/iam/clients/{client}/types/{typeId}/actions [get]
+// ListIamAction
+// @Summary	获取操作列表
+// @Tags	iam-action
+// @Param	tenant		path	string	true	"tenant"	default(default)
+// @Param	client		path	string	true	"client"	default(default)
+// @Param	typeId		path	string	true	"tenant"
+// @Success	200
+// @Router	/accounts/{tenant}/iam/clients/{client}/types/{typeId}/actions [get]
 func ListIamAction(c *gin.Context) {
 	typeId := c.Param("typeId")
 	tenant := internal.GetTenant(c)
@@ -32,16 +30,14 @@ func ListIamAction(c *gin.Context) {
 
 // NewIamAction godoc
 //
-//	@Summary		iam action
-//	@Schemes
-//	@Description	new iam action
-//	@Tags			iam-action
-//	@Param			tenant		path	string	true	"tenant"	default(default)
-//	@Param			client		path	string	true	"client"	default(default)
-//	@Param			typeId		path	string		true	"tenant"
-//	@Param			iamBody		body	[]model.ResourceTypeAction	true	"tenant"
-//	@Success		200
-//	@Router			/accounts/{tenant}/iam/clients/{client}/types/{typeId}/actions [post]
+// @Summary	new iam action
+// @Tags	iam-action
+// @Param	tenant		path	string	true	"tenant"	default(default)
+// @Param	client		path	string	true	"client"	default(default)
+// @Param	typeId		path	string		true	"tenant"
+// @Param	iamBody		body	[]model.ResourceTypeAction	true	"tenant"
+// @Success	200
+// @Router	/accounts/{tenant}/iam/clients/{client}/types/{typeId}/actions [post]
 func NewIamAction(c *gin.Context) {
 	var action []model.ResourceTypeAction
 	if err := c.BindJSON(&action); err != nil {
@@ -64,18 +60,15 @@ func NewIamAction(c *gin.Context) {
 	resp.Success(c)
 }
 
-// DeleteIamAction godoc
-//
-//	@Summary		iam action
-//	@Schemes
-//	@Description	delete iam action
-//	@Tags			iam-action
-//	@Param			tenant		path	string	true	"tenant"	default(default)
-//	@Param			client		path	string	true	"client"	default(default)
-//	@Param			typeId		path	string	true	"tenant"
-//	@Param			actionId	path	string	true	"tenant"
-//	@Success		200
-//	@Router			/accounts/{tenant}/iam/clients/{client}/types/{typeId}/actions/{actionId} [delete]
+// DeleteIamAction
+// @Summary	delete iam action
+// @Tags	iam-action
+// @Param	tenant		path	string	true	"tenant"	default(default)
+// @Param	client		path	string	true	"client"	default(default)
+// @Param	typeId		path	string	true	"tenant"
+// @Param	actionId	path	string	true	"tenant"
+// @Success	200
+// @Router	/accounts/{tenant}/iam/clients/{client}/types/{typeId}/actions/{actionId} [delete]
 func DeleteIamAction(c *gin.Context) {
 	actionId := c.Param("actionId")
 	typeId := c.Param("typeId")
@@ -93,18 +86,15 @@ func DeleteIamAction(c *gin.Context) {
 	c.Status(http.StatusNoContent)
 }
 
-// ListIamRoleAction godoc
-//
-//	@Summary		iam role action
-//	@Schemes
-//	@Description	get iam role action list
-//	@Tags			iam-action
-//	@Param			tenant		path	string	true	"tenant"	default(default)
-//	@Param			client		path	string	true	"client"	default(default)
-//	@Param			typeId		path	string	true	"tenant"
-//	@Param			roleId		path	string	true	"tenant"
-//	@Success		200
-//	@Router			/accounts/{tenant}/iam/clients/{client}/types/{typeId}/roles/{roleId}/actions [get]
+// ListIamRoleAction
+// @Summary	get iam role action list
+// @Tags	iam-action
+// @Param	tenant		path	string	true	"tenant"	default(default)
+// @Param	client		path	string	true	"client"	default(default)
+// @Param	typeId		path	string	true	"tenant"
+// @Param	roleId		path	string	true	"tenant"
+// @Success	200
+// @Router	/accounts/{tenant}/iam/clients/{client}/types/{typeId}/roles/{roleId}/actions [get]
 func ListIamRoleAction(c *gin.Context) {
 	roleId := c.Param("roleId")
 	tenant := internal.GetTenant(c)
@@ -116,19 +106,16 @@ func ListIamRoleAction(c *gin.Context) {
 	resp.SuccessWithArrayData(c, roleActions, 0)
 }
 
-// NewIamRoleAction godoc
-//
-//	@Summary		iam role action
-//	@Schemes
-//	@Description	new iam role action
-//	@Tags			iam-action
-//	@Param			tenant		path	string	true	"tenant"	default(default)
-//	@Param			client		path	string	true	"client"	default(default)
-//	@Param			typeId		path	string	true	"tenant"
-//	@Param			roleId		path	string	true	"tenant"
-//	@Param			iamBody		body	[]model.ResourceTypeRoleAction	true	"tenant"
-//	@Success		200
-//	@Router			/accounts/{tenant}/iam/clients/{client}/types/{typeId}/roles/{roleId}/actions [post]
+// NewIamRoleAction
+// @Summary	new iam role action
+// @Tags	iam-action
+// @Param	tenant		path	string	true	"tenant"	default(default)
+// @Param	client		path	string	true	"client"	default(default)
+// @Param	typeId		path	string	true	"tenant"
+// @Param	roleId		path	string	true	"tenant"
+// @Param	iamBody		body	[]model.ResourceTypeRoleAction	true	"tenant"
+// @Success	200
+// @Router	/accounts/{tenant}/iam/clients/{client}/types/{typeId}/roles/{roleId}/actions [post]
 func NewIamRoleAction(c *gin.Context) {
 	var roleAction []model.ResourceTypeRoleAction
 	if err := c.BindJSON(&roleAction); err != nil {
@@ -152,19 +139,16 @@ func NewIamRoleAction(c *gin.Context) {
 	resp.Success(c)
 }
 
-// DeleteIamRoleAction godoc
-//
-//	@Summary		iam role action
-//	@Schemes
-//	@Description	delete iam role action
-//	@Tags			iam-action
-//	@Param			tenant		path	string	true	"tenant"	default(default)
-//	@Param			client		path	string	true	"client"	default(default)
-//	@Param			typeId		path	string	true	"tenant"
-//	@Param			roleId		path	string	true	"tenant"
-//	@Param			actionId	path	string	true	"tenant"
-//	@Success		200
-//	@Router			/accounts/{tenant}/iam/clients/{client}/types/{typeId}/roles/{roleId}/actions/{actionId} [delete]
+// DeleteIamRoleAction
+// @Summary	delete iam role action
+// @Tags	iam-action
+// @Param	tenant		path	string	true	"tenant"	default(default)
+// @Param	client		path	string	true	"client"	default(default)
+// @Param	typeId		path	string	true	"tenant"
+// @Param	roleId		path	string	true	"tenant"
+// @Param	actionId	path	string	true	"tenant"
+// @Success	200
+// @Router	/accounts/{tenant}/iam/clients/{client}/types/{typeId}/roles/{roleId}/actions/{actionId} [delete]
 func DeleteIamRoleAction(c *gin.Context) {
 	actionId := c.Param("actionId")
 	roleId := c.Param("roleId")

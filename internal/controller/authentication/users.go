@@ -14,15 +14,12 @@ func GetUser(c *gin.Context) *model.User {
 	return c.MustGet("user").(*model.User)
 }
 
-// GetUserDetail godoc
-//
-//	@Summary	get user
-//	@Schemes
-//	@Description	get user
-//	@Tags			user
-//	@Param			tenant	path		string	true	"tenant"	default(default)
-//	@Success		200		{object}	dto.UserDto
-//	@Router			/accounts/{tenant}/me [get]
+// GetUserDetail
+// @Summary	get user
+// @Tags	user
+// @Param	tenant	path	string	true	"tenant"	default(default)
+// @Success	200	{object}	dto.UserDto
+// @Router	/accounts/{tenant}/me [get]
 func GetUserDetail(c *gin.Context) {
 	user := GetUser(c)
 	tenantName := "default"
@@ -45,16 +42,13 @@ func GetUserDetail(c *gin.Context) {
 	resp.SuccessWithData(c, user.Dto())
 }
 
-// UpdateUserDetail godoc
-//
-//	@Summary	update user
-//	@Schemes
-//	@Description	update user
-//	@Tags			user
-//	@Param			tenant	path		string	true	"tenant"	default(default)
-//	@Body			request	body		dto.UserProfileDto	true	"request"
-//	@Success		200		{object}	dto.UserDto
-//	@Router			/accounts/{tenant}/me [put]
+// UpdateUserDetail
+// @Summary	update user
+// @Tags	user
+// @Param	tenant	path	string	true	"tenant"	default(default)
+// @Body	request	body	dto.UserProfileDto	true	"request"
+// @Success	200	{object}	dto.UserDto
+// @Router	/accounts/{tenant}/me [put]
 func UpdateUserDetail(c *gin.Context) {
 	user := GetUser(c)
 	var u dto.UserDto
@@ -66,15 +60,12 @@ func UpdateUserDetail(c *gin.Context) {
 	global.DB.Save(&user)
 }
 
-// GetUserProfile godoc
-//
-//	@Summary	get user profile
-//	@Schemes
-//	@Description	get user profile
-//	@Tags			user
-//	@Param			tenant	path		string	true	"tenant"	default(default)
-//	@Success		200		{object}	dto.UserProfileDto
-//	@Router			/accounts/{tenant}/me/profile [get]
+// GetUserProfile
+// @Summary	get user profile
+// @Tags	user
+// @Param	tenant	path	string	true	"tenant"	default(default)
+// @Success	200	{object}	dto.UserProfileDto
+// @Router	/accounts/{tenant}/me/profile [get]
 func GetUserProfile(c *gin.Context) {
 	user := GetUser(c)
 	resp.SuccessWithData(c, user.ProfileDto())

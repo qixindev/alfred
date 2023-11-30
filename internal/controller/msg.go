@@ -15,17 +15,14 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-// SendMsg godoc
-//
-//	@Summary	send message
-//	@Schemes
-//	@Description	send message
-//	@Tags			msg
-//	@Param			tenant		path	string			true	"tenant name"
-//	@Param			providerId	path	integer			true	"provider id"
-//	@Param			by			body	model.SendInfo	true	"msg body"
-//	@Success		200
-//	@Router			/accounts/{tenant}/message/{providerId} [post]
+// SendMsg
+// @Summary	send message
+// @Tags	msg
+// @Param	tenant		path	string			true	"tenant name"
+// @Param	providerId	path	integer			true	"provider id"
+// @Param	by			body	model.SendInfo	true	"msg body"
+// @Success	200
+// @Router	/accounts/{tenant}/message/{providerId} [post]
 func SendMsg(c *gin.Context) {
 	var in model.SendInfo
 	if err := c.ShouldBindJSON(&in); err != nil {
@@ -107,17 +104,14 @@ func SendMsg(c *gin.Context) {
 	resp.SuccessWithMessage(c, "ok")
 }
 
-// GetMsg godoc
-//
-//	@Summary	get message
-//	@Schemes
-//	@Description	get message
-//	@Tags			msg
-//	@Param			subId		path	integer			true	"sub id"
-//	@Param			page		query	integer			false	"pageNum"
-//	@Param			pageSize	query	integer			false	"pageSize"
-//	@Success		200
-//	@Router			/accounts/{tenant}/message/{subId} [get]
+// GetMsg
+// @Summary	get message
+// @Tags	msg
+// @Param	subId	path	integer	true	"sub id"
+// @Param	page	query	integer	false	"pageNum"
+// @Param	pageSize	query	integer	false	"pageSize"
+// @Success	200
+// @Router	/accounts/{tenant}/message/{subId} [get]
 func GetMsg(c *gin.Context) {
 	subId := c.Param("subId")
 	var SendInfo []model.SendInfo
@@ -165,16 +159,13 @@ func GetMsg(c *gin.Context) {
 	resp.SuccessWithDataAndTotal(c, SendInfoDB, total)
 }
 
-// MarkMsg godoc
-//
-//	@Summary	mark message read
-//	@Schemes
-//	@Description	mark message read
-//	@Tags			msg
-//	@Param			tenant		path	string			true	"tenant name"
-//	@Param			msgId		path	integer			true	"msg id"
-//	@Success		200
-//	@Router			/accounts/{tenant}/message/{msgId} [put]
+// MarkMsg
+// @Summary	mark message read
+// @Tags	msg
+// @Param	tenant	path	string	true	"tenant name"
+// @Param	msgId	path	integer	true	"msg id"
+// @Success	200
+// @Router	/accounts/{tenant}/message/{msgId} [put]
 func MarkMsg(c *gin.Context) {
 	var in model.SendInfo
 	if err := c.ShouldBindUri(&in); err != nil {
@@ -197,15 +188,12 @@ func MarkMsg(c *gin.Context) {
 	resp.SuccessWithMessage(c, "mark msg read success")
 }
 
-// GetUnreadMsgCount godoc
-//
-//	@Summary	get unread message count
-//	@Schemes
-//	@Description	get unread message count
-//	@Tags			msg
-//	@Param			subId		path	integer			true	"sub id"
-//	@Success		200
-//	@Router			/accounts/{tenant}/unreadMsgCount/{subId} [get]
+// GetUnreadMsgCount
+// @Summary	get unread message count
+// @Tags	msg
+// @Param	subId	path	integer	true	"sub id"
+// @Success	200
+// @Router	/accounts/{tenant}/unreadMsgCount/{subId} [get]
 func GetUnreadMsgCount(c *gin.Context) {
 	subId := c.Param("subId")
 	var count int64

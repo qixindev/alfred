@@ -13,15 +13,12 @@ import (
 	"time"
 )
 
-// ListDevices godoc
-//
-//	@Summary	device
-//	@Schemes
-//	@Description	list device
-//	@Tags			device
-//	@Param			tenant	path	string	true	"tenant"	default(default)
-//	@Success		200
-//	@Router			/accounts/admin/{tenant}/devices [get]
+// ListDevices
+// @Summary	list device
+// @Tags	device
+// @Param	tenant	path	string	true	"tenant"	default(default)
+// @Success	200
+// @Router	/accounts/admin/{tenant}/devices [get]
 func ListDevices(c *gin.Context) {
 	var devices []model.Device
 	if err := internal.TenantDB(c).Find(&devices).Error; err != nil {
@@ -31,16 +28,13 @@ func ListDevices(c *gin.Context) {
 	resp.SuccessWithArrayData(c, utils.Filter(devices, model.Device2Dto), 0)
 }
 
-// GetDevice godoc
-//
-//	@Summary	device
-//	@Schemes
-//	@Description	get device
-//	@Tags			device
-//	@Param			tenant		path	string	true	"tenant"	default(default)
-//	@Param			deviceId	path	integer	true	"tenant"
-//	@Success		200
-//	@Router			/accounts/admin/{tenant}/devices/{deviceId} [get]
+// GetDevice
+// @Summary	get device
+// @Tags	device
+// @Param	tenant		path	string	true	"tenant"	default(default)
+// @Param	deviceId	path	integer	true	"tenant"
+// @Success	200
+// @Router	/accounts/admin/{tenant}/devices/{deviceId} [get]
 func GetDevice(c *gin.Context) {
 	deviceId := c.Param("deviceId")
 	var device model.Device
@@ -51,15 +45,12 @@ func GetDevice(c *gin.Context) {
 	resp.SuccessWithData(c, device.Dto())
 }
 
-// NewDevice godoc
-//
-//	@Summary	device
-//	@Schemes
-//	@Description	new device
-//	@Tags			device
-//	@Param			tenant	path	string	true	"tenant"	default(default)
-//	@Success		200
-//	@Router			/accounts/admin/{tenant}/devices [post]
+// NewDevice
+// @Summary	new device
+// @Tags	device
+// @Param	tenant	path	string	true	"tenant"	default(default)
+// @Success	200
+// @Router	/accounts/admin/{tenant}/devices [post]
 func NewDevice(c *gin.Context) {
 	tenant := internal.GetTenant(c)
 	var device model.Device
@@ -94,16 +85,13 @@ func NewDevice(c *gin.Context) {
 	})
 }
 
-// UpdateDevice godoc
-//
-//	@Summary	device
-//	@Schemes
-//	@Description	update device
-//	@Tags			device
-//	@Param			tenant		path	string	true	"tenant"	default(default)
-//	@Param			deviceId	path	integer	true	"tenant"
-//	@Success		200
-//	@Router			/accounts/admin/{tenant}/devices/{deviceId} [put]
+// UpdateDevice
+// @Summary	update device
+// @Tags	device
+// @Param	tenant		path	string	true	"tenant"	default(default)
+// @Param	deviceId	path	integer	true	"tenant"
+// @Success	200
+// @Router	/accounts/admin/{tenant}/devices/{deviceId} [put]
 func UpdateDevice(c *gin.Context) {
 	deviceId := c.Param("deviceId")
 	var device model.Device
@@ -124,16 +112,13 @@ func UpdateDevice(c *gin.Context) {
 	resp.SuccessWithData(c, device.Dto())
 }
 
-// DeleteDevice godoc
-//
-//	@Summary	device
-//	@Schemes
-//	@Description	delete device
-//	@Tags			device
-//	@Param			tenant		path	string	true	"tenant"	default(default)
-//	@Param			deviceId	path	integer	true	"tenant"
-//	@Success		200
-//	@Router			/accounts/admin/{tenant}/devices/{deviceId} [delete]
+// DeleteDevice
+// @Summary	delete device
+// @Tags	device
+// @Param	tenant		path	string	true	"tenant"	default(default)
+// @Param	deviceId	path	integer	true	"tenant"
+// @Success	200
+// @Router	/accounts/admin/{tenant}/devices/{deviceId} [delete]
 func DeleteDevice(c *gin.Context) {
 	deviceId := c.Param("deviceId")
 	tenant := internal.GetTenant(c)
@@ -144,16 +129,13 @@ func DeleteDevice(c *gin.Context) {
 	resp.Success(c)
 }
 
-// ListDeviceSecret godoc
-//
-//	@Summary	get client secrets
-//	@Schemes
-//	@Description	get client secrets
-//	@Tags			client
-//	@Param			tenant		path	string	true	"tenant"	default(default)
-//	@Param			clientId	path	integer	true	"tenant"
-//	@Success		200
-//	@Router			/accounts/admin/{tenant}/devices/{deviceId}/secrets [get]
+// ListDeviceSecret
+// @Summary	get client secrets
+// @Tags	client
+// @Param	tenant		path	string	true	"tenant"	default(default)
+// @Param	clientId	path	integer	true	"tenant"
+// @Success	200
+// @Router	/accounts/admin/{tenant}/devices/{deviceId}/secrets [get]
 func ListDeviceSecret(c *gin.Context) {
 	deviceId := c.Param("deviceId")
 	var device model.Device
@@ -169,16 +151,13 @@ func ListDeviceSecret(c *gin.Context) {
 	resp.SuccessWithArrayData(c, utils.Filter(secrets, model.DeviceSecret2Dto), 0)
 }
 
-// NewDeviceSecret godoc
-//
-//	@Summary	get client secrets
-//	@Schemes
-//	@Description	get client secrets
-//	@Tags			client
-//	@Param			tenant		path	string	true	"tenant"	default(default)
-//	@Param			clientId	path	integer	true	"tenant"
-//	@Success		200
-//	@Router			/accounts/admin/{tenant}/devices/{deviceId}/secrets [post]
+// NewDeviceSecret
+// @Summary	get client secrets
+// @Tags	client
+// @Param	tenant		path	string	true	"tenant"	default(default)
+// @Param	clientId	path	integer	true	"tenant"
+// @Success	200
+// @Router	/accounts/admin/{tenant}/devices/{deviceId}/secrets [post]
 func NewDeviceSecret(c *gin.Context) {
 	deviceId := c.Param("deviceId")
 	var device model.Device
@@ -200,17 +179,14 @@ func NewDeviceSecret(c *gin.Context) {
 	resp.SuccessWithData(c, secret.Dto())
 }
 
-// DeleteDeviceSecret godoc
-//
-//	@Summary	get client secrets
-//	@Schemes
-//	@Description	get client secrets
-//	@Tags			client
-//	@Param			tenant		path	string	true	"tenant"	default(default)
-//	@Param			clientId	path	integer	true	"tenant"
-//	@Param			secretId	path	integer	true	"tenant"
-//	@Success		200
-//	@Router			/accounts/admin/{tenant}/devices/{deviceId}/secrets/{secretId} [delete]
+// DeleteDeviceSecret
+// @Summary	get client secrets
+// @Tags	client
+// @Param	tenant		path	string	true	"tenant"	default(default)
+// @Param	clientId	path	integer	true	"tenant"
+// @Param	secretId	path	integer	true	"tenant"
+// @Success	200
+// @Router	/accounts/admin/{tenant}/devices/{deviceId}/secrets/{secretId} [delete]
 func DeleteDeviceSecret(c *gin.Context) {
 	deviceId := c.Param("deviceId")
 	secretId := c.Param("secretId")
@@ -229,16 +205,13 @@ func DeleteDeviceSecret(c *gin.Context) {
 	resp.Success(c)
 }
 
-// ListDeviceGroups godoc
-//
-//	@Summary	device groups
-//	@Schemes
-//	@Description	list device groups
-//	@Tags			device
-//	@Param			tenant		path	string	true	"tenant"	default(default)
-//	@Param			deviceId	path	integer	true	"tenant"
-//	@Success		200
-//	@Router			/accounts/admin/{tenant}/devices/{deviceId}/groups [get]
+// ListDeviceGroups
+// @Summary	list device groups
+// @Tags	device
+// @Param	tenant		path	string	true	"tenant"	default(default)
+// @Param	deviceId	path	integer	true	"tenant"
+// @Success	200
+// @Router	/accounts/admin/{tenant}/devices/{deviceId}/groups [get]
 func ListDeviceGroups(c *gin.Context) {
 	deviceId := c.Param("deviceId")
 	var device model.Device
@@ -261,16 +234,13 @@ func ListDeviceGroups(c *gin.Context) {
 	resp.SuccessWithArrayData(c, groups, 0)
 }
 
-// NewDeviceGroup godoc
-//
-//	@Summary	device groups
-//	@Schemes
-//	@Description	new device groups
-//	@Tags			device
-//	@Param			tenant		path	string	true	"tenant"	default(default)
-//	@Param			deviceId	path	integer	true	"tenant"
-//	@Success		200
-//	@Router			/accounts/admin/{tenant}/devices/{deviceId}/groups [post]
+// NewDeviceGroup
+// @Summary	new device groups
+// @Tags	device
+// @Param	tenant		path	string	true	"tenant"	default(default)
+// @Param	deviceId	path	integer	true	"tenant"
+// @Success	200
+// @Router	/accounts/admin/{tenant}/devices/{deviceId}/groups [post]
 func NewDeviceGroup(c *gin.Context) {
 	deviceId := c.Param("deviceId")
 	var deviceGroup model.GroupDevice
@@ -295,17 +265,14 @@ func NewDeviceGroup(c *gin.Context) {
 	resp.SuccessWithData(c, deviceGroup.Dto())
 }
 
-// UpdateDeviceGroup godoc
-//
-//	@Summary	device groups
-//	@Schemes
-//	@Description	update device groups
-//	@Tags			device
-//	@Param			tenant		path	string	true	"tenant"	default(default)
-//	@Param			deviceId	path	integer	true	"tenant"
-//	@Param			groupId		path	integer	true	"tenant"
-//	@Success		200
-//	@Router			/accounts/admin/{tenant}/devices/{deviceId}/groups/{groupId} [put]
+// UpdateDeviceGroup
+// @Summary	update device groups
+// @Tags	device
+// @Param	tenant		path	string	true	"tenant"	default(default)
+// @Param	deviceId	path	integer	true	"tenant"
+// @Param	groupId		path	integer	true	"tenant"
+// @Success	200
+// @Router	/accounts/admin/{tenant}/devices/{deviceId}/groups/{groupId} [put]
 func UpdateDeviceGroup(c *gin.Context) {
 	deviceId := c.Param("deviceId")
 	var device model.Device
@@ -334,17 +301,14 @@ func UpdateDeviceGroup(c *gin.Context) {
 	resp.SuccessWithData(c, groupDevice.GroupMemberDto())
 }
 
-// DeleteDeviceGroup godoc
-//
-//	@Summary	device groups
-//	@Schemes
-//	@Description	delete device groups
-//	@Tags			device
-//	@Param			tenant		path	string	true	"tenant"	default(default)
-//	@Param			deviceId	path	integer	true	"tenant"
-//	@Param			groupId		path	integer	true	"tenant"
-//	@Success		200
-//	@Router			/accounts/admin/{tenant}/devices/{deviceId}/groups/{groupId} [delete]
+// DeleteDeviceGroup
+// @Summary	delete device groups
+// @Tags	device
+// @Param	tenant		path	string	true	"tenant"	default(default)
+// @Param	deviceId	path	integer	true	"tenant"
+// @Param	groupId		path	integer	true	"tenant"
+// @Success	200
+// @Router	/accounts/admin/{tenant}/devices/{deviceId}/groups/{groupId} [delete]
 func DeleteDeviceGroup(c *gin.Context) {
 	deviceId := c.Param("deviceId")
 	var device model.Device
@@ -367,16 +331,13 @@ func DeleteDeviceGroup(c *gin.Context) {
 	resp.Success(c)
 }
 
-// VerifyDeviceCode godoc
-//
-//	@Summary	device code
-//	@Schemes
-//	@Description	delete device groups
-//	@Tags			device
-//	@Param			tenant		path	string	true	"tenant"	default(default)
-//	@Param			userCode	path	string	true	"tenant"
-//	@Success		200
-//	@Router			/accounts/admin/{tenant}/devices/code/{userCode} [post]
+// VerifyDeviceCode
+// @Summary	delete device groups
+// @Tags	device
+// @Param	tenant		path	string	true	"tenant"	default(default)
+// @Param	userCode	path	string	true	"tenant"
+// @Success	200
+// @Router	/accounts/admin/{tenant}/devices/code/{userCode} [post]
 func VerifyDeviceCode(c *gin.Context) {
 	userCode := c.Param("userCode")
 	deviceCode := model.DeviceCode{}

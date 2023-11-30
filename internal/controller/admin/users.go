@@ -10,15 +10,12 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-// ListUsers godoc
-//
-//	@Summary	user
-//	@Schemes
-//	@Description	get user list
-//	@Tags			user
-//	@Param			tenant	path	string	true	"tenant"	default(default)
-//	@Success		200
-//	@Router			/accounts/admin/{tenant}/users [get]
+// ListUsers
+// @Summary	get user list
+// @Tags	user
+// @Param	tenant	path	string	true	"tenant"	default(default)
+// @Success	200
+// @Router	/accounts/admin/{tenant}/users [get]
 func ListUsers(c *gin.Context) {
 	var users []model.User
 	if err := internal.TenantDB(c).Find(&users).Error; err != nil {
@@ -28,16 +25,13 @@ func ListUsers(c *gin.Context) {
 	resp.SuccessWithArrayData(c, utils.Filter(users, model.User2AdminDto), 0)
 }
 
-// GetUser godoc
-//
-//	@Summary	user
-//	@Schemes
-//	@Description	get user
-//	@Tags			user
-//	@Param			tenant	path	string	true	"tenant"	default(default)
-//	@Param			userId	path	integer	true	"tenant"
-//	@Success		200
-//	@Router			/accounts/admin/{tenant}/users/{userId} [get]
+// GetUser
+// @Summary	get user
+// @Tags	user
+// @Param	tenant	path	string	true	"tenant"	default(default)
+// @Param	userId	path	integer	true	"tenant"
+// @Success	200
+// @Router	/accounts/admin/{tenant}/users/{userId} [get]
 func GetUser(c *gin.Context) {
 	userId := c.Param("userId")
 	var user model.User
@@ -48,16 +42,13 @@ func GetUser(c *gin.Context) {
 	resp.SuccessWithData(c, user.AdminDto())
 }
 
-// NewUser godoc
-//
-//	@Summary	user
-//	@Schemes
-//	@Description	new user
-//	@Tags			user
-//	@Param			tenant	path	string	true	"tenant"	default(default)
-//	@Param			bd		body	object	true	"user body"
-//	@Success		200
-//	@Router			/accounts/admin/{tenant}/users [post]
+// NewUser
+// @Summary	new user
+// @Tags	user
+// @Param	tenant	path	string	true	"tenant"	default(default)
+// @Param	bd	body	object	true	"user body"
+// @Success	200
+// @Router	/accounts/admin/{tenant}/users [post]
 func NewUser(c *gin.Context) {
 	tenant := internal.GetTenant(c)
 	var user model.User
@@ -95,16 +86,13 @@ func NewUser(c *gin.Context) {
 	resp.SuccessWithData(c, user.AdminDto())
 }
 
-// UpdateUser godoc
-//
-//	@Summary	user
-//	@Schemes
-//	@Description	update user
-//	@Tags			user
-//	@Param			tenant	path	string	true	"tenant"	default(default)
-//	@Param			userId	path	integer	true	"user id"
-//	@Success		200
-//	@Router			/accounts/admin/{tenant}/users/{userId} [put]
+// UpdateUser
+// @Summary	update user
+// @Tags	user
+// @Param	tenant	path	string	true	"tenant"	default(default)
+// @Param	userId	path	integer	true	"user id"
+// @Success	200
+// @Router	/accounts/admin/{tenant}/users/{userId} [put]
 func UpdateUser(c *gin.Context) {
 	userId := c.Param("userId")
 	var user model.User
@@ -140,16 +128,13 @@ func UpdateUser(c *gin.Context) {
 	resp.SuccessWithData(c, user.AdminDto())
 }
 
-// DeleteUser godoc
-//
-//	@Summary	user
-//	@Schemes
-//	@Description	delete user
-//	@Tags			user
-//	@Param			tenant	path	string	true	"tenant"	default(default)
-//	@Param			userId	path	integer	true	"tenant"
-//	@Success		200
-//	@Router			/accounts/admin/{tenant}/users/{userId} [delete]
+// DeleteUser
+// @Summary	delete user
+// @Tags	user
+// @Param	tenant	path	string	true	"tenant"	default(default)
+// @Param	userId	path	integer	true	"tenant"
+// @Success	200
+// @Router	/accounts/admin/{tenant}/users/{userId} [delete]
 func DeleteUser(c *gin.Context) {
 	userId := c.Param("userId")
 	var user model.User
@@ -165,16 +150,13 @@ func DeleteUser(c *gin.Context) {
 	resp.Success(c)
 }
 
-// MarkUserFrom godoc
-//
-//	@Summary	user
-//	@Schemes
-//	@Description	mark user from
-//	@Tags			user
-//	@Param			tenant	path	string	true	"tenant"	default(default)
-//	@Param			bd		body	object	true	"user body"
-//	@Success		200
-//	@Router			/accounts/admin/{tenant}/users/from [post]
+// MarkUserFrom
+// @Summary	mark user from
+// @Tags	user
+// @Param	tenant	path	string	true	"tenant"	default(default)
+// @Param	bd	body	object	true	"user body"
+// @Success	200
+// @Router	/accounts/admin/{tenant}/users/from [post]
 func MarkUserFrom(c *gin.Context) {
 	var request struct {
 		IdList []int64 `json:"idList"`

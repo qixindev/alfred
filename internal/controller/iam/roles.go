@@ -11,16 +11,14 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-// ListIamRole godoc
-//
-//	@Summary	获取角色列表
-//	@Schemes
-//	@Tags		iam-role
-//	@Param		tenant		path	string	true	"tenant"	default(default)
-//	@Param		client		path	string	true	"client"	default(default)
-//	@Param		typeId		path	string	true	"type id"
-//	@Success	200
-//	@Router		/accounts/{tenant}/iam/clients/{client}/types/{typeId}/roles [get]
+// ListIamRole
+// @Summary	获取角色列表
+// @Tags	iam-role
+// @Param	tenant		path	string	true	"tenant"	default(default)
+// @Param	client		path	string	true	"client"	default(default)
+// @Param	typeId		path	string	true	"type id"
+// @Success	200
+// @Router	/accounts/{tenant}/iam/clients/{client}/types/{typeId}/roles [get]
 func ListIamRole(c *gin.Context) {
 	typeId := c.Param("typeId")
 	tenant := internal.GetTenant(c)
@@ -32,18 +30,15 @@ func ListIamRole(c *gin.Context) {
 	resp.SuccessWithArrayData(c, roles, 0)
 }
 
-// NewIamRole godoc
-//
-//	@Summary		iam role
-//	@Schemes
-//	@Description	new iam role
-//	@Tags			iam-role
-//	@Param			tenant		path	string	true	"tenant"	default(default)
-//	@Param			client		path	string	true	"client"	default(default)
-//	@Param			typeId		path	string	true	"tenant"
-//	@Param			iamBody		body	model.ResourceTypeRole	true	"tenant"
-//	@Success		200
-//	@Router			/accounts/{tenant}/iam/clients/{client}/types/{typeId}/roles [post]
+// NewIamRole
+// @Summary	new iam role
+// @Tags	iam-role
+// @Param	tenant		path	string	true	"tenant"	default(default)
+// @Param	client		path	string	true	"client"	default(default)
+// @Param	typeId		path	string	true	"tenant"
+// @Param	iamBody		body	model.ResourceTypeRole	true	"tenant"
+// @Success	200
+// @Router	/accounts/{tenant}/iam/clients/{client}/types/{typeId}/roles [post]
 func NewIamRole(c *gin.Context) {
 	var role model.ResourceTypeRole
 	if err := c.BindJSON(&role); err != nil {
@@ -61,18 +56,15 @@ func NewIamRole(c *gin.Context) {
 	resp.SuccessWithData(c, r)
 }
 
-// DeleteIamRole godoc
-//
-//	@Summary		iam role
-//	@Schemes
-//	@Description	delete iam role
-//	@Tags			iam-role
-//	@Param			tenant		path	string	true	"tenant"	default(default)
-//	@Param			client		path	string	true	"client"	default(default)
-//	@Param			typeId		path	string	true	"tenant"
-//	@Param			roleId		path	string	true	"tenant"
-//	@Success		200
-//	@Router			/accounts/{tenant}/iam/clients/{client}/types/{typeId}/roles/{roleId} [delete]
+// DeleteIamRole
+// @Summary	delete iam role
+// @Tags	iam-role
+// @Param	tenant		path	string	true	"tenant"	default(default)
+// @Param	client		path	string	true	"client"	default(default)
+// @Param	typeId		path	string	true	"tenant"
+// @Param	roleId		path	string	true	"tenant"
+// @Success	200
+// @Router	/accounts/{tenant}/iam/clients/{client}/types/{typeId}/roles/{roleId} [delete]
 func DeleteIamRole(c *gin.Context) {
 	typeId := c.Param("typeId")
 	roleId := c.Param("roleId")
@@ -90,19 +82,16 @@ func DeleteIamRole(c *gin.Context) {
 	resp.Success(c)
 }
 
-// ListIamResourceRole godoc
-//
-//	@Summary		获取某个资源下某个角色的所有用户列表
-//	@Schemes
-//	@Description	例如：获取资源1下面所有管理员的用户列表
-//	@Tags			iam-role
-//	@Param			tenant		path	string	true	"tenant"	default(default)
-//	@Param			client		path	string	true	"client"	default(default)
-//	@Param			typeId		path	string	true	"tenant"
-//	@Param			roleId		path	string	true	"tenant"
-//	@Param			resourceId	path	string	true	"tenant"
-//	@Success		200
-//	@Router			/accounts/{tenant}/iam/clients/{client}/types/{typeId}/resources/{resourceId}/roles/{roleId}/users [get]
+// ListIamResourceRole
+// @Summary	获取某个资源下某个角色的所有用户列表
+// @Tags	iam-role
+// @Param	tenant		path	string	true	"tenant"	default(default)
+// @Param	client		path	string	true	"client"	default(default)
+// @Param	typeId		path	string	true	"tenant"
+// @Param	roleId		path	string	true	"tenant"
+// @Param	resourceId	path	string	true	"tenant"
+// @Success	200
+// @Router	/accounts/{tenant}/iam/clients/{client}/types/{typeId}/resources/{resourceId}/roles/{roleId}/users [get]
 func ListIamResourceRole(c *gin.Context) {
 	resourceId := c.Param("resourceId")
 	roleId := c.Param("roleId")
@@ -115,20 +104,17 @@ func ListIamResourceRole(c *gin.Context) {
 	resp.SuccessWithArrayData(c, utils.Filter(roleUsers, model.ResourceRoleUserDto), 0)
 }
 
-// NewIamResourceRole godoc
-//
-//	@Summary		iam resource role
-//	@Schemes
-//	@Description	new iam resource role
-//	@Tags			iam-role
-//	@Param			tenant		path	string	true	"tenant"	default(default)
-//	@Param			client		path	string	true	"client"	default(default)
-//	@Param			typeId		path	string	true	"tenant"
-//	@Param			roleId		path	string	true	"tenant"
-//	@Param			resourceId	path	string	true	"tenant"
-//	@Param			iamBody		body	[]model.ResourceRoleUser	true	"tenant"
-//	@Success		200
-//	@Router			/accounts/{tenant}/iam/clients/{client}/types/{typeId}/resources/{resourceId}/roles/{roleId}/users [post]
+// NewIamResourceRole
+// @Summary	new iam resource role
+// @Tags	iam-role
+// @Param	tenant		path	string	true	"tenant"	default(default)
+// @Param	client		path	string	true	"client"	default(default)
+// @Param	typeId		path	string	true	"tenant"
+// @Param	roleId		path	string	true	"tenant"
+// @Param	resourceId	path	string	true	"tenant"
+// @Param	iamBody		body	[]model.ResourceRoleUser	true	"tenant"
+// @Success	200
+// @Router	/accounts/{tenant}/iam/clients/{client}/types/{typeId}/resources/{resourceId}/roles/{roleId}/users [post]
 func NewIamResourceRole(c *gin.Context) {
 	var roleUser []model.ResourceRoleUser
 	if err := c.BindJSON(&roleUser); err != nil {
@@ -156,20 +142,17 @@ func NewIamResourceRole(c *gin.Context) {
 	resp.Success(c)
 }
 
-// DeleteIamResourceRoleUser godoc
-//
-//	@Summary		iam resource role
-//	@Schemes
-//	@Description	delete iam resource role
-//	@Tags			iam-role
-//	@Param			tenant		path	string	true	"tenant"	default(default)
-//	@Param			client		path	string	true	"client"	default(default)
-//	@Param			typeId		path	string	true	"tenant"
-//	@Param			resourceId	path	string	true	"tenant"
-//	@Param			roleId		path	string	true	"tenant"
-//	@Param			userId		path	string	true	"tenant"
-//	@Success		200
-//	@Router			/accounts/{tenant}/iam/clients/{client}/types/{typeId}/resources/{resourceId}/roles/{roleId}/users/{userId} [delete]
+// DeleteIamResourceRoleUser
+// @Summary	delete iam resource role
+// @Tags	iam-role
+// @Param	tenant		path	string	true	"tenant"	default(default)
+// @Param	client		path	string	true	"client"	default(default)
+// @Param	typeId		path	string	true	"tenant"
+// @Param	resourceId	path	string	true	"tenant"
+// @Param	roleId		path	string	true	"tenant"
+// @Param	userId		path	string	true	"tenant"
+// @Success	200
+// @Router	/accounts/{tenant}/iam/clients/{client}/types/{typeId}/resources/{resourceId}/roles/{roleId}/users/{userId} [delete]
 func DeleteIamResourceRoleUser(c *gin.Context) {
 	resourceId := c.Param("resourceId")
 	roleId := c.Param("roleId")
@@ -194,18 +177,16 @@ func DeleteIamResourceRoleUser(c *gin.Context) {
 	resp.Success(c)
 }
 
-// CreateAllTypeRole godoc
-//
-//	@Summary		授权一类资源给用户
-//	@Schemes
-//	@Tags			iam-role
-//	@Param			tenant		path	string		true	"tenant"	default(default)
-//	@Param			client		path	string		true	"client"	default(default)
-//	@Param			typeId		path	string		true	"type id"
-//	@Param			roleId		path	string		true	"role id"
-//	@Param			bd			body	[]integer	true	"client user id"
-//	@Success		200
-//	@Router			/accounts/{tenant}/iam/clients/{client}/types/{typeId}/roles/{roleId}/auth [post]
+// CreateAllTypeRole
+// @Summary	授权一类资源给用户
+// @Tags	iam-role
+// @Param	tenant		path	string		true	"tenant"	default(default)
+// @Param	client		path	string		true	"client"	default(default)
+// @Param	typeId		path	string		true	"type id"
+// @Param	roleId		path	string		true	"role id"
+// @Param	bd			body	[]integer	true	"client user id"
+// @Success	200
+// @Router	/accounts/{tenant}/iam/clients/{client}/types/{typeId}/roles/{roleId}/auth [post]
 func CreateAllTypeRole(c *gin.Context) {
 	var in req.IamClientUser
 	if err := internal.New(c).BindUri(&in).BindJson(&in.ClientUserId).Error; err != nil {

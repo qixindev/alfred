@@ -17,11 +17,10 @@ const docTemplate = `{
     "paths": {
         "/accounts/admin/tenants": {
             "get": {
-                "description": "list tenants",
                 "tags": [
                     "admin-tenants"
                 ],
-                "summary": "tenants",
+                "summary": "list tenants",
                 "responses": {
                     "200": {
                         "description": "OK"
@@ -29,11 +28,10 @@ const docTemplate = `{
                 }
             },
             "post": {
-                "description": "new tenants",
                 "tags": [
                     "admin-tenants"
                 ],
-                "summary": "tenants",
+                "summary": "new tenants",
                 "responses": {
                     "200": {
                         "description": "OK"
@@ -43,11 +41,10 @@ const docTemplate = `{
         },
         "/accounts/admin/tenants/{tenantId}": {
             "get": {
-                "description": "get tenants",
                 "tags": [
                     "admin-tenants"
                 ],
-                "summary": "tenants",
+                "summary": "get tenants",
                 "parameters": [
                     {
                         "type": "integer",
@@ -64,11 +61,10 @@ const docTemplate = `{
                 }
             },
             "put": {
-                "description": "update tenants",
                 "tags": [
                     "admin-tenants"
                 ],
-                "summary": "tenants",
+                "summary": "update tenants",
                 "parameters": [
                     {
                         "type": "integer",
@@ -85,11 +81,10 @@ const docTemplate = `{
                 }
             },
             "delete": {
-                "description": "delete tenants",
                 "tags": [
                     "admin-tenants"
                 ],
-                "summary": "tenants",
+                "summary": "delete tenants",
                 "parameters": [
                     {
                         "type": "integer",
@@ -108,11 +103,10 @@ const docTemplate = `{
         },
         "/accounts/admin/tenants/{tenantId}/secrets": {
             "post": {
-                "description": "delete tenants",
                 "tags": [
                     "admin-tenants"
                 ],
-                "summary": "tenants",
+                "summary": "delete tenants",
                 "parameters": [
                     {
                         "type": "integer",
@@ -131,11 +125,10 @@ const docTemplate = `{
         },
         "/accounts/admin/tenants/{tenantId}/secrets/{secretId}": {
             "delete": {
-                "description": "delete tenants",
                 "tags": [
                     "admin-tenants"
                 ],
-                "summary": "tenants",
+                "summary": "delete tenants",
                 "parameters": [
                     {
                         "type": "integer",
@@ -161,11 +154,10 @@ const docTemplate = `{
         },
         "/accounts/admin/{tenant}/clients": {
             "get": {
-                "description": "get client list",
                 "tags": [
                     "client"
                 ],
-                "summary": "client",
+                "summary": "get client list",
                 "parameters": [
                     {
                         "type": "string",
@@ -183,7 +175,6 @@ const docTemplate = `{
                 }
             },
             "post": {
-                "description": "new client",
                 "tags": [
                     "client"
                 ],
@@ -216,11 +207,10 @@ const docTemplate = `{
         },
         "/accounts/admin/{tenant}/clients/default": {
             "get": {
-                "description": "get client",
                 "tags": [
                     "client"
                 ],
-                "summary": "client",
+                "summary": "get client",
                 "parameters": [
                     {
                         "type": "string",
@@ -240,11 +230,10 @@ const docTemplate = `{
         },
         "/accounts/admin/{tenant}/clients/{clientId}": {
             "get": {
-                "description": "get client",
                 "tags": [
                     "client"
                 ],
-                "summary": "client",
+                "summary": "get client",
                 "parameters": [
                     {
                         "type": "string",
@@ -270,7 +259,6 @@ const docTemplate = `{
                 }
             },
             "put": {
-                "description": "update client",
                 "tags": [
                     "client"
                 ],
@@ -300,7 +288,6 @@ const docTemplate = `{
                 }
             },
             "delete": {
-                "description": "delete client",
                 "tags": [
                     "client"
                 ],
@@ -332,7 +319,6 @@ const docTemplate = `{
         },
         "/accounts/admin/{tenant}/clients/{clientId}/redirect-uris": {
             "get": {
-                "description": "get client redirect uris",
                 "tags": [
                     "client"
                 ],
@@ -362,7 +348,6 @@ const docTemplate = `{
                 }
             },
             "post": {
-                "description": "new client redirect uri",
                 "tags": [
                     "client"
                 ],
@@ -394,7 +379,6 @@ const docTemplate = `{
         },
         "/accounts/admin/{tenant}/clients/{clientId}/redirect-uris/{uriId}": {
             "post": {
-                "description": "new client redirect uri",
                 "tags": [
                     "client"
                 ],
@@ -424,7 +408,6 @@ const docTemplate = `{
                 }
             },
             "delete": {
-                "description": "delete client redirect uris",
                 "tags": [
                     "client"
                 ],
@@ -463,7 +446,6 @@ const docTemplate = `{
         },
         "/accounts/admin/{tenant}/clients/{clientId}/secret/{secretId}": {
             "delete": {
-                "description": "delete client secret",
                 "tags": [
                     "client"
                 ],
@@ -502,7 +484,6 @@ const docTemplate = `{
         },
         "/accounts/admin/{tenant}/clients/{clientId}/secrets": {
             "get": {
-                "description": "get client secrets",
                 "tags": [
                     "client"
                 ],
@@ -532,7 +513,6 @@ const docTemplate = `{
                 }
             },
             "post": {
-                "description": "new client secret",
                 "tags": [
                     "client"
                 ],
@@ -564,11 +544,10 @@ const docTemplate = `{
         },
         "/accounts/admin/{tenant}/clients/{clientId}/users": {
             "get": {
-                "description": "get client user list",
                 "tags": [
                     "client-user"
                 ],
-                "summary": "client user",
+                "summary": "get client user list",
                 "parameters": [
                     {
                         "type": "string",
@@ -596,11 +575,10 @@ const docTemplate = `{
         },
         "/accounts/admin/{tenant}/clients/{clientId}/users/{subId}": {
             "get": {
-                "description": "get client user list",
                 "tags": [
                     "client-user"
                 ],
-                "summary": "client user",
+                "summary": "get client user list",
                 "parameters": [
                     {
                         "type": "string",
@@ -635,11 +613,10 @@ const docTemplate = `{
         },
         "/accounts/admin/{tenant}/clients/{clientId}/users/{subId}/meta": {
             "put": {
-                "description": "update user",
                 "tags": [
                     "client-user"
                 ],
-                "summary": "user",
+                "summary": "update user",
                 "parameters": [
                     {
                         "type": "string",
@@ -683,11 +660,10 @@ const docTemplate = `{
         },
         "/accounts/admin/{tenant}/clients/{clientId}/users/{subId}/password": {
             "put": {
-                "description": "update user",
                 "tags": [
                     "client-user"
                 ],
-                "summary": "user",
+                "summary": "update user",
                 "parameters": [
                     {
                         "type": "string",
@@ -731,11 +707,10 @@ const docTemplate = `{
         },
         "/accounts/admin/{tenant}/clients/{clientId}/users/{subId}/profile": {
             "put": {
-                "description": "update user",
                 "tags": [
                     "client-user"
                 ],
-                "summary": "user",
+                "summary": "update user",
                 "parameters": [
                     {
                         "type": "string",
@@ -779,11 +754,10 @@ const docTemplate = `{
         },
         "/accounts/admin/{tenant}/devices": {
             "get": {
-                "description": "list device",
                 "tags": [
                     "device"
                 ],
-                "summary": "device",
+                "summary": "list device",
                 "parameters": [
                     {
                         "type": "string",
@@ -801,11 +775,10 @@ const docTemplate = `{
                 }
             },
             "post": {
-                "description": "new device",
                 "tags": [
                     "device"
                 ],
-                "summary": "device",
+                "summary": "new device",
                 "parameters": [
                     {
                         "type": "string",
@@ -825,11 +798,10 @@ const docTemplate = `{
         },
         "/accounts/admin/{tenant}/devices/code/{userCode}": {
             "post": {
-                "description": "delete device groups",
                 "tags": [
                     "device"
                 ],
-                "summary": "device code",
+                "summary": "delete device groups",
                 "parameters": [
                     {
                         "type": "string",
@@ -856,11 +828,10 @@ const docTemplate = `{
         },
         "/accounts/admin/{tenant}/devices/{deviceId}": {
             "get": {
-                "description": "get device",
                 "tags": [
                     "device"
                 ],
-                "summary": "device",
+                "summary": "get device",
                 "parameters": [
                     {
                         "type": "string",
@@ -885,11 +856,10 @@ const docTemplate = `{
                 }
             },
             "put": {
-                "description": "update device",
                 "tags": [
                     "device"
                 ],
-                "summary": "device",
+                "summary": "update device",
                 "parameters": [
                     {
                         "type": "string",
@@ -914,11 +884,10 @@ const docTemplate = `{
                 }
             },
             "delete": {
-                "description": "delete device",
                 "tags": [
                     "device"
                 ],
-                "summary": "device",
+                "summary": "delete device",
                 "parameters": [
                     {
                         "type": "string",
@@ -945,11 +914,10 @@ const docTemplate = `{
         },
         "/accounts/admin/{tenant}/devices/{deviceId}/groups": {
             "get": {
-                "description": "list device groups",
                 "tags": [
                     "device"
                 ],
-                "summary": "device groups",
+                "summary": "list device groups",
                 "parameters": [
                     {
                         "type": "string",
@@ -974,11 +942,10 @@ const docTemplate = `{
                 }
             },
             "post": {
-                "description": "new device groups",
                 "tags": [
                     "device"
                 ],
-                "summary": "device groups",
+                "summary": "new device groups",
                 "parameters": [
                     {
                         "type": "string",
@@ -1005,11 +972,10 @@ const docTemplate = `{
         },
         "/accounts/admin/{tenant}/devices/{deviceId}/groups/{groupId}": {
             "put": {
-                "description": "update device groups",
                 "tags": [
                     "device"
                 ],
-                "summary": "device groups",
+                "summary": "update device groups",
                 "parameters": [
                     {
                         "type": "string",
@@ -1041,11 +1007,10 @@ const docTemplate = `{
                 }
             },
             "delete": {
-                "description": "delete device groups",
                 "tags": [
                     "device"
                 ],
-                "summary": "device groups",
+                "summary": "delete device groups",
                 "parameters": [
                     {
                         "type": "string",
@@ -1079,7 +1044,6 @@ const docTemplate = `{
         },
         "/accounts/admin/{tenant}/devices/{deviceId}/secrets": {
             "get": {
-                "description": "get client secrets",
                 "tags": [
                     "client"
                 ],
@@ -1108,7 +1072,6 @@ const docTemplate = `{
                 }
             },
             "post": {
-                "description": "get client secrets",
                 "tags": [
                     "client"
                 ],
@@ -1139,7 +1102,6 @@ const docTemplate = `{
         },
         "/accounts/admin/{tenant}/devices/{deviceId}/secrets/{secretId}": {
             "delete": {
-                "description": "get client secrets",
                 "tags": [
                     "client"
                 ],
@@ -1177,11 +1139,10 @@ const docTemplate = `{
         },
         "/accounts/admin/{tenant}/groups": {
             "get": {
-                "description": "list groups",
                 "tags": [
                     "group"
                 ],
-                "summary": "group",
+                "summary": "list groups",
                 "parameters": [
                     {
                         "type": "string",
@@ -1198,11 +1159,10 @@ const docTemplate = `{
                 }
             },
             "post": {
-                "description": "new groups",
                 "tags": [
                     "group"
                 ],
-                "summary": "group",
+                "summary": "new groups",
                 "parameters": [
                     {
                         "type": "string",
@@ -1221,11 +1181,10 @@ const docTemplate = `{
         },
         "/accounts/admin/{tenant}/groups/{groupId}": {
             "get": {
-                "description": "get groups",
                 "tags": [
                     "group"
                 ],
-                "summary": "group",
+                "summary": "get groups",
                 "parameters": [
                     {
                         "type": "string",
@@ -1249,11 +1208,10 @@ const docTemplate = `{
                 }
             },
             "put": {
-                "description": "update groups",
                 "tags": [
                     "group"
                 ],
-                "summary": "group",
+                "summary": "update groups",
                 "parameters": [
                     {
                         "type": "string",
@@ -1277,11 +1235,10 @@ const docTemplate = `{
                 }
             },
             "delete": {
-                "description": "delete groups",
                 "tags": [
                     "group"
                 ],
-                "summary": "group",
+                "summary": "delete groups",
                 "parameters": [
                     {
                         "type": "string",
@@ -1307,11 +1264,10 @@ const docTemplate = `{
         },
         "/accounts/admin/{tenant}/groups/{groupId}/member": {
             "get": {
-                "description": "get groups members",
                 "tags": [
                     "group"
                 ],
-                "summary": "group",
+                "summary": "get groups members",
                 "parameters": [
                     {
                         "type": "string",
@@ -1337,10 +1293,10 @@ const docTemplate = `{
         },
         "/accounts/admin/{tenant}/page/login": {
             "get": {
-                "description": "get tenant login page",
                 "tags": [
                     "tenant-meta"
                 ],
+                "summary": "get tenant login page",
                 "parameters": [
                     {
                         "type": "string",
@@ -1358,10 +1314,10 @@ const docTemplate = `{
                 }
             },
             "put": {
-                "description": "update tenant login page",
                 "tags": [
                     "tenant-meta"
                 ],
+                "summary": "update tenant login page",
                 "parameters": [
                     {
                         "type": "string",
@@ -1390,10 +1346,10 @@ const docTemplate = `{
         },
         "/accounts/admin/{tenant}/picture/{type}/upload": {
             "put": {
-                "description": "上传图片",
                 "tags": [
                     "tenant-meta"
                 ],
+                "summary": "上传图片",
                 "parameters": [
                     {
                         "type": "string",
@@ -1428,10 +1384,10 @@ const docTemplate = `{
         },
         "/accounts/admin/{tenant}/proto": {
             "get": {
-                "description": "获取用户隐私协议",
                 "tags": [
                     "tenant-meta"
                 ],
+                "summary": "获取用户隐私协议",
                 "parameters": [
                     {
                         "type": "string",
@@ -1449,10 +1405,10 @@ const docTemplate = `{
                 }
             },
             "put": {
-                "description": "update tenant login page",
                 "tags": [
                     "tenant-meta"
                 ],
+                "summary": "update tenant login page",
                 "parameters": [
                     {
                         "type": "string",
@@ -1484,11 +1440,10 @@ const docTemplate = `{
         },
         "/accounts/admin/{tenant}/providers": {
             "get": {
-                "description": "list provider",
                 "tags": [
                     "provider"
                 ],
-                "summary": "provider",
+                "summary": "list provider",
                 "parameters": [
                     {
                         "type": "string",
@@ -1506,11 +1461,10 @@ const docTemplate = `{
                 }
             },
             "post": {
-                "description": "new provider",
                 "tags": [
                     "provider"
                 ],
-                "summary": "provider",
+                "summary": "new provider",
                 "parameters": [
                     {
                         "type": "string",
@@ -1539,11 +1493,10 @@ const docTemplate = `{
         },
         "/accounts/admin/{tenant}/providers/{providerId}": {
             "get": {
-                "description": "get provider",
                 "tags": [
                     "provider"
                 ],
-                "summary": "provider",
+                "summary": "get provider",
                 "parameters": [
                     {
                         "type": "string",
@@ -1568,11 +1521,10 @@ const docTemplate = `{
                 }
             },
             "put": {
-                "description": "update provider",
                 "tags": [
                     "provider"
                 ],
-                "summary": "provider",
+                "summary": "update provider",
                 "parameters": [
                     {
                         "type": "string",
@@ -1597,11 +1549,10 @@ const docTemplate = `{
                 }
             },
             "delete": {
-                "description": "delete provider",
                 "tags": [
                     "provider"
                 ],
-                "summary": "provider",
+                "summary": "delete provider",
                 "parameters": [
                     {
                         "type": "string",
@@ -1628,7 +1579,6 @@ const docTemplate = `{
         },
         "/accounts/admin/{tenant}/providers/{providerId}/users": {
             "get": {
-                "description": "get provider user list",
                 "tags": [
                     "provider"
                 ],
@@ -1659,11 +1609,10 @@ const docTemplate = `{
         },
         "/accounts/admin/{tenant}/sms": {
             "get": {
-                "description": "list sms",
                 "tags": [
                     "sms"
                 ],
-                "summary": "sms",
+                "summary": "list sms",
                 "parameters": [
                     {
                         "type": "string",
@@ -1681,11 +1630,10 @@ const docTemplate = `{
                 }
             },
             "post": {
-                "description": "new sms",
                 "tags": [
                     "sms"
                 ],
-                "summary": "sms",
+                "summary": "new sms",
                 "parameters": [
                     {
                         "type": "string",
@@ -1714,11 +1662,10 @@ const docTemplate = `{
         },
         "/accounts/admin/{tenant}/sms/{smsId}": {
             "get": {
-                "description": "get sms",
                 "tags": [
                     "sms"
                 ],
-                "summary": "sms",
+                "summary": "get sms",
                 "parameters": [
                     {
                         "type": "string",
@@ -1743,11 +1690,10 @@ const docTemplate = `{
                 }
             },
             "put": {
-                "description": "update sms",
                 "tags": [
                     "sms"
                 ],
-                "summary": "sms",
+                "summary": "update sms",
                 "parameters": [
                     {
                         "type": "string",
@@ -1781,11 +1727,10 @@ const docTemplate = `{
                 }
             },
             "delete": {
-                "description": "delete sms",
                 "tags": [
                     "sms"
                 ],
-                "summary": "sms",
+                "summary": "delete sms",
                 "parameters": [
                     {
                         "type": "string",
@@ -1812,11 +1757,10 @@ const docTemplate = `{
         },
         "/accounts/admin/{tenant}/users": {
             "get": {
-                "description": "get user list",
                 "tags": [
                     "user"
                 ],
-                "summary": "user",
+                "summary": "get user list",
                 "parameters": [
                     {
                         "type": "string",
@@ -1834,11 +1778,10 @@ const docTemplate = `{
                 }
             },
             "post": {
-                "description": "new user",
                 "tags": [
                     "user"
                 ],
-                "summary": "user",
+                "summary": "new user",
                 "parameters": [
                     {
                         "type": "string",
@@ -1867,11 +1810,10 @@ const docTemplate = `{
         },
         "/accounts/admin/{tenant}/users/from": {
             "post": {
-                "description": "mark user from",
                 "tags": [
                     "user"
                 ],
-                "summary": "user",
+                "summary": "mark user from",
                 "parameters": [
                     {
                         "type": "string",
@@ -1900,11 +1842,10 @@ const docTemplate = `{
         },
         "/accounts/admin/{tenant}/users/{userId}": {
             "get": {
-                "description": "get user",
                 "tags": [
                     "user"
                 ],
-                "summary": "user",
+                "summary": "get user",
                 "parameters": [
                     {
                         "type": "string",
@@ -1929,11 +1870,10 @@ const docTemplate = `{
                 }
             },
             "put": {
-                "description": "update user",
                 "tags": [
                     "user"
                 ],
-                "summary": "user",
+                "summary": "update user",
                 "parameters": [
                     {
                         "type": "string",
@@ -1958,11 +1898,10 @@ const docTemplate = `{
                 }
             },
             "delete": {
-                "description": "delete user",
                 "tags": [
                     "user"
                 ],
-                "summary": "user",
+                "summary": "delete user",
                 "parameters": [
                     {
                         "type": "string",
@@ -1989,11 +1928,10 @@ const docTemplate = `{
         },
         "/accounts/admin/{tenant}/users/{userId}/groups": {
             "get": {
-                "description": "get user groups",
                 "tags": [
                     "user"
                 ],
-                "summary": "user",
+                "summary": "get user groups",
                 "parameters": [
                     {
                         "type": "string",
@@ -2018,11 +1956,10 @@ const docTemplate = `{
                 }
             },
             "post": {
-                "description": "get user groups",
                 "tags": [
                     "user"
                 ],
-                "summary": "user",
+                "summary": "get user groups",
                 "parameters": [
                     {
                         "type": "string",
@@ -2049,11 +1986,10 @@ const docTemplate = `{
         },
         "/accounts/admin/{tenant}/users/{userId}/groups/{groupId}": {
             "get": {
-                "description": "update user groups",
                 "tags": [
                     "user"
                 ],
-                "summary": "user",
+                "summary": "update user groups",
                 "parameters": [
                     {
                         "type": "string",
@@ -2085,11 +2021,10 @@ const docTemplate = `{
                 }
             },
             "delete": {
-                "description": "update user groups",
                 "tags": [
                     "user"
                 ],
-                "summary": "user",
+                "summary": "update user groups",
                 "parameters": [
                     {
                         "type": "string",
@@ -2123,7 +2058,6 @@ const docTemplate = `{
         },
         "/accounts/{tenant}/.well-known/jwks.json": {
             "get": {
-                "description": "jwk",
                 "tags": [
                     "oauth2"
                 ],
@@ -2146,7 +2080,6 @@ const docTemplate = `{
         },
         "/accounts/{tenant}/.well-known/openid-configuration": {
             "get": {
-                "description": "openid configuration",
                 "tags": [
                     "oauth2"
                 ],
@@ -2198,11 +2131,10 @@ const docTemplate = `{
                 }
             },
             "post": {
-                "description": "new iam resource type",
                 "tags": [
                     "iam-resource"
                 ],
-                "summary": "iam resource type",
+                "summary": "new iam resource type",
                 "parameters": [
                     {
                         "type": "string",
@@ -2239,11 +2171,10 @@ const docTemplate = `{
         },
         "/accounts/{tenant}/iam/clients/{client}/types/{typeId}": {
             "delete": {
-                "description": "delete iam resource type",
                 "tags": [
                     "iam-resource"
                 ],
-                "summary": "iam resource type",
+                "summary": "delete iam resource type",
                 "parameters": [
                     {
                         "type": "string",
@@ -2314,11 +2245,10 @@ const docTemplate = `{
                 }
             },
             "post": {
-                "description": "new iam action",
                 "tags": [
                     "iam-action"
                 ],
-                "summary": "iam action",
+                "summary": "new iam action",
                 "parameters": [
                     {
                         "type": "string",
@@ -2365,11 +2295,10 @@ const docTemplate = `{
         },
         "/accounts/{tenant}/iam/clients/{client}/types/{typeId}/actions/{actionId}": {
             "delete": {
-                "description": "delete iam action",
                 "tags": [
                     "iam-action"
                 ],
-                "summary": "iam action",
+                "summary": "delete iam action",
                 "parameters": [
                     {
                         "type": "string",
@@ -2499,11 +2428,10 @@ const docTemplate = `{
                 }
             },
             "post": {
-                "description": "new iam resource",
                 "tags": [
                     "iam-resource"
                 ],
-                "summary": "iam resource",
+                "summary": "new iam resource",
                 "parameters": [
                     {
                         "type": "string",
@@ -2547,11 +2475,10 @@ const docTemplate = `{
         },
         "/accounts/{tenant}/iam/clients/{client}/types/{typeId}/resources/{resourceId}": {
             "put": {
-                "description": "update iam resource name",
                 "tags": [
                     "iam-resource"
                 ],
-                "summary": "iam resource",
+                "summary": "update iam resource name",
                 "parameters": [
                     {
                         "type": "string",
@@ -2600,11 +2527,10 @@ const docTemplate = `{
                 }
             },
             "delete": {
-                "description": "delete iam resource",
                 "tags": [
                     "iam-resource"
                 ],
-                "summary": "iam resource",
+                "summary": "delete iam resource",
                 "parameters": [
                     {
                         "type": "string",
@@ -2705,7 +2631,6 @@ const docTemplate = `{
         },
         "/accounts/{tenant}/iam/clients/{client}/types/{typeId}/resources/{resourceId}/roles/{roleId}/users": {
             "get": {
-                "description": "例如：获取资源1下面所有管理员的用户列表",
                 "tags": [
                     "iam-role"
                 ],
@@ -2756,11 +2681,10 @@ const docTemplate = `{
                 }
             },
             "post": {
-                "description": "new iam resource role",
                 "tags": [
                     "iam-role"
                 ],
-                "summary": "iam resource role",
+                "summary": "new iam resource role",
                 "parameters": [
                     {
                         "type": "string",
@@ -2821,11 +2745,10 @@ const docTemplate = `{
         },
         "/accounts/{tenant}/iam/clients/{client}/types/{typeId}/resources/{resourceId}/roles/{roleId}/users/{userId}": {
             "delete": {
-                "description": "delete iam resource role",
                 "tags": [
                     "iam-role"
                 ],
-                "summary": "iam resource role",
+                "summary": "delete iam resource role",
                 "parameters": [
                     {
                         "type": "string",
@@ -2962,11 +2885,10 @@ const docTemplate = `{
                 }
             },
             "post": {
-                "description": "new iam role",
                 "tags": [
                     "iam-role"
                 ],
-                "summary": "iam role",
+                "summary": "new iam role",
                 "parameters": [
                     {
                         "type": "string",
@@ -3010,11 +2932,10 @@ const docTemplate = `{
         },
         "/accounts/{tenant}/iam/clients/{client}/types/{typeId}/roles/{roleId}": {
             "delete": {
-                "description": "delete iam role",
                 "tags": [
                     "iam-role"
                 ],
-                "summary": "iam role",
+                "summary": "delete iam role",
                 "parameters": [
                     {
                         "type": "string",
@@ -3056,11 +2977,10 @@ const docTemplate = `{
         },
         "/accounts/{tenant}/iam/clients/{client}/types/{typeId}/roles/{roleId}/actions": {
             "get": {
-                "description": "get iam role action list",
                 "tags": [
                     "iam-action"
                 ],
-                "summary": "iam role action",
+                "summary": "get iam role action list",
                 "parameters": [
                     {
                         "type": "string",
@@ -3100,11 +3020,10 @@ const docTemplate = `{
                 }
             },
             "post": {
-                "description": "new iam role action",
                 "tags": [
                     "iam-action"
                 ],
-                "summary": "iam role action",
+                "summary": "new iam role action",
                 "parameters": [
                     {
                         "type": "string",
@@ -3158,11 +3077,10 @@ const docTemplate = `{
         },
         "/accounts/{tenant}/iam/clients/{client}/types/{typeId}/roles/{roleId}/actions/{actionId}": {
             "delete": {
-                "description": "delete iam role action",
                 "tags": [
                     "iam-action"
                 ],
-                "summary": "iam role action",
+                "summary": "delete iam role action",
                 "parameters": [
                     {
                         "type": "string",
@@ -3268,7 +3186,6 @@ const docTemplate = `{
         },
         "/accounts/{tenant}/logged-in/{provider}": {
             "get": {
-                "description": "provider callback",
                 "tags": [
                     "login"
                 ],
@@ -3321,11 +3238,10 @@ const docTemplate = `{
         },
         "/accounts/{tenant}/login": {
             "post": {
-                "description": "login using username and password",
                 "tags": [
                     "login"
                 ],
-                "summary": "login a user",
+                "summary": "login using username and password",
                 "parameters": [
                     {
                         "type": "string",
@@ -3365,7 +3281,6 @@ const docTemplate = `{
         },
         "/accounts/{tenant}/login/proto/{fileName}": {
             "get": {
-                "description": "logout current user",
                 "tags": [
                     "login"
                 ],
@@ -3397,7 +3312,6 @@ const docTemplate = `{
         },
         "/accounts/{tenant}/login/{provider}": {
             "get": {
-                "description": "login via a provider",
                 "tags": [
                     "login"
                 ],
@@ -3440,7 +3354,6 @@ const docTemplate = `{
         },
         "/accounts/{tenant}/logout": {
             "get": {
-                "description": "logout current user",
                 "tags": [
                     "login"
                 ],
@@ -3464,7 +3377,6 @@ const docTemplate = `{
         },
         "/accounts/{tenant}/me": {
             "get": {
-                "description": "get user",
                 "tags": [
                     "user"
                 ],
@@ -3489,7 +3401,6 @@ const docTemplate = `{
                 }
             },
             "put": {
-                "description": "update user",
                 "tags": [
                     "user"
                 ],
@@ -3516,7 +3427,6 @@ const docTemplate = `{
         },
         "/accounts/{tenant}/me/profile": {
             "get": {
-                "description": "get user profile",
                 "tags": [
                     "user"
                 ],
@@ -3543,7 +3453,6 @@ const docTemplate = `{
         },
         "/accounts/{tenant}/message/{msgId}": {
             "put": {
-                "description": "mark message read",
                 "tags": [
                     "msg"
                 ],
@@ -3573,7 +3482,6 @@ const docTemplate = `{
         },
         "/accounts/{tenant}/message/{providerId}": {
             "post": {
-                "description": "send message",
                 "tags": [
                     "msg"
                 ],
@@ -3612,7 +3520,6 @@ const docTemplate = `{
         },
         "/accounts/{tenant}/message/{subId}": {
             "get": {
-                "description": "get message",
                 "tags": [
                     "msg"
                 ],
@@ -3647,7 +3554,6 @@ const docTemplate = `{
         },
         "/accounts/{tenant}/oauth2/auth": {
             "get": {
-                "description": "oauth2 authorize",
                 "tags": [
                     "oauth2"
                 ],
@@ -3713,11 +3619,10 @@ const docTemplate = `{
         },
         "/accounts/{tenant}/oauth2/device/code": {
             "post": {
-                "description": "delete device groups",
                 "tags": [
                     "oauth2"
                 ],
-                "summary": "device code",
+                "summary": "delete device groups",
                 "parameters": [
                     {
                         "type": "string",
@@ -3743,7 +3648,6 @@ const docTemplate = `{
         },
         "/accounts/{tenant}/oauth2/token": {
             "get": {
-                "description": "oauth2 token",
                 "tags": [
                     "oauth2"
                 ],
@@ -3813,7 +3717,6 @@ const docTemplate = `{
         },
         "/accounts/{tenant}/providers": {
             "get": {
-                "description": "list login providers",
                 "tags": [
                     "login"
                 ],
@@ -3843,11 +3746,10 @@ const docTemplate = `{
         },
         "/accounts/{tenant}/providers/{provider}": {
             "get": {
-                "description": "get a login provider",
                 "tags": [
                     "login"
                 ],
-                "summary": "get a provider",
+                "summary": "get a login provider",
                 "parameters": [
                     {
                         "type": "string",
@@ -3877,11 +3779,10 @@ const docTemplate = `{
         },
         "/accounts/{tenant}/register": {
             "post": {
-                "description": "register using username and password",
                 "tags": [
                     "login"
                 ],
-                "summary": "register a user",
+                "summary": "register using username and password",
                 "parameters": [
                     {
                         "type": "string",
@@ -3915,7 +3816,6 @@ const docTemplate = `{
         },
         "/accounts/{tenant}/reset/getResetPasswordToken": {
             "post": {
-                "description": "get reset password token",
                 "tags": [
                     "reset"
                 ],
@@ -3946,7 +3846,6 @@ const docTemplate = `{
         },
         "/accounts/{tenant}/reset/resetPassword": {
             "post": {
-                "description": "reset password",
                 "tags": [
                     "reset"
                 ],
@@ -3984,7 +3883,6 @@ const docTemplate = `{
         },
         "/accounts/{tenant}/reset/smsAvailable": {
             "get": {
-                "description": "check sms available",
                 "tags": [
                     "reset"
                 ],
@@ -4008,7 +3906,6 @@ const docTemplate = `{
         },
         "/accounts/{tenant}/reset/verifyResetPasswordRequest": {
             "post": {
-                "description": "forgot password",
                 "tags": [
                     "reset"
                 ],
@@ -4053,7 +3950,6 @@ const docTemplate = `{
         },
         "/accounts/{tenant}/unreadMsgCount/{subId}": {
             "get": {
-                "description": "get unread message count",
                 "tags": [
                     "msg"
                 ],

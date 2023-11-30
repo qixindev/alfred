@@ -12,15 +12,13 @@ import (
 	"net/http"
 )
 
-// ListClients godoc
-//
-//	@Summary	client
-//	@Schemes
-//	@Description	get client list
-//	@Tags			client
-//	@Param			tenant	path		string	true	"tenant"	default(default)
-//	@Success		200
-//	@Router			/accounts/admin/{tenant}/clients [get]
+// ListClients
+// @Summary	client
+// @Summary	get client list
+// @Tags	client
+// @Param	tenant	path		string	true	"tenant"	default(default)
+// @Success	200
+// @Router	/accounts/admin/{tenant}/clients [get]
 func ListClients(c *gin.Context) {
 	var clients []model.Client
 	if err := internal.TenantDB(c).Find(&clients).Error; err != nil {
@@ -30,16 +28,14 @@ func ListClients(c *gin.Context) {
 	resp.SuccessWithArrayData(c, utils.Filter(clients, model.Client2Dto), 0)
 }
 
-// GetClient godoc
-//
-//	@Summary	client
-//	@Schemes
-//	@Description	get client
-//	@Tags			client
-//	@Param			tenant		path		string	true	"tenant"	default(default)
-//	@Param			clientId	path	string	true	"clientId"	default(default)
-//	@Success		200
-//	@Router			/accounts/admin/{tenant}/clients/{clientId} [get]
+// GetClient
+// @Summary	client
+// @Summary	get client
+// @Tags	client
+// @Param	tenant		path	string	true	"tenant"	default(default)
+// @Param	clientId	path	string	true	"clientId"	default(default)
+// @Success	200
+// @Router	/accounts/admin/{tenant}/clients/{clientId} [get]
 func GetClient(c *gin.Context) {
 	clientId := c.Param("clientId")
 	var client model.Client
@@ -50,15 +46,13 @@ func GetClient(c *gin.Context) {
 	resp.SuccessWithData(c, client.Dto())
 }
 
-// GetDefaultClient godoc
-//
-//	@Summary	client
-//	@Schemes
-//	@Description	get client
-//	@Tags			client
-//	@Param			tenant		path		string	true	"tenant"	default(default)
-//	@Success		200
-//	@Router			/accounts/admin/{tenant}/clients/default [get]
+// GetDefaultClient
+// @Summary	client
+// @Summary	get client
+// @Tags	client
+// @Param	tenant	path	string	true	"tenant"	default(default)
+// @Success	200
+// @Router	/accounts/admin/{tenant}/clients/default [get]
 func GetDefaultClient(c *gin.Context) {
 	var client model.Client
 	if err := internal.TenantDB(c).First(&client, "name = ?", "default").Error; err != nil {
@@ -68,16 +62,13 @@ func GetDefaultClient(c *gin.Context) {
 	resp.SuccessWithData(c, client.Dto())
 }
 
-// NewClient godoc
-//
-//	@Summary	new client
-//	@Schemes
-//	@Description	new client
-//	@Tags			client
-//	@Param			tenant	path	string	true	"tenant"	default(default)
-//	@Param			name	body	object	true	"{"name": "main"}"
-//	@Success		200
-//	@Router			/accounts/admin/{tenant}/clients [post]
+// NewClient
+// @Summary	new client
+// @Tags	client
+// @Param	tenant	path	string	true	"tenant"	default(default)
+// @Param	name	body	object	true	"{"name": "main"}"
+// @Success	200
+// @Router	/accounts/admin/{tenant}/clients [post]
 func NewClient(c *gin.Context) {
 	tenant := internal.GetTenant(c)
 	var client model.Client
@@ -105,16 +96,13 @@ func NewClient(c *gin.Context) {
 	resp.SuccessWithData(c, client.Dto())
 }
 
-// UpdateClient godoc
-//
-//	@Summary	update client
-//	@Schemes
-//	@Description	update client
-//	@Tags			client
-//	@Param			tenant		path	string	true	"tenant"	default(default)
-//	@Param			clientId	path	string	true	"clientId"	default(default)
-//	@Success		200
-//	@Router			/accounts/admin/{tenant}/clients/{clientId} [put]
+// UpdateClient
+// @Summary	update client
+// @Tags	client
+// @Param	tenant		path	string	true	"tenant"	default(default)
+// @Param	clientId	path	string	true	"clientId"	default(default)
+// @Success	200
+// @Router	/accounts/admin/{tenant}/clients/{clientId} [put]
 func UpdateClient(c *gin.Context) {
 	clientId := c.Param("clientId")
 	var client model.Client
@@ -135,16 +123,13 @@ func UpdateClient(c *gin.Context) {
 	resp.SuccessWithData(c, client.Dto())
 }
 
-// DeleteClient godoc
-//
-//	@Summary	delete client
-//	@Schemes
-//	@Description	delete client
-//	@Tags			client
-//	@Param			tenant		path	string	true	"tenant"	default(default)
-//	@Param			clientId	path	string	true	"clientId"	default(default)
-//	@Success		200
-//	@Router			/accounts/admin/{tenant}/clients/{clientId} [delete]
+// DeleteClient
+// @Summary	delete client
+// @Tags	client
+// @Param	tenant		path	string	true	"tenant"	default(default)
+// @Param	clientId	path	string	true	"clientId"	default(default)
+// @Success	200
+// @Router	/accounts/admin/{tenant}/clients/{clientId} [delete]
 func DeleteClient(c *gin.Context) {
 	clientId := c.Param("clientId")
 	var client model.Client
@@ -160,16 +145,13 @@ func DeleteClient(c *gin.Context) {
 	c.Status(http.StatusNoContent)
 }
 
-// ListClientRedirectUri godoc
-//
-//	@Summary	get client redirect uris
-//	@Schemes
-//	@Description	get client redirect uris
-//	@Tags			client
-//	@Param			tenant		path	string	true	"tenant"	default(default)
-//	@Param			clientId	path	string	true	"clientId"	default(default)
-//	@Success		200
-//	@Router			/accounts/admin/{tenant}/clients/{clientId}/redirect-uris [get]
+// ListClientRedirectUri
+// @Summary	get client redirect uris
+// @Tags	client
+// @Param	tenant		path	string	true	"tenant"	default(default)
+// @Param	clientId	path	string	true	"clientId"	default(default)
+// @Success	200
+// @Router	/accounts/admin/{tenant}/clients/{clientId}/redirect-uris [get]
 func ListClientRedirectUri(c *gin.Context) {
 	clientId := c.Param("clientId")
 	var client model.Client
@@ -187,16 +169,13 @@ func ListClientRedirectUri(c *gin.Context) {
 	resp.SuccessWithArrayData(c, utils.Filter(uris, model.RedirectUri2Dto), 0)
 }
 
-// NewClientRedirectUri godoc
-//
-//	@Summary	new client redirect uri
-//	@Schemes
-//	@Description	new client redirect uri
-//	@Tags			client
-//	@Param			tenant		path	string	true	"tenant"	default(default)
-//	@Param			clientId	path	string	true	"clientId"	default(default)
-//	@Success		200
-//	@Router			/accounts/admin/{tenant}/clients/{clientId}/redirect-uris [post]
+// NewClientRedirectUri
+// @Summary	new client redirect uri
+// @Tags	client
+// @Param	tenant		path	string	true	"tenant"	default(default)
+// @Param	clientId	path	string	true	"clientId"	default(default)
+// @Success	200
+// @Router	/accounts/admin/{tenant}/clients/{clientId}/redirect-uris [post]
 func NewClientRedirectUri(c *gin.Context) {
 	clientId := c.Param("clientId")
 	var client model.Client
@@ -218,16 +197,13 @@ func NewClientRedirectUri(c *gin.Context) {
 	resp.SuccessWithData(c, uri.Dto())
 }
 
-// UpdateClientRedirectUri godoc
-//
-//	@Summary	new client redirect uri
-//	@Schemes
-//	@Description	new client redirect uri
-//	@Tags			client
-//	@Param			tenant		path	string	true	"tenant"	default(default)
-//	@Param			clientId	path	string	true	"clientId"	default(default)
-//	@Success		200
-//	@Router			/accounts/admin/{tenant}/clients/{clientId}/redirect-uris/{uriId} [post]
+// UpdateClientRedirectUri
+// @Summary	new client redirect uri
+// @Tags	client
+// @Param	tenant		path	string	true	"tenant"	default(default)
+// @Param	clientId	path	string	true	"clientId"	default(default)
+// @Success	200
+// @Router	/accounts/admin/{tenant}/clients/{clientId}/redirect-uris/{uriId} [post]
 func UpdateClientRedirectUri(c *gin.Context) {
 	clientId := c.Param("clientId")
 	uriId := c.Param("uriId")
@@ -252,17 +228,14 @@ func UpdateClientRedirectUri(c *gin.Context) {
 	resp.SuccessWithData(c, newUri.Dto())
 }
 
-// DeleteClientRedirectUri godoc
-//
-//	@Summary	delete client redirect uris
-//	@Schemes
-//	@Description	delete client redirect uris
-//	@Tags			client
-//	@Param			tenant		path	string	true	"tenant"	default(default)
-//	@Param			clientId	path	string	true	"clientId"	default(default)
-//	@Param			uriId		path	integer	true	"tenant"
-//	@Success		200
-//	@Router			/accounts/admin/{tenant}/clients/{clientId}/redirect-uris/{uriId} [delete]
+// DeleteClientRedirectUri
+// @Summary	delete client redirect uris
+// @Tags	client
+// @Param	tenant		path	string	true	"tenant"	default(default)
+// @Param	clientId	path	string	true	"clientId"	default(default)
+// @Param	uriId		path	integer	true	"tenant"
+// @Success	200
+// @Router	/accounts/admin/{tenant}/clients/{clientId}/redirect-uris/{uriId} [delete]
 func DeleteClientRedirectUri(c *gin.Context) {
 	clientId := c.Param("clientId")
 	uriId := c.Param("uriId")
@@ -281,16 +254,13 @@ func DeleteClientRedirectUri(c *gin.Context) {
 	c.Status(http.StatusNoContent)
 }
 
-// ListClientSecret godoc
-//
-//	@Summary	get client secrets
-//	@Schemes
-//	@Description	get client secrets
-//	@Tags			client
-//	@Param			tenant		path	string	true	"tenant"	default(default)
-//	@Param			clientId	path	string	true	"clientId"	default(default)
-//	@Success		200
-//	@Router			/accounts/admin/{tenant}/clients/{clientId}/secrets [get]
+// ListClientSecret
+// @Summary	get client secrets
+// @Tags	client
+// @Param	tenant		path	string	true	"tenant"	default(default)
+// @Param	clientId	path	string	true	"clientId"	default(default)
+// @Success	200
+// @Router	/accounts/admin/{tenant}/clients/{clientId}/secrets [get]
 func ListClientSecret(c *gin.Context) {
 	clientId := c.Param("clientId")
 	var client model.Client
@@ -306,16 +276,13 @@ func ListClientSecret(c *gin.Context) {
 	resp.SuccessWithArrayData(c, utils.Filter(secrets, model.ClientSecret2Dto), 0)
 }
 
-// NewClientSecret godoc
-//
-//	@Summary	new client secret
-//	@Schemes
-//	@Description	new client secret
-//	@Tags			client
-//	@Param			tenant		path	string	true	"tenant"	default(default)
-//	@Param			clientId	path	string	true	"clientId"	default(default)
-//	@Success		200
-//	@Router			/accounts/admin/{tenant}/clients/{clientId}/secrets [post]
+// NewClientSecret
+// @Summary	new client secret
+// @Tags	client
+// @Param	tenant		path	string	true	"tenant"	default(default)
+// @Param	clientId	path	string	true	"clientId"	default(default)
+// @Success	200
+// @Router	/accounts/admin/{tenant}/clients/{clientId}/secrets [post]
 func NewClientSecret(c *gin.Context) {
 	clientId := c.Param("clientId")
 	var client model.Client
@@ -337,17 +304,14 @@ func NewClientSecret(c *gin.Context) {
 	resp.SuccessWithData(c, secret.Dto())
 }
 
-// DeleteClientSecret godoc
-//
-//	@Summary	delete client secret
-//	@Schemes
-//	@Description	delete client secret
-//	@Tags			client
-//	@Param			tenant		path	string	true	"tenant"	default(default)
-//	@Param			clientId	path	string	true	"clientId"	default(default)
-//	@Param			secretId	path	integer	true	"tenant"
-//	@Success		200
-//	@Router			/accounts/admin/{tenant}/clients/{clientId}/secret/{secretId} [delete]
+// DeleteClientSecret
+// @Summary	delete client secret
+// @Tags	client
+// @Param	tenant		path	string	true	"tenant"	default(default)
+// @Param	clientId	path	string	true	"clientId"	default(default)
+// @Param	secretId	path	integer	true	"tenant"
+// @Success	200
+// @Router	/accounts/admin/{tenant}/clients/{clientId}/secret/{secretId} [delete]
 func DeleteClientSecret(c *gin.Context) {
 	clientId := c.Param("clientId")
 	secretId := c.Param("secretId")

@@ -16,16 +16,13 @@ type ModifyPassword struct {
 	NewPassword string `json:"newPassword"`
 }
 
-// ListClientUsers godoc
-//
-//	@Summary		client user
-//	@Schemes
-//	@Description	get client user list
-//	@Tags			client-user
-//	@Param			tenant		path	string	true	"tenant"	default(default)
-//	@Param			clientId	path	string	true	"client id"	default(default)
-//	@Success		200
-//	@Router			/accounts/admin/{tenant}/clients/{clientId}/users [get]
+// ListClientUsers
+// @Summary	get client user list
+// @Tags	client-user
+// @Param	tenant		path	string	true	"tenant"	default(default)
+// @Param	clientId	path	string	true	"client id"	default(default)
+// @Success	200
+// @Router	/accounts/admin/{tenant}/clients/{clientId}/users [get]
 func ListClientUsers(c *gin.Context) {
 	var clientUser []struct {
 		Sub      string `json:"sub"`
@@ -44,17 +41,14 @@ func ListClientUsers(c *gin.Context) {
 	resp.SuccessWithArrayData(c, clientUser, 0)
 }
 
-// GetClientUsers godoc
-//
-//	@Summary		client user
-//	@Schemes
-//	@Description	get client user list
-//	@Tags			client-user
-//	@Param			tenant		path	string	true	"tenant"	default(default)
-//	@Param			clientId	path	string	true	"client id"	default(default)
-//	@Param			subId		path	string	true	"subId"
-//	@Success		200
-//	@Router			/accounts/admin/{tenant}/clients/{clientId}/users/{subId} [get]
+// GetClientUsers
+// @Summary	get client user list
+// @Tags	client-user
+// @Param	tenant		path	string	true	"tenant"	default(default)
+// @Param	clientId	path	string	true	"client id"	default(default)
+// @Param	subId		path	string	true	"subId"
+// @Success	200
+// @Router	/accounts/admin/{tenant}/clients/{clientId}/users/{subId} [get]
 func GetClientUsers(c *gin.Context) {
 	var clientUser struct {
 		Sub      string `json:"sub"`
@@ -79,18 +73,15 @@ func GetClientUsers(c *gin.Context) {
 	resp.SuccessWithData(c, clientUser)
 }
 
-// UpdateUserMeta godoc
-//
-//	@Summary	user
-//	@Schemes
-//	@Description	update user
-//	@Tags			client-user
-//	@Param			tenant		path	string			true	"tenant"	default(default)
-//	@Param			clientId	path	string			true	"client id"	default(default)
-//	@Param			subId		path	string			true	"sub id"
-//	@Param			bd			body	string			true	"user body"
-//	@Success		200
-//	@Router			/accounts/admin/{tenant}/clients/{clientId}/users/{subId}/meta [put]
+// UpdateUserMeta
+// @Summary	update user
+// @Tags	client-user
+// @Param	tenant		path	string			true	"tenant"	default(default)
+// @Param	clientId	path	string			true	"client id"	default(default)
+// @Param	subId		path	string			true	"sub id"
+// @Param	bd			body	string			true	"user body"
+// @Success	200
+// @Router	/accounts/admin/{tenant}/clients/{clientId}/users/{subId}/meta [put]
 func UpdateUserMeta(c *gin.Context) {
 	meta, err := io.ReadAll(c.Request.Body)
 	if err != nil {
@@ -112,18 +103,15 @@ func UpdateUserMeta(c *gin.Context) {
 	resp.Success(c)
 }
 
-// UpdateUserPassword godoc
-//
-//	@Summary	user
-//	@Schemes
-//	@Description	update user
-//	@Tags			client-user
-//	@Param			tenant		path	string			true	"tenant"	default(default)
-//	@Param			clientId	path	string			true	"client id"	default(default)
-//	@Param			subId		path	string			true	"sub id"
-//	@Param			bd			body	ModifyPassword	true	"user body"
-//	@Success		200
-//	@Router			/accounts/admin/{tenant}/clients/{clientId}/users/{subId}/password [put]
+// UpdateUserPassword
+// @Summary	update user
+// @Tags	client-user
+// @Param	tenant		path	string			true	"tenant"	default(default)
+// @Param	clientId	path	string			true	"client id"	default(default)
+// @Param	subId		path	string			true	"sub id"
+// @Param	bd			body	ModifyPassword	true	"user body"
+// @Success	200
+// @Router	/accounts/admin/{tenant}/clients/{clientId}/users/{subId}/password [put]
 func UpdateUserPassword(c *gin.Context) {
 	var u ModifyPassword
 	if err := c.BindJSON(&u); err != nil {
@@ -156,18 +144,15 @@ func UpdateUserPassword(c *gin.Context) {
 	resp.Success(c)
 }
 
-// UpdateUserProfile godoc
-//
-//	@Summary	user
-//	@Schemes
-//	@Description	update user
-//	@Tags			client-user
-//	@Param			tenant		path	string				true	"tenant"	default(default)
-//	@Param			clientId	path	string				true	"client id"	default(default)
-//	@Param			subId		path	string				true	"sub id"
-//	@Param			bd			body	dto.UserAdminDto	true	"user body"
-//	@Success		200
-//	@Router			/accounts/admin/{tenant}/clients/{clientId}/users/{subId}/profile [put]
+// UpdateUserProfile
+// @Summary	update user
+// @Tags	client-user
+// @Param	tenant		path	string				true	"tenant"	default(default)
+// @Param	clientId	path	string				true	"client id"	default(default)
+// @Param	subId		path	string				true	"sub id"
+// @Param	bd			body	dto.UserAdminDto	true	"user body"
+// @Success	200
+// @Router	/accounts/admin/{tenant}/clients/{clientId}/users/{subId}/profile [put]
 func UpdateUserProfile(c *gin.Context) {
 	var u model.User
 	if err := c.BindJSON(&u); err != nil {

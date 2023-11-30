@@ -10,15 +10,12 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-// ListGroups godoc
-//
-//	@Summary	group
-//	@Schemes
-//	@Description	list groups
-//	@Tags			group
-//	@Param			tenant	path	string	true	"tenant"
-//	@Success		200
-//	@Router			/accounts/admin/{tenant}/groups [get]
+// ListGroups
+// @Summary	list groups
+// @Tags	group
+// @Param	tenant	path	string	true	"tenant"
+// @Success	200
+// @Router	/accounts/admin/{tenant}/groups [get]
 func ListGroups(c *gin.Context) {
 	var groups []model.Group
 	if err := internal.TenantDB(c).Find(&groups).Error; err != nil {
@@ -28,16 +25,13 @@ func ListGroups(c *gin.Context) {
 	resp.SuccessWithArrayData(c, utils.Filter(groups, model.Group2Dto), 0)
 }
 
-// GetGroup godoc
-//
-//	@Summary	group
-//	@Schemes
-//	@Description	get groups
-//	@Tags			group
-//	@Param			tenant	path	string	true	"tenant"
-//	@Param			groupId	path	integer	true	"tenant"
-//	@Success		200
-//	@Router			/accounts/admin/{tenant}/groups/{groupId} [get]
+// GetGroup
+// @Summary	get groups
+// @Tags	group
+// @Param	tenant	path	string	true	"tenant"
+// @Param	groupId	path	integer	true	"tenant"
+// @Success	200
+// @Router	/accounts/admin/{tenant}/groups/{groupId} [get]
 func GetGroup(c *gin.Context) {
 	groupId := c.Param("groupId")
 	var group model.Group
@@ -48,15 +42,12 @@ func GetGroup(c *gin.Context) {
 	resp.SuccessWithData(c, group.Dto())
 }
 
-// NewGroup godoc
-//
-//	@Summary	group
-//	@Schemes
-//	@Description	new groups
-//	@Tags			group
-//	@Param			tenant	path	string	true	"tenant"
-//	@Success		200
-//	@Router			/accounts/admin/{tenant}/groups [post]
+// NewGroup
+// @Summary	new groups
+// @Tags	group
+// @Param	tenant	path	string	true	"tenant"
+// @Success	200
+// @Router	/accounts/admin/{tenant}/groups [post]
 func NewGroup(c *gin.Context) {
 	tenant := internal.GetTenant(c)
 	var group model.Group
@@ -72,16 +63,13 @@ func NewGroup(c *gin.Context) {
 	resp.SuccessWithData(c, group.Dto())
 }
 
-// UpdateGroup godoc
-//
-//	@Summary	group
-//	@Schemes
-//	@Description	update groups
-//	@Tags			group
-//	@Param			tenant	path	string	true	"tenant"
-//	@Param			groupId	path	integer	true	"tenant"
-//	@Success		200
-//	@Router			/accounts/admin/{tenant}/groups/{groupId} [put]
+// UpdateGroup
+// @Summary	update groups
+// @Tags	group
+// @Param	tenant	path	string	true	"tenant"
+// @Param	groupId	path	integer	true	"tenant"
+// @Success	200
+// @Router	/accounts/admin/{tenant}/groups/{groupId} [put]
 func UpdateGroup(c *gin.Context) {
 	groupId := c.Param("groupId")
 	var group model.Group
@@ -103,16 +91,13 @@ func UpdateGroup(c *gin.Context) {
 	resp.SuccessWithData(c, group.Dto())
 }
 
-// DeleteGroup godoc
-//
-//	@Summary	group
-//	@Schemes
-//	@Description	delete groups
-//	@Tags			group
-//	@Param			tenant	path	string	true	"tenant"
-//	@Param			groupId	path	integer	true	"tenant"
-//	@Success		200
-//	@Router			/accounts/admin/{tenant}/groups/{groupId} [delete]
+// DeleteGroup
+// @Summary	delete groups
+// @Tags	group
+// @Param	tenant	path	string	true	"tenant"
+// @Param	groupId	path	integer	true	"tenant"
+// @Success	200
+// @Router	/accounts/admin/{tenant}/groups/{groupId} [delete]
 func DeleteGroup(c *gin.Context) {
 	groupId := c.Param("groupId")
 	var group model.Group
@@ -127,16 +112,13 @@ func DeleteGroup(c *gin.Context) {
 	resp.Success(c)
 }
 
-// ListGroupMembers godoc
-//
-//	@Summary	group
-//	@Schemes
-//	@Description	get groups members
-//	@Tags			group
-//	@Param			tenant	path	string	true	"tenant"
-//	@Param			groupId	path	integer	true	"tenant"
-//	@Success		200
-//	@Router			/accounts/admin/{tenant}/groups/{groupId}/member [get]
+// ListGroupMembers
+// @Summary	get groups members
+// @Tags	group
+// @Param	tenant	path	string	true	"tenant"
+// @Param	groupId	path	integer	true	"tenant"
+// @Success	200
+// @Router	/accounts/admin/{tenant}/groups/{groupId}/member [get]
 func ListGroupMembers(c *gin.Context) {
 	groupId := c.Param("groupId")
 	var group model.Group

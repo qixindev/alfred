@@ -10,16 +10,13 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-// ListUserGroups godoc
-//
-//	@Summary	user
-//	@Schemes
-//	@Description	get user groups
-//	@Tags			user
-//	@Param			tenant	path	string	true	"tenant"	default(default)
-//	@Param			userId	path	integer	true	"tenant"
-//	@Success		200
-//	@Router			/accounts/admin/{tenant}/users/{userId}/groups [get]
+// ListUserGroups
+// @Summary	get user groups
+// @Tags	user
+// @Param	tenant	path	string	true	"tenant"	default(default)
+// @Param	userId	path	integer	true	"tenant"
+// @Success	200
+// @Router	/accounts/admin/{tenant}/users/{userId}/groups [get]
 func ListUserGroups(c *gin.Context) {
 	userId := c.Param("userId")
 	var user model.User
@@ -43,16 +40,13 @@ func ListUserGroups(c *gin.Context) {
 	resp.SuccessWithArrayData(c, groups, 0)
 }
 
-// NewUserGroup godoc
-//
-//	@Summary	user
-//	@Schemes
-//	@Description	get user groups
-//	@Tags			user
-//	@Param			tenant	path	string	true	"tenant"	default(default)
-//	@Param			userId	path	integer	true	"tenant"
-//	@Success		200
-//	@Router			/accounts/admin/{tenant}/users/{userId}/groups [post]
+// NewUserGroup
+// @Summary	get user groups
+// @Tags	user
+// @Param	tenant	path	string	true	"tenant"	default(default)
+// @Param	userId	path	integer	true	"tenant"
+// @Success	200
+// @Router	/accounts/admin/{tenant}/users/{userId}/groups [post]
 func NewUserGroup(c *gin.Context) {
 	userId := c.Param("userId")
 	var groupUser model.GroupUser
@@ -78,17 +72,14 @@ func NewUserGroup(c *gin.Context) {
 	resp.SuccessWithData(c, groupUser.Dto())
 }
 
-// UpdateUserGroup godoc
-//
-//	@Summary	user
-//	@Schemes
-//	@Description	update user groups
-//	@Tags			user
-//	@Param			tenant	path	string	true	"tenant"	default(default)
-//	@Param			userId	path	integer	true	"tenant"
-//	@Param			groupId	path	integer	true	"tenant"
-//	@Success		200
-//	@Router			/accounts/admin/{tenant}/users/{userId}/groups/{groupId} [get]
+// UpdateUserGroup
+// @Summary	update user groups
+// @Tags	user
+// @Param	tenant	path	string	true	"tenant"	default(default)
+// @Param	userId	path	integer	true	"tenant"
+// @Param	groupId	path	integer	true	"tenant"
+// @Success	200
+// @Router	/accounts/admin/{tenant}/users/{userId}/groups/{groupId} [get]
 func UpdateUserGroup(c *gin.Context) {
 	userId := c.Param("userId")
 	var user model.User
@@ -122,17 +113,14 @@ func UpdateUserGroup(c *gin.Context) {
 	resp.SuccessWithData(c, groupUser.GroupMemberDto())
 }
 
-// DeleteUserGroup godoc
-//
-//	@Summary	user
-//	@Schemes
-//	@Description	update user groups
-//	@Tags			user
-//	@Param			tenant	path	string	true	"tenant"	default(default)
-//	@Param			userId	path	integer	true	"tenant"
-//	@Param			groupId	path	integer	true	"tenant"
-//	@Success		200
-//	@Router			/accounts/admin/{tenant}/users/{userId}/groups/{groupId} [delete]
+// DeleteUserGroup
+// @Summary	update user groups
+// @Tags	user
+// @Param	tenant	path	string	true	"tenant"	default(default)
+// @Param	userId	path	integer	true	"tenant"
+// @Param	groupId	path	integer	true	"tenant"
+// @Success	200
+// @Router	/accounts/admin/{tenant}/users/{userId}/groups/{groupId} [delete]
 func DeleteUserGroup(c *gin.Context) {
 	userId := c.Param("userId")
 	var user model.User

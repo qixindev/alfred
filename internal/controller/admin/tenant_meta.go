@@ -13,11 +13,11 @@ import (
 )
 
 // GetLoginPage .
-// @Description	get tenant login page
-// @Tags		tenant-meta
-// @Param		tenant		path	string	true	"租户"		default(default)
-// @Success		200
-// @Router		/accounts/admin/{tenant}/page/login [get]
+// @Summary	get tenant login page
+// @Tags	tenant-meta
+// @Param	tenant	path	string	true	"租户"	default(default)
+// @Success	200
+// @Router	/accounts/admin/{tenant}/page/login [get]
 func GetLoginPage(c *gin.Context) {
 	tenantName := c.Param("tenant")
 	var tenant model.Tenant
@@ -34,12 +34,12 @@ func GetLoginPage(c *gin.Context) {
 }
 
 // UpdateLoginPage .
-// @Description	update tenant login page
-// @Tags		tenant-meta
-// @Param		tenant		path	string	true	"租户名"		default(default)
-// @Param		bd			body	object	true	"body"
-// @Success		200
-// @Router		/accounts/admin/{tenant}/page/login [put]
+// @Summary	update tenant login page
+// @Tags	tenant-meta
+// @Param	tenant	path	string	true	"租户名"	default(default)
+// @Param	bd		body	object	true	"body"
+// @Success	200
+// @Router	/accounts/admin/{tenant}/page/login [put]
 func UpdateLoginPage(c *gin.Context) {
 	var loginPage map[string]interface{}
 	if err := internal.New(c).BindJson(&loginPage).Error; err != nil {
@@ -68,11 +68,11 @@ func UpdateLoginPage(c *gin.Context) {
 }
 
 // GetTenantProto .
-// @Description	获取用户隐私协议
-// @Tags		tenant-meta
-// @Param		tenant		path	string	true	"租户"		default(default)
-// @Success		200
-// @Router		/accounts/admin/{tenant}/proto [get]
+// @Summary	获取用户隐私协议
+// @Tags	tenant-meta
+// @Param	tenant	path	string	true	"租户"	default(default)
+// @Success	200
+// @Router	/accounts/admin/{tenant}/proto [get]
 func GetTenantProto(c *gin.Context) {
 	tenantName := c.Param("tenant")
 	var tenant model.Tenant
@@ -89,12 +89,12 @@ func GetTenantProto(c *gin.Context) {
 }
 
 // UpdateTenantProto .
-// @Description	update tenant login page
-// @Tags		tenant-meta
-// @Param		tenant		path	string	true	"租户名"		default(default)
-// @Param		bd			body	[]object	true	"body"
-// @Success		200
-// @Router		/accounts/admin/{tenant}/proto [put]
+// @Summary	update tenant login page
+// @Tags	tenant-meta
+// @Param	tenant	path	string		true	"租户名"	default(default)
+// @Param	bd		body	[]object	true	"body"
+// @Success	200
+// @Router	/accounts/admin/{tenant}/proto [put]
 func UpdateTenantProto(c *gin.Context) {
 	var proto []map[string]interface{}
 	if err := internal.New(c).BindJson(&proto).Error; err != nil {
@@ -123,13 +123,13 @@ func UpdateTenantProto(c *gin.Context) {
 }
 
 // UploadTenantPicture .
-// @Description	上传图片
-// @Tags		tenant-meta
-// @Param		tenant	path		string	true	"租户名"						default(default)
-// @Param		type	path		string	true	"图片类型(background|logo)"	default(logo)
-// @Param		file	formData	file	true	"文件"
-// @Success		200
-// @Router		/accounts/admin/{tenant}/picture/{type}/upload [put]
+// @Summary	上传图片
+// @Tags	tenant-meta
+// @Param	tenant	path		string	true	"租户名"	default(default)
+// @Param	type	path		string	true	"图片类型(background|logo)"	default(logo)
+// @Param	file	formData	file	true	"文件"
+// @Success	200
+// @Router	/accounts/admin/{tenant}/picture/{type}/upload [put]
 func UploadTenantPicture(c *gin.Context) {
 	tenantName := c.Param("tenant")
 	pngType := c.Param("type")

@@ -11,14 +11,11 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-// ListTenants godoc
-//
-//	@Summary	tenants
-//	@Schemes
-//	@Description	list tenants
-//	@Tags			admin-tenants
-//	@Success		200
-//	@Router			/accounts/admin/tenants [get]
+// ListTenants
+// @Summary	list tenants
+// @Tags	admin-tenants
+// @Success	200
+// @Router	/accounts/admin/tenants [get]
 func ListTenants(c *gin.Context) {
 	var tenants []model.Tenant
 	username := sessions.Default(c).Get("user")
@@ -48,15 +45,12 @@ func ListAllTenants(c *gin.Context) {
 	resp.SuccessWithArrayData(c, utils.Filter(tenants, model.Tenant2Dto), 0)
 }
 
-// GetTenant godoc
-//
-//	@Summary	tenants
-//	@Schemes
-//	@Description	get tenants
-//	@Tags			admin-tenants
-//	@Param			tenantId	path	integer	true	"tenant"
-//	@Success		200
-//	@Router			/accounts/admin/tenants/{tenantId} [get]
+// GetTenant
+// @Summary	get tenants
+// @Tags	admin-tenants
+// @Param	tenantId	path	integer	true	"tenant"
+// @Success	200
+// @Router	/accounts/admin/tenants/{tenantId} [get]
 func GetTenant(c *gin.Context) {
 	tenantId := c.Param("tenantId")
 	var tenant model.Tenant
@@ -67,14 +61,11 @@ func GetTenant(c *gin.Context) {
 	resp.SuccessWithData(c, tenant.Dto())
 }
 
-// NewTenant godoc
-//
-//	@Summary	tenants
-//	@Schemes
-//	@Description	new tenants
-//	@Tags			admin-tenants
-//	@Success		200
-//	@Router			/accounts/admin/tenants [post]
+// NewTenant
+// @Summary	new tenants
+// @Tags	admin-tenants
+// @Success	200
+// @Router	/accounts/admin/tenants [post]
 func NewTenant(c *gin.Context) {
 	var tenant model.Tenant
 	if err := c.BindJSON(&tenant); err != nil {
@@ -99,15 +90,12 @@ func NewTenant(c *gin.Context) {
 	resp.SuccessWithData(c, tenant.Dto())
 }
 
-// UpdateTenant godoc
-//
-//	@Summary	tenants
-//	@Schemes
-//	@Description	update tenants
-//	@Tags			admin-tenants
-//	@Param			tenantId	path	integer	true	"tenant"
-//	@Success		200
-//	@Router			/accounts/admin/tenants/{tenantId} [put]
+// UpdateTenant
+// @Summary	update tenants
+// @Tags	admin-tenants
+// @Param	tenantId	path	integer	true	"tenant"
+// @Success	200
+// @Router	/accounts/admin/tenants/{tenantId} [put]
 func UpdateTenant(c *gin.Context) {
 	tenantId := c.Param("tenantId")
 	var tenant model.Tenant
@@ -128,15 +116,12 @@ func UpdateTenant(c *gin.Context) {
 	resp.SuccessWithData(c, tenant.Dto())
 }
 
-// DeleteTenant godoc
-//
-//	@Summary	tenants
-//	@Schemes
-//	@Description	delete tenants
-//	@Tags			admin-tenants
-//	@Param			tenantId	path	integer	true	"tenant"
-//	@Success		200
-//	@Router			/accounts/admin/tenants/{tenantId} [delete]
+// DeleteTenant
+// @Summary	delete tenants
+// @Tags	admin-tenants
+// @Param	tenantId	path	integer	true	"tenant"
+// @Success	200
+// @Router	/accounts/admin/tenants/{tenantId} [delete]
 func DeleteTenant(c *gin.Context) {
 	tenantId := c.Param("tenantId")
 	var tenant model.Tenant
@@ -151,16 +136,13 @@ func DeleteTenant(c *gin.Context) {
 	resp.Success(c)
 }
 
-// DeleteTenantSecret godoc
-//
-//	@Summary	tenants
-//	@Schemes
-//	@Description	delete tenants
-//	@Tags			admin-tenants
-//	@Param			tenantId		path	integer	true	"tenant"
-//	@Param			secretId		path	integer	true	"tenant"
-//	@Success		200
-//	@Router			/accounts/admin/tenants/{tenantId}/secrets/{secretId} [delete]
+// DeleteTenantSecret
+// @Summary	delete tenants
+// @Tags	admin-tenants
+// @Param	tenantId	path	integer	true	"tenant"
+// @Param	secretId	path	integer	true	"tenant"
+// @Success	200
+// @Router	/accounts/admin/tenants/{tenantId}/secrets/{secretId} [delete]
 func DeleteTenantSecret(c *gin.Context) {
 	tenantId := c.Param("tenantId")
 	var tenant model.Tenant
@@ -176,15 +158,12 @@ func DeleteTenantSecret(c *gin.Context) {
 	resp.Success(c)
 }
 
-// NewTenantSecret godoc
-//
-//	@Summary	tenants
-//	@Schemes
-//	@Description	delete tenants
-//	@Tags			admin-tenants
-//	@Param			tenantId	path	integer	true	"tenant"
-//	@Success		200
-//	@Router			/accounts/admin/tenants/{tenantId}/secrets [post]
+// NewTenantSecret
+// @Summary	delete tenants
+// @Tags	admin-tenants
+// @Param	tenantId	path	integer	true	"tenant"
+// @Success	200
+// @Router	/accounts/admin/tenants/{tenantId}/secrets [post]
 func NewTenantSecret(c *gin.Context) {
 	tenantId := c.Param("tenantId")
 	var tenant model.Tenant

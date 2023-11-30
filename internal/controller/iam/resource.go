@@ -8,15 +8,13 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-// ListIamType godoc
-//
-//	@Summary	获取资源类型列表
-//	@Schemes
-//	@Tags		iam-resource
-//	@Param		tenant		path	string	true	"tenant"	default(default)
-//	@Param		client		path	string	true	"client"	default(default)
-//	@Success	200
-//	@Router		/accounts/{tenant}/iam/clients/{client}/types [get]
+// ListIamType
+// @Summary	获取资源类型列表
+// @Tags	iam-resource
+// @Param	tenant		path	string	true	"tenant"	default(default)
+// @Param	client		path	string	true	"client"	default(default)
+// @Success	200
+// @Router	/accounts/{tenant}/iam/clients/{client}/types [get]
 func ListIamType(c *gin.Context) {
 	client, err := GetClientFromCid(c)
 	if err != nil {
@@ -32,17 +30,14 @@ func ListIamType(c *gin.Context) {
 	resp.SuccessWithArrayData(c, types, 0)
 }
 
-// NewIamType godoc
-//
-//	@Summary	iam resource type
-//	@Schemes
-//	@Description	new iam resource type
-//	@Tags			iam-resource
-//	@Param			tenant		path	string	true	"tenant"	default(default)
-//	@Param			client		path	string	true	"client"	default(default)
-//	@Param			iamBody		body	model.ResourceType	true	"tenant"
-//	@Success		200
-//	@Router			/accounts/{tenant}/iam/clients/{client}/types [post]
+// NewIamType
+// @Summary	new iam resource type
+// @Tags	iam-resource
+// @Param	tenant		path	string	true	"tenant"	default(default)
+// @Param	client		path	string	true	"client"	default(default)
+// @Param	iamBody		body	model.ResourceType	true	"tenant"
+// @Success	200
+// @Router	/accounts/{tenant}/iam/clients/{client}/types [post]
 func NewIamType(c *gin.Context) {
 	var typ model.ResourceType
 	if err := c.BindJSON(&typ); err != nil {
@@ -63,17 +58,14 @@ func NewIamType(c *gin.Context) {
 	resp.SuccessWithData(c, t)
 }
 
-// DeleteIamType godoc
-//
-//	@Summary	iam resource type
-//	@Schemes
-//	@Description	delete iam resource type
-//	@Tags			iam-resource
-//	@Param			tenant		path	string	true	"tenant"	default(default)
-//	@Param			client		path	string	true	"client"	default(default)
-//	@Param			typeId		path	string	true	"tenant"
-//	@Success		200
-//	@Router			/accounts/{tenant}/iam/clients/{client}/types/{typeId} [delete]
+// DeleteIamType
+// @Summary	delete iam resource type
+// @Tags	iam-resource
+// @Param	tenant		path	string	true	"tenant"	default(default)
+// @Param	client		path	string	true	"client"	default(default)
+// @Param	typeId		path	string	true	"tenant"
+// @Success	200
+// @Router	/accounts/{tenant}/iam/clients/{client}/types/{typeId} [delete]
 func DeleteIamType(c *gin.Context) {
 	clientId := c.Param("client")
 	typeId := c.Param("typeId")
@@ -91,16 +83,14 @@ func DeleteIamType(c *gin.Context) {
 	resp.Success(c)
 }
 
-// ListIamResource godoc
-//
-//	@Summary	获取资源列表
-//	@Schemes
-//	@Tags		iam-resource
-//	@Param		tenant		path	string	true	"tenant"	default(default)
-//	@Param		client		path	string	true	"client"	default(default)
-//	@Param		typeId		path	string	true	"tenant"
-//	@Success	200
-//	@Router			/accounts/{tenant}/iam/clients/{client}/types/{typeId}/resources [get]
+// ListIamResource
+// @Summary	获取资源列表
+// @Tags	iam-resource
+// @Param	tenant		path	string	true	"tenant"	default(default)
+// @Param	client		path	string	true	"client"	default(default)
+// @Param	typeId		path	string	true	"tenant"
+// @Success	200
+// @Router	/accounts/{tenant}/iam/clients/{client}/types/{typeId}/resources [get]
 func ListIamResource(c *gin.Context) {
 	tenant := internal.GetTenant(c)
 	typeId := c.Param("typeId")
@@ -112,18 +102,15 @@ func ListIamResource(c *gin.Context) {
 	resp.SuccessWithArrayData(c, resources, 0)
 }
 
-// NewIamResource godoc
-//
-//	@Summary		iam resource
-//	@Schemes
-//	@Description	new iam resource
-//	@Tags			iam-resource
-//	@Param			tenant		path	string	true	"tenant"	default(default)
-//	@Param			client		path	string	true	"client"	default(default)
-//	@Param			typeId		path	string	true	"tenant"
-//	@Param			iamBody		body	model.Resource	true	"tenant"
-//	@Success		200
-//	@Router			/accounts/{tenant}/iam/clients/{client}/types/{typeId}/resources [post]
+// NewIamResource
+// @Summary	new iam resource
+// @Tags	iam-resource
+// @Param	tenant		path	string	true	"tenant"	default(default)
+// @Param	client		path	string	true	"client"	default(default)
+// @Param	typeId		path	string	true	"tenant"
+// @Param	iamBody		body	model.Resource	true	"tenant"
+// @Success	200
+// @Router	/accounts/{tenant}/iam/clients/{client}/types/{typeId}/resources [post]
 func NewIamResource(c *gin.Context) {
 	var resource model.Resource
 	if err := c.BindJSON(&resource); err != nil {
@@ -146,19 +133,16 @@ func NewIamResource(c *gin.Context) {
 	resp.SuccessWithData(c, r)
 }
 
-// UpdateIamResource godoc
-//
-//	@Summary		iam resource
-//	@Schemes
-//	@Description	update iam resource name
-//	@Tags			iam-resource
-//	@Param			tenant		path	string	true	"tenant"	default(default)
-//	@Param			client		path	string	true	"client"	default(default)
-//	@Param			typeId		path	string	true	"typeId"
-//	@Param			resourceId	path	string	true	"resourceId"
-//	@Param			iamBody		body	model.Resource	true	"tenant"
-//	@Success		200
-//	@Router			/accounts/{tenant}/iam/clients/{client}/types/{typeId}/resources/{resourceId} [put]
+// UpdateIamResource
+// @Summary	update iam resource name
+// @Tags	iam-resource
+// @Param	tenant		path	string	true	"tenant"	default(default)
+// @Param	client		path	string	true	"client"	default(default)
+// @Param	typeId		path	string	true	"typeId"
+// @Param	resourceId	path	string	true	"resourceId"
+// @Param	iamBody		body	model.Resource	true	"tenant"
+// @Success	200
+// @Router	/accounts/{tenant}/iam/clients/{client}/types/{typeId}/resources/{resourceId} [put]
 func UpdateIamResource(c *gin.Context) {
 	var resource model.Resource
 	if err := c.BindJSON(&resource); err != nil {
@@ -177,18 +161,15 @@ func UpdateIamResource(c *gin.Context) {
 	resp.SuccessWithData(c, r)
 }
 
-// DeleteIamResource godoc
-//
-//	@Summary		iam resource
-//	@Schemes
-//	@Description	delete iam resource
-//	@Tags			iam-resource
-//	@Param			tenant		path	string	true	"tenant"	default(default)
-//	@Param			client		path	string	true	"client"	default(default)
-//	@Param			typeId		path	string	true	"tenant"
-//	@Param			resourceId	path	string	true	"tenant"
-//	@Success		200
-//	@Router			/accounts/{tenant}/iam/clients/{client}/types/{typeId}/resources/{resourceId} [delete]
+// DeleteIamResource
+// @Summary	delete iam resource
+// @Tags	iam-resource
+// @Param	tenant		path	string	true	"tenant"	default(default)
+// @Param	client		path	string	true	"client"	default(default)
+// @Param	typeId		path	string	true	"tenant"
+// @Param	resourceId	path	string	true	"tenant"
+// @Success	200
+// @Router	/accounts/{tenant}/iam/clients/{client}/types/{typeId}/resources/{resourceId} [delete]
 func DeleteIamResource(c *gin.Context) {
 	tenant := internal.GetTenant(c)
 	typeId := c.Param("typeId")

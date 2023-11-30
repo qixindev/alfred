@@ -10,15 +10,12 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-// ListProviders godoc
-//
-//	@Summary	provider
-//	@Schemes
-//	@Description	list provider
-//	@Tags			provider
-//	@Param			tenant	path	string	true	"tenant"	default(default)
-//	@Success		200
-//	@Router			/accounts/admin/{tenant}/providers [get]
+// ListProviders
+// @Summary	list provider
+// @Tags	provider
+// @Param	tenant	path	string	true	"tenant"	default(default)
+// @Success	200
+// @Router	/accounts/admin/{tenant}/providers [get]
 func ListProviders(c *gin.Context) {
 	var providers []model.Provider
 	if err := internal.TenantDB(c).Find(&providers).Error; err != nil {
@@ -28,16 +25,13 @@ func ListProviders(c *gin.Context) {
 	resp.SuccessWithArrayData(c, utils.Filter(providers, model.Provider2Dto), 0)
 }
 
-// GetProvider godoc
-//
-//	@Summary	provider
-//	@Schemes
-//	@Description	get provider
-//	@Tags			provider
-//	@Param			tenant		path	string	true	"tenant"	default(default)
-//	@Param			providerId	path	integer	true	"tenant"
-//	@Success		200
-//	@Router			/accounts/admin/{tenant}/providers/{providerId} [get]
+// GetProvider
+// @Summary	get provider
+// @Tags	provider
+// @Param	tenant	path	string	true	"tenant"	default(default)
+// @Param	providerId	path	integer	true	"tenant"
+// @Success	200
+// @Router	/accounts/admin/{tenant}/providers/{providerId} [get]
 func GetProvider(c *gin.Context) {
 	tenant := internal.GetTenant(c)
 	providerId := c.Param("providerId")
@@ -56,16 +50,13 @@ func GetProvider(c *gin.Context) {
 	resp.SuccessWithData(c, res)
 }
 
-// ListProviderUsers godoc
-//
-//	@Summary	get provider user list
-//	@Schemes
-//	@Description	get provider user list
-//	@Tags			provider
-//	@Param			tenant		path	string	true	"tenant"	default(default)
-//	@Param			providerId	path	integer	true	"provider id"
-//	@Success		200
-//	@Router			/accounts/admin/{tenant}/providers/{providerId}/users [get]
+// ListProviderUsers
+// @Summary	get provider user list
+// @Tags	provider
+// @Param	tenant	path	string	true	"tenant"	default(default)
+// @Param	providerId	path	integer	true	"provider id"
+// @Success	200
+// @Router	/accounts/admin/{tenant}/providers/{providerId}/users [get]
 func ListProviderUsers(c *gin.Context) {
 	providerId := c.Param("providerId")
 	tenant := internal.GetTenant(c)
@@ -84,16 +75,13 @@ func ListProviderUsers(c *gin.Context) {
 	resp.SuccessWithArrayData(c, res, 0)
 }
 
-// NewProvider godoc
-//
-//	@Summary	provider
-//	@Schemes
-//	@Description	new provider
-//	@Tags			provider
-//	@Param			tenant	path	string	true	"tenant"	default(default)
-//	@Param			req		body	object	true	"body"
-//	@Success		200
-//	@Router			/accounts/admin/{tenant}/providers [post]
+// NewProvider
+// @Summary	new provider
+// @Tags	provider
+// @Param	tenant	path	string	true	"tenant"	default(default)
+// @Param	req	body	object	true	"body"
+// @Success	200
+// @Router	/accounts/admin/{tenant}/providers [post]
 func NewProvider(c *gin.Context) {
 	tenant := internal.GetTenant(c)
 	var provider req.Provider
@@ -111,16 +99,13 @@ func NewProvider(c *gin.Context) {
 	resp.SuccessWithData(c, provider.Dto())
 }
 
-// UpdateProvider godoc
-//
-//	@Summary	provider
-//	@Schemes
-//	@Description	update provider
-//	@Tags			provider
-//	@Param			tenant		path	string	true	"tenant"	default(default)
-//	@Param			providerId	path	integer	true	"tenant"
-//	@Success		200
-//	@Router			/accounts/admin/{tenant}/providers/{providerId} [put]
+// UpdateProvider
+// @Summary	update provider
+// @Tags	provider
+// @Param	tenant	path	string	true	"tenant"	default(default)
+// @Param	providerId	path	integer	true	"tenant"
+// @Success	200
+// @Router	/accounts/admin/{tenant}/providers/{providerId} [put]
 func UpdateProvider(c *gin.Context) {
 	tenant := internal.GetTenant(c)
 	providerId := c.Param("providerId")
@@ -140,16 +125,13 @@ func UpdateProvider(c *gin.Context) {
 	resp.SuccessWithData(c, p.Dto())
 }
 
-// DeleteProvider godoc
-//
-//	@Summary	provider
-//	@Schemes
-//	@Description	delete provider
-//	@Tags			provider
-//	@Param			tenant		path	string	true	"tenant"	default(default)
-//	@Param			providerId	path	integer	true	"tenant"
-//	@Success		200
-//	@Router			/accounts/admin/{tenant}/providers/{providerId} [delete]
+// DeleteProvider
+// @Summary	delete provider
+// @Tags	provider
+// @Param	tenant	path	string	true	"tenant"	default(default)
+// @Param	providerId	path	integer	true	"tenant"
+// @Success	200
+// @Router	/accounts/admin/{tenant}/providers/{providerId} [delete]
 func DeleteProvider(c *gin.Context) {
 	providerId := c.Param("providerId")
 	var provider model.Provider

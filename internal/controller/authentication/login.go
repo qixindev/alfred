@@ -15,18 +15,15 @@ import (
 	"strings"
 )
 
-// Login godoc
-//
-//	@Summary	login a user
-//	@Schemes
-//	@Description	login using username and password
-//	@Tags			login
-//	@Param			tenant		path		string	true	"tenant"	default(default)
-//	@Param			login		formData	string	true	"username"
-//	@Param			password	formData	string	true	"password"
-//	@Param			next		query		string	false	"next"
-//	@Success		302
-//	@Router			/accounts/{tenant}/login [post]
+// Login
+// @Summary	login using username and password
+// @Tags	login
+// @Param	tenant		path		string	true	"tenant"	default(default)
+// @Param	login		formData	string	true	"username"
+// @Param	password	formData	string	true	"password"
+// @Param	next		query		string	false	"next"
+// @Success	302
+// @Router	/accounts/{tenant}/login [post]
 func Login(c *gin.Context) {
 	login := c.PostForm("login")
 	password := c.PostForm("password")
@@ -67,17 +64,14 @@ func Login(c *gin.Context) {
 	}
 }
 
-// Register godoc
-//
-//	@Summary	register a user
-//	@Schemes
-//	@Description	register using username and password
-//	@Tags			login
-//	@Param			tenant		path		string	true	"tenant"	default(default)
-//	@Param			login		formData	string	true	"username"
-//	@Param			password	formData	string	true	"password"
-//	@Success		200
-//	@Router			/accounts/{tenant}/register [post]
+// Register
+// @Summary	register using username and password
+// @Tags	login
+// @Param	tenant		path		string	true	"tenant"	default(default)
+// @Param	login		formData	string	true	"username"
+// @Param	password	formData	string	true	"password"
+// @Success	200
+// @Router	/accounts/{tenant}/register [post]
 func Register(c *gin.Context) {
 	tenant := internal.GetTenant(c)
 	login := c.PostForm("login")
@@ -108,15 +102,12 @@ func Register(c *gin.Context) {
 	resp.Success(c)
 }
 
-// Logout godoc
-//
-//	@Summary	logout current user
-//	@Schemes
-//	@Description	logout current user
-//	@Tags			login
-//	@Param			tenant	path	string	true	"tenant"	default(default)
-//	@Success		200
-//	@Router			/accounts/{tenant}/logout [get]
+// Logout
+// @Summary	logout current user
+// @Tags	login
+// @Param	tenant	path	string	true	"tenant"	default(default)
+// @Success	200
+// @Router	/accounts/{tenant}/logout [get]
 func Logout(c *gin.Context) {
 	session := sessions.Default(c)
 	user := session.Get("user")
@@ -133,16 +124,13 @@ func Logout(c *gin.Context) {
 	resp.Success(c)
 }
 
-// GetLoginProtocol godoc
-//
-//	@Summary	logout current user
-//	@Schemes
-//	@Description	logout current user
-//	@Tags			login
-//	@Param			tenant	path	string	true	"tenant"	default(default)
-//	@Param			fileName	path	string	true	"fileName"	default(default)
-//	@Success		200
-//	@Router			/accounts/{tenant}/login/proto/{fileName} [get]
+// GetLoginProtocol
+// @Summary	logout current user
+// @Tags	login
+// @Param	tenant		path	string	true	"tenant"	default(default)
+// @Param	fileName	path	string	true	"fileName"	default(default)
+// @Success	200
+// @Router	/accounts/{tenant}/login/proto/{fileName} [get]
 func GetLoginProtocol(c *gin.Context) {
 	fileName := c.Param("fileName")
 

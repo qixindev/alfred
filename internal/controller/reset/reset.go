@@ -14,14 +14,11 @@ import (
 )
 
 // SmsAvailable 校验租户是否配置SMS
-//
-//	@Summary	check sms available
-//	@Schemes
-//	@Description	check sms available
-//	@Tags			reset
-//	@Param			tenant		path		string	true	"tenant"	default(default)
-//	@Success		200
-//	@Router			/accounts/{tenant}/reset/smsAvailable [get]
+// @Summary	check sms available
+// @Tags	reset
+// @Param	tenant	path	string	true	"tenant"	default(default)
+// @Success	200
+// @Router	/accounts/{tenant}/reset/smsAvailable [get]
 func SmsAvailable(c *gin.Context) {
 	tenant := internal.GetTenant(c)
 	var provider model.Provider
@@ -43,17 +40,14 @@ func SmsAvailable(c *gin.Context) {
 }
 
 // VerifyResetPasswordRequest ForgotPassword godoc 发起忘记密码请求
-//
-//	@Summary	forgot password
-//	@Schemes
-//	@Description	forgot password
-//	@Tags			reset
-//	@Param			tenant		path		string	true	"tenant"	default(default)
-//	@Param			verifyMethod	formData	string	true	"verify method"
-//	@Param			passCodePayload	formData	string	true	"pass code payload"
-//	@Param	        areaCode	formData	string	false	"area code" default(+86)
-//	@Success		200
-//	@Router			/accounts/{tenant}/reset/verifyResetPasswordRequest [post]
+// @Summary	forgot password
+// @Tags	reset
+// @Param	tenant			path		string	true	"tenant"	default(default)
+// @Param	verifyMethod	formData	string	true	"verify method"
+// @Param	passCodePayload	formData	string	true	"pass code payload"
+// @Param	areaCode		formData	string	false	"area code" default(+86)
+// @Success	200
+// @Router	/accounts/{tenant}/reset/verifyResetPasswordRequest [post]
 func VerifyResetPasswordRequest(c *gin.Context) {
 	verifyMethod := c.PostForm("verifyMethod")
 	tenant := internal.GetTenant(c)
@@ -105,15 +99,12 @@ func VerifyResetPasswordRequest(c *gin.Context) {
 }
 
 // GetResetPasswordToken 生成一次性的重置密码的token
-//
-//	@Summary	get reset password token
-//	@Schemes
-//	@Description	get reset password token
-//	@Tags			reset
-//	@Param			tenant		path		string	true	"tenant"	default(default)
-//	@Param			code		formData	string	true	"code"
-//	@Success		200
-//	@Router			/accounts/{tenant}/reset/getResetPasswordToken [post]
+// @Summary	get reset password token
+// @Tags	reset
+// @Param	tenant	path	string	true	"tenant"	default(default)
+// @Param	code	formData	string	true	"code"
+// @Success	200
+// @Router	/accounts/{tenant}/reset/getResetPasswordToken [post]
 func GetResetPasswordToken(c *gin.Context) {
 	//清除token_codes表中的resetPassword类型的过期记录
 	service.ClearResetPasswordTokenCode("resetPassword")
@@ -133,16 +124,13 @@ func GetResetPasswordToken(c *gin.Context) {
 }
 
 // PasswordReset godoc 重置密码
-//
-//	@Summary	reset password
-//	@Schemes
-//	@Description	reset password
-//	@Tags			reset
-//	@Param			Authorization	header	string	true	"token"
-//	@Param			tenant		path		string	true	"tenant"	default(default)
-//	@Param          newPassword formData	string	true	"new password"
-//	@Success		200
-//	@Router			/accounts/{tenant}/reset/resetPassword [post]
+// @Summary	reset password
+// @Tags	reset
+// @Param	Authorization	header		string	true	"token"
+// @Param	tenant			path		string	true	"tenant"	default(default)
+// @Param	newPassword 	formData	string	true	"new password"
+// @Success	200
+// @Router	/accounts/{tenant}/reset/resetPassword [post]
 func PasswordReset(c *gin.Context) {
 	tenant := internal.GetTenant(c)
 	phone, exist := c.Get("sub")

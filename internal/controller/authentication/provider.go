@@ -16,15 +16,12 @@ import (
 	"net/http"
 )
 
-// ListProviders godoc
-//
-//	@Summary	List all providers
-//	@Schemes
-//	@Description	list login providers
-//	@Tags			login
-//	@Param			tenant	path		string	true	"tenant"	default(default)
-//	@Success		200		{object}	[]dto.ProviderDto
-//	@Router			/accounts/{tenant}/providers [get]
+// ListProviders
+// @Summary	List all providers
+// @Tags	login
+// @Param	tenant	path	string	true	"tenant"	default(default)
+// @Success	200	{object}	[]dto.ProviderDto
+// @Router	/accounts/{tenant}/providers [get]
 func ListProviders(c *gin.Context) {
 	var providers []model.Provider
 	if err := internal.TenantDB(c).Find(&providers).Error; err != nil {
@@ -34,16 +31,13 @@ func ListProviders(c *gin.Context) {
 	resp.SuccessWithData(c, utils.Filter(providers, model.Provider2Dto))
 }
 
-// GetProvider godoc
-//
-//	@Summary	get a provider
-//	@Schemes
-//	@Description	get a login provider
-//	@Tags			login
-//	@Param			tenant		path		string	true	"tenant"	default(default)
-//	@Param			provider	path		string	true	"provider"
-//	@Success		200			{object}	dto.ProviderDto
-//	@Router			/accounts/{tenant}/providers/{provider} [get]
+// GetProvider
+// @Summary	get a login provider
+// @Tags	login
+// @Param	tenant		path	string	true	"tenant"	default(default)
+// @Param	provider	path	string	true	"provider"
+// @Success	200	{object}	dto.ProviderDto
+// @Router	/accounts/{tenant}/providers/{provider} [get]
 func GetProvider(c *gin.Context) {
 	tenant := internal.GetTenant(c)
 	providerName := c.Param("provider")
@@ -56,18 +50,15 @@ func GetProvider(c *gin.Context) {
 	resp.SuccessWithData(c, authProvider.LoginConfig())
 }
 
-// LoginToProvider godoc
-//
-//	@Summary	login via a provider
-//	@Schemes
-//	@Description	login via a provider
-//	@Tags			login
-//	@Param			tenant		path	string	true	"tenant"	default(default)
-//	@Param			provider	path	string	true	"provider"
-//	@Param			phone		query	string	false	"phone"
-//	@Param			next		query	string	false	"next"
-//	@Success		302
-//	@Router			/accounts/{tenant}/login/{provider} [get]
+// LoginToProvider
+// @Summary	login via a provider
+// @Tags	login
+// @Param	tenant		path	string	true	"tenant"	default(default)
+// @Param	provider	path	string	true	"provider"
+// @Param	phone		query	string	false	"phone"
+// @Param	next		query	string	false	"next"
+// @Success	302
+// @Router	/accounts/{tenant}/login/{provider} [get]
 func LoginToProvider(c *gin.Context) {
 	tenant := internal.GetTenant(c)
 	providerName := c.Param("provider")
@@ -103,20 +94,17 @@ func LoginToProvider(c *gin.Context) {
 	c.Redirect(http.StatusFound, location)
 }
 
-// ProviderCallback godoc
-//
-//	@Summary	provider callback
-//	@Schemes
-//	@Description	provider callback
-//	@Tags			login
-//	@Param			tenant		path	string	true	"tenant"	default(default)
-//	@Param			provider	path	string	true	"provider"
-//	@Param			code		query	string	true	"code"
-//	@Param			phone		query	string	false	"phone"
-//	@Param			next		query	string	false	"next"
-//	@Success		302
-//	@Success		200
-//	@Router			/accounts/{tenant}/logged-in/{provider} [get]
+// ProviderCallback
+// @Summary	provider callback
+// @Tags	login
+// @Param	tenant		path	string	true	"tenant"	default(default)
+// @Param	provider	path	string	true	"provider"
+// @Param	code		query	string	true	"code"
+// @Param	phone		query	string	false	"phone"
+// @Param	next		query	string	false	"next"
+// @Success	302
+// @Success	200
+// @Router	/accounts/{tenant}/logged-in/{provider} [get]
 func ProviderCallback(c *gin.Context) {
 	providerName := c.Param("provider")
 	var provider model.Provider

@@ -37,22 +37,19 @@ func getAccessCode(c *gin.Context, client *model.Client) (string, error) {
 	return code, nil
 }
 
-// GetAuthCode godoc
-//
-//	@Summary	oauth2 authorize
-//	@Schemes
-//	@Description	oauth2 authorize
-//	@Tags			oauth2
-//	@Param			tenant			path	string	true	"tenant"
-//	@Param			client_id		query	string	true	"client_id"
-//	@Param			scope			query	string	true	"scope"
-//	@Param			response_type	query	string	true	"response_type"
-//	@Param			redirect_uri	query	string	true	"redirect_uri"
-//	@Param			state			query	string	false	"state"
-//	@Param			nonce			query	string	false	"nonce"
-//	@Success		302
-//	@Success		200
-//	@Router			/accounts/{tenant}/oauth2/auth [get]
+// GetAuthCode
+// @Summary	oauth2 authorize
+// @Tags	oauth2
+// @Param	tenant	path	string	true	"tenant"
+// @Param	client_id	query	string	true	"client_id"
+// @Param	scope	query	string	true	"scope"
+// @Param	response_type	query	string	true	"response_type"
+// @Param	redirect_uri	query	string	true	"redirect_uri"
+// @Param	state	query	string	false	"state"
+// @Param	nonce	query	string	false	"nonce"
+// @Success	302
+// @Success	200
+// @Router	/accounts/{tenant}/oauth2/auth [get]
 func GetAuthCode(c *gin.Context) {
 	// If logged in, 302 to redirect uri.
 	// If not, return login form.
@@ -108,16 +105,13 @@ func GetAuthCode(c *gin.Context) {
 	fmt.Println(clientId, scope, responseType, redirectUri, state, nonce)
 }
 
-// GetDeviceCode godoc
-//
-//	@Summary	device code
-//	@Schemes
-//	@Description	delete device groups
-//	@Tags			oauth2
-//	@Param			tenant		path	string	true	"tenant"
-//	@Param			client_id	query	string	true	"tenant"
-//	@Success		200
-//	@Router			/accounts/{tenant}/oauth2/device/code [post]
+// GetDeviceCode
+// @Summary	delete device groups
+// @Tags	oauth2
+// @Param	tenant		path	string	true	"tenant"
+// @Param	client_id	query	string	true	"tenant"
+// @Success	200
+// @Router	/accounts/{tenant}/oauth2/device/code [post]
 func GetDeviceCode(c *gin.Context) {
 	clientId := c.Query("client_id")
 	scope := c.Query("scope")
@@ -152,22 +146,19 @@ func GetDeviceCode(c *gin.Context) {
 	})
 }
 
-// GetToken godoc
-//
-//	@Summary	oauth2 token
-//	@Schemes
-//	@Description	oauth2 token
-//	@Tags			oauth2
-//	@Param			tenant			path		string	true	"tenant"
-//	@Param			client_id		query		string	true	"client_id"
-//	@Param			client_secret	query		string	false	"client_secret"
-//	@Param			code			query		string	false	"code"
-//	@Param			grant_type		query		string	true	"grant_type"
-//	@Param			redirect_uri	query		string	false	"redirect_uri"
-//	@Param			state			query		string	false	"state"
-//	@Param			nonce			query		string	false	"nonce"
-//	@Success		200				{object}	dto.AccessTokenDto
-//	@Router			/accounts/{tenant}/oauth2/token [get]
+// GetToken
+// @Summary	oauth2 token
+// @Tags	oauth2
+// @Param	tenant			path	string	true	"tenant"
+// @Param	client_id		query	string	true	"client_id"
+// @Param	client_secret	query	string	false	"client_secret"
+// @Param	code			query	string	false	"code"
+// @Param	grant_type		query	string	true	"grant_type"
+// @Param	redirect_uri	query	string	false	"redirect_uri"
+// @Param	state			query	string	false	"state"
+// @Param	nonce			query	string	false	"nonce"
+// @Success	200	{object}	dto.AccessTokenDto
+// @Router	/accounts/{tenant}/oauth2/token [get]
 func GetToken(c *gin.Context) {
 	clientId := c.Query("client_id")
 	clientSecret := c.Query("client_secret")
@@ -275,15 +266,12 @@ func GetToken(c *gin.Context) {
 	fmt.Println(clientId, clientSecret, grantType, code, redirectUri, state, nonce)
 }
 
-// GetOpenidConfiguration godoc
-//
-//	@Summary	openid configuration
-//	@Schemes
-//	@Description	openid configuration
-//	@Tags			oauth2
-//	@Param			tenant			path		string	true	"tenant"
-//	@Success		200
-//	@Router			/accounts/{tenant}/.well-known/openid-configuration [get]
+// GetOpenidConfiguration
+// @Summary	openid configuration
+// @Tags	oauth2
+// @Param	tenant	path	string	true	"tenant"
+// @Success	200
+// @Router	/accounts/{tenant}/.well-known/openid-configuration [get]
 func GetOpenidConfiguration(c *gin.Context) {
 	tenant := internal.GetTenant(c)
 	prefix := utils.GetHostWithScheme(c)
@@ -304,15 +292,12 @@ func GetOpenidConfiguration(c *gin.Context) {
 	resp.SuccessAuth(c, conf)
 }
 
-// GetJwks godoc
-//
-//	@Summary	jwk
-//	@Schemes
-//	@Description	jwk
-//	@Tags			oauth2
-//	@Param			tenant			path		string	true	"tenant"
-//	@Success		200
-//	@Router			/accounts/{tenant}/.well-known/jwks.json [get]
+// GetJwks
+// @Summary	jwk
+// @Tags	oauth2
+// @Param	tenant	path	string	true	"tenant"
+// @Success	200
+// @Router	/accounts/{tenant}/.well-known/jwks.json [get]
 func GetJwks(c *gin.Context) {
 	tenant := internal.GetTenant(c)
 	jwks, err := utils.LoadRsaPublicKeys(tenant.Name)
