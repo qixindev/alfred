@@ -6,8 +6,13 @@ import { getEnergy, getProto } from "~/api/energy";
 import dayjs from "dayjs";
 import { ref } from "vue";
 import { ElMessage } from "element-plus";
+import { useRouter, useRoute } from "vue-router";
 const emit = defineEmits(["child-click"], ["child-primary"]);
-
+const tenant = computed(() => useTenant().value);
+const route = useRoute();
+const { state: tanent } = route.query as any;
+let currentTenant =
+  route.path.substring(0, 10) == "/dashboard" ? tenant.value : tanent ?? "default";
 const privacyWrite = ref("");
 const privacyWord = ref("");
 const wordCen = ref("");
@@ -16,6 +21,8 @@ const resignSwitch = ref(true);
 const loginSwitch = ref(false);
 const tablePri = ref([]);
 const primaryCon = ref([]);
+const tableData = ref([]);
+
 const addPrivacy = () => {
   tablePri.value.push({
     resignSwitch: false,
@@ -25,26 +32,30 @@ const addPrivacy = () => {
   });
 };
 const getInfo = () => {
-  getEnergy().then((res: any) => {
-    tableData.value = [...res.bottom];
-  });
-  getProto().then((res: any) => {
+  getProto(currentTenant).then((res: any) => {
     tablePri.value = [...res];
   });
 };
 getInfo();
-function changeColor(e) {
-  bgcolor.value = e;
-}
-function mainCss(e) {
-  cssWrite.value = e;
-}
+const props = defineProps({
+  allInfo: {
+    type: Object,
+    default: {},
+  },
+});
+watch(
+  () => props.allInfo,
+  () => {
+    // ！！！！！！！
+    tableData.value = props.allInfo && props.allInfo.bottom;
+  },
+  { immediate: true, deep: true }
+);
 const deletePri = (index: number) => {
   tablePri.value.splice(index, 1);
   emit("child-primary", tablePri.value);
 };
 
-const tableData = ref([]);
 const deleteRow = (index: number) => {
   tableData.value.splice(index, 1);
   emit("child-click", tableData.value);

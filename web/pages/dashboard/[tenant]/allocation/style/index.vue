@@ -14,9 +14,13 @@ import { ref, reactive, onMounted, onUnmounted } from "vue";
 import { defineProps } from "vue";
 import screenfull from "screenfull";
 import { ElMessage } from "element-plus";
-import { getEnergy } from "~/api/energy";
+import { useRouter, useRoute } from "vue-router";
 const tenant = computed(() => useTenant().value);
-let current = tenant.value ? tenant.value : "default";
+const route = useRoute();
+const { state: tanent } = route.query as any;
+
+let currentTenant =
+  route.path.substring(0, 10) == "/dashboard" ? tenant.value : tanent ?? "default";
 const VITE_APP_BASE_API = import.meta.env.VITE_APP_BASE_API;
 const emits = defineEmits([
   "style-bgColor",
@@ -52,32 +56,10 @@ const cssWrite = ref("");
 const inputTitle = ref("");
 const logoUpload = ref("");
 let backgroundColor = ref("");
-const getInfo = () => {
-  getEnergy()
-    .then((res: any) => {
-      inputTitle.value = res.styleName;
-      logoUpload.value = res.styleLogo;
-      backgroundColor.value = res.styleBgcolor;
-      cssWrite.value = res.styleCss;
-      loginSwitch.value = res.styleLogin == undefined ? false : res.styleLogin;
-      regionSwitch.value = res.styleRegion == undefined ? false : res.styleRegion;
-      passSwitch.value = res.stylePass == undefined ? false : res.stylePass;
-      codeSwitch.value = res.styleCode == undefined ? false : res.styleCode;
-      numTop.value = res.styleNumTop;
-      numLeft.value = res.styleNumLeft;
-    })
-    .finally(() => {
-      if (backgroundColor.value && backgroundColor.value.substring(0, 1) != "#") {
-        backG.value = "2";
-      } else {
-        backG.value = "1";
-      }
-    });
-};
-getInfo();
+
 const getLoginConfig = async () => {
   const option = ["wecom", "dingtalk"];
-  const data = await getThirdLoginConfigs(current);
+  const data = await getThirdLoginConfigs(currentTenant);
   const thirdLoginList = data ? data.filter((item) => option.includes(item.type)) : "";
   thirdLoginTypes.value = thirdLoginList;
   if (data && data.find((item) => item.type === "sms")) {
@@ -89,7 +71,7 @@ const getLoginConfig = async () => {
 };
 getLoginConfig();
 const checkPhone = async () => {
-  const res = await smsAvailable(current);
+  const res = await smsAvailable(currentTenant);
   if (res) {
     isPhone.value = true;
   } else {
@@ -99,7 +81,7 @@ const checkPhone = async () => {
 const cellLogin = () => {
   if (thirdLoginTypes.value.length != 0) {
     emits("style-login", loginSwitch.value);
-  } else {
+  } else if (thirdLoginTypes.value.length == 0 && loginSwitch.value) {
     ElMessage({
       message: "还未配置第三方登录方式",
       type: "warning",
@@ -112,7 +94,7 @@ const cellRegion = () => {
 const cellPass = () => {
   if (isPhone.value) {
     emits("style-pass", passSwitch.value);
-  } else {
+  } else if (!isPhone.value && passSwitch.value) {
     ElMessage({
       message: "还未配置短信验证方式",
       type: "warning",
@@ -122,7 +104,7 @@ const cellPass = () => {
 const cellCode = () => {
   if (codePass.value) {
     emits("style-code", codeSwitch.value);
-  } else {
+  } else if (!codePass.value && codeSwitch.value) {
     ElMessage({
       message: "还未配置短信验证方式",
       type: "warning",
@@ -165,7 +147,36 @@ const props = defineProps({
     type: Array,
     default: [],
   },
+  allInfo: {
+    type: Object,
+    default: {},
+  },
 });
+watch(
+  () => props.allInfo,
+  () => {
+    inputTitle.value = props.allInfo.styleName;
+    logoUpload.value = props.allInfo.styleLogo;
+    backgroundColor.value = props.allInfo.styleBgcolor;
+    cssWrite.value = props.allInfo.styleCss;
+    loginSwitch.value =
+      props.allInfo.styleLogin == undefined ? false : props.allInfo.styleLogin;
+    regionSwitch.value =
+      props.allInfo.styleRegion == undefined ? false : props.allInfo.styleRegion;
+    passSwitch.value =
+      props.allInfo.stylePass == undefined ? false : props.allInfo.stylePass;
+    codeSwitch.value =
+      props.allInfo.styleCode == undefined ? false : props.allInfo.styleCode;
+    numTop.value = props.allInfo.styleNumTop;
+    numLeft.value = props.allInfo.styleNumLeft;
+    if (backgroundColor.value && backgroundColor.value.substring(0, 1) != "#") {
+      backG.value = "2";
+    } else {
+      backG.value = "1";
+    }
+  },
+  { immediate: true, deep: true }
+);
 // 切换事件
 const preFn = () => {
   screenfull.toggle(document.getElementById("embedContainer"));
@@ -239,10 +250,18 @@ onUnmounted(() => {
         :backgroundColor="backgroundColor"
         id="embedContainer"
         ref="scrollBox"
-        :equip="equip"
-      ></Login>
+      />
 
-      <div v-else style="background: #fff; display: flex; justify-content: center">
+      <div
+        v-else
+        style="
+          background: #fff;
+          display: flex;
+          justify-content: center;
+          background-color: #f7f8fa;
+          height: 100vh;
+        "
+      >
         <div class="iphoneBorder">
           <LoginIphone
             :numTop="numTop"
@@ -258,7 +277,6 @@ onUnmounted(() => {
             :logoUpload="logoUpload"
             :backgroundColor="backgroundColor"
             style="border-radius: 30px"
-            :equip="equip"
           />
         </div>
       </div>
@@ -294,9 +312,9 @@ onUnmounted(() => {
             <div class="el-upload__tip">jpg/png 文件不超过 2MB</div>
           </template>
         </el-upload>
-        <p class="bg">登录框位置</p>
+        <p class="bg" v-if="equip == 'monitor'">登录框位置</p>
 
-        <div style="margin: 10px 10px 0 20px">
+        <div style="margin: 10px 10px 0 20px" v-if="equip == 'monitor'">
           top<el-input-number
             v-model="numTop"
             style="margin-left: 20px"
@@ -306,7 +324,7 @@ onUnmounted(() => {
             :max="100"
           />
         </div>
-        <div style="margin: 10px 10px 0 20px">
+        <div style="margin: 10px 10px 0 20px" v-if="equip == 'monitor'">
           left<el-input-number
             v-model="numLeft"
             style="margin-left: 20px"
@@ -385,16 +403,22 @@ onUnmounted(() => {
 }
 #wrap {
   width: 100%;
-  height: 68vh;
+  height: 100vh;
   overflow-y: auto;
   display: flex;
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE10+ */
+  &::-webkit-scrollbar {
+    display: none; /* ChromeSafari */
+  }
 }
 
 .centerMain {
-  height: 68vh;
+  height: 100vh;
   width: 75%;
   position: relative;
   .iphoneBorder {
+    margin-top: 8vh;
     width: 375px;
     height: 670px;
     background: #fff;
@@ -418,7 +442,7 @@ onUnmounted(() => {
 .allmain,
 .conMain {
   flex: 1;
-  min-height: 68vh;
+  height: 100vh;
   background-color: white;
   border-top: 1px solid #eee;
   overflow-y: auto;

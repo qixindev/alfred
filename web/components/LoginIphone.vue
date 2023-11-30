@@ -19,7 +19,11 @@ interface ThirdLoginType {
   type: string;
 }
 const tenant = computed(() => useTenant().value);
+const route = useRoute();
+const { state: tanent } = route.query as any;
 
+let currentTenant =
+  route.path.substring(0, 10) == "/dashboard" ? tenant.value : tanent ?? "default";
 const router = useRoute();
 const routerPath = useRouter();
 const info = ref({});
@@ -27,11 +31,11 @@ const bottomTitle = ref([]);
 const newPrimaryWord = ref([]);
 const newTop = ref([]);
 const getInfo = () => {
-  getEnergy().then((res: any) => {
+  getEnergy(currentTenant).then((res: any) => {
     info.value = { ...res };
     bottomTitle.value = [...res.bottom];
   });
-  getProto().then((res: any) => {
+  getProto(currentTenant).then((res: any) => {
     newPrimaryWord.value = res.filter((item: any) => {
       return item.loginSwitch;
     });
@@ -66,7 +70,7 @@ const props = defineProps({
   },
   inputTitle: {
     type: String,
-    default: "登录",
+    default: "",
   },
   cssWrite: {
     type: String,
@@ -98,7 +102,11 @@ watch(
     ${props.cssWrite ? props.cssWrite : info && info.value && info.value.styleCss}
 `;
     style.textContent = newCSS;
-    document.head.appendChild(style);
+    const reStyle = document.body.querySelector("style");
+    if (reStyle) {
+      document.body.removeChild(reStyle);
+    }
+    document.body.appendChild(style);
   },
   { immediate: true, deep: true }
 );
@@ -124,10 +132,6 @@ watch(
   { immediate: true, deep: true }
 );
 const emit = defineEmits(["accountLoginHandle", "phoneLoginHandle", "thirdLoginHandle"]);
-const route = useRoute();
-const { state: tanent } = route.query as any;
-let currentTenant = tanent ?? "default";
-let current = tenant.value ? tenant.value : "default";
 
 const phoneForm = reactive({
   phone: "",
@@ -228,7 +232,7 @@ const isPhone = ref(false);
 let phoneProvider = ref("");
 const getLoginConfig = async () => {
   const option = ["wecom", "dingtalk"];
-  const data = (await getThirdLoginConfigs(current)) as ThirdLoginType[];
+  const data = (await getThirdLoginConfigs(currentTenant)) as ThirdLoginType[];
   const thirdLoginList = data ? data.filter((item) => option.includes(item.type)) : "";
   thirdLoginTypes.value = thirdLoginList;
   thirdLoginTypesLength.value = thirdLoginTypes.value.length;
@@ -252,7 +256,7 @@ const sendValidCode = async (phone: string) => {
 getLoginConfig();
 // 验证有手机号
 const checkPhone = async () => {
-  const res = await smsAvailable(current);
+  const res = await smsAvailable(currentTenant);
   if (res) {
     isPhone.value = true;
   } else {
@@ -283,7 +287,7 @@ definePageMeta({
 </script>
 
 <template>
-  <div class="login-boxL">
+  <div class="login-boxL" style="padding-top: 0 !important; padding-bottom: 0 !important">
     <div class="titleL">
       <span
         class="logoL"
@@ -294,10 +298,10 @@ definePageMeta({
       {{ inputTitle ? inputTitle : info && info.styleName }}
     </div>
     <el-tabs v-model="activeName">
-      <el-tab-pane label="账户密码登录" name="login">
+      <el-tab-pane label="密码登录" name="login">
         <el-form ref="accountRuleFormRef" :model="accountForm" :rules="accountRules">
           <el-form-item prop="login">
-            <el-input v-model="accountForm.login" placeholder="账号">
+            <el-input v-model="accountForm.login" placeholder="请输入手机号/用户名">
               <template #prefix>
                 <el-icon class="icon-userL"><User /></el-icon>
               </template>
@@ -307,7 +311,7 @@ definePageMeta({
           <el-form-item prop="password">
             <el-input
               v-model="accountForm.password"
-              placeholder="密码"
+              placeholder="请输入登录密码"
               type="password"
               show-password
             >
@@ -338,7 +342,7 @@ definePageMeta({
       </el-tab-pane>
 
       <el-tab-pane
-        label="手机号登录"
+        label="验证码登录"
         name="phone"
         v-if="
           router.path.substring(0, 10) == '/dashboard'
@@ -348,10 +352,9 @@ definePageMeta({
       >
         <el-form ref="phoneRuleFormRef" :model="phoneForm" :rules="phoneRules">
           <el-form-item prop="phone">
-            <el-input v-model="phoneForm.phone" placeholder="手机号">
+            <el-input v-model="phoneForm.phone" placeholder="请输入手机号">
               <template #prefix>
                 <el-icon class="icon-phoneL"><Iphone /></el-icon>
-                <span>+86</span>
               </template>
             </el-input>
           </el-form-item>
@@ -361,7 +364,7 @@ definePageMeta({
               <el-input
                 v-model="phoneForm.code"
                 maxlength="6"
-                placeholder="验证码"
+                placeholder="请输入6位验证码"
                 :style="{ width: '280px', marginRight: '10px' }"
               >
                 <template #prefix>
@@ -404,23 +407,7 @@ definePageMeta({
       </div>
     </div>
     <div class="optionL">
-      <div
-        class="other-loginL"
-        v-if="
-          router.path.substring(0, 10) == '/dashboard'
-            ? thirdLoginTypesLength > 0 && loginSwitch
-            : thirdLoginTypesLength > 0 && info && info.styleLogin
-        "
-      >
-        其它方式登录：
-        <svg-icon
-          v-for="item in thirdLoginTypes"
-          :name="item.type"
-          @click="router.path.substring(0, 10) != '/dashboard' ? thirdLogin(item) : ''"
-          size="1.5em"
-        ></svg-icon>
-      </div>
-      <div v-else></div>
+      <div></div>
       <nuxt-link
         v-if="
           router.path.substring(0, 10) == '/dashboard'
@@ -452,7 +439,7 @@ definePageMeta({
             : 'javascript:;'
         "
         v-for="item in bottom.length != 0 ? bottom : bottomTitle"
-        class="linkL"
+        :style="{ cursor: item.wordlink == '' ? 'not-allowed' : 'pointer' }"
         >{{ item.wordCen }}</a
       >
     </div>
@@ -519,18 +506,17 @@ definePageMeta({
   }
 }
 .bottomL {
-  width: 80%;
+  width: 100%;
   height: 20px;
-  // margin-top: 10%;
   position: absolute;
+  left: 0;
   bottom: 5%;
-  display: flex;
-  justify-content: center;
-  .linkL {
+  text-align: center;
+  a {
     text-decoration: none;
-    margin-right: 10px;
     font-size: 16px;
     color: #000;
+    display: inline;
   }
 }
 </style>
