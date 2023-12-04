@@ -1,0 +1,98 @@
+package auth
+
+import (
+	"alfred/internal/model"
+	"alfred/pkg/client/msg/api"
+	"fmt"
+	"github.com/gin-gonic/gin"
+	"github.com/google/uuid"
+	"github.com/pkg/errors"
+	"net/url"
+)
+
+type ProviderWechat struct {
+	Config model.ProviderWechat
+}
+
+func (p ProviderWechat) Auth(redirectUri string, _ uint) (string, error) {
+	query := url.Values{}
+	query.Set("appid", p.Config.AppId)
+	query.Set("redirect_uri", redirectUri)
+	query.Set("response_type", "code")
+	query.Set("scope", "snsapi_login")
+	query.Set("state", uuid.NewString())
+	location := fmt.Sprintf("https://open.weixin.qq.com/connect/qrconnect?%s#wechat_redirect", query.Encode())
+	return location, nil
+}
+
+type WechatTokenResp struct {
+	AccessToken  string `json:"access_token"`
+	ExpiresIn    int    `json:"expires_in"`
+	RefreshToken string `json:"refresh_token"`
+	Openid       string `json:"openid"`
+	Scope        string `json:"scope"`
+	Unionid      string `json:"unionid"`
+}
+type WechatUserInfo struct {
+	Openid     string        `json:"openid"`
+	Nickname   string        `json:"nickname"`
+	Sex        int           `json:"sex"`
+	Language   string        `json:"language"`
+	City       string        `json:"city"`
+	Province   string        `json:"province"`
+	Country    string        `json:"country"`
+	Headimgurl string        `json:"headimgurl"`
+	Privilege  []interface{} `json:"privilege"`
+	Unionid    string        `json:"unionid"`
+}
+
+func (p ProviderWechat) Login(c *gin.Context) (*model.UserInfo, error) {
+	code := c.Query("code")
+	if code == "" {
+		return nil, errors.New("no auth code")
+	}
+	query := url.Values{}
+	query.Set("appid", p.Config.AppId)
+	query.Set("secret", p.Config.AppSecret)
+	query.Set("code", code)
+	query.Set("grant_type", "authorization_code")
+	tokenUrl := "https://api.weixin.qq.com/sns/oauth2/access_token?" + query.Encode()
+	var t WechatTokenResp
+	if err := api.GetClient(tokenUrl, &t); err != nil {
+		return nil, err
+	}
+
+	userInfoQuery := url.Values{}
+	userInfoQuery.Set("access_token", t.AccessToken)
+	userInfoQuery.Set("openid", t.Openid)
+	userInfoUrl := "https://api.weixin.qq.com/sns/userinfo?" + userInfoQuery.Encode()
+	var wechatUserInfo WechatUserInfo
+	if err := api.GetClient(userInfoUrl, &wechatUserInfo); err != nil {
+		return nil, err
+	}
+
+	userInfo := model.UserInfo{
+		Sub:         t.Openid,
+		DisplayName: wechatUserInfo.Nickname,
+		Picture:     wechatUserInfo.Headimgurl,
+	}
+
+	return &userInfo, nil
+}
+
+func (p ProviderWechat) LoginConfig() *gin.H {
+	return &gin.H{
+		"providerId": p.Config.ProviderId,
+		"appId":      p.Config.AppId,
+		"type":       p.Config.Provider.Type,
+	}
+}
+
+func (p ProviderWechat) ProviderConfig() *gin.H {
+	return &gin.H{
+		"providerId": p.Config.ProviderId,
+		"appId":      p.Config.AppId,
+		"appSecret":  p.Config.AppSecret,
+		"type":       p.Config.Provider.Type,
+	}
+}

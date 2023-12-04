@@ -54,6 +54,16 @@ func GetAuthProvider(tenantId uint, providerName string) (Provider, error) {
 		p := ProviderWeCom{Config: config}
 		return p, nil
 	}
+	if provider.Type == "wechat" {
+		var config model.ProviderWechat
+		if err := global.DB.First(&config, "tenant_id = ? AND provider_id = ?", tenantId, provider.Id).Error; err != nil {
+			return nil, err
+		}
+		config.Provider.Name = provider.Name
+		config.Provider.Type = provider.Type
+		p := ProviderWechat{Config: config}
+		return p, nil
+	}
 	if provider.Type == "sms" {
 		var coon model.SmsConnector
 		if err := global.DB.First(&coon, "tenant_id = ?", tenantId).Error; err != nil {
