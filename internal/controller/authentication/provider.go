@@ -12,6 +12,7 @@ import (
 	"errors"
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-gonic/gin"
+	"github.com/google/uuid"
 	"gorm.io/gorm"
 )
 
@@ -52,9 +53,10 @@ func GetProvider(c *gin.Context) {
 type ProviderLogin struct {
 	Redirect string `json:"redirect"`
 	Type     string `json:"type"`
-	Client   string `json:"client"`
+	ClientId string `json:"clientId"`
 	Tenant   string `json:"tenant"`
 	Location string `json:"location"`
+	State    string `json:"state"`
 }
 
 // LoginToProvider
@@ -75,7 +77,7 @@ func LoginToProvider(c *gin.Context) {
 		return
 	}
 
-	authStr := utils.GetHostWithScheme(c) + "redirect"
+	authStr := utils.GetHostWithScheme(c) + "/redirect"
 	if providerName == "sms" {
 		authStr = c.Query("phone")
 	}
@@ -93,9 +95,10 @@ func LoginToProvider(c *gin.Context) {
 	loginInfo := ProviderLogin{
 		Redirect: c.Query("next"),
 		Type:     providerName,
-		Client:   "default",
+		ClientId: "default",
 		Tenant:   tenant.Name,
 		Location: location,
+		State:    uuid.NewString(),
 	}
 	infoByte, err := json.Marshal(&loginInfo)
 	if err != nil {
@@ -115,7 +118,6 @@ func LoginToProvider(c *gin.Context) {
 // @Param	code		query	string	true	"code"
 // @Param	phone		query	string	false	"phone"
 // @Param	next		query	string	false	"next"
-// @Success	302
 // @Success	200
 // @Router	/accounts/{tenant}/logged-in/{provider} [get]
 func ProviderCallback(c *gin.Context) {
