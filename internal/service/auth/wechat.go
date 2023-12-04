@@ -59,7 +59,7 @@ func (p ProviderWechat) Login(c *gin.Context) (*model.UserInfo, error) {
 	tokenUrl := "https://api.weixin.qq.com/sns/oauth2/access_token?" + query.Encode()
 	var t WechatTokenResp
 	if err := api.GetClient(tokenUrl, &t); err != nil {
-		return nil, err
+		return nil, errors.WithMessage(err, "failed to get wechat access token")
 	}
 
 	userInfoQuery := url.Values{}
@@ -68,7 +68,7 @@ func (p ProviderWechat) Login(c *gin.Context) (*model.UserInfo, error) {
 	userInfoUrl := "https://api.weixin.qq.com/sns/userinfo?" + userInfoQuery.Encode()
 	var wechatUserInfo WechatUserInfo
 	if err := api.GetClient(userInfoUrl, &wechatUserInfo); err != nil {
-		return nil, err
+		return nil, errors.WithMessage(err, "failed to get wechat user info")
 	}
 
 	userInfo := model.UserInfo{
