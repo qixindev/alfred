@@ -129,11 +129,6 @@ func ProviderCallback(c *gin.Context) {
 	}
 
 	loginInfo, err := c.Cookie("login-info")
-	if err != nil {
-		resp.ErrorUnknown(c, err, "failed to get login info")
-		return
-	}
-
 	authProvider, err := auth.GetAuthProvider(provider.TenantId, provider.Name)
 	if err != nil {
 		resp.ErrorSqlFirst(c, err, "get auth provider err")
