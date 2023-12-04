@@ -8,12 +8,11 @@ import (
 	"alfred/internal/service/auth"
 	"alfred/pkg/global"
 	"alfred/pkg/utils"
+	"encoding/json"
 	"errors"
-	"fmt"
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
-	"net/http"
 )
 
 // ListProviders
@@ -50,6 +49,14 @@ func GetProvider(c *gin.Context) {
 	resp.SuccessWithData(c, authProvider.LoginConfig())
 }
 
+type ProviderLogin struct {
+	Redirect string `json:"redirect"`
+	Type     string `json:"type"`
+	Client   string `json:"client"`
+	Tenant   string `json:"tenant"`
+	Location string `json:"location"`
+}
+
 // LoginToProvider
 // @Summary	login via a provider
 // @Tags	login
@@ -68,7 +75,7 @@ func LoginToProvider(c *gin.Context) {
 		return
 	}
 
-	authStr := fmt.Sprintf("%s/%s/logged-in/%s", utils.GetHostWithScheme(c), tenant.Name, providerName)
+	authStr := utils.GetHostWithScheme(c) + "redirect"
 	if providerName == "sms" {
 		authStr = c.Query("phone")
 	}
@@ -79,19 +86,25 @@ func LoginToProvider(c *gin.Context) {
 		return
 	}
 
-	next := c.Query("next")
-	if next != "" {
-		session := sessions.Default(c)
-		session.Set("next", next)
-		_ = session.Save()
-	}
-
 	if providerName == "sms" {
 		resp.Success(c)
 		return
 	}
+	loginInfo := ProviderLogin{
+		Redirect: c.Query("next"),
+		Type:     providerName,
+		Client:   "default",
+		Tenant:   tenant.Name,
+		Location: location,
+	}
+	infoByte, err := json.Marshal(&loginInfo)
+	if err != nil {
+		resp.ErrorUnknown(c, err, "failed to marshal provider info")
+		return
+	}
 
-	c.Redirect(http.StatusFound, location)
+	c.SetCookie("login-info", string(infoByte), 5*60, "/accounts", c.Request.Host, false, true)
+	resp.SuccessWithData(c, &loginInfo)
 }
 
 // ProviderCallback
@@ -110,6 +123,12 @@ func ProviderCallback(c *gin.Context) {
 	var provider model.Provider
 	if err := internal.TenantDB(c).First(&provider, "name = ?", providerName).Error; err != nil {
 		resp.ErrorSqlFirst(c, err, "get provider err")
+		return
+	}
+
+	loginInfo, err := c.Cookie("login-info")
+	if err != nil {
+		resp.ErrorUnknown(c, err, "failed to get login info")
 		return
 	}
 
@@ -156,14 +175,12 @@ func ProviderCallback(c *gin.Context) {
 	tenant := internal.GetTenant(c)
 	session.Set("tenant", tenant.Name)
 	session.Set("user", user.Username)
-	next := utils.GetString(session.Get("next"))
 	session.Delete("next")
 	if err = session.Save(); err != nil {
 		resp.ErrorSaveSession(c, err)
 		return
 	}
-	if next != "" {
-		c.Redirect(http.StatusFound, next)
-		return
-	}
+
+	c.SetCookie("login-info", "", -1, "/accounts", c.Request.Host, false, true)
+	resp.SuccessWithData(c, loginInfo)
 }
