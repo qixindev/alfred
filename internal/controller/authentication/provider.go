@@ -53,6 +53,7 @@ func GetProvider(c *gin.Context) {
 type ProviderLogin struct {
 	Redirect string `json:"redirect"`
 	Type     string `json:"type"`
+	Provider string `json:"provider"`
 	ClientId string `json:"clientId"`
 	Tenant   string `json:"tenant"`
 	Location string `json:"location"`
@@ -117,26 +118,30 @@ func LoginToProvider(c *gin.Context) {
 // @Summary	provider callback
 // @Tags	login
 // @Param	tenant		path	string	true	"tenant"	default(default)
-// @Param	provider	path	string	true	"provider"
 // @Param	code		query	string	true	"code"
+// @Param	state		query	string	false	"state"
 // @Param	phone		query	string	false	"phone"
-// @Param	next		query	string	false	"next"
 // @Success	200
 // @Router	/accounts/{tenant}/providers/callback [get]
 func ProviderCallback(c *gin.Context) {
-	providerName := c.Param("provider")
 	var provider model.Provider
-	loginInfo, err := global.CodeCache.Get(c.Query("state"))
+	state := c.Query("state")
+	loginInfo, err := global.CodeCache.Get(state)
 	if err != nil {
-		_ = global.CodeCache.Delete(c.Query("state"))
+		_ = global.CodeCache.Delete(state)
 		resp.ErrorForbidden(c, err, "invalidate state")
 		return
 	}
-	if err = global.CodeCache.Delete(c.Query("state")); err != nil {
+	if err = global.CodeCache.Delete(state); err != nil {
 		resp.ErrorUnknown(c, err, "failed to delete state")
 		return
 	}
-	if err = internal.TenantDB(c).First(&provider, "name = ?", providerName).Error; err != nil {
+	var stateInfo ProviderLogin
+	if err = json.Unmarshal(loginInfo, &stateInfo); err != nil {
+		resp.ErrorUnknown(c, err, "failed unmarshal cache login info")
+		return
+	}
+	if err = internal.TenantDB(c).First(&provider, "name = ?", stateInfo.Provider).Error; err != nil {
 		resp.ErrorSqlFirst(c, err, "get provider err")
 		return
 	}
@@ -190,5 +195,5 @@ func ProviderCallback(c *gin.Context) {
 		return
 	}
 
-	resp.SuccessWithData(c, string(loginInfo))
+	resp.SuccessWithData(c, stateInfo)
 }

@@ -3667,13 +3667,6 @@ const docTemplate = `{
                     },
                     {
                         "type": "string",
-                        "description": "provider",
-                        "name": "provider",
-                        "in": "path",
-                        "required": true
-                    },
-                    {
-                        "type": "string",
                         "description": "code",
                         "name": "code",
                         "in": "query",
@@ -3681,14 +3674,14 @@ const docTemplate = `{
                     },
                     {
                         "type": "string",
-                        "description": "phone",
-                        "name": "phone",
+                        "description": "state",
+                        "name": "state",
                         "in": "query"
                     },
                     {
                         "type": "string",
-                        "description": "next",
-                        "name": "next",
+                        "description": "phone",
+                        "name": "phone",
                         "in": "query"
                     }
                 ],

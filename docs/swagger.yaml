@@ -1482,23 +1482,18 @@ paths:
         name: tenant
         required: true
         type: string
-      - description: provider
-        in: path
-        name: provider
-        required: true
-        type: string
       - description: code
         in: query
         name: code
         required: true
         type: string
+      - description: state
+        in: query
+        name: state
+        type: string
       - description: phone
         in: query
         name: phone
-        type: string
-      - description: next
-        in: query
-        name: next
         type: string
       responses:
         "200":
