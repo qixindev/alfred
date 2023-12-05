@@ -3,6 +3,8 @@ package auth
 import (
 	"alfred/internal/model"
 	"alfred/pkg/client/msg/api"
+	"alfred/pkg/global"
+	"alfred/pkg/utils"
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
@@ -77,6 +79,7 @@ func (p ProviderWechat) Login(c *gin.Context) (*model.UserInfo, error) {
 		Picture:     wechatUserInfo.Headimgurl,
 	}
 
+	global.LOG.Info("wechat user info: " + utils.StructToString(userInfo))
 	return &userInfo, nil
 }
 
