@@ -56,7 +56,6 @@ type ProviderLogin struct {
 	Provider string `json:"provider"`
 	ClientId string `json:"clientId"`
 	Tenant   string `json:"tenant"`
-	Location string `json:"location"`
 }
 
 // LoginToProvider
@@ -99,7 +98,6 @@ func LoginToProvider(c *gin.Context) {
 		Provider: providerName,
 		ClientId: "default",
 		Tenant:   tenant.Name,
-		Location: location,
 	}
 	infoByte, err := json.Marshal(&loginInfo)
 	if err != nil {
@@ -111,7 +109,7 @@ func LoginToProvider(c *gin.Context) {
 		resp.ErrorUnknown(c, err, "failed to set code")
 		return
 	}
-	resp.SuccessWithData(c, &gin.H{"state": state})
+	resp.SuccessWithData(c, &gin.H{"state": state, "location": location})
 }
 
 // ProviderCallback
