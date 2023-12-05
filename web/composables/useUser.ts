@@ -19,9 +19,8 @@ interface SelectOption {
 }
 
 export const useUser = () => useState<User | undefined>("user", () => undefined);
-export const useTenant = () => useState<String>("tenant", () => localStorage.getItem('tenantValue'));
+export const useTenant = () => useState<String>("tenant", () => localStorage.getItem('tenantValue') as string);
 const VITE_APP_BASE_API = import.meta.env.VITE_APP_BASE_API
-
 /**
  *  获取用户信息（昵称、头像、角色集合、权限集合）
  */
@@ -62,40 +61,21 @@ export async function useGetToken(code: string) {
 }
 
 /**
- * 获取第三方登录配置
- */
-export async function getThirdLoginConfig(type: string, code: string) {
-  const params = {
-    code: code,
-  }
-  await thirdLogin(type, params)
-  await useGetUserInfo()
-  // code使用完后删除url参数
-  const route = useRoute()
-  navigateTo(route.query.from as string || '/', { replace: true })
-}
-
-/**
  * 第三方登录
  */
 export async function useThirdLogin(state: string, code: string) {
   // 处理cookie冲突
   useRemoveToken()
-  const params = {
-    code: code,
-  }
-  if (isJsonString(state)) {
-    const { redirect_uri, client_id, type, tenant } = JSON.parse(state)
-    await thirdLogin(type, params, tenant)
-    navigateTo(`${location.origin}${VITE_APP_BASE_API}/${tenant}/oauth2/auth?client_id=${client_id}&scope=profileOpenId&response_type=code&redirect_uri=${redirect_uri}`, { external: true })
+  const route = useRoute()
+
+  if (route.query.tenant) {
+    const res = await thirdLogin(route.query.tenant as string, code, state)
+    const { clientId, redirect, tenant } = res as any
+    navigateTo(`${location.origin}${VITE_APP_BASE_API}/${tenant}/oauth2/auth?client_id=${clientId}&scope=profileOpenId&response_type=code&redirect_uri=${redirect}`, { external: true })
   } else {
-    const params = {
-      code: code,
-    }
-    await thirdLogin(state, params)
+    await thirdLogin("default",code,state)
     await useGetUserInfo()
     // code使用完后删除url参数
-    const route = useRoute()
     navigateTo(route.query.from as string || '/', { replace: true })
   }
 }
