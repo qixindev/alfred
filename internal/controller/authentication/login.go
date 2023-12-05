@@ -158,12 +158,12 @@ func GetLoginProtocol(c *gin.Context) {
 }
 
 func AddLoginRoutes(rg *gin.RouterGroup) {
-	rg.POST("/login", Login)                           // 账号密码登录
-	rg.GET("/login/proto/:fileName", GetLoginProtocol) // 获取登录协议
-	rg.GET("/login/:provider", LoginToProvider)        // 第三方登录重定向
-	rg.GET("/providers", ListProviders)                // 第三方信息
-	rg.GET("/providers/:provider", GetProvider)        // 第三方具体信息
+	rg.POST("/login", Login)                              // 账号密码登录
+	rg.GET("/login/proto/:fileName", GetLoginProtocol)    // 获取登录协议
+	rg.GET("/providers", ListProviders)                   // 第三方信息列表
+	rg.GET("/providers/:provider", GetProvider)           // 第三方具体信息
+	rg.GET("/providers/:provider/login", LoginToProvider) // 第三方登录重定向
+	rg.GET("/providers/callback", ProviderCallback)       // 验证第三方登录是否成功
 	rg.GET("/logout", middlewares.Authorized(false), Logout)
-	rg.POST("/register", Register)                   // 注册
-	rg.GET("/logged-in/:provider", ProviderCallback) // 验证第三方登录是否成功
+	rg.POST("/register", Register) // 注册
 }

@@ -3,6 +3,7 @@ package cmd
 import (
 	"alfred/initial"
 	"alfred/internal"
+	"alfred/pkg/cache"
 	"alfred/pkg/config/env"
 	"alfred/pkg/global"
 	"alfred/pkg/utils"
@@ -34,6 +35,10 @@ func initSystem() error {
 		return errors.WithMessage(err, "InitDB err")
 	}
 
+	global.CodeCache, err = cache.NewBigCache(120 * time.Second)
+	if err != nil {
+		return errors.WithMessage(err, "init big cache err")
+	}
 	if env.GetReleaseType() == "first" {
 		migrateList := getMigrateModel()
 		if err = global.DB.AutoMigrate(migrateList...); err != nil {

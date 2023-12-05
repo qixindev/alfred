@@ -7,7 +7,6 @@ import (
 	"alfred/pkg/utils"
 	"fmt"
 	"github.com/gin-gonic/gin"
-	"github.com/google/uuid"
 	"github.com/pkg/errors"
 	"net/url"
 )
@@ -16,13 +15,13 @@ type ProviderWechat struct {
 	Config model.ProviderWechat
 }
 
-func (p ProviderWechat) Auth(redirectUri string, _ uint) (string, error) {
+func (p ProviderWechat) Auth(redirectUri string, state string, _ uint) (string, error) {
 	query := url.Values{}
 	query.Set("appid", p.Config.AppId)
 	query.Set("redirect_uri", redirectUri)
 	query.Set("response_type", "code")
 	query.Set("scope", "snsapi_login")
-	query.Set("state", uuid.NewString())
+	query.Set("state", state)
 	location := fmt.Sprintf("https://open.weixin.qq.com/connect/qrconnect?%s#wechat_redirect", query.Encode())
 	return location, nil
 }
@@ -34,6 +33,8 @@ type WechatTokenResp struct {
 	Openid       string `json:"openid"`
 	Scope        string `json:"scope"`
 	Unionid      string `json:"unionid"`
+	ErrorCode    int    `json:"errcode"`
+	ErrorMsg     string `json:"errmsg"`
 }
 type WechatUserInfo struct {
 	Openid     string        `json:"openid"`
@@ -46,6 +47,8 @@ type WechatUserInfo struct {
 	Headimgurl string        `json:"headimgurl"`
 	Privilege  []interface{} `json:"privilege"`
 	Unionid    string        `json:"unionid"`
+	ErrorCode  int           `json:"errcode"`
+	ErrorMsg   string        `json:"errmsg"`
 }
 
 func (p ProviderWechat) Login(c *gin.Context) (*model.UserInfo, error) {
@@ -63,7 +66,9 @@ func (p ProviderWechat) Login(c *gin.Context) (*model.UserInfo, error) {
 	if err := api.GetClient(tokenUrl, &t); err != nil {
 		return nil, errors.WithMessage(err, "failed to get wechat access token")
 	}
-
+	if t.ErrorCode != 0 || t.ErrorMsg != "" {
+		return nil, errors.New(fmt.Sprintf("get wechat access token err: %d:%s", t.ErrorCode, t.ErrorMsg))
+	}
 	userInfoQuery := url.Values{}
 	userInfoQuery.Set("access_token", t.AccessToken)
 	userInfoQuery.Set("openid", t.Openid)
@@ -73,6 +78,9 @@ func (p ProviderWechat) Login(c *gin.Context) (*model.UserInfo, error) {
 		return nil, errors.WithMessage(err, "failed to get wechat user info")
 	}
 
+	if wechatUserInfo.ErrorCode != 0 || wechatUserInfo.ErrorMsg != "" {
+		return nil, errors.New(fmt.Sprintf("get wechat access token err: %d:%s", t.ErrorCode, t.ErrorMsg))
+	}
 	userInfo := model.UserInfo{
 		Sub:         t.Openid,
 		DisplayName: wechatUserInfo.Nickname,

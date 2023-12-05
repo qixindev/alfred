@@ -8,7 +8,6 @@ import (
 	"errors"
 	"fmt"
 	"github.com/gin-gonic/gin"
-	"github.com/google/uuid"
 	"net/http"
 	"net/url"
 )
@@ -17,13 +16,13 @@ type ProviderDingTalk struct {
 	Config model.ProviderDingTalk
 }
 
-func (p ProviderDingTalk) Auth(redirectUri string, _ uint) (string, error) {
+func (p ProviderDingTalk) Auth(redirectUri string, state string, _ uint) (string, error) {
 	query := url.Values{}
 	query.Set("client_id", p.Config.AppKey)
 	query.Set("scope", "openid corpid")
 	query.Set("response_type", "code")
 	query.Set("redirect_uri", redirectUri)
-	query.Set("state", uuid.NewString())
+	query.Set("state", state)
 	query.Set("prompt", "consent")
 	location := fmt.Sprintf("%s?%s", "https://login.dingtalk.com/oauth2/auth", query.Encode())
 	return location, nil

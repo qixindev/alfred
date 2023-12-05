@@ -8,12 +8,12 @@ import (
 	"alfred/internal/service/auth"
 	"alfred/pkg/global"
 	"alfred/pkg/utils"
+	"encoding/json"
 	"errors"
-	"fmt"
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-gonic/gin"
+	"github.com/google/uuid"
 	"gorm.io/gorm"
-	"net/http"
 )
 
 // ListProviders
@@ -50,6 +50,14 @@ func GetProvider(c *gin.Context) {
 	resp.SuccessWithData(c, authProvider.LoginConfig())
 }
 
+type ProviderLogin struct {
+	Redirect string `json:"redirect"`
+	Type     string `json:"type"`
+	Provider string `json:"provider"`
+	ClientId string `json:"clientId"`
+	Tenant   string `json:"tenant"`
+}
+
 // LoginToProvider
 // @Summary	login via a provider
 // @Tags	login
@@ -57,33 +65,32 @@ func GetProvider(c *gin.Context) {
 // @Param	provider	path	string	true	"provider"
 // @Param	phone		query	string	false	"phone"
 // @Param	next		query	string	false	"next"
+// @Param	callback	query	string	false	"callback url"
 // @Success	302
-// @Router	/accounts/{tenant}/login/{provider} [get]
+// @Router	/accounts/{tenant}/providers/{provider}/login [get]
 func LoginToProvider(c *gin.Context) {
 	tenant := internal.GetTenant(c)
 	providerName := c.Param("provider")
+	callbackUrl := c.Query("callback")
 	authProvider, err := auth.GetAuthProvider(tenant.Id, providerName)
 	if err != nil {
 		resp.ErrorSqlFirst(c, err, "get provider err")
 		return
 	}
 
-	authStr := fmt.Sprintf("%s/%s/logged-in/%s", utils.GetHostWithScheme(c), tenant.Name, providerName)
+	state := uuid.NewString()
+	authStr := utils.GetHostWithScheme(c) + "/redirect"
+	if callbackUrl != "" {
+		authStr = callbackUrl
+	}
 	if providerName == "sms" {
-		authStr = c.Query("phone")
+		state = c.Query("phone")
 	}
 
-	location, err := authProvider.Auth(authStr, tenant.Id)
+	location, err := authProvider.Auth(authStr, state, tenant.Id)
 	if err != nil {
 		resp.ErrorUnknown(c, err, "provider auth err")
 		return
-	}
-
-	next := c.Query("next")
-	if next != "" {
-		session := sessions.Default(c)
-		session.Set("next", next)
-		_ = session.Save()
 	}
 
 	if providerName == "sms" {
@@ -91,24 +98,53 @@ func LoginToProvider(c *gin.Context) {
 		return
 	}
 
-	c.Redirect(http.StatusFound, location)
+	loginInfo := ProviderLogin{
+		Redirect: c.Query("next"),
+		Provider: providerName,
+		ClientId: "default",
+		Tenant:   tenant.Name,
+	}
+	infoByte, err := json.Marshal(&loginInfo)
+	if err != nil {
+		resp.ErrorUnknown(c, err, "failed to marshal provider info")
+		return
+	}
+
+	if err = global.CodeCache.Set(state, infoByte); err != nil {
+		resp.ErrorUnknown(c, err, "failed to set code")
+		return
+	}
+	resp.SuccessWithData(c, &gin.H{"state": state, "location": location})
 }
 
 // ProviderCallback
 // @Summary	provider callback
 // @Tags	login
 // @Param	tenant		path	string	true	"tenant"	default(default)
-// @Param	provider	path	string	true	"provider"
 // @Param	code		query	string	true	"code"
+// @Param	state		query	string	false	"state"
 // @Param	phone		query	string	false	"phone"
-// @Param	next		query	string	false	"next"
-// @Success	302
 // @Success	200
-// @Router	/accounts/{tenant}/logged-in/{provider} [get]
+// @Router	/accounts/{tenant}/providers/callback [get]
 func ProviderCallback(c *gin.Context) {
-	providerName := c.Param("provider")
 	var provider model.Provider
-	if err := internal.TenantDB(c).First(&provider, "name = ?", providerName).Error; err != nil {
+	state := c.Query("state")
+	loginInfo, err := global.CodeCache.Get(state)
+	if err != nil {
+		_ = global.CodeCache.Delete(state)
+		resp.ErrorForbidden(c, err, "invalidate state")
+		return
+	}
+	if err = global.CodeCache.Delete(state); err != nil {
+		resp.ErrorUnknown(c, err, "failed to delete state")
+		return
+	}
+	var stateInfo ProviderLogin
+	if err = json.Unmarshal(loginInfo, &stateInfo); err != nil {
+		resp.ErrorUnknown(c, err, "failed unmarshal cache login info")
+		return
+	}
+	if err = internal.TenantDB(c).First(&provider, "name = ?", stateInfo.Provider).Error; err != nil {
 		resp.ErrorSqlFirst(c, err, "get provider err")
 		return
 	}
@@ -156,14 +192,12 @@ func ProviderCallback(c *gin.Context) {
 	tenant := internal.GetTenant(c)
 	session.Set("tenant", tenant.Name)
 	session.Set("user", user.Username)
-	next := utils.GetString(session.Get("next"))
 	session.Delete("next")
 	if err = session.Save(); err != nil {
 		resp.ErrorSaveSession(c, err)
 		return
 	}
-	if next != "" {
-		c.Redirect(http.StatusFound, next)
-		return
-	}
+
+	stateInfo.Type = provider.Type
+	resp.SuccessWithData(c, stateInfo)
 }
