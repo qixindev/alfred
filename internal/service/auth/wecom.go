@@ -18,12 +18,10 @@ type ProviderWeCom struct {
 func (p ProviderWeCom) Auth(redirectUri string, state string, _ uint) (string, error) {
 	query := url.Values{}
 	query.Set("appid", p.Config.CorpId)
-	query.Set("scope", "snsapi_base")
-	query.Set("response_type", "code")
 	query.Set("redirect_uri", redirectUri)
 	query.Set("agentid", p.Config.AgentId)
 	query.Set("state", state)
-	location := fmt.Sprintf("%s?%s#wechat_redirect", "https://open.weixin.qq.com/connect/oauth2/authorize", query.Encode())
+	location := fmt.Sprintf("%s?%s", "https://login.work.weixin.qq.com/wwlogin/sso/login", query.Encode())
 	return location, nil
 }
 
