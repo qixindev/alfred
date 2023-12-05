@@ -96,7 +96,7 @@ func LoginToProvider(c *gin.Context) {
 
 	loginInfo := ProviderLogin{
 		Redirect: c.Query("next"),
-		Type:     providerName,
+		Provider: providerName,
 		ClientId: "default",
 		Tenant:   tenant.Name,
 		Location: location,
@@ -195,5 +195,6 @@ func ProviderCallback(c *gin.Context) {
 		return
 	}
 
+	stateInfo.Type = provider.Type
 	resp.SuccessWithData(c, stateInfo)
 }
