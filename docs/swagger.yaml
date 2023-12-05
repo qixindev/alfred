@@ -1114,41 +1114,6 @@ paths:
       summary: 授权一类资源给用户
       tags:
       - iam-role
-  /accounts/{tenant}/logged-in/{provider}:
-    get:
-      parameters:
-      - default: default
-        description: tenant
-        in: path
-        name: tenant
-        required: true
-        type: string
-      - description: provider
-        in: path
-        name: provider
-        required: true
-        type: string
-      - description: code
-        in: query
-        name: code
-        required: true
-        type: string
-      - description: phone
-        in: query
-        name: phone
-        type: string
-      - description: next
-        in: query
-        name: next
-        type: string
-      responses:
-        "200":
-          description: OK
-        "302":
-          description: Found
-      summary: provider callback
-      tags:
-      - login
   /accounts/{tenant}/login:
     post:
       parameters:
@@ -1176,34 +1141,6 @@ paths:
         "302":
           description: Found
       summary: login using username and password
-      tags:
-      - login
-  /accounts/{tenant}/login/{provider}:
-    get:
-      parameters:
-      - default: default
-        description: tenant
-        in: path
-        name: tenant
-        required: true
-        type: string
-      - description: provider
-        in: path
-        name: provider
-        required: true
-        type: string
-      - description: phone
-        in: query
-        name: phone
-        type: string
-      - description: next
-        in: query
-        name: next
-        type: string
-      responses:
-        "302":
-          description: Found
-      summary: login via a provider
       tags:
       - login
   /accounts/{tenant}/login/proto/{fileName}:
@@ -1506,6 +1443,67 @@ paths:
           schema:
             $ref: '#/definitions/dto.ProviderDto'
       summary: get a login provider
+      tags:
+      - login
+  /accounts/{tenant}/providers/{provider}/login:
+    get:
+      parameters:
+      - default: default
+        description: tenant
+        in: path
+        name: tenant
+        required: true
+        type: string
+      - description: provider
+        in: path
+        name: provider
+        required: true
+        type: string
+      - description: phone
+        in: query
+        name: phone
+        type: string
+      - description: next
+        in: query
+        name: next
+        type: string
+      responses:
+        "302":
+          description: Found
+      summary: login via a provider
+      tags:
+      - login
+  /accounts/{tenant}/providers/callback:
+    get:
+      parameters:
+      - default: default
+        description: tenant
+        in: path
+        name: tenant
+        required: true
+        type: string
+      - description: provider
+        in: path
+        name: provider
+        required: true
+        type: string
+      - description: code
+        in: query
+        name: code
+        required: true
+        type: string
+      - description: phone
+        in: query
+        name: phone
+        type: string
+      - description: next
+        in: query
+        name: next
+        type: string
+      responses:
+        "200":
+          description: OK
+      summary: provider callback
       tags:
       - login
   /accounts/{tenant}/register:

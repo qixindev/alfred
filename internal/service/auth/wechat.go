@@ -60,6 +60,9 @@ func (p ProviderWechat) Login(c *gin.Context) (*model.UserInfo, error) {
 	if err := api.GetClient(tokenUrl, &t); err != nil {
 		return nil, errors.WithMessage(err, "failed to get wechat access token")
 	}
+	if t.AccessToken == "" || t.Openid == "" {
+		return nil, errors.New("access token or openid is nil")
+	}
 
 	userInfoQuery := url.Values{}
 	userInfoQuery.Set("access_token", t.AccessToken)

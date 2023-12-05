@@ -3184,58 +3184,6 @@ const docTemplate = `{
                 }
             }
         },
-        "/accounts/{tenant}/logged-in/{provider}": {
-            "get": {
-                "tags": [
-                    "login"
-                ],
-                "summary": "provider callback",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "default": "default",
-                        "description": "tenant",
-                        "name": "tenant",
-                        "in": "path",
-                        "required": true
-                    },
-                    {
-                        "type": "string",
-                        "description": "provider",
-                        "name": "provider",
-                        "in": "path",
-                        "required": true
-                    },
-                    {
-                        "type": "string",
-                        "description": "code",
-                        "name": "code",
-                        "in": "query",
-                        "required": true
-                    },
-                    {
-                        "type": "string",
-                        "description": "phone",
-                        "name": "phone",
-                        "in": "query"
-                    },
-                    {
-                        "type": "string",
-                        "description": "next",
-                        "name": "next",
-                        "in": "query"
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK"
-                    },
-                    "302": {
-                        "description": "Found"
-                    }
-                }
-            }
-        },
         "/accounts/{tenant}/login": {
             "post": {
                 "tags": [
@@ -3306,48 +3254,6 @@ const docTemplate = `{
                 "responses": {
                     "200": {
                         "description": "OK"
-                    }
-                }
-            }
-        },
-        "/accounts/{tenant}/login/{provider}": {
-            "get": {
-                "tags": [
-                    "login"
-                ],
-                "summary": "login via a provider",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "default": "default",
-                        "description": "tenant",
-                        "name": "tenant",
-                        "in": "path",
-                        "required": true
-                    },
-                    {
-                        "type": "string",
-                        "description": "provider",
-                        "name": "provider",
-                        "in": "path",
-                        "required": true
-                    },
-                    {
-                        "type": "string",
-                        "description": "phone",
-                        "name": "phone",
-                        "in": "query"
-                    },
-                    {
-                        "type": "string",
-                        "description": "next",
-                        "name": "next",
-                        "in": "query"
-                    }
-                ],
-                "responses": {
-                    "302": {
-                        "description": "Found"
                     }
                 }
             }
@@ -3744,6 +3650,55 @@ const docTemplate = `{
                 }
             }
         },
+        "/accounts/{tenant}/providers/callback": {
+            "get": {
+                "tags": [
+                    "login"
+                ],
+                "summary": "provider callback",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "default": "default",
+                        "description": "tenant",
+                        "name": "tenant",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "provider",
+                        "name": "provider",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "code",
+                        "name": "code",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "phone",
+                        "name": "phone",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "next",
+                        "name": "next",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
         "/accounts/{tenant}/providers/{provider}": {
             "get": {
                 "tags": [
@@ -3773,6 +3728,48 @@ const docTemplate = `{
                         "schema": {
                             "$ref": "#/definitions/dto.ProviderDto"
                         }
+                    }
+                }
+            }
+        },
+        "/accounts/{tenant}/providers/{provider}/login": {
+            "get": {
+                "tags": [
+                    "login"
+                ],
+                "summary": "login via a provider",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "default": "default",
+                        "description": "tenant",
+                        "name": "tenant",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "provider",
+                        "name": "provider",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "phone",
+                        "name": "phone",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "next",
+                        "name": "next",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "302": {
+                        "description": "Found"
                     }
                 }
             }

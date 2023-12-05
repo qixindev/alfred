@@ -56,7 +56,6 @@ type ProviderLogin struct {
 	ClientId string `json:"clientId"`
 	Tenant   string `json:"tenant"`
 	Location string `json:"location"`
-	State    string `json:"state"`
 }
 
 // LoginToProvider
@@ -100,7 +99,6 @@ func LoginToProvider(c *gin.Context) {
 		ClientId: "default",
 		Tenant:   tenant.Name,
 		Location: location,
-		State:    uuid.NewString(),
 	}
 	infoByte, err := json.Marshal(&loginInfo)
 	if err != nil {
@@ -130,7 +128,12 @@ func ProviderCallback(c *gin.Context) {
 	var provider model.Provider
 	loginInfo, err := global.CodeCache.Get(c.Query("state"))
 	if err != nil {
+		_ = global.CodeCache.Delete(c.Query("state"))
 		resp.ErrorForbidden(c, err, "invalidate state")
+		return
+	}
+	if err = global.CodeCache.Delete(c.Query("state")); err != nil {
+		resp.ErrorUnknown(c, err, "failed to delete state")
 		return
 	}
 	if err = internal.TenantDB(c).First(&provider, "name = ?", providerName).Error; err != nil {
