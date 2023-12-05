@@ -6,14 +6,31 @@
     </div>
     <el-card>
       <el-table v-loading="loading" stripe :data="dataList">
-        <el-table-column label="ID"  align="center" prop="id"/>
+        <el-table-column label="ID" align="center" prop="id" />
         <el-table-column label="name" align="center" prop="name" />
         <el-table-column label="type" align="center" prop="type" />
-        <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
+        <el-table-column
+          label="操作"
+          align="center"
+          class-name="small-padding fixed-width"
+        >
           <template #default="{ row }">
-            <el-button size="small" type="primary" link icon="Edit" @click="handleUpdate(row)">修改
+            <el-button
+              size="small"
+              type="primary"
+              link
+              icon="Edit"
+              @click="handleUpdate(row)"
+              >修改
             </el-button>
-            <el-button size="small" type="primary" link icon="Delete" @click="handleDelete(row)" :loading="row.deleteLoading">删除
+            <el-button
+              size="small"
+              type="primary"
+              link
+              icon="Delete"
+              @click="handleDelete(row)"
+              :loading="row.deleteLoading"
+              >删除
             </el-button>
           </template>
         </el-table-column>
@@ -21,8 +38,14 @@
     </el-card>
 
     <!-- 添加或修改对话框 -->
-    <el-dialog :title="`${open === Status.ADD ? '新增' : '修改'}`" titleIcon="modify" v-model="visible" width="500px" append-to-body
-      :before-close="cancel">
+    <el-dialog
+      :title="`${open === Status.ADD ? '新增' : '修改'}`"
+      titleIcon="modify"
+      v-model="visible"
+      width="500px"
+      append-to-body
+      :before-close="cancel"
+    >
       <el-form ref="formRef" :model="form" :rules="rules" label-width="100px">
         <el-form-item label="name" prop="name">
           <el-input v-model="form.name" placeholder="请输入name" />
@@ -37,10 +60,18 @@
             />
           </el-select>
         </el-form-item>
-        <el-form-item v-if="form.type !== 'sms'" label="agentId" prop="agentId">
+        <el-form-item
+          v-if="!(form.type == 'sms'||form.type == 'wechat')"
+          label="agentId"
+          prop="agentId"
+        >
           <el-input v-model="form.agentId" placeholder="请输入agentId" />
         </el-form-item>
-        <el-form-item v-if="form.type !== 'sms'" label="appSecret" prop="appSecret">
+        <el-form-item
+          v-if="!(form.type == 'sms'||form.type == 'wechat')"
+          label="appSecret"
+          prop="appSecret"
+        >
           <el-input v-model="form.appSecret" placeholder="请输入appSecret" />
         </el-form-item>
 
@@ -54,38 +85,52 @@
           <el-input v-model="form.corpId" placeholder="请输入corpId" />
         </el-form-item>
 
+        <!-- 微信参数 -->
+        <el-form-item v-if="form.type == 'wechat'" label="appid" prop="agentId">
+          <el-input v-model="form.agentId" placeholder="请输入appid" />
+        </el-form-item>
+        <el-form-item v-if="form.type == 'wechat'" label="secret" prop="appSecret">
+          <el-input v-model="form.appSecret" placeholder="请输入secret" />
+        </el-form-item>
       </el-form>
       <template #footer>
-        <el-button type="primary" @click="submitForm" :loading="updateLoading">确 定</el-button>
+        <el-button type="primary" @click="submitForm" :loading="updateLoading"
+          >确 定</el-button
+        >
         <el-button @click="cancel">取 消</el-button>
       </template>
     </el-dialog>
   </div>
 </template>
 
-
 <script lang="ts" setup name="Users">
-import { ElForm, ElInput, ElMessage, ElMessageBox } from 'element-plus';
+import { ElForm, ElInput, ElMessage, ElMessageBox } from "element-plus";
 
-import { getProviders, saveProvider, updateProvider, delProvider, getProvider } from '~/api/providers'
+import {
+  getProviders,
+  saveProvider,
+  updateProvider,
+  delProvider,
+  getProvider,
+} from "~/api/providers";
 
 interface Form {
-  id: undefined | Number,
-  name: undefined | string,
-  type: undefined | string,
-  agentId?: undefined | string,
-  appSecret?: undefined | string,
-  corpId?: undefined | string,
-  appKey?: undefined | string
+  id: undefined | Number;
+  name: undefined | string;
+  type: undefined | string;
+  agentId?: undefined | string;
+  appSecret?: undefined | string;
+  corpId?: undefined | string;
+  appKey?: undefined | string;
 }
 
 enum Status {
   CLOSE = 0,
   ADD = 1,
-  EDIT = 2
+  EDIT = 2,
 }
 
-const tenant =  useTenant()
+const tenant = useTenant();
 
 const state = reactive({
   // 遮罩层
@@ -105,66 +150,54 @@ const state = reactive({
   } as Form,
   // 表单校验
   rules: {
-    name: [
-      { required: true, message: 'name 不能为空', trigger: 'blur' }
-    ],
-    type: [
-      { required: true, message: 'type 不能为空', trigger: 'change' }
-    ],
-    agentId: [
-      { required: true, message: 'agentId 不能为空', trigger: 'blur' }
-    ],
-    appSecret: [
-      { required: true, message: 'appSecret 不能为空', trigger: 'blur' }
-    ],
-    appKey: [
-      { required: true, message: 'appKey 不能为空', trigger: 'blur' }
-    ],
-    corpId: [
-      { required: true, message: 'corpId 不能为空', trigger: 'blur' }
-    ],
-  }
-})
+    name: [{ required: true, message: "name 不能为空", trigger: "blur" }],
+    type: [{ required: true, message: "type 不能为空", trigger: "change" }],
+    agentId: [{ required: true, message: "agentId 不能为空", trigger: "blur" }],
+    appSecret: [{ required: true, message: "appSecret 不能为空", trigger: "blur" }],
+    appKey: [{ required: true, message: "appKey 不能为空", trigger: "blur" }],
+    corpId: [{ required: true, message: "corpId 不能为空", trigger: "blur" }]
+  },
+});
 
 const typeOptions = ref([
   {
-    label: 'dingtalk',
-    value: 'dingtalk'
+    label: "dingtalk",
+    value: "dingtalk",
   },
   {
-    label: 'wecom',
-    value: 'wecom'
+    label: "wecom",
+    value: "wecom",
   },
   {
-    label: 'sms',
-    value: 'sms'
+    label: "sms",
+    value: "sms",
   },
-])
+  {
+    label: "wechat",
+    value: "wechat",
+  },
+]);
 
-const {
-  loading,
-  dataList,
-  open,
-  form,
-  rules
-} = toRefs(state)
+const { loading, dataList, open, form, rules } = toRefs(state);
 
 const formRef = ref(ElForm);
 
 const visible = computed(() => {
-  return !!state.open
-})
+  return !!state.open;
+});
 
-const viewDialogVisible = ref(false)
+const viewDialogVisible = ref(false);
 
 /** 查询列表 */
 function getList() {
-  state.loading = true
-  getProviders().then((res:any) => {
-    state.dataList = res
-  }).finally(() => {
-    state.loading = false
-  })
+  state.loading = true;
+  getProviders()
+    .then((res: any) => {
+      state.dataList = res;
+    })
+    .finally(() => {
+      state.loading = false;
+    });
 }
 
 // 表单重置
@@ -177,51 +210,51 @@ function resetForm() {
     agentId: undefined,
     appKey: undefined,
     corpId: undefined,
-  }
-  formRef.value.resetFields()
+  };
+  formRef.value.resetFields();
 }
 // 取消按钮
 function cancel() {
-  resetForm()
-  state.open = Status.CLOSE
-  viewDialogVisible.value = false
+  resetForm();
+  state.open = Status.CLOSE;
+  viewDialogVisible.value = false;
 }
 /** 新增按钮操作 */
 function handleAdd() {
-  state.open = Status.ADD
+  state.open = Status.ADD;
 }
 /** 修改按钮操作 */
 function handleUpdate(row: any) {
   getProvider(row.id).then((res: any) => {
-    const {providerId: id, name, type,agentId, appSecret } = res
+    const { providerId: id, name, type, agentId, appSecret} = res;
     switch (row.type) {
-      case 'dingtalk':
-        const { appKey } = res
-        state.form.appKey = appKey
+      case "dingtalk":
+        const { appKey } = res;
+        state.form.appKey = appKey;
         break;
-    
-      case 'wecom':
-        const { corpId } = res
-        state.form.corpId = corpId
+
+      case "wecom":
+        const { corpId } = res;
+        state.form.corpId = corpId;
         break;
-    
+
       default:
         break;
     }
-    state.open = Status.EDIT
+    state.open = Status.EDIT;
 
-    nextTick(()=>{
-      state.form.id = id
-      state.form.name = name
-      state.form.type = type
-      state.form.agentId = agentId
-      state.form.appSecret = appSecret
-    })
-  })
+    nextTick(() => {
+      state.form.id = id;
+      state.form.name = name;
+      state.form.type = type;
+      state.form.agentId = agentId;
+      state.form.appSecret = appSecret;
+    });
+  });
 }
 
 function handleConfig(row: any) {
-  navigateTo(`/dashboard/${tenant.value}/providers/sms`)
+  navigateTo(`/dashboard/${tenant.value}/providers/sms`);
 }
 
 let updateLoading = ref(false);
@@ -229,83 +262,86 @@ let updateLoading = ref(false);
 function submitForm() {
   formRef.value.validate((valid: boolean) => {
     if (valid) {
-      updateLoading.value = true
-      let { id, name, type, agentId, appSecret } = state.form
+      updateLoading.value = true;
+      let { id, name, type, agentId, appSecret} = state.form;
       let params;
       switch (type) {
-        case 'dingtalk':
-          const { appKey } = state.form
-          params = { name, type, agentId, appSecret, appKey }
+        case "dingtalk":
+          const { appKey } = state.form;
+          params = { name, type, agentId, appSecret, appKey };
           break;
-      
-        case 'wecom':
-          const { corpId } = state.form
-          params = { name, type, agentId, appSecret, corpId }
+
+        case "wecom":
+          const { corpId } = state.form;
+          params = { name, type, agentId, appSecret, corpId };
           break;
-      
-        case 'sms':
-          params = { name, type }
+
+        case "sms":
+          params = { name, type };
           break;
-      
+        case "wechat":
+          params = { name, type,agentId, appSecret };
+          break;
         default:
           break;
       }
 
       if (state.open === Status.EDIT) {
-        updateProvider(id as number, params).then(() => {
-          ElMessage({
-            showClose: true,
-            message: '修改成功',
-            type: 'success',
+        updateProvider(id as number, params)
+          .then(() => {
+            ElMessage({
+              showClose: true,
+              message: "修改成功",
+              type: "success",
+            });
+            cancel();
+            getList();
           })
-          cancel()
-          getList()
-        }).finally(() => {
-          updateLoading.value = false
-        })
+          .finally(() => {
+            updateLoading.value = false;
+          });
       } else {
-        saveProvider(params).then(() => {
-          ElMessage({
-            showClose: true,
-            message: '创建成功',
-            type: 'success',
+        saveProvider(params)
+          .then(() => {
+            ElMessage({
+              showClose: true,
+              message: "创建成功",
+              type: "success",
+            });
+            cancel();
+            getList();
           })
-          cancel()
-          getList()
-        }).finally(() => {
-          updateLoading.value = false
-        })
+          .finally(() => {
+            updateLoading.value = false;
+          });
       }
     }
-  })
+  });
 }
 /** 删除按钮操作 */
 function handleDelete(row: any) {
-  ElMessageBox.confirm(
-    `是否确认删除${row.name}"`,
-    'Warning',
-    {
-      confirmButtonText: '确认',
-      cancelButtonText: '取消',
-      type: 'warning',
-    }
-  ).then(async function () {
-    row.deleteLoading = true
-    await delProvider(row.id)
-    row.deleteLoading = false
-    getList()
-    ElMessage({
-      showClose: true,
-      message: '删除成功',
-      type: 'success',
-    })
-  }).catch(() => {
+  ElMessageBox.confirm(`是否确认删除${row.name}"`, "Warning", {
+    confirmButtonText: "确认",
+    cancelButtonText: "取消",
+    type: "warning",
   })
+    .then(async function () {
+      row.deleteLoading = true;
+      await delProvider(row.id);
+      row.deleteLoading = false;
+      getList();
+      ElMessage({
+        showClose: true,
+        message: "删除成功",
+        type: "success",
+      });
+    })
+    .catch(() => {});
 }
 
 onMounted(() => {
-  getList()
-})
+  getList();
+});
 </script>
 
 <style lang="scss" scoped>

@@ -29,11 +29,14 @@ export const getThirdLoginConfigByName = async (providerName: string, currentTen
 }
 
 export const thirdLoginHandle = async (providerName: string, phone: string, currentTenant = 'default') => {
-  return await useHttp.get(`/${currentTenant}/login/${providerName}?phone=${phone}`)
+  return await useHttp.get(`/${currentTenant}/providers/${providerName}/login?phone=${phone}`)
+}
+export const thirdLoginHandleInfo = async (providerName: string, currentTenant = 'default', next: string,callback:string) => {
+  return await useHttp.get(`/${currentTenant}/providers/${providerName}/login?next=${next}&callback=${callback}`)
 }
 
-export const thirdLogin = async (providerName: string, data: any, currentTenant = 'default') => {
-  return await useHttp.get(`/${currentTenant}/logged-in/${providerName}`, data)
+export const thirdLogin = async ( currentTenant = 'default',code:string,state:string) => {
+  return await useHttp.get(`/${currentTenant}/providers/callback?code=${code}&state=${state}`)
 }
 
 export const phoneThirdLogin = async (providerName: string, params: { phone: string, code: string }, currentTenant = 'default') => {

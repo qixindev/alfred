@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ElMessage } from "element-plus";
 
-import { login, getThirdLoginConfigByName, phoneThirdLogin } from "~/api/user";
+import { login, getThirdLoginConfigByName, phoneThirdLogin,thirdLoginHandleInfo } from "~/api/user";
 
 const VITE_APP_BASE_API = import.meta.env.VITE_APP_BASE_API;
 const route = useRoute();
@@ -45,38 +45,9 @@ const phoneLoginHandle = async (phoneProvider: string, params: any) => {
 
 const thirdLogin = async (thirdInfo: any) => {
   const query = route.query;
-  const redirect_uri = location.origin + "/redirect";
-  const config = await getThirdLoginConfigByName(thirdInfo.name, query.state as string);
-  const params = {
-    redirect_uri: query.redirect_uri,
-    type: thirdInfo.name,
-    client_id: query.client_id,
-    tenant: query.state,
-  };
-
-  switch (thirdInfo.type) {
-    case "dingtalk":
-      navigateTo(
-        `https://login.dingtalk.com/oauth2/auth?redirect_uri=${redirect_uri}&response_type=code&client_id=${
-          config.appKey
-        }&scope=openid&prompt=consent&state=${encodeURI(JSON.stringify(params))}`,
-        { external: true }
-      );
-      break;
-    case "wecom":
-      navigateTo(
-        `https://login.work.weixin.qq.com/wwlogin/sso/login?appid=${
-          config.corpId
-        }&redirect_uri=${redirect_uri}&state=${encodeURI(
-          JSON.stringify(params)
-        )}&agentid=${config.agentId}`,
-        { external: true }
-      );
-      break;
-
-    default:
-      break;
-  }
+  const redirect_uri = location.origin + `/redirect?tenant=${query.state}`;
+  const res=await thirdLoginHandleInfo(thirdInfo.name,query.state,query.redirect_uri,redirect_uri)
+  navigateTo(res.location,{ external: true })
 };
 
 definePageMeta({

@@ -248,7 +248,7 @@ const isPhone = ref(false);
 
 let phoneProvider = ref("");
 const getLoginConfig = async () => {
-  const option = ["wecom", "dingtalk"];
+  const option = ["wecom", "dingtalk","wechat"];
   const data = (await getThirdLoginConfigs(currentTenant)) as ThirdLoginType[];
   const thirdLoginList = data ? data.filter((item) => option.includes(item.type)) : "";
 
@@ -458,6 +458,7 @@ definePageMeta({
             :name="item.type"
             @click="router.path.substring(0, 10) != '/dashboard' ? thirdLogin(item) : ''"
             size="1.5em"
+            style="margin-left:4px"
           ></svg-icon>
         </div>
         <div v-else></div>

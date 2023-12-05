@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ElMessage } from "element-plus";
 
-import { login, getThirdLoginConfigByName, phoneThirdLogin } from "~/api/user";
+import { login, getThirdLoginConfigByName, phoneThirdLogin,thirdLoginHandleInfo } from "~/api/user";
 
 const route = useRoute();
 const isPhone = ref(true);
@@ -35,28 +35,10 @@ const phoneLoginHandle = async (phoneProvider: string, params: any) => {
 };
 
 const thirdLogin = async (thirdInfo: any) => {
-  const config = await getThirdLoginConfigByName(thirdInfo.name);
   const redirect_uri = location.origin + "/redirect";
-  switch (thirdInfo.type) {
-    case "dingtalk":
-      navigateTo(
-        `https://login.dingtalk.com/oauth2/auth?redirect_uri=${redirect_uri}&response_type=code&client_id=${config.appKey}&scope=openid&prompt=consent&state=${thirdInfo.name}`,
-        { external: true }
-      );
-      break;
-    case "wecom":
-      navigateTo(
-        `https://login.work.weixin.qq.com/wwlogin/sso/login?appid=${
-          config.corpId
-        }&redirect_uri=${redirect_uri}&state=${encodeURI(
-          JSON.stringify(thirdInfo)
-        )}&agentid=${config.agentId}`,
-        { external: true }
-      );
-      break;
-    default:
-      break;
-  }
+  
+  const res = await thirdLoginHandleInfo(thirdInfo.name,"default",location.origin,redirect_uri)
+  navigateTo(res.location,{ external: true })
 };
 
 definePageMeta({
