@@ -5,7 +5,6 @@ import (
 	"alfred/pkg/client/msg/api"
 	"fmt"
 	"github.com/gin-gonic/gin"
-	"github.com/google/uuid"
 	"github.com/pkg/errors"
 	"net/url"
 )
@@ -14,13 +13,13 @@ type ProviderWechat struct {
 	Config model.ProviderWechat
 }
 
-func (p ProviderWechat) Auth(redirectUri string, _ uint) (string, error) {
+func (p ProviderWechat) Auth(redirectUri string, state string, _ uint) (string, error) {
 	query := url.Values{}
 	query.Set("appid", p.Config.AppId)
 	query.Set("redirect_uri", redirectUri)
 	query.Set("response_type", "code")
 	query.Set("scope", "snsapi_login")
-	query.Set("state", uuid.NewString())
+	query.Set("state", state)
 	location := fmt.Sprintf("https://open.weixin.qq.com/connect/qrconnect?%s#wechat_redirect", query.Encode())
 	return location, nil
 }

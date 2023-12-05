@@ -7,7 +7,6 @@ import (
 	"errors"
 	"fmt"
 	"github.com/gin-gonic/gin"
-	"github.com/google/uuid"
 	"net/http"
 	"net/url"
 )
@@ -16,14 +15,14 @@ type ProviderWeCom struct {
 	Config model.ProviderWeCom
 }
 
-func (p ProviderWeCom) Auth(redirectUri string, _ uint) (string, error) {
+func (p ProviderWeCom) Auth(redirectUri string, state string, _ uint) (string, error) {
 	query := url.Values{}
 	query.Set("appid", p.Config.CorpId)
 	query.Set("scope", "snsapi_base")
 	query.Set("response_type", "code")
 	query.Set("redirect_uri", redirectUri)
 	query.Set("agentid", p.Config.AgentId)
-	query.Set("state", uuid.NewString())
+	query.Set("state", state)
 	location := fmt.Sprintf("%s?%s#wechat_redirect", "https://open.weixin.qq.com/connect/oauth2/authorize", query.Encode())
 	return location, nil
 }

@@ -67,7 +67,7 @@ type ProviderLogin struct {
 // @Param	phone		query	string	false	"phone"
 // @Param	next		query	string	false	"next"
 // @Success	302
-// @Router	/accounts/{tenant}/login/{provider} [get]
+// @Router	/accounts/{tenant}/providers/{provider}/login [get]
 func LoginToProvider(c *gin.Context) {
 	tenant := internal.GetTenant(c)
 	providerName := c.Param("provider")
@@ -77,12 +77,13 @@ func LoginToProvider(c *gin.Context) {
 		return
 	}
 
+	state := uuid.NewString()
 	authStr := utils.GetHostWithScheme(c) + "/redirect"
 	if providerName == "sms" {
-		authStr = c.Query("phone")
+		state = c.Query("phone")
 	}
 
-	location, err := authProvider.Auth(authStr, tenant.Id)
+	location, err := authProvider.Auth(authStr, state, tenant.Id)
 	if err != nil {
 		resp.ErrorUnknown(c, err, "provider auth err")
 		return
@@ -92,6 +93,7 @@ func LoginToProvider(c *gin.Context) {
 		resp.Success(c)
 		return
 	}
+
 	loginInfo := ProviderLogin{
 		Redirect: c.Query("next"),
 		Type:     providerName,
@@ -106,8 +108,11 @@ func LoginToProvider(c *gin.Context) {
 		return
 	}
 
-	c.SetCookie("login-info", string(infoByte), 5*60, "/accounts", c.Request.Host, false, true)
-	resp.SuccessWithData(c, &loginInfo)
+	if err = global.CodeCache.Set(state, infoByte); err != nil {
+		resp.ErrorUnknown(c, err, "failed to set code")
+		return
+	}
+	resp.SuccessWithData(c, &gin.H{"state": state})
 }
 
 // ProviderCallback
@@ -119,16 +124,20 @@ func LoginToProvider(c *gin.Context) {
 // @Param	phone		query	string	false	"phone"
 // @Param	next		query	string	false	"next"
 // @Success	200
-// @Router	/accounts/{tenant}/logged-in/{provider} [get]
+// @Router	/accounts/{tenant}/providers/callback [get]
 func ProviderCallback(c *gin.Context) {
 	providerName := c.Param("provider")
 	var provider model.Provider
-	if err := internal.TenantDB(c).First(&provider, "name = ?", providerName).Error; err != nil {
+	loginInfo, err := global.CodeCache.Get(c.Query("state"))
+	if err != nil {
+		resp.ErrorForbidden(c, err, "invalidate state")
+		return
+	}
+	if err = internal.TenantDB(c).First(&provider, "name = ?", providerName).Error; err != nil {
 		resp.ErrorSqlFirst(c, err, "get provider err")
 		return
 	}
 
-	loginInfo, err := c.Cookie("login-info")
 	authProvider, err := auth.GetAuthProvider(provider.TenantId, provider.Name)
 	if err != nil {
 		resp.ErrorSqlFirst(c, err, "get auth provider err")
@@ -178,6 +187,5 @@ func ProviderCallback(c *gin.Context) {
 		return
 	}
 
-	c.SetCookie("login-info", "", -1, "/accounts", c.Request.Host, false, true)
-	resp.SuccessWithData(c, loginInfo)
+	resp.SuccessWithData(c, string(loginInfo))
 }
