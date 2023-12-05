@@ -31,6 +31,7 @@ func AddRoutes(r *gin.Engine) {
 		reset.AddResetRouter(tenantApi)
 	}
 
+	r.GET("/accounts/login/providers/callback", authentication.ProviderCallback) // 验证第三方登录是否成功
 	adminApi := r.RouterGroup.Group("/accounts/admin/:tenant", middlewares.MultiTenancy, middlewares.AuthorizedAdmin)
 	{
 		admin.AddAdminGroupsRoutes(adminApi)

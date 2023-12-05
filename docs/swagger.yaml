@@ -1477,34 +1477,6 @@ paths:
       summary: login via a provider
       tags:
       - login
-  /accounts/{tenant}/providers/callback:
-    get:
-      parameters:
-      - default: default
-        description: tenant
-        in: path
-        name: tenant
-        required: true
-        type: string
-      - description: code
-        in: query
-        name: code
-        required: true
-        type: string
-      - description: state
-        in: query
-        name: state
-        type: string
-      - description: phone
-        in: query
-        name: phone
-        type: string
-      responses:
-        "200":
-          description: OK
-      summary: provider callback
-      tags:
-      - login
   /accounts/{tenant}/register:
     post:
       parameters:
@@ -3002,4 +2974,32 @@ paths:
       summary: delete tenants
       tags:
       - admin-tenants
+  /accounts/login/providers/callback:
+    get:
+      parameters:
+      - default: default
+        description: tenant
+        in: path
+        name: tenant
+        required: true
+        type: string
+      - description: code
+        in: query
+        name: code
+        required: true
+        type: string
+      - description: state
+        in: query
+        name: state
+        type: string
+      - description: phone
+        in: query
+        name: phone
+        type: string
+      responses:
+        "200":
+          description: OK
+      summary: provider callback
+      tags:
+      - login
 swagger: "2.0"

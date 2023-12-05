@@ -163,7 +163,6 @@ func AddLoginRoutes(rg *gin.RouterGroup) {
 	rg.GET("/providers", ListProviders)                   // 第三方信息列表
 	rg.GET("/providers/:provider", GetProvider)           // 第三方具体信息
 	rg.GET("/providers/:provider/login", LoginToProvider) // 第三方登录重定向
-	rg.GET("/providers/callback", ProviderCallback)       // 验证第三方登录是否成功
 	rg.GET("/logout", middlewares.Authorized(false), Logout)
 	rg.POST("/register", Register) // 注册
 }

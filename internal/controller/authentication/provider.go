@@ -125,7 +125,7 @@ func LoginToProvider(c *gin.Context) {
 // @Param	state		query	string	false	"state"
 // @Param	phone		query	string	false	"phone"
 // @Success	200
-// @Router	/accounts/{tenant}/providers/callback [get]
+// @Router	/accounts/login/providers/callback [get]
 func ProviderCallback(c *gin.Context) {
 	var provider model.Provider
 	state := c.Query("state")

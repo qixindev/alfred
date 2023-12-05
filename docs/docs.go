@@ -2056,6 +2056,48 @@ const docTemplate = `{
                 }
             }
         },
+        "/accounts/login/providers/callback": {
+            "get": {
+                "tags": [
+                    "login"
+                ],
+                "summary": "provider callback",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "default": "default",
+                        "description": "tenant",
+                        "name": "tenant",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "code",
+                        "name": "code",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "state",
+                        "name": "state",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "phone",
+                        "name": "phone",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
         "/accounts/{tenant}/.well-known/jwks.json": {
             "get": {
                 "tags": [
@@ -3646,48 +3688,6 @@ const docTemplate = `{
                                 "$ref": "#/definitions/dto.ProviderDto"
                             }
                         }
-                    }
-                }
-            }
-        },
-        "/accounts/{tenant}/providers/callback": {
-            "get": {
-                "tags": [
-                    "login"
-                ],
-                "summary": "provider callback",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "default": "default",
-                        "description": "tenant",
-                        "name": "tenant",
-                        "in": "path",
-                        "required": true
-                    },
-                    {
-                        "type": "string",
-                        "description": "code",
-                        "name": "code",
-                        "in": "query",
-                        "required": true
-                    },
-                    {
-                        "type": "string",
-                        "description": "state",
-                        "name": "state",
-                        "in": "query"
-                    },
-                    {
-                        "type": "string",
-                        "description": "phone",
-                        "name": "phone",
-                        "in": "query"
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK"
                     }
                 }
             }
