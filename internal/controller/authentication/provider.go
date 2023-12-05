@@ -65,11 +65,13 @@ type ProviderLogin struct {
 // @Param	provider	path	string	true	"provider"
 // @Param	phone		query	string	false	"phone"
 // @Param	next		query	string	false	"next"
+// @Param	callback	query	string	false	"callback url"
 // @Success	302
 // @Router	/accounts/{tenant}/providers/{provider}/login [get]
 func LoginToProvider(c *gin.Context) {
 	tenant := internal.GetTenant(c)
 	providerName := c.Param("provider")
+	callbackUrl := c.Query("callback")
 	authProvider, err := auth.GetAuthProvider(tenant.Id, providerName)
 	if err != nil {
 		resp.ErrorSqlFirst(c, err, "get provider err")
@@ -78,6 +80,9 @@ func LoginToProvider(c *gin.Context) {
 
 	state := uuid.NewString()
 	authStr := utils.GetHostWithScheme(c) + "/redirect"
+	if callbackUrl != "" {
+		authStr = callbackUrl
+	}
 	if providerName == "sms" {
 		state = c.Query("phone")
 	}

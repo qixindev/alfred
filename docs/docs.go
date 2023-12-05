@@ -3758,6 +3758,12 @@ const docTemplate = `{
                         "description": "next",
                         "name": "next",
                         "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "callback url",
+                        "name": "callback",
+                        "in": "query"
                     }
                 ],
                 "responses": {
