@@ -3,16 +3,17 @@ package req
 import "github.com/gin-gonic/gin"
 
 type Provider struct {
-	Id           uint   `json:"id"`
-	ProviderId   uint   `json:"providerId"`
-	Name         string `json:"name"`
-	Type         string `json:"type"`
-	AgentId      string `json:"agentId"`
-	ClientId     string `json:"clientId"`
-	ClientSecret string `json:"clientSecret"`
-	AppKey       string `json:"appKey"`
-	AppSecret    string `json:"appSecret"`
-	CorpId       string `json:"corpId"`
+	Id             uint   `json:"id"`
+	ProviderId     uint   `json:"providerId"`
+	SmsConnectorId uint   `json:"smsConnectorId"`
+	Name           string `json:"name"`
+	Type           string `json:"type"`
+	AgentId        string `json:"agentId"`
+	ClientId       string `json:"clientId"`
+	ClientSecret   string `json:"clientSecret"`
+	AppKey         string `json:"appKey"`
+	AppSecret      string `json:"appSecret"`
+	CorpId         string `json:"corpId"`
 
 	AuthorizeEndpoint string `json:"authorizeEndpoint"`
 	TokenEndpoint     string `json:"tokenEndpoint"`

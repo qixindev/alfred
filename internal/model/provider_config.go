@@ -142,6 +142,8 @@ func (p *ProviderSms) Dto() any {
 }
 func (p *ProviderSms) Save(r req.Provider) any {
 	return &ProviderSms{
-		ProviderId: r.ProviderId,
+		ProviderId:     r.ProviderId,
+		SmsConnectorId: r.SmsConnectorId,
+		TenantId:       r.TenantId,
 	}
 }
