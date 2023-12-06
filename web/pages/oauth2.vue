@@ -45,7 +45,7 @@ const phoneLoginHandle = async (phoneProvider: string, params: any) => {
 
 const thirdLogin = async (thirdInfo: any) => {
   const query = route.query;
-  const redirect_uri = location.origin + `/redirect?tenant=${query.state}`;
+  const redirect_uri = location.origin + `/redirect`;
   const res=await thirdLoginHandleInfo(thirdInfo.name,query.state,query.redirect_uri,redirect_uri)
   navigateTo(res.location,{ external: true })
 };
