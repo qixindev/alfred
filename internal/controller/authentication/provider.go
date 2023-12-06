@@ -193,8 +193,7 @@ func ProviderCallback(c *gin.Context) {
 	}
 
 	session := sessions.Default(c)
-	tenant := internal.GetTenant(c)
-	session.Set("tenant", tenant.Name)
+	session.Set("tenant", stateInfo.Tenant)
 	session.Set("user", user.Username)
 	session.Delete("next")
 	if err = session.Save(); err != nil {
