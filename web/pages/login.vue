@@ -35,8 +35,7 @@ const phoneLoginHandle = async (phoneProvider: string, params: any) => {
 };
 
 const thirdLogin = async (thirdInfo: any) => {
-  const redirect_uri = location.origin + "/redirect";
-  
+  const redirect_uri = location.origin + "/redirect?platform=system";
   const res = await thirdLoginHandleInfo(thirdInfo.name,"default",location.origin,redirect_uri)
   navigateTo(res.location,{ external: true })
 };

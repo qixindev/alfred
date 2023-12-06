@@ -67,16 +67,15 @@ export async function useThirdLogin(state: string, code: string) {
   // 处理cookie冲突
   useRemoveToken()
   const route = useRoute()
-
-  if (route.query.tenant) {
-    const res = await thirdLogin(route.query.tenant as string, code, state)
-    const { clientId, redirect, tenant } = res as any
-    navigateTo(`${location.origin}${VITE_APP_BASE_API}/${tenant}/oauth2/auth?client_id=${clientId}&scope=profileOpenId&response_type=code&redirect_uri=${redirect}`, { external: true })
-  } else {
-    await thirdLogin("default",code,state)
+  if (route.query.platform === 'system') {
+    await thirdLogin(code, state)
     await useGetUserInfo()
     // code使用完后删除url参数
     navigateTo(route.query.from as string || '/', { replace: true })
+  } else {
+    const res = await thirdLogin(code, state)
+    const { clientId, redirect, tenant } = res as any
+    navigateTo(`${location.origin}${VITE_APP_BASE_API}/${tenant}/oauth2/auth?client_id=${clientId}&scope=profileOpenId&response_type=code&redirect_uri=${redirect}`, { external: true })
   }
 }
 
