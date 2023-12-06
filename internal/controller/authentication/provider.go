@@ -165,7 +165,8 @@ func ProviderCallback(c *gin.Context) {
 
 	var providerUser model.ProviderUser
 	var user *model.User
-	if err = internal.TenantDB(c).First(&providerUser, "provider_id = ? AND name = ?", provider.Id, userInfo.Sub).
+	if err = global.DB.First(&providerUser, "provider_id = ? AND name = ? AND tenant_id = ?",
+		provider.Id, userInfo.Sub, stateInfo.TenantId).
 		Error; errors.Is(err, gorm.ErrRecordNotFound) { // provider user不存在，直接创建
 		user, err = service.BindLoginUser(userInfo, provider.TenantId, provider.Type)
 		if err != nil {
