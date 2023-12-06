@@ -135,9 +135,10 @@ type ProviderSms struct {
 
 func (p *ProviderSms) Dto() any {
 	return &gin.H{
-		"providerId": p.ProviderId,
-		"name":       p.Provider.Name,
-		"type":       p.Provider.Type,
+		"providerId":     p.ProviderId,
+		"smsConnectorId": p.SmsConnectorId,
+		"name":           p.Provider.Name,
+		"type":           p.Provider.Type,
 	}
 }
 func (p *ProviderSms) Save(r req.Provider) any {
