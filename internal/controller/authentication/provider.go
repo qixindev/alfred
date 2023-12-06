@@ -56,6 +56,7 @@ type ProviderLogin struct {
 	Provider string `json:"provider"`
 	ClientId string `json:"clientId"`
 	Tenant   string `json:"tenant"`
+	TenantId uint   `json:"tenantId"`
 }
 
 // LoginToProvider
@@ -103,6 +104,7 @@ func LoginToProvider(c *gin.Context) {
 		Provider: providerName,
 		ClientId: "default",
 		Tenant:   tenant.Name,
+		TenantId: tenant.Id,
 	}
 	infoByte, err := json.Marshal(&loginInfo)
 	if err != nil {
@@ -144,7 +146,8 @@ func ProviderCallback(c *gin.Context) {
 		resp.ErrorUnknown(c, err, "failed unmarshal cache login info")
 		return
 	}
-	if err = internal.TenantDB(c).First(&provider, "name = ?", stateInfo.Provider).Error; err != nil {
+	if err = global.DB.Where("tenant_id = ? AND name = ?", stateInfo.TenantId, stateInfo.Provider).
+		First(&provider).Error; err != nil {
 		resp.ErrorSqlFirst(c, err, "get provider err")
 		return
 	}
