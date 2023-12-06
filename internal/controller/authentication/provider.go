@@ -56,6 +56,7 @@ type ProviderLogin struct {
 	Provider string `json:"provider"`
 	ClientId string `json:"clientId"`
 	Tenant   string `json:"tenant"`
+	TenantId uint   `json:"tenantId"`
 }
 
 // LoginToProvider
@@ -103,6 +104,7 @@ func LoginToProvider(c *gin.Context) {
 		Provider: providerName,
 		ClientId: "default",
 		Tenant:   tenant.Name,
+		TenantId: tenant.Id,
 	}
 	infoByte, err := json.Marshal(&loginInfo)
 	if err != nil {
@@ -144,7 +146,8 @@ func ProviderCallback(c *gin.Context) {
 		resp.ErrorUnknown(c, err, "failed unmarshal cache login info")
 		return
 	}
-	if err = internal.TenantDB(c).First(&provider, "name = ?", stateInfo.Provider).Error; err != nil {
+	if err = global.DB.Where("tenant_id = ? AND name = ?", stateInfo.TenantId, stateInfo.Provider).
+		First(&provider).Error; err != nil {
 		resp.ErrorSqlFirst(c, err, "get provider err")
 		return
 	}
@@ -162,7 +165,8 @@ func ProviderCallback(c *gin.Context) {
 
 	var providerUser model.ProviderUser
 	var user *model.User
-	if err = internal.TenantDB(c).First(&providerUser, "provider_id = ? AND name = ?", provider.Id, userInfo.Sub).
+	if err = global.DB.First(&providerUser, "provider_id = ? AND name = ? AND tenant_id = ?",
+		provider.Id, userInfo.Sub, stateInfo.TenantId).
 		Error; errors.Is(err, gorm.ErrRecordNotFound) { // provider user不存在，直接创建
 		user, err = service.BindLoginUser(userInfo, provider.TenantId, provider.Type)
 		if err != nil {
@@ -189,8 +193,7 @@ func ProviderCallback(c *gin.Context) {
 	}
 
 	session := sessions.Default(c)
-	tenant := internal.GetTenant(c)
-	session.Set("tenant", tenant.Name)
+	session.Set("tenant", stateInfo.Tenant)
 	session.Set("user", user.Username)
 	session.Delete("next")
 	if err = session.Save(); err != nil {
