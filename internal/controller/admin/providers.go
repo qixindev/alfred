@@ -79,7 +79,7 @@ func ListProviderUsers(c *gin.Context) {
 // @Summary	new provider
 // @Tags	provider
 // @Param	tenant	path	string	true	"tenant"	default(default)
-// @Param	req	body	object	true	"body"
+// @Param	req		body	object	true	"body"
 // @Success	200
 // @Router	/accounts/admin/{tenant}/providers [post]
 func NewProvider(c *gin.Context) {
@@ -102,7 +102,7 @@ func NewProvider(c *gin.Context) {
 // UpdateProvider
 // @Summary	update provider
 // @Tags	provider
-// @Param	tenant	path	string	true	"tenant"	default(default)
+// @Param	tenant		path	string	true	"tenant"	default(default)
 // @Param	providerId	path	integer	true	"tenant"
 // @Success	200
 // @Router	/accounts/admin/{tenant}/providers/{providerId} [put]
