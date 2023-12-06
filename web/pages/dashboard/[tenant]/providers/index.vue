@@ -61,14 +61,14 @@
           </el-select>
         </el-form-item>
         <el-form-item
-          v-if="!(form.type == 'sms'||form.type == 'wechat')"
+          v-if="!(form.type == 'sms' || form.type == 'wechat')"
           label="agentId"
           prop="agentId"
         >
           <el-input v-model="form.agentId" placeholder="请输入agentId" />
         </el-form-item>
         <el-form-item
-          v-if="!(form.type == 'sms'||form.type == 'wechat')"
+          v-if="!(form.type == 'sms' || form.type == 'wechat')"
           label="appSecret"
           prop="appSecret"
         >
@@ -92,6 +92,22 @@
         <el-form-item v-if="form.type == 'wechat'" label="secret" prop="appSecret">
           <el-input v-model="form.appSecret" placeholder="请输入secret" />
         </el-form-item>
+
+        <!-- sms配置 -->
+        <el-form-item
+          label="smsId"
+          prop="smsConnectorId"
+          v-if="form.type === 'sms'"
+        >
+          <el-select v-model="form.smsConnectorId" placeholder="请选择smsId">
+            <el-option
+              v-for="item in smsList"
+              :key="item.id"
+              :label="item.name"
+              :value="item.id"
+            />
+          </el-select>
+        </el-form-item>
       </el-form>
       <template #footer>
         <el-button type="primary" @click="submitForm" :loading="updateLoading"
@@ -105,7 +121,7 @@
 
 <script lang="ts" setup name="Users">
 import { ElForm, ElInput, ElMessage, ElMessageBox } from "element-plus";
-
+import { getSms } from "~/api/providers/sms";
 import {
   getProviders,
   saveProvider,
@@ -122,6 +138,7 @@ interface Form {
   appSecret?: undefined | string;
   corpId?: undefined | string;
   appKey?: undefined | string;
+  smsConnectorId?: undefined | string;
 }
 
 enum Status {
@@ -146,7 +163,8 @@ const state = reactive({
     agentId: undefined,
     appSecret: undefined,
     corpId: undefined,
-    appKey: undefined
+    appKey: undefined,
+    smsConnectorId: undefined,
   } as Form,
   // 表单校验
   rules: {
@@ -155,7 +173,10 @@ const state = reactive({
     agentId: [{ required: true, message: "agentId 不能为空", trigger: "blur" }],
     appSecret: [{ required: true, message: "appSecret 不能为空", trigger: "blur" }],
     appKey: [{ required: true, message: "appKey 不能为空", trigger: "blur" }],
-    corpId: [{ required: true, message: "corpId 不能为空", trigger: "blur" }]
+    corpId: [{ required: true, message: "corpId 不能为空", trigger: "blur" }],
+    smsConnectorId: [
+      { required: true, message: "smsId 不能为空", trigger: "blur" },
+    ],
   },
 });
 
@@ -177,7 +198,7 @@ const typeOptions = ref([
     value: "wechat",
   },
 ]);
-
+const smsList = ref([]);
 const { loading, dataList, open, form, rules } = toRefs(state);
 
 const formRef = ref(ElForm);
@@ -198,8 +219,10 @@ function getList() {
     .finally(() => {
       state.loading = false;
     });
+  getSms().then((res: any) => {
+    smsList.value = [...res];
+  });
 }
-
 // 表单重置
 function resetForm() {
   state.form = {
@@ -210,6 +233,7 @@ function resetForm() {
     agentId: undefined,
     appKey: undefined,
     corpId: undefined,
+    smsConnectorId: undefined,
   };
   formRef.value.resetFields();
 }
@@ -226,7 +250,7 @@ function handleAdd() {
 /** 修改按钮操作 */
 function handleUpdate(row: any) {
   getProvider(row.id).then((res: any) => {
-    const { providerId: id, name, type, agentId, appSecret} = res;
+    const { providerId: id, name, type, agentId, appSecret } = res;
     switch (row.type) {
       case "dingtalk":
         const { appKey } = res;
@@ -237,7 +261,9 @@ function handleUpdate(row: any) {
         const { corpId } = res;
         state.form.corpId = corpId;
         break;
-
+      case "sms":
+        const { smsConnectorId } = res;
+        state.form.smsConnectorId = smsConnectorId;
       default:
         break;
     }
@@ -263,7 +289,7 @@ function submitForm() {
   formRef.value.validate((valid: boolean) => {
     if (valid) {
       updateLoading.value = true;
-      let { id, name, type, agentId, appSecret} = state.form;
+      let { id, name, type, agentId, appSecret } = state.form;
       let params;
       switch (type) {
         case "dingtalk":
@@ -277,10 +303,11 @@ function submitForm() {
           break;
 
         case "sms":
-          params = { name, type };
+          const { smsConnectorId } = state.form;
+          params = { name, type, smsConnectorId };
           break;
         case "wechat":
-          params = { name, type,agentId, appSecret };
+          params = { name, type, agentId, appSecret };
           break;
         default:
           break;
