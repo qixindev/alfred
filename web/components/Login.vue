@@ -359,17 +359,14 @@ definePageMeta({
             </el-form-item>
           </el-form>
 
-          <nuxt-link
-            @click="router.path.substring(0, 10) != '/dashboard' ? forgetPass : ''"
-            style="cursor: pointer; font-size: small; color: #409eff; width: 60px"
+          <el-link @click="router.path.substring(0, 10)!='/dashboard'? forgetPass() : ''" style="cursor: pointer; font-size: small; color: #409eff"
             v-if="
               router.path.substring(0, 10) == '/dashboard'
                 ? isPhone && passSwitch
                 : isPhone && info && info.stylePass
             "
-            class="forgetL"
-            >忘记密码</nuxt-link
-          >
+            :underline="false"
+            class="forgetL">忘记密码</el-link>
           <el-button
             class="submit-btnL"
             type="primary"
