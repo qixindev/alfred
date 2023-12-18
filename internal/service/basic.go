@@ -14,7 +14,7 @@ func deleteSource(tenantId uint, relayList []any, id any, name string) error {
 	}
 
 	for _, v := range relayList {
-		if err := global.DB.Model(v).Where(name+" = ? AND tenant_id = ?", id, tenantId).Error; err != nil {
+		if err := global.DB.Model(v).Where(name+" = ? AND tenant_id = ?", id, tenantId).Delete(&v).Error; err != nil {
 			return err
 		}
 	}
