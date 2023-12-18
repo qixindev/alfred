@@ -12,15 +12,7 @@ func DeleteClient(tenantId uint, clientId string) error {
 		return errors.New("delete invalid client")
 	}
 	delList := []any{
-		model.RedirectUri{}, model.TokenCode{},
-		model.ResourceTypeRoleAction{}, model.ResourceRoleUser{},
-		model.ResourceTypeAction{}, model.Resource{}, model.ResourceTypeRole{}, model.ResourceType{},
-
-		model.ProviderUser{}, model.ProviderDingTalk{}, model.ProviderWeCom{},
-		model.ProviderOAuth2{}, model.Provider{},
-
-		model.GroupUser{}, model.GroupDevice{}, model.Group{},
-		model.DeviceSecret{}, model.DeviceCode{}, model.Device{},
+		model.RedirectUri{}, model.TokenCode{}, model.ResourceType{},
 		model.ClientUser{}, model.ClientSecret{},
 	}
 
