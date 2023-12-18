@@ -3,6 +3,12 @@ trigger:
 
 name: $(SourceBranchName)-$(Date:yyyyMMdd)$(Rev:.r)
 
+resources:
+  repositories:
+    - repository: common
+      type: git
+      ref: main
+      name: lowcode-test
 stages:
   - stage: build
     jobs:
@@ -39,3 +45,13 @@ stages:
                     arguments: '-f $(Pipeline.Workspace)/DeployDevelop/develop.yaml'
                     secretType: 'dockerRegistry'
                     containerRegistryType: 'Azure Container Registry'
+  - stage: test
+    jobs:
+      - job: ApiTest
+        continueOnError: false
+        steps:
+          - checkout: common
+          - script: pip install -r requirements.txt
+            displayName: InstallPython
+          - script: python3 test_alfred.py
+            displayName: TestAlfred
