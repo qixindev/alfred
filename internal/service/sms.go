@@ -28,10 +28,10 @@ func GetSmsConfig(tenantId uint, connId uint, t string) (any, error) {
 	return &md, nil
 }
 
-func CreateSmsConfig(t string, sms req.Sms) error {
+func CreateSmsConfig(t string, sms req.Sms) (*model.SmsConnector, error) {
 	md, err := GetSmsModel(t)
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	conn := model.SmsConnector{
@@ -40,14 +40,14 @@ func CreateSmsConfig(t string, sms req.Sms) error {
 		Type:     t,
 	}
 	if err = global.DB.Create(&conn).Error; err != nil {
-		return err
+		return nil, err
 	}
 
 	sms.Id = conn.Id
 	if err = global.DB.Create(md.Save(sms)).Error; err != nil {
-		return err
+		return nil, err
 	}
-	return nil
+	return &conn, nil
 }
 
 func UpdateSmsConfig(tenantId uint, connId uint, t string, sms req.Sms) error {

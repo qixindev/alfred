@@ -67,11 +67,12 @@ func NewSMS(c *gin.Context) {
 
 	sms.Id = 0
 	sms.TenantId = tenant.Id
-	if err := service.CreateSmsConfig(sms.Type, sms); err != nil {
+	data, err := service.CreateSmsConfig(sms.Type, sms)
+	if err != nil {
 		resp.ErrorSqlCreate(c, err, "create sms config err")
 		return
 	}
-	resp.Success(c)
+	resp.SuccessWithData(c, data)
 }
 
 // UpdateSMS

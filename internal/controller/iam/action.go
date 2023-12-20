@@ -57,7 +57,7 @@ func NewIamAction(c *gin.Context) {
 		resp.ErrorSqlCreate(c, err, "create resource type action err")
 		return
 	}
-	resp.Success(c)
+	resp.SuccessWithData(c, action)
 }
 
 // DeleteIamAction
@@ -136,7 +136,7 @@ func NewIamRoleAction(c *gin.Context) {
 		resp.ErrorSqlCreate(c, err, "create role action err")
 		return
 	}
-	resp.Success(c)
+	resp.SuccessWithData(c, roleAction)
 }
 
 // DeleteIamRoleAction

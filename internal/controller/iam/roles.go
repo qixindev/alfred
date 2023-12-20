@@ -139,7 +139,7 @@ func NewIamResourceRole(c *gin.Context) {
 		resp.ErrorSqlCreate(c, err, "create resource role user err")
 		return
 	}
-	resp.Success(c)
+	resp.SuccessWithData(c, roleUser)
 }
 
 // DeleteIamResourceRoleUser
