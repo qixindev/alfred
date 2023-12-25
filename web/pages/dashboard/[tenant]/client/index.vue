@@ -31,6 +31,9 @@
         <el-form-item label="name" prop="name">
           <el-input v-model="form.name" placeholder="请输入client name" />
         </el-form-item>
+        <el-form-item label="id" prop="id" v-if="state.open === Status.ADD">
+          <el-input v-model="form.id" placeholder="请输入client id"/>
+        </el-form-item>
       </el-form>
       <template #footer>
         <el-button type="primary" @click="submitForm" :loading="updateLoading">确 定</el-button>
@@ -141,9 +144,9 @@ function submitForm() {
       let { id, name } = state.form
 
       const params = { name }
-
+      const data={id, name }
       if (state.open === Status.EDIT) {
-        updateClient(id as number, params).then(() => {
+        updateClient(id as number,params).then(() => {
           ElMessage({
             showClose: true,
             message: '修改成功',
@@ -155,7 +158,7 @@ function submitForm() {
           updateLoading.value = false
         })
       } else {
-        saveClient(params).then(() => {
+        saveClient(data).then(() => {
           ElMessage({
             showClose: true,
             message: '创建client成功',
