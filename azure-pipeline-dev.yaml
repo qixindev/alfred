@@ -53,5 +53,7 @@ stages:
           - checkout: common
           - script: pip install -r requirements.txt
             displayName: InstallPython
+          - script: sleep 10
+            displayName: WaitForContainer
           - script: python3 test_alfred.py
             displayName: TestAlfred
