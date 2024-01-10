@@ -1,7 +1,7 @@
 package main
 
 import (
-	"alfred/cmd"
+	"alfred/backend/cmd"
 )
 
 func main() {
