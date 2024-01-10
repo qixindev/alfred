@@ -14,7 +14,7 @@ yarn install
 npm install
 
 # pnpm
-pnpm install
+npm install
 ```
 
 ## Development Server
