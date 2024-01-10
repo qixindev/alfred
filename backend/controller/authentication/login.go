@@ -135,8 +135,8 @@ func GetLoginProtocol(c *gin.Context) {
 	fileName := c.Param("fileName")
 
 	filePaths := map[string]string{
-		"userServiceAgreement": "docs/用户服务协议.md",
-		"privacyStatement":     "docs/隐私保护声明.md",
+		"userServiceAgreement": "backend/docs/用户服务协议.md",
+		"privacyStatement":     "backend/docs/隐私保护声明.md",
 	}
 
 	filePath, exists := filePaths[fileName]

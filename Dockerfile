@@ -36,7 +36,7 @@ COPY --from=build-web       /app/.output ./web/.output
 
 COPY --from=build-back   /app/accounts    ./
 COPY --from=build-back   /app/config*.yaml ./
-COPY --from=build-back   /app/docs/*.md    ./docs/
+COPY --from=build-back   /app/backend/docs/*.md    ./backend/docs/
 
 EXPOSE 8086
 ENTRYPOINT ["/app/accounts"]
