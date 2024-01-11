@@ -35,18 +35,21 @@ const equipT = ref("monitor");
 const allInfo = ref({});
 const getInfo = () => {
   getEnergy(currentTenant).then((res: any) => {
-    styleName.value = res.styleName;
-    styleLogo.value = res.styleLogo;
-    styleBgcolor.value = res.styleBgcolor;
-    styleCss.value = res.styleCss;
-    styleLogin.value = res.styleLogin == undefined ? false : res.styleLogin;
-    styleRegion.value = res.styleRegion == undefined ? false : res.styleRegion;
-    stylePass.value = res.stylePass == undefined ? false : res.stylePass;
-    styleCode.value = res.styleCode == undefined ? false : res.styleCode;
-    styleNumTop.value = res.styleNumTop;
-    styleNumLeft.value = res.styleNumLeft;
-    bottom.value = [...res.bottom];
-    allInfo.value = { ...res };
+    //  解决 is not iterable
+    if (JSON.stringify(res) !== "{}") {
+      styleName.value = res.styleName;
+      styleLogo.value = res.styleLogo;
+      styleBgcolor.value = res.styleBgcolor;
+      styleCss.value = res.styleCss;
+      styleLogin.value = res.styleLogin == undefined ? false : res.styleLogin;
+      styleRegion.value = res.styleRegion == undefined ? false : res.styleRegion;
+      stylePass.value = res.stylePass == undefined ? false : res.stylePass;
+      styleCode.value = res.styleCode == undefined ? false : res.styleCode;
+      styleNumTop.value = res.styleNumTop;
+      styleNumLeft.value = res.styleNumLeft;
+      bottom.value = [...res?.bottom];
+      allInfo.value = { ...res };
+    }
   });
 };
 getInfo();
