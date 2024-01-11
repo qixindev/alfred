@@ -165,13 +165,21 @@ func UpdateUserProfile(c *gin.Context) {
 		resp.ErrorSqlSelect(c, err, "service.GetUserBySubId err")
 		return
 	}
-	user.Username = u.Username
+
 	user.FirstName = u.FirstName
 	user.LastName = u.LastName
-	user.DisplayName = u.DisplayName
-	user.Email = u.Email
-	user.Phone = u.Phone
-	user.Avatar = u.Avatar
+	if u.DisplayName != "" {
+		user.DisplayName = u.DisplayName
+	}
+	if u.Username != "" {
+		user.Username = u.Username
+	}
+	if u.Email != "" {
+		user.Email = u.Email
+	}
+	if u.Phone != "" {
+		user.Phone = u.Phone
+	}
 	if err = global.DB.Select("username", "first_name", "last_name", "display_name", "email", "phone", "avatar").
 		Where("id = ?", user.Id).Updates(user).Error; err != nil {
 		resp.ErrorSqlUpdate(c, err, "update tenant user err")
