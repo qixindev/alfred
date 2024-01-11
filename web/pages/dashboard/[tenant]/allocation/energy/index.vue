@@ -43,14 +43,7 @@ const props = defineProps({
     default: {},
   },
 });
-watch(
-  () => props.allInfo,
-  () => {
-    // ！！！！！！！
-    tableData.value = props.allInfo && props.allInfo.bottom;
-  },
-  { immediate: true, deep: true }
-);
+
 const deletePri = (index: number) => {
   tablePri.value.splice(index, 1);
   emit("child-primary", tablePri.value);
@@ -66,7 +59,16 @@ const onAddItem = () => {
     wordlink: "",
   });
 };
-
+watch(
+  () => props.allInfo,
+  () => {
+    // 解决 is not iterable和tableData的类型
+    if(props.allInfo && props.allInfo.bottom){
+    tableData.value = [...props.allInfo && props.allInfo.bottom]  
+    }
+  },
+  { immediate: true, deep: true }
+);
 const cellPri = () => {
   emit("child-primary", tablePri.value);
 };

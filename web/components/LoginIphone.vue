@@ -32,8 +32,10 @@ const newPrimaryWord = ref([]);
 const newTop = ref([]);
 const getInfo = () => {
   getEnergy(currentTenant).then((res: any) => {
+    //  解决 is not iterable
+    if (JSON.stringify(res) !== "{}") {
     info.value = { ...res };
-    bottomTitle.value = [...res.bottom];
+    bottomTitle.value = [...res.bottom];}
   });
   getProto(currentTenant).then((res: any) => {
     newPrimaryWord.value = res.filter((item: any) => {
