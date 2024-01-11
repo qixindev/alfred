@@ -36,10 +36,13 @@ const login_top = ref(0);
 const login_left = ref(0);
 const getInfo = () => {
   getEnergy(currentTenant).then((res: any) => {
-    info.value = { ...res };
-    bottomTitle.value = [...res.bottom];
-    login_top.value = res.styleNumTop;
-    login_left.value = res.styleNumLeft;
+  //  解决 is not iterable
+    if (JSON.stringify(res) !== "{}") {
+      info.value = { ...res };
+      bottomTitle.value = [...res.bottom];
+      login_top.value = res.styleNumTop;
+      login_left.value = res.styleNumLeft;
+    }
   });
   getProto(currentTenant).then((res: any) => {
     newPrimaryWord.value = res.filter((item: any) => {
@@ -113,7 +116,7 @@ watch(
     }
     document.body.appendChild(style);
   },
-  { deep: true }
+  {immediate: true,  deep: true }
 );
 watch(
   () => props.top,
@@ -248,7 +251,7 @@ const isPhone = ref(false);
 
 let phoneProvider = ref("");
 const getLoginConfig = async () => {
-  const option = ["wecom", "dingtalk","wechat"];
+  const option = ["wecom", "dingtalk", "wechat"];
   const data = (await getThirdLoginConfigs(currentTenant)) as ThirdLoginType[];
   const thirdLoginList = data ? data.filter((item) => option.includes(item.type)) : "";
 
@@ -359,14 +362,18 @@ definePageMeta({
             </el-form-item>
           </el-form>
 
-          <el-link @click="router.path.substring(0, 10)!='/dashboard'? forgetPass() : ''" style="cursor: pointer; font-size: small; color: #409eff"
+          <el-link
+            @click="router.path.substring(0, 10) != '/dashboard' ? forgetPass() : ''"
+            style="cursor: pointer; font-size: small; color: #409eff"
             v-if="
               router.path.substring(0, 10) == '/dashboard'
                 ? isPhone && passSwitch
                 : isPhone && info && info.stylePass
             "
             :underline="false"
-            class="forgetL">忘记密码</el-link>
+            class="forgetL"
+            >忘记密码</el-link
+          >
           <el-button
             class="submit-btnL"
             type="primary"
@@ -455,7 +462,7 @@ definePageMeta({
             :name="item.type"
             @click="router.path.substring(0, 10) != '/dashboard' ? thirdLogin(item) : ''"
             size="1.5em"
-            style="margin-left:4px"
+            style="margin-left: 4px"
           ></svg-icon>
         </div>
         <div v-else></div>
