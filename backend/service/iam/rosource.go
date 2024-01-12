@@ -17,7 +17,9 @@ func ListResources(tenantId uint, typeId string) ([]model.Resource, error) {
 func CreateResource(tenantId uint, typeId string, resource *model.Resource) (*model.Resource, error) {
 	resource.TenantId = tenantId
 	resource.TypeId = typeId
-	resource.Id = uuid.NewString()
+	if len(resource.Id) <= 0 {
+		resource.Id = uuid.NewString()
+	}
 	if err := global.WithTenant(tenantId).Create(&resource).Error; err != nil {
 		return nil, err
 	}
