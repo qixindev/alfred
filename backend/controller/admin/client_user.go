@@ -154,34 +154,41 @@ func UpdateUserPassword(c *gin.Context) {
 // @Success	200
 // @Router	/accounts/admin/{tenant}/clients/{clientId}/users/{subId}/profile [put]
 func UpdateUserProfile(c *gin.Context) {
-	var u model.User
-	if err := c.BindJSON(&u); err != nil {
+	var in model.User
+	if err := c.BindJSON(&in); err != nil {
 		resp.ErrorRequest(c, err)
 		return
 	}
 	tenant := internal.GetTenant(c)
-	user, err := service.GetUserBySubId(tenant.Id, c.Param("clientId"), c.Param("subId"))
+	oldUser, err := service.GetUserBySubId(tenant.Id, c.Param("clientId"), c.Param("subId"))
 	if err != nil {
 		resp.ErrorSqlSelect(c, err, "service.GetUserBySubId err")
 		return
 	}
 
-	user.FirstName = u.FirstName
-	user.LastName = u.LastName
-	if u.DisplayName != "" {
-		user.DisplayName = u.DisplayName
+	if in.FirstName != "" {
+		oldUser.FirstName = in.FirstName
 	}
-	if u.Username != "" {
-		user.Username = u.Username
+	if in.LastName != "" {
+		oldUser.LastName = in.LastName
 	}
-	if u.Email != "" {
-		user.Email = u.Email
+	if in.Avatar != "" {
+		oldUser.Avatar = in.Avatar
 	}
-	if u.Phone != "" {
-		user.Phone = u.Phone
+	if in.DisplayName != "" {
+		oldUser.DisplayName = in.DisplayName
+	}
+	if in.Username != "" {
+		oldUser.Username = in.Username
+	}
+	if in.Email != "" {
+		oldUser.Email = in.Email
+	}
+	if in.Phone != "" {
+		oldUser.Phone = in.Phone
 	}
 	if err = global.DB.Select("username", "first_name", "last_name", "display_name", "email", "phone", "avatar").
-		Where("id = ?", user.Id).Updates(user).Error; err != nil {
+		Where("id = ?", oldUser.Id).Updates(oldUser).Error; err != nil {
 		resp.ErrorSqlUpdate(c, err, "update tenant user err")
 		return
 	}
