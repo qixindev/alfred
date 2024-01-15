@@ -6,7 +6,7 @@ import (
 	"alfred/backend/endpoint/resp"
 	"alfred/backend/model"
 	"alfred/backend/pkg/utils"
-	"alfred/backend/service"
+	smsSvc "alfred/backend/service/sms"
 	"github.com/gin-gonic/gin"
 )
 
@@ -41,7 +41,7 @@ func GetSMS(c *gin.Context) {
 		return
 	}
 
-	res, err := service.GetSmsConfig(tenant.Id, s.Id, s.Type)
+	res, err := smsSvc.GetSmsConfig(tenant.Id, s.Id, s.Type)
 	if err != nil {
 		resp.ErrorSqlFirst(c, err, "get sms config err")
 		return
@@ -67,7 +67,7 @@ func NewSMS(c *gin.Context) {
 
 	sms.Id = 0
 	sms.TenantId = tenant.Id
-	data, err := service.CreateSmsConfig(sms.Type, sms)
+	data, err := smsSvc.CreateSmsConfig(sms.Type, sms)
 	if err != nil {
 		resp.ErrorSqlCreate(c, err, "create sms config err")
 		return
@@ -94,7 +94,7 @@ func UpdateSMS(c *gin.Context) {
 
 	p.TenantId = tenant.Id
 	p.Id = utils.StrToUint(smsId)
-	if err := service.UpdateSmsConfig(p.TenantId, p.Id, p.Type, p); err != nil {
+	if err := smsSvc.UpdateSmsConfig(p.TenantId, p.Id, p.Type, p); err != nil {
 		resp.ErrorSqlUpdate(c, err, "update sms config err")
 		return
 	}
@@ -117,7 +117,7 @@ func DeleteSMS(c *gin.Context) {
 		return
 	}
 
-	if err := service.DeleteSmsConfig(sms.TenantId, sms.Id, sms.Type); err != nil {
+	if err := smsSvc.DeleteSmsConfig(sms.TenantId, sms.Id, sms.Type); err != nil {
 		resp.ErrorSqlDelete(c, err, "delete sms config err")
 		return
 	}

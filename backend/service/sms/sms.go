@@ -1,4 +1,4 @@
-package service
+package sms
 
 import (
 	"alfred/backend/endpoint/req"
