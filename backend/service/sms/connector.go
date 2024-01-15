@@ -3,6 +3,7 @@ package sms
 import (
 	"alfred/backend/model"
 	"alfred/backend/pkg/global"
+	"errors"
 )
 
 type Connector interface {
@@ -29,6 +30,8 @@ func GetConnector(tenantId, connectorId uint) (Connector, error) {
 		}
 		smsConfig := Alibaba{Config: config}
 		connector = &smsConfig
+	} else {
+		return nil, errors.New("invalid sms connector")
 	}
 	return connector, nil
 }
