@@ -12,7 +12,7 @@ RUN npm run generate
 ##
 ## bulid backend
 ##
-FROM golang:1.20-alpine as build-back
+FROM golang:1.21-alpine as build-back
 WORKDIR /app
 COPY . .
 
