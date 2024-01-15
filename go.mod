@@ -1,13 +1,12 @@
 module alfred
 
-go 1.21
-
-toolchain go1.21.5
+go 1.20
 
 require (
 	github.com/Azure/azure-sdk-for-go/sdk/azcore v1.9.1
 	github.com/Azure/azure-sdk-for-go/sdk/storage/azblob v1.2.1
 	github.com/alibabacloud-go/dysmsapi-20170525 v1.1.2
+	github.com/alibabacloud-go/tea v1.2.1
 	github.com/alibabacloud-go/tea-rpc v1.3.3
 	github.com/allegro/bigcache v1.2.1
 	github.com/gin-contrib/cors v1.5.0
@@ -40,7 +39,6 @@ require (
 	github.com/KyleBanks/depth v1.2.1 // indirect
 	github.com/alibabacloud-go/debug v1.0.0 // indirect
 	github.com/alibabacloud-go/endpoint-util v1.1.1 // indirect
-	github.com/alibabacloud-go/tea v1.2.1 // indirect
 	github.com/alibabacloud-go/tea-rpc-utils v1.1.2 // indirect
 	github.com/alibabacloud-go/tea-utils v1.4.5 // indirect
 	github.com/aliyun/credentials-go v1.3.2 // indirect
