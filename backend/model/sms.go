@@ -45,12 +45,12 @@ type SmsAlibaba struct {
 	Id              uint         `gorm:"primaryKey;autoIncrement" json:"id"`
 	SmsConnectorId  uint         `json:"smsId"`
 	SmsConnector    SmsConnector `gorm:"foreignKey:SmsConnectorId, TenantId" json:"smsConnector"`
-	AccessKeyId     string       `json:"secretId"`
-	AccessKeySecret string       `json:"secretKey"`
-	RegionId        string       `json:"region"`
-	Endpoint        string       `json:"sdkAppId"`
+	AccessKeyId     string       `json:"accessKeyId"`
+	AccessKeySecret string       `json:"accessKeySecret"`
+	RegionId        string       `json:"regionId"`
+	Endpoint        string       `json:"endpoint"`
 	SignName        string       `json:"signName"`
-	TemplateCode    string       `json:"templateId"`
+	TemplateCode    string       `json:"templateCode"`
 
 	TenantId uint `gorm:"primaryKey" json:"tenantId"`
 }
