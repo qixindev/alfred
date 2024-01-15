@@ -11,6 +11,8 @@ func GetSmsModel(t string) (model.InterfaceSms, error) {
 	switch t {
 	case "tcloud":
 		return &model.SmsTcloud{}, nil
+	case "alibaba":
+		return &model.SmsAlibaba{}, nil
 	}
 	return nil, errors.New("no such type")
 }

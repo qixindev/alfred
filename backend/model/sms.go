@@ -40,3 +40,30 @@ func (s *SmsTcloud) Save(r req.Sms) any {
 		TenantId:       r.TenantId,
 	}
 }
+
+type SmsAlibaba struct {
+	Id              uint         `gorm:"primaryKey;autoIncrement" json:"id"`
+	SmsConnectorId  uint         `json:"smsId"`
+	SmsConnector    SmsConnector `gorm:"foreignKey:SmsConnectorId, TenantId" json:"smsConnector"`
+	AccessKeyId     string       `json:"secretId"`
+	AccessKeySecret string       `json:"secretKey"`
+	RegionId        string       `json:"region"`
+	Endpoint        string       `json:"sdkAppId"`
+	SignName        string       `json:"signName"`
+	TemplateCode    string       `json:"templateId"`
+
+	TenantId uint `gorm:"primaryKey" json:"tenantId"`
+}
+
+func (s *SmsAlibaba) Save(r req.Sms) any {
+	return &SmsAlibaba{
+		SmsConnectorId:  r.Id,
+		AccessKeyId:     r.AccessKeyId,
+		AccessKeySecret: r.AccessKeySecret,
+		RegionId:        r.RegionId,
+		Endpoint:        r.Endpoint,
+		SignName:        r.SignName,
+		TemplateCode:    r.TemplateCode,
+		TenantId:        r.TenantId,
+	}
+}

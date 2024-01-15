@@ -43,4 +43,10 @@ type Sms struct {
 	SdkAppId   string `json:"sdkAppId"`
 	SignName   string `json:"signName"`
 	TemplateId string `json:"templateId"`
+
+	AccessKeyId     string `json:"accessKeyId"`
+	AccessKeySecret string `json:"accessKeySecret"`
+	RegionId        string `json:"regionId"`
+	Endpoint        string `json:"endpoint"`
+	TemplateCode    string `json:"templateCode"`
 }

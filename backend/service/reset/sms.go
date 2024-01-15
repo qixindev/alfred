@@ -4,7 +4,7 @@ import (
 	"alfred/backend/model"
 	"alfred/backend/pkg/global"
 	"alfred/backend/pkg/utils"
-	"alfred/backend/service"
+	"alfred/backend/service/sms"
 	"errors"
 	"strings"
 	"time"
@@ -15,7 +15,7 @@ type ProviderResetSms struct {
 }
 
 func (p *ProviderResetSms) ResetAuth(number string, _ uint) (location string, code string, error error) {
-	connector, err := service.GetConnector(p.Config.TenantId, p.Config.SmsConnectorId)
+	connector, err := sms.GetConnector(p.Config.TenantId, p.Config.SmsConnectorId)
 	if err != nil {
 		return "", "", err
 	}
@@ -44,7 +44,7 @@ func (p *ProviderResetSms) ResetAuth(number string, _ uint) (location string, co
 			return "", "", err
 		}
 	}
-	if err = connector.Send(number, []string{code}); err != nil {
+	if err = connector.Send(number, code); err != nil {
 		return "", "", err
 	}
 	return "", code, nil

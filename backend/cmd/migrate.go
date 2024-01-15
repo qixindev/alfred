@@ -31,6 +31,7 @@ func getMigrateModel() []any {
 		&model.ProviderSms{},
 		&model.SmsConnector{},
 		&model.SmsTcloud{},
+		&model.SmsAlibaba{},
 		&model.ResourceType{},
 		&model.ResourceTypeAction{},
 		&model.ResourceTypeRole{},
