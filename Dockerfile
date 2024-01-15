@@ -20,8 +20,6 @@ RUN go env -w GO111MODULE=on \
         && go env -w GOPROXY=https://goproxy.cn,direct \
         && go env -w CGO_ENABLED=0 \
 
-RUN go mod tidy
-
 RUN go build -o accounts .
 
 
