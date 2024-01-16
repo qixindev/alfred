@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ElMessage } from "element-plus";
 
-import { login, getThirdLoginConfigByName, phoneThirdLogin,thirdLoginHandleInfo } from "~/api/user";
+import { login, getThirdLoginConfigByName, thirdLogin,thirdLoginHandleInfo } from "~/api/user";
 
 const VITE_APP_BASE_API = import.meta.env.VITE_APP_BASE_API;
 const route = useRoute();
@@ -34,16 +34,16 @@ const accountLoginHandle = (formData: any) => {
   });
 };
 
-const phoneLoginHandle = async (phoneProvider: string, params: any) => {
-  let { redirect_uri, client_id, state: tenant } = route.query;
-  await phoneThirdLogin(phoneProvider, params, tenant as string);
+const phoneLoginHandle = async (params:any, phoneState:any) => {
+  let { redirect_uri, client_id,state: tenant } = route.query;
+  await thirdLogin(params.code,phoneState);
   navigateTo(
     `${location.origin}${VITE_APP_BASE_API}/${tenant}/oauth2/auth?client_id=${client_id}&scope=profileOpenId&response_type=code&redirect_uri=${redirect_uri}`,
     { external: true }
   );
 };
 
-const thirdLogin = async (thirdInfo: any) => {
+const thirdLoginInfo = async (thirdInfo: any) => {
   const query = route.query;
   const redirect_uri = location.origin + `/redirect`;
   const res=await thirdLoginHandleInfo(thirdInfo.name,query.state,query.redirect_uri,redirect_uri)
@@ -61,13 +61,13 @@ definePageMeta({
       v-if="isPhone"
       @accountLoginHandle="accountLoginHandle"
       @phoneLoginHandle="phoneLoginHandle"
-      @thirdLoginHandle="thirdLogin"
+      @thirdLoginHandle="thirdLoginInfo"
     />
     <Login
       v-else
       @accountLoginHandle="accountLoginHandle"
       @phoneLoginHandle="phoneLoginHandle"
-      @thirdLoginHandle="thirdLogin"
+      @thirdLoginHandle="thirdLoginInfo"
     />
   </div>
 </template>

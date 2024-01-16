@@ -39,9 +39,6 @@ export const thirdLogin = async (code:string,state:string) => {
   return await useHttp.get(`/login/providers/callback?code=${code}&state=${state}`)
 }
 
-export const phoneThirdLogin = async (providerName: string, params: { phone: string, code: string }, currentTenant = 'default') => {
-  return await useHttp.get(`/${currentTenant}/logged-in/${providerName}`, params)
-}
 
 export const getProto = async (fileName: string, currentTenant = 'default') => {
   return await useHttp.get(`/${currentTenant}/login/proto/${fileName}`)
