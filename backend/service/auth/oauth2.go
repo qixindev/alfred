@@ -41,7 +41,7 @@ func (p ProviderOAuth2) Login(code string, loginInfo global.StateInfo) (*model.U
 	query.Set("client_secret", p.Config.ClientSecret)
 	query.Set("scope", p.Config.Scope)
 	query.Set("code", code)
-	query.Set("redirect_uri", loginInfo.AuthString)
+	query.Set("redirect_uri", loginInfo.Redirect)
 	query.Set("grant_type", "authorization_code")
 	resp, err := http.PostForm(p.Config.TokenEndpoint, query)
 	if err != nil {

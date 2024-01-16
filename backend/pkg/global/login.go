@@ -6,14 +6,14 @@ import (
 )
 
 type StateInfo struct {
-	State      string `json:"state"`
-	AuthState  string `json:"authState"`  // phon or email
-	AuthString string `json:"authString"` // location or code
-	Type       string `json:"type"`       // ding, wecom, sms
-	Provider   string `json:"provider"`   // provider name
-	ClientId   string `json:"clientId"`   // client
-	Tenant     string `json:"tenant"`     // tenant name
-	TenantId   uint   `json:"tenantId"`   // tenant id
+	State     string `json:"state"`
+	AuthState string `json:"authState"` // phon or email
+	Redirect  string `json:"redirect"`  // location or code
+	Type      string `json:"type"`      // ding, wecom, sms
+	Provider  string `json:"provider"`  // provider name
+	ClientId  string `json:"clientId"`  // client
+	Tenant    string `json:"tenant"`    // tenant name
+	TenantId  uint   `json:"tenantId"`  // tenant id
 }
 
 func getStateInfo(state string) (StateInfo, error) {

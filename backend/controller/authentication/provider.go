@@ -86,14 +86,14 @@ func LoginToProvider(c *gin.Context) {
 	}
 
 	loginInfo := global.StateInfo{
-		State:      state,
-		AuthState:  authState,
-		Type:       provider.Type,
-		Provider:   providerName,
-		AuthString: location,
-		ClientId:   "default",
-		Tenant:     tenant.Name,
-		TenantId:   tenant.Id,
+		State:     state,
+		AuthState: authState,
+		Type:      provider.Type,
+		Provider:  providerName,
+		Redirect:  location,
+		ClientId:  "default",
+		Tenant:    tenant.Name,
+		TenantId:  tenant.Id,
 	}
 	if err = global.SetStateInfo(state, loginInfo); err != nil {
 		resp.ErrorUnknown(c, err, "failed to set cache info")
