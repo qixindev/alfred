@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ElMessage } from "element-plus";
 
-import { login, getThirdLoginConfigByName, phoneThirdLogin,thirdLoginHandleInfo } from "~/api/user";
+import { login, getThirdLoginConfigByName, thirdLogin,thirdLoginHandleInfo } from "~/api/user";
 
 const route = useRoute();
 const isPhone = ref(true);
@@ -29,12 +29,12 @@ const accountLoginHandle = (formData: any) => {
   });
 };
 
-const phoneLoginHandle = async (phoneProvider: string, params: any) => {
-  await phoneThirdLogin(phoneProvider, params);
+const phoneLoginHandle = async (params: string, phoneState: string) => {
+  await thirdLogin(params.code,phoneState);
   navigateTo((route.query.from as string) || "/", { replace: true });
 };
 
-const thirdLogin = async (thirdInfo: any) => {
+const thirdLoginInfo = async (thirdInfo: any) => {
   const redirect_uri = location.origin + "/redirect?platform=system";
   const res = await thirdLoginHandleInfo(thirdInfo.name,"default",location.origin,redirect_uri)
   navigateTo(res.location,{ external: true })
@@ -51,13 +51,13 @@ definePageMeta({
       v-if="isPhone"
       @accountLoginHandle="accountLoginHandle"
       @phoneLoginHandle="phoneLoginHandle"
-      @thirdLoginHandle="thirdLogin"
+      @thirdLoginHandle="thirdLoginInfo"
     />
     <Login
       v-else
       @accountLoginHandle="accountLoginHandle"
       @phoneLoginHandle="phoneLoginHandle"
-      @thirdLoginHandle="thirdLogin"
+      @thirdLoginHandle="thirdLoginInfo"
     />
   </div>
 </template>

@@ -205,7 +205,7 @@ function accountLogin(formEl: FormInstance) {
     }
   });
 }
-
+let phoneState = ref("");
 function phoneLogin(formEl: FormInstance) {
   formEl.validate(async (valid) => {
     if (valid) {
@@ -214,7 +214,7 @@ function phoneLogin(formEl: FormInstance) {
         return;
       }
       const params = { ...phoneForm, phone: "+86" + phoneForm.phone };
-      emit("phoneLoginHandle", phoneProvider.value, params);
+      emit("phoneLoginHandle",params, phoneState.value);
     }
   });
 }
@@ -250,7 +250,9 @@ const sendValidCode = async (phone: string) => {
     if (valid) {
       countdownButtonRef.value.startCountdown();
       phone = "%2B86" + phone;
-      thirdLoginHandle(phoneProvider.value, phone, currentTenant);
+      thirdLoginHandle(phoneProvider.value, phone, currentTenant).then(res=>{
+        phoneState.value=res.state
+      });
     }
   });
 };
