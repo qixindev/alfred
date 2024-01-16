@@ -2,6 +2,7 @@ package auth
 
 import (
 	"alfred/backend/model"
+	"alfred/backend/pkg/global"
 	"alfred/backend/pkg/utils"
 	"bytes"
 	"encoding/json"
@@ -35,7 +36,7 @@ type dingTalkTokenRequest struct {
 	GrantType    string `json:"grantType"`
 }
 
-func (p ProviderDingTalk) Login(code string, _ ProviderLogin) (*model.UserInfo, error) {
+func (p ProviderDingTalk) Login(code string, _ global.StateInfo) (*model.UserInfo, error) {
 	if code == "" {
 		return nil, errors.New("no auth code")
 	}

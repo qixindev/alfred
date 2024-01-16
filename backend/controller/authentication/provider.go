@@ -8,7 +8,6 @@ import (
 	"alfred/backend/pkg/utils"
 	"alfred/backend/service"
 	"alfred/backend/service/auth"
-	"encoding/json"
 	"errors"
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-gonic/gin"
@@ -86,24 +85,22 @@ func LoginToProvider(c *gin.Context) {
 		return
 	}
 
-	loginInfo := auth.ProviderLogin{
-		State:     state,
-		AuthState: authState,
-		Type:      provider.Type,
-		Provider:  providerName,
-		Redirect:  c.Query("next"),
-		ClientId:  "default",
-		Tenant:    tenant.Name,
-		TenantId:  tenant.Id,
+	loginInfo := global.StateInfo{
+		State:      state,
+		AuthState:  authState,
+		Type:       provider.Type,
+		Provider:   providerName,
+		AuthString: location,
+		ClientId:   "default",
+		Tenant:     tenant.Name,
+		TenantId:   tenant.Id,
 	}
-	infoByte, err := json.Marshal(&loginInfo)
-	if err != nil {
-		resp.ErrorUnknown(c, err, "failed to marshal provider info")
+	if err = global.SetStateInfo(state, loginInfo); err != nil {
+		resp.ErrorUnknown(c, err, "failed to set cache info")
 		return
 	}
-
-	if err = global.CodeCache.Set(state, infoByte); err != nil {
-		resp.ErrorUnknown(c, err, "failed to set code")
+	if provider.Type == "sms" {
+		resp.SuccessWithData(c, &gin.H{"state": state})
 		return
 	}
 
@@ -120,30 +117,13 @@ func LoginToProvider(c *gin.Context) {
 // @Success	200
 // @Router	/accounts/login/providers/callback [get]
 func ProviderCallback(c *gin.Context) {
-	var provider model.Provider
 	state := c.Query("state")
-	loginInfo, err := global.CodeCache.Get(state)
+	stateInfo, err := global.GetAndDeleteStateInfo(state)
 	if err != nil {
-		_ = global.CodeCache.Delete(state)
-		resp.ErrorForbidden(c, err, "invalidate state")
+		resp.ErrorUnknown(c, err, "failed to get or delete state")
 		return
 	}
-	if err = global.CodeCache.Delete(state); err != nil {
-		resp.ErrorUnknown(c, err, "failed to delete state")
-		return
-	}
-	var stateInfo auth.ProviderLogin
-	if err = json.Unmarshal(loginInfo, &stateInfo); err != nil {
-		resp.ErrorUnknown(c, err, "failed unmarshal cache login info")
-		return
-	}
-	if err = global.DB.Where("tenant_id = ? AND name = ?", stateInfo.TenantId, stateInfo.Provider).
-		First(&provider).Error; err != nil {
-		resp.ErrorSqlFirst(c, err, "get provider err")
-		return
-	}
-
-	_, authProvider, err := auth.GetAuthProvider(provider.TenantId, provider.Name)
+	provider, authProvider, err := auth.GetAuthProvider(stateInfo.TenantId, stateInfo.Provider)
 	if err != nil {
 		resp.ErrorSqlFirst(c, err, "get auth provider err")
 		return

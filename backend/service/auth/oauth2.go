@@ -2,6 +2,7 @@ package auth
 
 import (
 	"alfred/backend/model"
+	"alfred/backend/pkg/global"
 	"alfred/backend/pkg/utils"
 	"encoding/json"
 	"errors"
@@ -31,7 +32,7 @@ func (p ProviderOAuth2) Auth(redirectUri string, state string, _ uint) (string, 
 	return location, nil
 }
 
-func (p ProviderOAuth2) Login(code string, loginInfo ProviderLogin) (*model.UserInfo, error) {
+func (p ProviderOAuth2) Login(code string, loginInfo global.StateInfo) (*model.UserInfo, error) {
 	if code == "" {
 		return nil, errors.New("no auth code")
 	}
@@ -40,7 +41,7 @@ func (p ProviderOAuth2) Login(code string, loginInfo ProviderLogin) (*model.User
 	query.Set("client_secret", p.Config.ClientSecret)
 	query.Set("scope", p.Config.Scope)
 	query.Set("code", code)
-	query.Set("redirect_uri", loginInfo.Redirect)
+	query.Set("redirect_uri", loginInfo.AuthString)
 	query.Set("grant_type", "authorization_code")
 	resp, err := http.PostForm(p.Config.TokenEndpoint, query)
 	if err != nil {

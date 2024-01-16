@@ -37,8 +37,14 @@ func initSystem() error {
 
 	global.CodeCache, err = cache.NewBigCache(5 * 60 * time.Second)
 	if err != nil {
-		return errors.WithMessage(err, "init big cache err")
+		return errors.WithMessage(err, "init code big cache err")
 	}
+
+	global.StateCache, err = cache.NewBigCache(5 * 60 * time.Second)
+	if err != nil {
+		return errors.WithMessage(err, "init state big cache err")
+	}
+
 	if env.GetReleaseType() == "first" {
 		migrateList := getMigrateModel()
 		if err = global.DB.AutoMigrate(migrateList...); err != nil {

@@ -1,10 +1,12 @@
 package pkg
 
 import (
-	"alfred/backend/pkg/client/msg/api"
 	"alfred/backend/pkg/utils"
+	"crypto/tls"
+	"encoding/json"
 	"fmt"
-	"net/url"
+	"io"
+	"net/http"
 	"testing"
 )
 
@@ -30,28 +32,36 @@ type WechatUserInfo struct {
 }
 
 func TestTemp(t *testing.T) {
-	query := url.Values{}
-	query.Set("appid", "wx7f8b2509c7f46c05")
-	query.Set("secret", "cd2f96d02820bc013829d87e51acd2c0")
-	query.Set("code", "02152s100HyA9R1vIb400vRQ20052s1R")
-	query.Set("grant_type", "authorization_code")
-	tokenUrl := "https://api.weixin.qq.com/sns/oauth2/access_token?" + query.Encode()
-	var tt WechatTokenResp
-	if err := api.GetClient(tokenUrl, &tt); err != nil {
-		fmt.Println("token err: ", err)
-		return
+	client := http.Client{Transport: &http.Transport{
+		TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
+	}}
+	resp, err := client.Get("http://localhost/accounts/default/providers/sms/login?phone=%2B8613365807972")
+	if err != nil {
+		t.FailNow()
+	}
+	defer utils.DeferErr(resp.Body.Close)
+	body, err := io.ReadAll(resp.Body)
+	if err != nil {
+		t.FailNow()
+	}
+	result := struct {
+		Location string `json:"location"`
+		State    string `json:"state"`
+	}{}
+	if err = json.Unmarshal(body, &result); err != nil {
+		t.FailNow()
 	}
 
-	fmt.Println(utils.StructToString(tt))
-	userInfoQuery := url.Values{}
-	userInfoQuery.Set("access_token", tt.AccessToken)
-	userInfoQuery.Set("openid", tt.Openid)
-	userInfoUrl := "https://api.weixin.qq.com/sns/userinfo?" + userInfoQuery.Encode()
-	var wechatUserInfo WechatUserInfo
-	if err := api.GetClient(userInfoUrl, &wechatUserInfo); err != nil {
-		fmt.Println("userinfo err: ", err)
-		return
+	println(utils.StructToString(result))
+	url := fmt.Sprintf("http://localhost/accounts/login/providers/callback?state=%s&code=%s", result.State, result.Location)
+	resp, err = client.Get(url)
+	if err != nil {
+		t.FailNow()
 	}
-
-	fmt.Println(utils.StructToString(wechatUserInfo))
+	defer utils.DeferErr(resp.Body.Close)
+	body, err = io.ReadAll(resp.Body)
+	if err != nil {
+		t.FailNow()
+	}
+	println(string(body))
 }

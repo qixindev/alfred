@@ -2,6 +2,7 @@ package auth
 
 import (
 	"alfred/backend/model"
+	"alfred/backend/pkg/global"
 	"alfred/backend/pkg/utils"
 	"encoding/json"
 	"errors"
@@ -25,7 +26,7 @@ func (p ProviderWeCom) Auth(redirectUri string, state string, _ uint) (string, e
 	return location, nil
 }
 
-func (p ProviderWeCom) Login(code string, _ ProviderLogin) (*model.UserInfo, error) {
+func (p ProviderWeCom) Login(code string, _ global.StateInfo) (*model.UserInfo, error) {
 	if code == "" {
 		return nil, errors.New("no auth code")
 	}

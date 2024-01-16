@@ -7,23 +7,12 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-type ProviderLogin struct {
-	State     string `json:"state"`
-	AuthState string `json:"authState"`
-	Type      string `json:"type"`
-	Provider  string `json:"provider"`
-	Redirect  string `json:"redirect"`
-	ClientId  string `json:"clientId"`
-	Tenant    string `json:"tenant"`
-	TenantId  uint   `json:"tenantId"`
-}
-
 type Provider interface {
 	// Auth Get to external auth. Return redirect location.
 	Auth(string, string, uint) (string, error)
 
 	// Login Callback when auth completed.
-	Login(string, ProviderLogin) (*model.UserInfo, error)
+	Login(string, global.StateInfo) (*model.UserInfo, error)
 
 	LoginConfig() *gin.H
 

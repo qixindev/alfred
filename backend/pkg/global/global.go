@@ -8,10 +8,11 @@ import (
 )
 
 var (
-	CONFIG    *config.Config
-	LOG       *zap.Logger
-	DB        *gorm.DB
-	CodeCache *bigcache.BigCache
+	CONFIG     *config.Config
+	LOG        *zap.Logger
+	DB         *gorm.DB
+	StateCache *bigcache.BigCache
+	CodeCache  *bigcache.BigCache
 )
 
 func WithTenant(tenantId uint) *gorm.DB {

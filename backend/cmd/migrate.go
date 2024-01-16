@@ -39,7 +39,6 @@ func getMigrateModel() []any {
 		&model.Resource{},
 		&model.ResourceRoleUser{},
 		&model.SendInfo{},
-		&model.PhoneVerification{},
 	}
 }
 
