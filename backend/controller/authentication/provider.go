@@ -90,7 +90,7 @@ func LoginToProvider(c *gin.Context) {
 		AuthState: authState,
 		Type:      provider.Type,
 		Provider:  providerName,
-		Redirect:  location,
+		Redirect:  c.Query("next"),
 		ClientId:  "default",
 		Tenant:    tenant.Name,
 		TenantId:  tenant.Id,
