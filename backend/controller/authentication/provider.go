@@ -41,7 +41,7 @@ func ListProviders(c *gin.Context) {
 func GetProvider(c *gin.Context) {
 	tenant := internal.GetTenant(c)
 	providerName := c.Param("provider")
-	authProvider, err := auth.GetAuthProvider(tenant.Id, providerName)
+	_, authProvider, err := auth.GetAuthProvider(tenant.Id, providerName)
 	if err != nil {
 		resp.ErrorSqlFirst(c, err, "get provider err")
 		return
@@ -73,7 +73,7 @@ func LoginToProvider(c *gin.Context) {
 	tenant := internal.GetTenant(c)
 	providerName := c.Param("provider")
 	callbackUrl := c.Query("callback")
-	authProvider, err := auth.GetAuthProvider(tenant.Id, providerName)
+	provider, authProvider, err := auth.GetAuthProvider(tenant.Id, providerName)
 	if err != nil {
 		resp.ErrorSqlFirst(c, err, "get provider err")
 		return
@@ -84,7 +84,7 @@ func LoginToProvider(c *gin.Context) {
 	if callbackUrl != "" {
 		authStr = callbackUrl
 	}
-	if providerName == "sms" {
+	if provider.Type == "sms" {
 		state = c.Query("phone")
 	}
 
@@ -152,7 +152,7 @@ func ProviderCallback(c *gin.Context) {
 		return
 	}
 
-	authProvider, err := auth.GetAuthProvider(provider.TenantId, provider.Name)
+	_, authProvider, err := auth.GetAuthProvider(provider.TenantId, provider.Name)
 	if err != nil {
 		resp.ErrorSqlFirst(c, err, "get auth provider err")
 		return

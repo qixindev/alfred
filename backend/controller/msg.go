@@ -47,7 +47,7 @@ func SendMsg(c *gin.Context) {
 			return
 		}
 
-		authProvider, err := auth.GetAuthProvider(tenant.Id, p.Name)
+		_, authProvider, err := auth.GetAuthProvider(tenant.Id, p.Name)
 		if err != nil {
 			resp.ErrorUnknown(c, err, "get provider err")
 			return
