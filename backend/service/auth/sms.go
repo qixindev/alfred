@@ -51,14 +51,10 @@ func (p *ProviderSms) Auth(_ string, number string, _ uint) (string, error) {
 	return "", nil
 }
 
-func (p *ProviderSms) Login(c *gin.Context) (*model.UserInfo, error) {
-	phone := c.Query("phone")
-	code := c.Query("code")
-	if phone == "" || code == "" {
-		return nil, errors.New("invalid phone or code")
-	}
+func (p *ProviderSms) Login(code string, loginInfo ProviderLogin) (*model.UserInfo, error) {
+	phone := loginInfo.AuthState
 	var v model.PhoneVerification
-	if err := global.DB.First(&v, "phone = ? AND code = ?", phone, code).Error; err != nil {
+	if err := global.DB.First(&v, "phone = ? AND code = ?", loginInfo, code).Error; err != nil {
 		return nil, err
 	}
 	if err := global.DB.Delete(&v).Error; err != nil {

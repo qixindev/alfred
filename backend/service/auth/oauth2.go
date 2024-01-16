@@ -31,20 +31,16 @@ func (p ProviderOAuth2) Auth(redirectUri string, state string, _ uint) (string, 
 	return location, nil
 }
 
-func (p ProviderOAuth2) Login(c *gin.Context) (*model.UserInfo, error) {
-	tenantName := c.Param("tenant")
-	providerName := c.Param("provider")
-	code := c.Query("code")
+func (p ProviderOAuth2) Login(code string, loginInfo ProviderLogin) (*model.UserInfo, error) {
 	if code == "" {
 		return nil, errors.New("no auth code")
 	}
-	redirectUri := fmt.Sprintf("%s/%s/logged-in/%s", utils.GetHostWithScheme(c), tenantName, providerName)
 	query := url.Values{}
 	query.Set("client_id", p.Config.ClientId)
 	query.Set("client_secret", p.Config.ClientSecret)
 	query.Set("scope", p.Config.Scope)
 	query.Set("code", code)
-	query.Set("redirect_uri", redirectUri)
+	query.Set("redirect_uri", loginInfo.Redirect)
 	query.Set("grant_type", "authorization_code")
 	resp, err := http.PostForm(p.Config.TokenEndpoint, query)
 	if err != nil {

@@ -50,15 +50,6 @@ func GetProvider(c *gin.Context) {
 	resp.SuccessWithData(c, authProvider.LoginConfig())
 }
 
-type ProviderLogin struct {
-	Redirect string `json:"redirect"`
-	Type     string `json:"type"`
-	Provider string `json:"provider"`
-	ClientId string `json:"clientId"`
-	Tenant   string `json:"tenant"`
-	TenantId uint   `json:"tenantId"`
-}
-
 // LoginToProvider
 // @Summary	login via a provider
 // @Tags	login
@@ -80,31 +71,30 @@ func LoginToProvider(c *gin.Context) {
 	}
 
 	state := uuid.NewString()
+	authState := state
 	authStr := utils.GetHostWithScheme(c) + "/redirect"
 	if callbackUrl != "" {
 		authStr = callbackUrl
 	}
 	if provider.Type == "sms" {
-		state = c.Query("phone")
+		authState = c.Query("phone")
 	}
 
-	location, err := authProvider.Auth(authStr, state, tenant.Id)
+	location, err := authProvider.Auth(authStr, authState, tenant.Id)
 	if err != nil {
 		resp.ErrorUnknown(c, err, "provider auth err")
 		return
 	}
 
-	if providerName == "sms" {
-		resp.Success(c)
-		return
-	}
-
-	loginInfo := ProviderLogin{
-		Redirect: c.Query("next"),
-		Provider: providerName,
-		ClientId: "default",
-		Tenant:   tenant.Name,
-		TenantId: tenant.Id,
+	loginInfo := auth.ProviderLogin{
+		State:     state,
+		AuthState: authState,
+		Type:      provider.Type,
+		Provider:  providerName,
+		Redirect:  c.Query("next"),
+		ClientId:  "default",
+		Tenant:    tenant.Name,
+		TenantId:  tenant.Id,
 	}
 	infoByte, err := json.Marshal(&loginInfo)
 	if err != nil {
@@ -116,6 +106,7 @@ func LoginToProvider(c *gin.Context) {
 		resp.ErrorUnknown(c, err, "failed to set code")
 		return
 	}
+
 	resp.SuccessWithData(c, &gin.H{"state": state, "location": location})
 }
 
@@ -141,7 +132,7 @@ func ProviderCallback(c *gin.Context) {
 		resp.ErrorUnknown(c, err, "failed to delete state")
 		return
 	}
-	var stateInfo ProviderLogin
+	var stateInfo auth.ProviderLogin
 	if err = json.Unmarshal(loginInfo, &stateInfo); err != nil {
 		resp.ErrorUnknown(c, err, "failed unmarshal cache login info")
 		return
@@ -157,7 +148,7 @@ func ProviderCallback(c *gin.Context) {
 		resp.ErrorSqlFirst(c, err, "get auth provider err")
 		return
 	}
-	userInfo, err := authProvider.Login(c)
+	userInfo, err := authProvider.Login(c.Query("code"), stateInfo)
 	if err != nil {
 		resp.ErrorUnknown(c, err, "login err")
 		return
@@ -181,19 +172,20 @@ func ProviderCallback(c *gin.Context) {
 			resp.ErrorSqlCreate(c, err, "create provider user err")
 			return
 		}
-	} else if err != nil {
-		resp.ErrorSqlSelect(c, err, "get user err")
-		return
-	} else {
+	} else if err == nil {
 		if err = global.DB.Where("id = ? AND tenant_id = ?", providerUser.UserId, provider.TenantId).
 			First(&user).Error; err != nil {
 			resp.ErrorSqlFirst(c, err, "get user err")
 			return
 		}
+	} else {
+		resp.ErrorSqlSelect(c, err, "get user err")
+		return
 	}
 
 	session := sessions.Default(c)
 	session.Set("tenant", stateInfo.Tenant)
+	session.Set("client", stateInfo.ClientId)
 	session.Set("user", user.Username)
 	session.Delete("next")
 	if err = session.Save(); err != nil {
@@ -201,6 +193,5 @@ func ProviderCallback(c *gin.Context) {
 		return
 	}
 
-	stateInfo.Type = provider.Type
 	resp.SuccessWithData(c, stateInfo)
 }

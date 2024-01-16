@@ -35,8 +35,7 @@ type dingTalkTokenRequest struct {
 	GrantType    string `json:"grantType"`
 }
 
-func (p ProviderDingTalk) Login(c *gin.Context) (*model.UserInfo, error) {
-	code := c.Query("code")
+func (p ProviderDingTalk) Login(code string, _ ProviderLogin) (*model.UserInfo, error) {
 	if code == "" {
 		return nil, errors.New("no auth code")
 	}

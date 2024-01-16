@@ -35,7 +35,7 @@ func initSystem() error {
 		return errors.WithMessage(err, "InitDB err")
 	}
 
-	global.CodeCache, err = cache.NewBigCache(120 * time.Second)
+	global.CodeCache, err = cache.NewBigCache(5 * 60 * time.Second)
 	if err != nil {
 		return errors.WithMessage(err, "init big cache err")
 	}

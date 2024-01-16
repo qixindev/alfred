@@ -25,8 +25,7 @@ func (p ProviderWeCom) Auth(redirectUri string, state string, _ uint) (string, e
 	return location, nil
 }
 
-func (p ProviderWeCom) Login(c *gin.Context) (*model.UserInfo, error) {
-	code := c.Query("code")
+func (p ProviderWeCom) Login(code string, _ ProviderLogin) (*model.UserInfo, error) {
 	if code == "" {
 		return nil, errors.New("no auth code")
 	}
