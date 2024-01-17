@@ -73,6 +73,8 @@ func insertDB() error {
 			Disabled:         false,
 			TenantId:         tenant.Id,
 			Role:             "admin",
+			From:             "init",
+			Meta:             "{}",
 		}).Error; err != nil {
 			return err
 		}
