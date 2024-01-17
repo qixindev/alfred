@@ -6,6 +6,7 @@ import (
 	"alfred/backend/pkg/utils"
 	"errors"
 	"fmt"
+	"github.com/google/uuid"
 	"gorm.io/gorm"
 	"os"
 )
@@ -64,7 +65,7 @@ func insertDB() error {
 		if err != nil {
 			return err
 		}
-		if err = tx.Create(&model.User{
+		user := model.User{
 			Username:         DefaultUser,
 			PasswordHash:     adminPwd,
 			EmailVerified:    false,
@@ -75,6 +76,25 @@ func insertDB() error {
 			Role:             "admin",
 			From:             "init",
 			Meta:             "{}",
+		}
+		if err = tx.Create(&user).Error; err != nil {
+			return err
+		}
+
+		if err = tx.Create(&model.ClientUser{
+			ClientId: DefaultClient,
+			TenantId: tenant.Id,
+			Sub:      uuid.NewString(),
+			UserId:   user.Id,
+		}).Error; err != nil {
+			return err
+		}
+
+		if err = tx.Create(&model.ClientSecret{
+			ClientId: DefaultClient,
+			Name:     DefaultClient,
+			Secret:   uuid.NewString(),
+			TenantId: tenant.Id,
 		}).Error; err != nil {
 			return err
 		}

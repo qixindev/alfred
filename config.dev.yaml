@@ -43,10 +43,10 @@ azure-blob:
   container: "iothotcold"
 
 rabbit-mq:
-  amqp: "amqp://default_user_HZRmWEqPB_e9fTybSWz:RyamqGvqv7yhkfsJykmh5O8Nb0rm-JKa@127.0.0.1:5672/"
+  amqp: "amqp://rabbitmq:rabbitmq@rabbitmq:5672/"
 
 pgsql:
-  host: "dev.postgres.database.chinacloudapi.cn"
+  host: "postgres"
   port: "5432"
   config: ""
   db-name: "iot"

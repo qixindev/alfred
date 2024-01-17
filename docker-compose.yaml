@@ -4,21 +4,23 @@ services:
   alfred:
     build: .
     container_name: alfred
-    ports:
-      - "80:80"
+    # command: migrate-db
+    # command: init
+    ports: ["80:80"]
+    depends_on: ["postgres"]
     environment:
       - CONFIG_PATH=config.dev.yaml
       - DEPLOY_TYPE=local
     volumes:
       - /etc/localtime:/etc/localtime
       - ./config.dev.yaml:/app/config.dev.yaml
+      - ./data/jwks:/app/data/jwks
     networks:
       - qixin
   postgres:
     image: postgres
     container_name: postgres
-    ports:
-      - "5432:5432"
+    ports: ["5432:5432"]
     environment:
       - POSTGRES_USER=qixin
       - POSTGRES_PASSWORD=Qx20190822
