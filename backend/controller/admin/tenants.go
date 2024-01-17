@@ -77,6 +77,11 @@ func NewTenant(c *gin.Context) {
 		return
 	}
 
+	if _, err := utils.LoadRsaPublicKeys(tenant.Name); err != nil {
+		resp.ErrorUnknown(c, err, "create jwk error")
+		return
+	}
+
 	if err := global.DB.Create(&tenant).Error; err != nil {
 		resp.ErrorSqlCreate(c, err, "new tenant err")
 		return

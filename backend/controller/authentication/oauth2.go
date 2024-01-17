@@ -1,4 +1,4 @@
-package controller
+package authentication
 
 import (
 	"alfred/backend/controller/internal"

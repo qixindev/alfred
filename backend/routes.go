@@ -26,7 +26,7 @@ func AddRoutes(r *gin.Engine) {
 	{
 		authentication.AddLoginRoutes(tenantApi)
 		authentication.AddUsersRoutes(tenantApi)
-		controller.AddOAuth2Routes(tenantApi)
+		authentication.AddOAuth2Routes(tenantApi)
 		controller.AddMsgRouter(tenantApi)
 		reset.AddResetRouter(tenantApi)
 	}
