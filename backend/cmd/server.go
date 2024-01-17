@@ -2,7 +2,7 @@ package cmd
 
 import (
 	"alfred/backend"
-	initial2 "alfred/backend/initial"
+	"alfred/backend/initial"
 	"alfred/backend/pkg/cache"
 	"alfred/backend/pkg/config/env"
 	"alfred/backend/pkg/global"
@@ -20,18 +20,18 @@ import (
 
 func initSystem() error {
 	var err error
-	if err = initial2.InitConfig(); err != nil { // 初始化配置
+	if err = initial.InitConfig(); err != nil { // 初始化配置
 		return err
 	}
 
 	// 初始化日志
-	global.LOG = initial2.Zap()
+	global.LOG = initial.Zap()
 	zap.ReplaceGlobals(global.LOG)
 	if global.LOG == nil {
 		return errors.New("init zap log err")
 	}
 
-	if err = initial2.InitDB(); err != nil {
+	if err = initial.InitDB(); err != nil {
 		return errors.WithMessage(err, "InitDB err")
 	}
 
@@ -50,7 +50,7 @@ func initSystem() error {
 		if err = global.DB.AutoMigrate(migrateList...); err != nil {
 			return errors.WithMessage(err, "migrate db err")
 		}
-		if err = initial2.InitDefaultTenant(); err != nil {
+		if err = initial.InitDefaultTenant(); err != nil {
 			return errors.WithMessage(err, "InitDefaultTenant err")
 		}
 	}
@@ -77,7 +77,7 @@ func startServer() {
 
 	r := gin.Default()
 	r.Use(cors.Default())
-	cookieSecret := initial2.GetSessionSecret()
+	cookieSecret := initial.GetSessionSecret()
 	store := cookie.NewStore(cookieSecret)
 	store.Options(sessions.Options{
 		MaxAge: 60 * 60 * 24,

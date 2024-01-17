@@ -1,11 +1,17 @@
 version: '3'
 
 services:
-  accounts:
+  alfred:
     build: .
-    container_name: accounts
+    container_name: alfred
     ports:
       - "80:80"
+    environment:
+      - CONFIG_PATH=config.dev.yaml
+      - DEPLOY_TYPE=local
+    volumes:
+      - /etc/localtime:/etc/localtime
+      - ./config.dev.yaml:/app/config.dev.yaml
     networks:
       - qixin
   postgres:

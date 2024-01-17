@@ -18,11 +18,19 @@ const (
 )
 
 func initFirstRun() {
+	if err := initSystem(); err != nil {
+		fmt.Println("init system err:", err)
+		os.Exit(1)
+		return
+	}
+
 	var tenant model.Tenant
-	if err := global.DB.First(&tenant, "name = ?", DefaultTenant).Error; errors.Is(err, gorm.ErrRecordNotFound) {
+	if err := global.DB.First(&tenant, "name = ?", DefaultTenant).Error; err == nil {
+		fmt.Println("Default tenant is already in use")
 		return
-	} else if err != nil {
-		return
+	} else if !errors.Is(err, gorm.ErrRecordNotFound) {
+		fmt.Println("get tenant err: ", err.Error())
+		os.Exit(1)
 	}
 
 	if err := insertDB(); err != nil {
@@ -43,30 +51,31 @@ func initFirstRun() {
 func insertDB() error {
 	var tenant model.Tenant
 	tenant.Name = DefaultTenant
-	if err := global.DB.Create(&tenant).Error; err != nil {
-		return err
-	}
+	return global.DB.Transaction(func(tx *gorm.DB) error {
+		if err := tx.Create(&tenant).Error; err != nil {
+			return err
+		}
 
-	if err := global.DB.Create(&model.Client{Id: DefaultClient, Name: DefaultClient, TenantId: tenant.Id}).Error; err != nil {
-		return err
-	}
+		if err := tx.Create(&model.Client{Id: DefaultClient, Name: DefaultClient, TenantId: tenant.Id}).Error; err != nil {
+			return err
+		}
 
-	adminPwd, err := utils.HashPassword(DefaultPwd)
-	if err != nil {
-		return err
-	}
-	if err = global.DB.Create(&model.User{
-		Username:         DefaultUser,
-		PasswordHash:     adminPwd,
-		EmailVerified:    false,
-		PhoneVerified:    false,
-		TwoFactorEnabled: false,
-		Disabled:         false,
-		TenantId:         tenant.Id,
-		Role:             "admin",
-	}).Error; err != nil {
-		return err
-	}
-
-	return nil
+		adminPwd, err := utils.HashPassword(DefaultPwd)
+		if err != nil {
+			return err
+		}
+		if err = tx.Create(&model.User{
+			Username:         DefaultUser,
+			PasswordHash:     adminPwd,
+			EmailVerified:    false,
+			PhoneVerified:    false,
+			TwoFactorEnabled: false,
+			Disabled:         false,
+			TenantId:         tenant.Id,
+			Role:             "admin",
+		}).Error; err != nil {
+			return err
+		}
+		return nil
+	})
 }
