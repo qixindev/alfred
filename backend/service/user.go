@@ -171,10 +171,18 @@ func GetTenantIdByTenantName(tenantName string) (uint, error) {
 	return tenant.Id, nil
 }
 
-func GetSub(clientId string, tenantId uint, userId uint) (string, error) {
+func GetAlfredClientUser(clientId string, tenantId uint, userId uint) (string, error) {
 	var clientUser model.ClientUser
 	if err := global.DB.Model(clientUser).Where("client_id = ? AND tenant_id = ? AND user_id = ?", clientId, tenantId, userId).
-		First(&clientUser).Error; err != nil {
+		First(&clientUser).Error; errors.Is(err, gorm.ErrRecordNotFound) {
+		clientUser.UserId = userId
+		clientUser.ClientId = clientId
+		clientUser.TenantId = tenantId
+		clientUser.Sub = uuid.NewString()
+		if err = global.DB.Create(&clientUser).Error; err != nil {
+			return "", err
+		}
+	} else if err != nil {
 		return "", err
 	}
 	return clientUser.Sub, nil

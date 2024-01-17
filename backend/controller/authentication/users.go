@@ -31,7 +31,7 @@ func GetUserDetail(c *gin.Context) {
 		return
 	}
 
-	sub, err := service.GetSub(clientId, tenantId, user.Id)
+	sub, err := service.GetAlfredClientUser(clientId, tenantId, user.Id)
 	if err != nil {
 		resp.ErrorRequest(c, err)
 		return
