@@ -34,8 +34,9 @@ const getInfo = () => {
   getEnergy(currentTenant).then((res: any) => {
     //  解决 is not iterable
     if (JSON.stringify(res) !== "{}") {
-    info.value = { ...res };
-    bottomTitle.value = [...res.bottom];}
+      info.value = { ...res };
+      bottomTitle.value = [...res.bottom];
+    }
   });
   getProto(currentTenant).then((res: any) => {
     newPrimaryWord.value = res.filter((item: any) => {
@@ -93,6 +94,10 @@ const props = defineProps({
   top: {
     type: Array,
     default: [],
+  },
+  accountLoad: {
+    type: Boolean,
+    default: false,
   },
 });
 
@@ -214,7 +219,7 @@ function phoneLogin(formEl: FormInstance) {
         return;
       }
       const params = { ...phoneForm, phone: "+86" + phoneForm.phone };
-      emit("phoneLoginHandle",params, phoneState.value);
+      emit("phoneLoginHandle", params, phoneState.value);
     }
   });
 }
@@ -250,8 +255,8 @@ const sendValidCode = async (phone: string) => {
     if (valid) {
       countdownButtonRef.value.startCountdown();
       phone = "%2B86" + phone;
-      thirdLoginHandle(phoneProvider.value, phone, currentTenant).then(res=>{
-        phoneState.value=res.state
+      thirdLoginHandle(phoneProvider.value, phone, currentTenant).then((res) => {
+        phoneState.value = res.state;
       });
     }
   });
@@ -338,6 +343,7 @@ definePageMeta({
           >忘记密码</nuxt-link
         >
         <el-button
+          :loading="accountLoad"
           class="submit-btnL"
           type="primary"
           @click="router.path.substring(0, 10)!='/dashboard'?submit(accountRuleFormRef as FormInstance):''"
@@ -387,6 +393,7 @@ definePageMeta({
           </el-form-item>
         </el-form>
         <el-button
+          :loading="accountLoad"
           class="submit-btnL"
           type="primary"
           @click="router.path.substring(0, 10) != '/dashboard' ? submit(phoneRuleFormRef as FormInstance):''"

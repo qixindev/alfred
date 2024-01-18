@@ -36,7 +36,7 @@ const login_top = ref(0);
 const login_left = ref(0);
 const getInfo = () => {
   getEnergy(currentTenant).then((res: any) => {
-  //  解决 is not iterable
+    //  解决 is not iterable
     if (JSON.stringify(res) !== "{}") {
       info.value = { ...res };
       bottomTitle.value = [...res.bottom];
@@ -101,6 +101,10 @@ const props = defineProps({
     type: Array,
     default: [],
   },
+  accountLoad: {
+    type: Boolean,
+    default: false,
+  },
 });
 const style = document.createElement("style");
 watch(
@@ -116,7 +120,7 @@ watch(
     }
     document.body.appendChild(style);
   },
-  {immediate: true,  deep: true }
+  { immediate: true, deep: true }
 );
 watch(
   () => props.top,
@@ -269,8 +273,8 @@ const sendValidCode = async (phone: string) => {
     if (valid) {
       countdownButtonRef.value.startCountdown();
       phone = "%2B86" + phone;
-      thirdLoginHandle(phoneProvider.value, phone, currentTenant).then(res=>{
-        phoneState.value=res.state
+      thirdLoginHandle(phoneProvider.value, phone, currentTenant).then((res) => {
+        phoneState.value = res.state;
       });
     }
   });
@@ -304,7 +308,9 @@ const forgetPass = async () => {
     query: { currentTenant },
   });
 };
-
+const handleSubmit = (formEl: FormInstance) => {
+  submit(formEl);
+};
 definePageMeta({
   layout: false,
 });
@@ -343,7 +349,11 @@ definePageMeta({
         <el-tab-pane label="密码登录" name="login">
           <el-form ref="accountRuleFormRef" :model="accountForm" :rules="accountRules">
             <el-form-item prop="login">
-              <el-input v-model="accountForm.login" placeholder="请输入手机号/用户名">
+              <el-input
+                v-model="accountForm.login"
+                placeholder="请输入手机号/用户名"
+                @keyup.enter="handleSubmit(accountRuleFormRef as FormInstance)"
+              >
                 <template #prefix>
                   <el-icon class="icon-userL"><User /></el-icon>
                 </template>
@@ -356,6 +366,7 @@ definePageMeta({
                 placeholder="请输入登录密码"
                 type="password"
                 show-password
+                @keyup.enter="handleSubmit(accountRuleFormRef as FormInstance)"
               >
                 <template #prefix>
                   <el-icon class="icon-passL"><Lock /></el-icon>
@@ -377,6 +388,7 @@ definePageMeta({
             >忘记密码</el-link
           >
           <el-button
+            :loading="accountLoad"
             class="submit-btnL"
             type="primary"
             @click="router.path.substring(0, 10)!='/dashboard'?submit(accountRuleFormRef as FormInstance):''"
@@ -409,6 +421,7 @@ definePageMeta({
                   maxlength="6"
                   placeholder="请输入6位验证码"
                   :style="{ width: '280px', marginRight: '10px' }"
+                  @keyup.enter="handleSubmit(phoneRuleFormRef as FormInstance)"
                 >
                   <template #prefix>
                     <el-icon class="icon-codeL"><Lock /></el-icon>
@@ -426,6 +439,7 @@ definePageMeta({
             </el-form-item>
           </el-form>
           <el-button
+            :loading="accountLoad"
             class="submit-btnL"
             type="primary"
             @click="router.path.substring(0, 10) != '/dashboard' ? submit(phoneRuleFormRef as FormInstance):''"
