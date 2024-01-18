@@ -1,10 +1,16 @@
 <script setup lang="ts">
 import { ElMessage } from "element-plus";
 
-import { login, getThirdLoginConfigByName, thirdLogin,thirdLoginHandleInfo } from "~/api/user";
+import {
+  login,
+  getThirdLoginConfigByName,
+  thirdLogin,
+  thirdLoginHandleInfo,
+} from "~/api/user";
 
 const route = useRoute();
 const isPhone = ref(true);
+const accountLoad = ref(false);
 const _isMobile = () => {
   let flag = navigator.userAgent.match(
     /(phone|pad|pod|iPhone|iPod|ios|iPad|Android|Mobile|BlackBerry|IEMobile|MQQBrowser|JUC|Fennec|wOSBrowser|BrowserNG|WebOS|Symbian|Windows Phone)/i
@@ -17,6 +23,7 @@ if (_isMobile()) {
   isPhone.value = false;
 }
 const accountLoginHandle = (formData: any) => {
+  accountLoad.value = true;
   login(formData).then((res) => {
     if (res == 10000) {
       ElMessage({
@@ -24,20 +31,29 @@ const accountLoginHandle = (formData: any) => {
         type: "error",
       });
     } else {
+      accountLoad.value = false;
       navigateTo((route.query.from as string) || "/", { replace: true });
     }
   });
 };
 
 const phoneLoginHandle = async (params: string, phoneState: string) => {
-  await thirdLogin(params.code,phoneState);
+  accountLoad.value = true;
+  await thirdLogin(params.code, phoneState).then(() => {
+    accountLoad.value = false;
+  });
   navigateTo((route.query.from as string) || "/", { replace: true });
 };
 
 const thirdLoginInfo = async (thirdInfo: any) => {
   const redirect_uri = location.origin + "/redirect?platform=system";
-  const res = await thirdLoginHandleInfo(thirdInfo.name,"default",location.origin,redirect_uri)
-  navigateTo(res.location,{ external: true })
+  const res = await thirdLoginHandleInfo(
+    thirdInfo.name,
+    "default",
+    location.origin,
+    redirect_uri
+  );
+  navigateTo(res.location, { external: true });
 };
 
 definePageMeta({
@@ -52,12 +68,14 @@ definePageMeta({
       @accountLoginHandle="accountLoginHandle"
       @phoneLoginHandle="phoneLoginHandle"
       @thirdLoginHandle="thirdLoginInfo"
+      :accountLoad="accountLoad"
     />
     <Login
       v-else
       @accountLoginHandle="accountLoginHandle"
       @phoneLoginHandle="phoneLoginHandle"
       @thirdLoginHandle="thirdLoginInfo"
+      :accountLoad="accountLoad"
     />
   </div>
 </template>
