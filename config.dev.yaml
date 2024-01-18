@@ -8,7 +8,7 @@ system:
   iplimit-time: 3600
   mode: dev
   oss-type: "aliyun-oss"
-  host: "159.27.188.207"
+  host: ""
 
 zap:
   level: "debug"
@@ -30,12 +30,12 @@ tencent-cos:
   path-prefix:
 
 aliyun-oss:
-  endpoint: "oss-cn-shenzhen.aliyuncs.com"
-  access-key-id: "LTAI5tSai5KqkwSbmWgJ3JR2"
-  access-key-secret: "PxdgHsONHVreCxz6aEUdGlmuUH7Go9"
-  bucket-name: "iothotcold"
-  bucket-url: "iot-hotcold.oss-cn-shenzhen.aliyuncs.com"
-  base-path: "hotcold/"
+  endpoint: ""
+  access-key-id: ""
+  access-key-secret: ""
+  bucket-name: ""
+  bucket-url: ""
+  base-path: ""
 
 azure-blob:
   account-name:
@@ -51,7 +51,7 @@ pgsql:
   config: ""
   db-name: "iot"
   username: "qixin"
-  password: "Qx20190822"
+  password: "qixin"
   max-idle-conns: 10
   max-open-conns: 1000
   log-mode: "info"

@@ -11,6 +11,7 @@ services:
     environment:
       - CONFIG_PATH=config.dev.yaml
       - DEPLOY_TYPE=local
+      - RELEASE_TYPE=first
     volumes:
       - /etc/localtime:/etc/localtime
       - ./config.dev.yaml:/app/config.dev.yaml
@@ -23,8 +24,10 @@ services:
     ports: ["5432:5432"]
     environment:
       - POSTGRES_USER=qixin
-      - POSTGRES_PASSWORD=Qx20190822
+      - POSTGRES_PASSWORD=qixin
       - POSTGRES_DB=accounts
+    volumes:
+      - ./data/pg_data:/var/lib/postgresql/data
     networks:
       - qixin
 
