@@ -54,7 +54,7 @@ func InitDefaultTenant() error {
 
 		if err := tx.First(&model.ClientSecret{}).Error; errors.Is(err, gorm.ErrRecordNotFound) {
 			if err = tx.Create(&model.ClientSecret{
-				Name:     "default",
+				Name:     DefaultClient,
 				Secret:   "multi-tenant",
 				ClientId: client.Id,
 				TenantId: tenant.Id,

@@ -1,23 +1,6 @@
 version: '3'
 
 services:
-  alfred:
-    build: .
-    container_name: alfred
-    # command: migrate-db
-    # command: init
-    ports: ["80:80"]
-    depends_on: ["postgres"]
-    environment:
-      - CONFIG_PATH=config.dev.yaml
-      - DEPLOY_TYPE=local
-      - RELEASE_TYPE=first
-    volumes:
-      - /etc/localtime:/etc/localtime
-      - ./config.dev.yaml:/app/config.dev.yaml
-      - ./data/jwks:/app/data/jwks
-    networks:
-      - qixin
   postgres:
     image: postgres
     container_name: postgres
@@ -28,6 +11,23 @@ services:
       - POSTGRES_DB=accounts
     volumes:
       - ./data/pg_data:/var/lib/postgresql/data
+    networks:
+      - qixin
+  alfred:
+    build: .
+    container_name: alfred
+    # command: migrate-db
+    # command: init
+    ports: ["80:80"]
+    depends_on: [postgres]
+    environment:
+      - CONFIG_PATH=config.dev.yaml
+      - DEPLOY_TYPE=local
+      - RELEASE_TYPE=first
+    volumes:
+      - /etc/localtime:/etc/localtime
+      - ./config.dev.yaml:/app/config.dev.yaml
+      - ./data/jwks:/app/data/jwks
     networks:
       - qixin
 
