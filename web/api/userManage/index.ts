@@ -15,3 +15,7 @@ export const updateUser = async (id: number, data: any) => {
 export const delUser = async (id: number) => {
   return await useHttp.delete(`/admin/${tenant.value}/users/${id}`)
 }
+// 修改密码
+export const passUser = async (id: number,data:any) => {
+  return await useHttp.put(`/admin/${tenant.value}/users/${id}/password`,data)
+}
