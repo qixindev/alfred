@@ -317,11 +317,19 @@ definitions:
     type: object
   req.Sms:
     properties:
+      accessKeyId:
+        type: string
+      accessKeySecret:
+        type: string
+      endpoint:
+        type: string
       id:
         type: integer
       name:
         type: string
       region:
+        type: string
+      regionId:
         type: string
       sdkAppId:
         type: string
@@ -330,6 +338,8 @@ definitions:
       secretKey:
         type: string
       signName:
+        type: string
+      templateCode:
         type: string
       templateId:
         type: string
@@ -2863,6 +2873,32 @@ paths:
         "200":
           description: OK
       summary: update user groups
+      tags:
+      - user
+  /accounts/admin/{tenant}/users/{userId}/password:
+    put:
+      parameters:
+      - default: default
+        description: tenant
+        in: path
+        name: tenant
+        required: true
+        type: string
+      - description: user id
+        in: path
+        name: userId
+        required: true
+        type: integer
+      - description: password body
+        in: body
+        name: pwd
+        required: true
+        schema:
+          type: object
+      responses:
+        "200":
+          description: OK
+      summary: update user
       tags:
       - user
   /accounts/admin/{tenant}/users/from:

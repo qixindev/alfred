@@ -107,27 +107,58 @@ func UpdateUser(c *gin.Context) {
 		resp.ErrorRequest(c, err)
 		return
 	}
-	hash, err := utils.HashPassword(u.PasswordHash)
-	if err != nil {
-		resp.ErrorUnauthorized(c, nil, "hashPassword err")
-		return
-	}
 
 	user.Username = u.Username
 	user.FirstName = u.FirstName
 	user.LastName = u.LastName
 	user.DisplayName = u.DisplayName
-	user.PasswordHash = hash
 	user.Email = u.Email
 	user.Phone = u.Phone
 	user.Disabled = u.Disabled
 	user.Role = u.Role
 	user.Avatar = u.Avatar
-	if err = global.DB.Save(&user).Error; err != nil {
+	if err := global.DB.Save(&user).Error; err != nil {
 		resp.ErrorSqlUpdate(c, err, "update tenant user err")
 		return
 	}
 	resp.SuccessWithData(c, user.AdminDto())
+}
+
+// UpdateUserPassword
+// @Summary	update user
+// @Tags	user
+// @Param	tenant	path	string	true	"tenant"	default(default)
+// @Param	userId	path	integer	true	"user id"
+// @Param	pwd		body	object	true	"password body"
+// @Success	200
+// @Router	/accounts/admin/{tenant}/users/{userId}/password [put]
+func UpdateUserPassword(c *gin.Context) {
+	userId := c.Param("userId")
+	var user model.User
+	if err := internal.TenantDB(c).First(&user, "id = ?", userId).Error; err != nil {
+		resp.ErrorSqlFirst(c, err, "get user err")
+		return
+	}
+	var u model.User
+	if err := c.BindJSON(&u); err != nil {
+		resp.ErrorRequest(c, err)
+		return
+	}
+	if user.PasswordHash == "" {
+		resp.ErrorRequestWithMsg(c, "password should not be null")
+		return
+	}
+	hash, err := utils.HashPassword(u.PasswordHash)
+	if err != nil {
+		resp.ErrorUnauthorized(c, nil, "hashPassword err")
+		return
+	}
+	if err = internal.TenantDB(c).Model(&model.User{}).Where("id = ?", userId).
+		Update("password_hash", hash).Error; err != nil {
+		resp.ErrorSqlUpdate(c, err, "update tenant user err")
+		return
+	}
+	resp.Success(c)
 }
 
 // DeleteUser
@@ -196,6 +227,7 @@ func AddAdminUsersRoutes(rg *gin.RouterGroup) {
 	rg.GET("/users/:userId", GetUser)
 	rg.POST("/users", NewUser)
 	rg.PUT("/users/:userId", UpdateUser)
+	rg.PUT("/users/:userId/password", UpdateUserPassword)
 	rg.DELETE("/users/:userId", DeleteUser)
 
 	rg.GET("/users/:userId/groups", ListUserGroups)

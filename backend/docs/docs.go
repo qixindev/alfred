@@ -2056,6 +2056,45 @@ const docTemplate = `{
                 }
             }
         },
+        "/accounts/admin/{tenant}/users/{userId}/password": {
+            "put": {
+                "tags": [
+                    "user"
+                ],
+                "summary": "update user",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "default": "default",
+                        "description": "tenant",
+                        "name": "tenant",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "user id",
+                        "name": "userId",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "password body",
+                        "name": "pwd",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "object"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
         "/accounts/login/providers/callback": {
             "get": {
                 "tags": [
@@ -4447,6 +4486,15 @@ const docTemplate = `{
         "req.Sms": {
             "type": "object",
             "properties": {
+                "accessKeyId": {
+                    "type": "string"
+                },
+                "accessKeySecret": {
+                    "type": "string"
+                },
+                "endpoint": {
+                    "type": "string"
+                },
                 "id": {
                     "type": "integer"
                 },
@@ -4454,6 +4502,9 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "region": {
+                    "type": "string"
+                },
+                "regionId": {
                     "type": "string"
                 },
                 "sdkAppId": {
@@ -4466,6 +4517,9 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "signName": {
+                    "type": "string"
+                },
+                "templateCode": {
                     "type": "string"
                 },
                 "templateId": {

@@ -104,7 +104,7 @@ func UpdateUserMeta(c *gin.Context) {
 	resp.Success(c)
 }
 
-// UpdateUserPassword
+// UpdateClientUserPassword
 // @Summary	update user
 // @Tags	client-user
 // @Param	tenant		path	string			true	"tenant"	default(default)
@@ -113,7 +113,7 @@ func UpdateUserMeta(c *gin.Context) {
 // @Param	bd			body	ModifyPassword	true	"user body"
 // @Success	200
 // @Router	/accounts/admin/{tenant}/clients/{clientId}/users/{subId}/password [put]
-func UpdateUserPassword(c *gin.Context) {
+func UpdateClientUserPassword(c *gin.Context) {
 	var u ModifyPassword
 	if err := c.BindJSON(&u); err != nil {
 		resp.ErrorRequest(c, err)
@@ -201,6 +201,6 @@ func AddClientUserRoute(rg *gin.RouterGroup) {
 	rg.GET("/clients/:clientId/users", ListClientUsers)
 	rg.GET("/clients/:clientId/users/:subId", GetClientUsers)
 	rg.PUT("/clients/:clientId/users/:subId/meta", UpdateUserMeta)
-	rg.PUT("/clients/:clientId/users/:subId/password", UpdateUserPassword)
+	rg.PUT("/clients/:clientId/users/:subId/password", UpdateClientUserPassword)
 	rg.PUT("/clients/:clientId/users/:subId/profile", UpdateUserProfile)
 }
