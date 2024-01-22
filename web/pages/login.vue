@@ -30,6 +30,7 @@ const accountLoginHandle = (formData: any) => {
         message: "账号或密码错误",
         type: "error",
       });
+      accountLoad.value = false;
     } else {
       accountLoad.value = false;
       navigateTo((route.query.from as string) || "/", { replace: true });
@@ -39,9 +40,13 @@ const accountLoginHandle = (formData: any) => {
 
 const phoneLoginHandle = async (params: string, phoneState: string) => {
   accountLoad.value = true;
-  await thirdLogin(params.code, phoneState).then(() => {
-    accountLoad.value = false;
-  });
+  await thirdLogin(params.code, phoneState)
+    .then(() => {
+      accountLoad.value = false;
+    })
+    .catch(() => {
+      accountLoad.value = false;
+    });
   navigateTo((route.query.from as string) || "/", { replace: true });
 };
 
