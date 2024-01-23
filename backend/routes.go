@@ -6,6 +6,7 @@ import (
 	"alfred/backend/controller/authentication"
 	"alfred/backend/controller/iam"
 	"alfred/backend/controller/reset"
+	"alfred/backend/controller/rg"
 	_ "alfred/backend/docs"
 	"alfred/backend/endpoint/resp"
 	"alfred/backend/pkg/middlewares"
@@ -48,6 +49,9 @@ func AddRoutes(r *gin.Engine) {
 
 	iamRouter := r.RouterGroup.Group("/accounts/:tenant/iam/clients/:client", middlewares.MultiTenancy, middlewares.AuthorizedAdmin)
 	iam.AddIamRoutes(iamRouter)
+
+	resourceGroupRouter := r.RouterGroup.Group("/accounts/:tenant/iam/clients/:client")
+	rg.AddResourceGroupRoutes(resourceGroupRouter)
 }
 
 func AddWebRoutes(r *gin.Engine) {
