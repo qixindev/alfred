@@ -10,8 +10,6 @@ import (
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt/v5"
-	"net/http"
-	"net/url"
 	"strings"
 )
 
@@ -38,17 +36,6 @@ func MultiTenancy(c *gin.Context) {
 
 	resp.ErrorNotFound(c, "Tenant not found.")
 	return
-}
-
-func GetUserStandalone(c *gin.Context) (*model.User, error) {
-	var user model.User
-	tenant := getTenant(c)
-	session := sessions.Default(c)
-	username := session.Get("user")
-	if err := global.DB.First(&user, "tenant_id = ? AND username = ?", tenant.Id, username).Error; err != nil {
-		return nil, err
-	}
-	return &user, nil
 }
 
 func AuthorizedAdmin(c *gin.Context) {
@@ -106,21 +93,14 @@ func AuthAccessToken(c *gin.Context) {
 	resp.ErrorUnauthorized(c, nil, "token invalidate")
 }
 
-func Authorized(redirectToLogin bool) gin.HandlerFunc {
+func Authorized() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		user, err := GetUserStandalone(c)
-		if err != nil {
-			if redirectToLogin {
-				t := getTenant(c)
-				h := utils.GetHostWithScheme(c)
-				base := fmt.Sprintf("%s/%s", h, t.Name)
-				next := fmt.Sprintf("%s/oauth2/auth", base)
-				location := fmt.Sprintf("%s/login?next=%s", base, url.QueryEscape(next))
-				c.Redirect(http.StatusFound, location)
-				c.Abort()
-			} else {
-				resp.ErrorNotLogin(c, err)
-			}
+		var user model.User
+		tenant := getTenant(c)
+		session := sessions.Default(c)
+		username := session.Get("user")
+		if err := global.DB.First(&user, "tenant_id = ? AND username = ?", tenant.Id, username).Error; err != nil {
+			resp.ErrorNotLogin(c, err)
 			return
 		}
 		c.Set("user", user)

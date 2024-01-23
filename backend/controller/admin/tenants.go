@@ -193,18 +193,22 @@ func NewTenantSecret(c *gin.Context) {
 }
 
 func AddAdminTenantsRoutes(rg *gin.RouterGroup) {
-	rg.GET("/tenants", middlewares.AuthorizedAdmin, ListTenants)
-	rg.GET("/tenants/all", middlewares.AuthAccessToken, ListAllTenants)
-	rg.GET("/tenants/:tenantId", middlewares.AuthorizedAdmin, GetTenant)
-	rg.POST("/tenants", middlewares.AuthorizedAdmin, NewTenant)
-	rg.PUT("/tenants/:tenantId", middlewares.AuthorizedAdmin, UpdateTenant)
-	rg.DELETE("/tenants/:tenantId", middlewares.AuthorizedAdmin, DeleteTenant)
-	rg.DELETE("/tenants/:tenantId/secrets/:secretId", middlewares.AuthorizedAdmin, DeleteTenantSecret)
-	rg.POST("/tenants/:tenantId/secrets", middlewares.AuthorizedAdmin, NewTenantSecret)
+	adminTenant := rg.Group("", middlewares.AuthorizedAdmin)
+	{
+		adminTenant.GET("/tenants", ListTenants)
+		adminTenant.GET("/tenants/:tenantId", GetTenant)
+		adminTenant.POST("/tenants", NewTenant)
+		adminTenant.PUT("/tenants/:tenantId", UpdateTenant)
+		adminTenant.DELETE("/tenants/:tenantId", DeleteTenant)
+		adminTenant.DELETE("/tenants/:tenantId/secrets/:secretId", DeleteTenantSecret)
+		adminTenant.POST("/tenants/:tenantId/secrets", NewTenantSecret)
 
-	rg.GET("/:tenant/page/login", GetLoginPage)                                               // 获取登录页面配置
-	rg.PUT("/:tenant/page/login", middlewares.AuthorizedAdmin, UpdateLoginPage)               // 更新登录页面配置
-	rg.GET("/:tenant/proto", GetTenantProto)                                                  // 获取用户隐私协议
-	rg.PUT("/:tenant/proto", middlewares.AuthorizedAdmin, UpdateTenantProto)                  // 更新用户隐私协议
-	rg.PUT("/:tenant/picture/:type/upload", middlewares.AuthorizedAdmin, UploadTenantPicture) // 更新图片
+		adminTenant.PUT("/:tenant/page/login", UpdateLoginPage)               // 更新登录页面配置
+		adminTenant.PUT("/:tenant/proto", UpdateTenantProto)                  // 更新用户隐私协议
+		adminTenant.PUT("/:tenant/picture/:type/upload", UploadTenantPicture) // 更新图片
+	}
+
+	rg.GET("/tenants/all", middlewares.AuthAccessToken, ListAllTenants)
+	rg.GET("/:tenant/page/login", GetLoginPage) // 获取登录页面配置
+	rg.GET("/:tenant/proto", GetTenantProto)    // 获取用户隐私协议
 }

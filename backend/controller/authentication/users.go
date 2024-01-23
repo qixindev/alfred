@@ -72,7 +72,7 @@ func GetUserProfile(c *gin.Context) {
 }
 
 func AddUsersRoutes(rg *gin.RouterGroup) {
-	rg.GET("/me", middlewares.Authorized(false), GetUserDetail)
-	rg.PUT("/me", middlewares.Authorized(false), UpdateUserDetail)
-	rg.GET("/me/profile", middlewares.Authorized(false), GetUserProfile)
+	rg.GET("/me", middlewares.Authorized(), GetUserDetail)
+	rg.PUT("/me", middlewares.Authorized(), UpdateUserDetail)
+	rg.GET("/me/profile", middlewares.Authorized(), GetUserProfile)
 }
