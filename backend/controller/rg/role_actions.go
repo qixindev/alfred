@@ -1,6 +1,10 @@
 package rg
 
-import "github.com/gin-gonic/gin"
+import (
+	"alfred/backend/endpoint/resp"
+	"alfred/backend/model"
+	"github.com/gin-gonic/gin"
+)
 
 // GetResourceGroupRoleActionList
 // @Summary	获取资源组角色列表
@@ -40,6 +44,10 @@ func GetResourceGroupRoleAction(c *gin.Context) {
 // @Success	200
 // @Router	/accounts/{tenant}/iam/clients/{client}/resourceGroups/{groupId}/roles/{roleId}/actions [post]
 func CreateResourceGroupRoleAction(c *gin.Context) {
+	var in model.ResourceGroupRoleAction
+	if err := c.ShouldBindJSON(&in); err != nil {
+		resp.ErrorRequest(c, err)
+	}
 
 }
 
@@ -65,7 +73,7 @@ func UpdateResourceGroupRoleAction(c *gin.Context) {
 // @Param	groupId		path	string		true	"group id"
 // @Param	roleId		path	string		true	"role id"
 // @Success	200
-// @Router	/accounts/{tenant}/iam/clients/{client}/resourceGroups/{groupId}/roles/{roleId}/actions [put]
+// @Router	/accounts/{tenant}/iam/clients/{client}/resourceGroups/{groupId}/roles/{roleId}/actions [delete]
 func DeleteResourceGroupRoleAction(c *gin.Context) {
 
 }

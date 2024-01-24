@@ -11,11 +11,11 @@ func AddResourceGroupRoutes(rg *gin.RouterGroup) {
 	rg.DELETE("/resourceGroups/:groupId", DeleteResourceGroup)
 
 	// 组内资源管理
-	rg.GET("/resourceGroups/:groupId/resources", GetGroupResourceList)
-	rg.POST("/resourceGroups/:groupId/resources", CreateGroupResource)
-	rg.GET("/resourceGroups/:groupId/resources/:resourceId", GetGroupResource)
-	rg.PUT("/resourceGroups/:groupId/resources/:resourceId", UpdateGroupResource)
-	rg.DELETE("/resourceGroups/:groupId/resources/:resourceId", DeleteGroupResource)
+	rg.GET("/resourceGroups/:groupId/resources", GetResourceGroupResourceList)
+	rg.POST("/resourceGroups/:groupId/resources", CreateResourceGroupResource)
+	rg.GET("/resourceGroups/:groupId/resources/:resourceId", GetResourceGroupResource)
+	rg.PUT("/resourceGroups/:groupId/resources/:resourceId", UpdateResourceGroupResource)
+	rg.DELETE("/resourceGroups/:groupId/resources/:resourceId", DeleteResourceGroupResource)
 
 	// 资源组角色管理
 	rg.GET("/resourceGroups/:groupId/roles", GetResourceGroupRoleList)
@@ -39,11 +39,10 @@ func AddResourceGroupRoutes(rg *gin.RouterGroup) {
 	rg.DELETE("/resourceGroups/:groupId/roles/:roleId/actions", DeleteResourceGroupRoleAction)     // 删除角色的权限，支持数组
 
 	// 用户在组内角色
-	rg.GET("/resourceGroups/:groupId/users/:userId/roles", GetResourceGroupUserRole)               // 用户在组内的角色
+	rg.GET("/resourceGroups/:groupId/users/:userId/role", GetResourceGroupUserRole)                // 用户在组内的角色
 	rg.GET("/resourceGroups/:groupId/users/:userId/actions", GetResourceGroupUserActionList)       // 用户在组内所拥有的权限列表
 	rg.GET("/resourceGroups/:groupId/users/:userId/actions/:actionId", GetResourceGroupUserAction) // 用户在组内是否拥有某个权限
 	rg.POST("/resourceGroups/:groupId/users/:userId", CreateResourceGroupUserRole)                 // 将用户拉入组内
 	rg.PUT("/resourceGroups/:groupId/users/:userId", UpdateResourceGroupUserRole)                  // 修改用户在组内的角色
 	rg.DELETE("/resourceGroups/:groupId/users/:userId", DeleteResourceGroupUser)                   // 踢出用户
-
 }

@@ -1,6 +1,10 @@
 package rg
 
-import "github.com/gin-gonic/gin"
+import (
+	"alfred/backend/endpoint/resp"
+	"alfred/backend/model"
+	"github.com/gin-gonic/gin"
+)
 
 // GetResourceGroupList
 // @Summary	获取资源组列表
@@ -16,11 +20,11 @@ func GetResourceGroupList(c *gin.Context) {
 // GetResourceGroup
 // @Summary	获取资源组详细信息
 // @Tags	resource-group
-// @Param	tenant		path	string				true	"tenant"	default(default)
-// @Param	client		path	string				true	"client"	default(default)
-// @Param	groupId		path	string				true	"group id"
+// @Param	tenant		path	string		true	"tenant"	default(default)
+// @Param	client		path	string		true	"client"	default(default)
+// @Param	groupId		path	string		true	"group id"
 // @Success	200
-// @Router	/accounts/{tenant}/iam/clients/{client}/resourceGroups/{groupId} [post]
+// @Router	/accounts/{tenant}/iam/clients/{client}/resourceGroups/{groupId} [get]
 func GetResourceGroup(c *gin.Context) {
 
 }
@@ -34,7 +38,10 @@ func GetResourceGroup(c *gin.Context) {
 // @Success	200
 // @Router	/accounts/{tenant}/iam/clients/{client}/resourceGroups [post]
 func CreateResourceGroup(c *gin.Context) {
-
+	var in model.ResourceGroup
+	if err := c.ShouldBindJSON(&in); err != nil {
+		resp.ErrorRequest(c, err)
+	}
 }
 
 // UpdateResourceGroup

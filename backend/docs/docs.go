@@ -2251,6 +2251,42 @@ const docTemplate = `{
             }
         },
         "/accounts/{tenant}/iam/clients/{client}/resourceGroups/{groupId}": {
+            "get": {
+                "tags": [
+                    "resource-group"
+                ],
+                "summary": "获取资源组详细信息",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "default": "default",
+                        "description": "tenant",
+                        "name": "tenant",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "default": "default",
+                        "description": "client",
+                        "name": "client",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "group id",
+                        "name": "groupId",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            },
             "put": {
                 "tags": [
                     "resource-group"
@@ -2288,42 +2324,6 @@ const docTemplate = `{
                         "schema": {
                             "$ref": "#/definitions/model.ResourceGroup"
                         }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK"
-                    }
-                }
-            },
-            "post": {
-                "tags": [
-                    "resource-group"
-                ],
-                "summary": "获取资源组详细信息",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "default": "default",
-                        "description": "tenant",
-                        "name": "tenant",
-                        "in": "path",
-                        "required": true
-                    },
-                    {
-                        "type": "string",
-                        "default": "default",
-                        "description": "client",
-                        "name": "client",
-                        "in": "path",
-                        "required": true
-                    },
-                    {
-                        "type": "string",
-                        "description": "group id",
-                        "name": "groupId",
-                        "in": "path",
-                        "required": true
                     }
                 ],
                 "responses": {
@@ -2500,6 +2500,58 @@ const docTemplate = `{
                 "tags": [
                     "resource-group"
                 ],
+                "summary": "更新资源组角色",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "default": "default",
+                        "description": "tenant",
+                        "name": "tenant",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "default": "default",
+                        "description": "client",
+                        "name": "client",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "group id",
+                        "name": "groupId",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "action id",
+                        "name": "actionId",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "body",
+                        "name": "role",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.ResourceGroupAction"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "resource-group"
+                ],
                 "summary": "删除资源组角色",
                 "parameters": [
                     {
@@ -2612,7 +2664,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/model.GroupResource"
+                            "$ref": "#/definitions/model.ResourceGroupResource"
                         }
                     }
                 ],
@@ -2668,6 +2720,58 @@ const docTemplate = `{
                 }
             },
             "put": {
+                "tags": [
+                    "resource-group"
+                ],
+                "summary": "更新资源组的资源",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "default": "default",
+                        "description": "tenant",
+                        "name": "tenant",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "default": "default",
+                        "description": "client",
+                        "name": "client",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "group id",
+                        "name": "groupId",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "resource id",
+                        "name": "resourceId",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "body",
+                        "name": "role",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.ResourceGroupResource"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            },
+            "delete": {
                 "tags": [
                     "resource-group"
                 ],
@@ -2842,6 +2946,58 @@ const docTemplate = `{
                 "tags": [
                     "resource-group"
                 ],
+                "summary": "更新资源组角色",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "default": "default",
+                        "description": "tenant",
+                        "name": "tenant",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "default": "default",
+                        "description": "client",
+                        "name": "client",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "group id",
+                        "name": "groupId",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "role id",
+                        "name": "roleId",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "body",
+                        "name": "role",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.ResourceGroupRole"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "resource-group"
+                ],
                 "summary": "删除资源组角色",
                 "parameters": [
                     {
@@ -2930,7 +3086,7 @@ const docTemplate = `{
                 "tags": [
                     "resource-group"
                 ],
-                "summary": "删除资源组角色",
+                "summary": "更新资源组角色",
                 "parameters": [
                     {
                         "type": "string",
@@ -2961,6 +3117,15 @@ const docTemplate = `{
                         "name": "roleId",
                         "in": "path",
                         "required": true
+                    },
+                    {
+                        "description": "body",
+                        "name": "role",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.ResourceGroupRoleAction"
+                        }
                     }
                 ],
                 "responses": {
@@ -3013,6 +3178,49 @@ const docTemplate = `{
                         "schema": {
                             "$ref": "#/definitions/model.ResourceGroupRoleAction"
                         }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "resource-group"
+                ],
+                "summary": "删除资源组角色",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "default": "default",
+                        "description": "tenant",
+                        "name": "tenant",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "default": "default",
+                        "description": "client",
+                        "name": "client",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "group id",
+                        "name": "groupId",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "role id",
+                        "name": "roleId",
+                        "in": "path",
+                        "required": true
                     }
                 ],
                 "responses": {
@@ -3117,7 +3325,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/model.ResourceGroup"
+                            "$ref": "#/definitions/model.ResourceGroupUser"
                         }
                     }
                 ],
@@ -3162,7 +3370,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/model.ResourceGroup"
+                            "$ref": "#/definitions/model.ResourceGroupUser"
                         }
                     }
                 ],
@@ -5377,23 +5585,6 @@ const docTemplate = `{
                 }
             }
         },
-        "model.GroupResource": {
-            "type": "object",
-            "properties": {
-                "groupId": {
-                    "type": "string"
-                },
-                "id": {
-                    "type": "string"
-                },
-                "name": {
-                    "type": "string"
-                },
-                "tenantId": {
-                    "type": "integer"
-                }
-            }
-        },
         "model.Resource": {
             "type": "object",
             "properties": {
@@ -5448,6 +5639,23 @@ const docTemplate = `{
                 }
             }
         },
+        "model.ResourceGroupResource": {
+            "type": "object",
+            "properties": {
+                "groupId": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "tenantId": {
+                    "type": "integer"
+                }
+            }
+        },
         "model.ResourceGroupRole": {
             "type": "object",
             "properties": {
@@ -5484,6 +5692,38 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "tenantId": {
+                    "type": "integer"
+                }
+            }
+        },
+        "model.ResourceGroupUser": {
+            "type": "object",
+            "properties": {
+                "displayName": {
+                    "type": "string"
+                },
+                "groupId": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "resourceGroupName": {
+                    "type": "string"
+                },
+                "roleId": {
+                    "type": "string"
+                },
+                "roleName": {
+                    "type": "string"
+                },
+                "sub": {
+                    "type": "string"
+                },
+                "tenantId": {
+                    "type": "integer"
+                },
+                "userId": {
                     "type": "integer"
                 }
             }

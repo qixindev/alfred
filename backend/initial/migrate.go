@@ -40,7 +40,7 @@ func getMigrateModel() []any {
 		&model.Resource{},
 		&model.ResourceRoleUser{},
 		&model.ResourceGroup{},
-		&model.GroupResource{},
+		&model.ResourceGroupResource{},
 		&model.ResourceGroupRole{},
 		&model.ResourceGroupAction{},
 		&model.ResourceGroupRoleAction{},

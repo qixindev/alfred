@@ -1,8 +1,12 @@
 package rg
 
-import "github.com/gin-gonic/gin"
+import (
+	"alfred/backend/endpoint/resp"
+	"alfred/backend/model"
+	"github.com/gin-gonic/gin"
+)
 
-// GetGroupResourceList
+// GetResourceGroupResourceList
 // @Summary	获取资源组的资源列表
 // @Tags	resource-group
 // @Param	tenant		path	string		true	"tenant"	default(default)
@@ -10,11 +14,11 @@ import "github.com/gin-gonic/gin"
 // @Param	groupId		path	string		true	"group id"
 // @Success	200
 // @Router	/accounts/{tenant}/iam/clients/{client}/resourceGroups/{groupId}/resources [get]
-func GetGroupResourceList(c *gin.Context) {
+func GetResourceGroupResourceList(c *gin.Context) {
 
 }
 
-// GetGroupResource
+// GetResourceGroupResource
 // @Summary	获取资源组的资源
 // @Tags	resource-group
 // @Param	tenant		path	string		true	"tenant"	default(default)
@@ -23,38 +27,42 @@ func GetGroupResourceList(c *gin.Context) {
 // @Param	resourceId	path	string		true	"resource id"
 // @Success	200
 // @Router	/accounts/{tenant}/iam/clients/{client}/resourceGroups/{groupId}/resources/{resourceId} [get]
-func GetGroupResource(c *gin.Context) {
+func GetResourceGroupResource(c *gin.Context) {
 
 }
 
-// CreateGroupResource
+// CreateResourceGroupResource
 // @Summary	创建资源的资源
 // @Tags	resource-group
 // @Param	tenant		path	string		true	"tenant"	default(default)
 // @Param	client		path	string		true	"client"	default(default)
 // @Param	groupId		path	string		true	"group id"
-// @Param	role		body	model.GroupResource	true	"body"
+// @Param	role		body	model.ResourceGroupResource	true	"body"
 // @Success	200
 // @Router	/accounts/{tenant}/iam/clients/{client}/resourceGroups/{groupId}/resources [post]
-func CreateGroupResource(c *gin.Context) {
+func CreateResourceGroupResource(c *gin.Context) {
+	var in model.ResourceGroupResource
+	if err := c.ShouldBindJSON(&in); err != nil {
+		resp.ErrorRequest(c, err)
+	}
 
 }
 
-// UpdateGroupResource
+// UpdateResourceGroupResource
 // @Summary	更新资源组的资源
 // @Tags	resource-group
 // @Param	tenant		path	string		true	"tenant"	default(default)
 // @Param	client		path	string		true	"client"	default(default)
 // @Param	groupId		path	string		true	"group id"
 // @Param	resourceId	path	string		true	"resource id"
-// @Param	role		body	model.GroupResource	true	"body"
+// @Param	role		body	model.ResourceGroupResource	true	"body"
 // @Success	200
 // @Router	/accounts/{tenant}/iam/clients/{client}/resourceGroups/{groupId}/resources/{resourceId} [put]
-func UpdateGroupResource(c *gin.Context) {
+func UpdateResourceGroupResource(c *gin.Context) {
 
 }
 
-// DeleteGroupResource
+// DeleteResourceGroupResource
 // @Summary	删除资源组的资源
 // @Tags	resource-group
 // @Param	tenant		path	string		true	"tenant"	default(default)
@@ -62,7 +70,7 @@ func UpdateGroupResource(c *gin.Context) {
 // @Param	groupId		path	string		true	"group id"
 // @Param	resourceId	path	string		true	"resource id"
 // @Success	200
-// @Router	/accounts/{tenant}/iam/clients/{client}/resourceGroups/{groupId}/resources/{resourceId} [put]
-func DeleteGroupResource(c *gin.Context) {
+// @Router	/accounts/{tenant}/iam/clients/{client}/resourceGroups/{groupId}/resources/{resourceId} [delete]
+func DeleteResourceGroupResource(c *gin.Context) {
 
 }

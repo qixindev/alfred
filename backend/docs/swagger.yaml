@@ -125,17 +125,6 @@ definitions:
       userName:
         type: string
     type: object
-  model.GroupResource:
-    properties:
-      groupId:
-        type: string
-      id:
-        type: string
-      name:
-        type: string
-      tenantId:
-        type: integer
-    type: object
   model.Resource:
     properties:
       id:
@@ -171,6 +160,17 @@ definitions:
       tenantId:
         type: integer
     type: object
+  model.ResourceGroupResource:
+    properties:
+      groupId:
+        type: string
+      id:
+        type: string
+      name:
+        type: string
+      tenantId:
+        type: integer
+    type: object
   model.ResourceGroupRole:
     properties:
       groupId:
@@ -195,6 +195,27 @@ definitions:
       roleName:
         type: string
       tenantId:
+        type: integer
+    type: object
+  model.ResourceGroupUser:
+    properties:
+      displayName:
+        type: string
+      groupId:
+        type: string
+      id:
+        type: integer
+      resourceGroupName:
+        type: string
+      roleId:
+        type: string
+      roleName:
+        type: string
+      sub:
+        type: string
+      tenantId:
+        type: integer
+      userId:
         type: integer
     type: object
   model.ResourceRoleUser:
@@ -509,7 +530,7 @@ paths:
       summary: 删除资源组
       tags:
       - resource-group
-    post:
+    get:
       parameters:
       - default: default
         description: tenant
@@ -623,6 +644,36 @@ paths:
       tags:
       - resource-group
   /accounts/{tenant}/iam/clients/{client}/resourceGroups/{groupId}/actions/{actionId}:
+    delete:
+      parameters:
+      - default: default
+        description: tenant
+        in: path
+        name: tenant
+        required: true
+        type: string
+      - default: default
+        description: client
+        in: path
+        name: client
+        required: true
+        type: string
+      - description: group id
+        in: path
+        name: groupId
+        required: true
+        type: string
+      - description: action id
+        in: path
+        name: actionId
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+      summary: 删除资源组角色
+      tags:
+      - resource-group
     get:
       parameters:
       - default: default
@@ -677,10 +728,16 @@ paths:
         name: actionId
         required: true
         type: string
+      - description: body
+        in: body
+        name: role
+        required: true
+        schema:
+          $ref: '#/definitions/model.ResourceGroupAction'
       responses:
         "200":
           description: OK
-      summary: 删除资源组角色
+      summary: 更新资源组角色
       tags:
       - resource-group
   /accounts/{tenant}/iam/clients/{client}/resourceGroups/{groupId}/resources:
@@ -733,7 +790,7 @@ paths:
         name: role
         required: true
         schema:
-          $ref: '#/definitions/model.GroupResource'
+          $ref: '#/definitions/model.ResourceGroupResource'
       responses:
         "200":
           description: OK
@@ -741,6 +798,36 @@ paths:
       tags:
       - resource-group
   /accounts/{tenant}/iam/clients/{client}/resourceGroups/{groupId}/resources/{resourceId}:
+    delete:
+      parameters:
+      - default: default
+        description: tenant
+        in: path
+        name: tenant
+        required: true
+        type: string
+      - default: default
+        description: client
+        in: path
+        name: client
+        required: true
+        type: string
+      - description: group id
+        in: path
+        name: groupId
+        required: true
+        type: string
+      - description: resource id
+        in: path
+        name: resourceId
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+      summary: 删除资源组的资源
+      tags:
+      - resource-group
     get:
       parameters:
       - default: default
@@ -795,10 +882,16 @@ paths:
         name: resourceId
         required: true
         type: string
+      - description: body
+        in: body
+        name: role
+        required: true
+        schema:
+          $ref: '#/definitions/model.ResourceGroupResource'
       responses:
         "200":
           description: OK
-      summary: 删除资源组的资源
+      summary: 更新资源组的资源
       tags:
       - resource-group
   /accounts/{tenant}/iam/clients/{client}/resourceGroups/{groupId}/roles:
@@ -859,6 +952,36 @@ paths:
       tags:
       - resource-group
   /accounts/{tenant}/iam/clients/{client}/resourceGroups/{groupId}/roles/{roleId}:
+    delete:
+      parameters:
+      - default: default
+        description: tenant
+        in: path
+        name: tenant
+        required: true
+        type: string
+      - default: default
+        description: client
+        in: path
+        name: client
+        required: true
+        type: string
+      - description: group id
+        in: path
+        name: groupId
+        required: true
+        type: string
+      - description: role id
+        in: path
+        name: roleId
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+      summary: 删除资源组角色
+      tags:
+      - resource-group
     get:
       parameters:
       - default: default
@@ -913,13 +1036,49 @@ paths:
         name: roleId
         required: true
         type: string
+      - description: body
+        in: body
+        name: role
+        required: true
+        schema:
+          $ref: '#/definitions/model.ResourceGroupRole'
+      responses:
+        "200":
+          description: OK
+      summary: 更新资源组角色
+      tags:
+      - resource-group
+  /accounts/{tenant}/iam/clients/{client}/resourceGroups/{groupId}/roles/{roleId}/actions:
+    delete:
+      parameters:
+      - default: default
+        description: tenant
+        in: path
+        name: tenant
+        required: true
+        type: string
+      - default: default
+        description: client
+        in: path
+        name: client
+        required: true
+        type: string
+      - description: group id
+        in: path
+        name: groupId
+        required: true
+        type: string
+      - description: role id
+        in: path
+        name: roleId
+        required: true
+        type: string
       responses:
         "200":
           description: OK
       summary: 删除资源组角色
       tags:
       - resource-group
-  /accounts/{tenant}/iam/clients/{client}/resourceGroups/{groupId}/roles/{roleId}/actions:
     get:
       parameters:
       - default: default
@@ -1010,10 +1169,16 @@ paths:
         name: roleId
         required: true
         type: string
+      - description: body
+        in: body
+        name: role
+        required: true
+        schema:
+          $ref: '#/definitions/model.ResourceGroupRoleAction'
       responses:
         "200":
           description: OK
-      summary: 删除资源组角色
+      summary: 更新资源组角色
       tags:
       - resource-group
   /accounts/{tenant}/iam/clients/{client}/resourceGroups/{groupId}/roles/{roleId}/actions/{actionsId}:
@@ -1107,7 +1272,7 @@ paths:
         name: group
         required: true
         schema:
-          $ref: '#/definitions/model.ResourceGroup'
+          $ref: '#/definitions/model.ResourceGroupUser'
       responses:
         "200":
           description: OK
@@ -1143,7 +1308,7 @@ paths:
         name: group
         required: true
         schema:
-          $ref: '#/definitions/model.ResourceGroup'
+          $ref: '#/definitions/model.ResourceGroupUser'
       responses:
         "200":
           description: OK
