@@ -39,6 +39,11 @@ func getMigrateModel() []any {
 		&model.ResourceTypeRoleAction{},
 		&model.Resource{},
 		&model.ResourceRoleUser{},
+		&model.ResourceGroup{},
+		&model.GroupResource{},
+		&model.ResourceGroupRole{},
+		&model.ResourceGroupAction{},
+		&model.ResourceGroupRoleAction{},
 		&model.SendInfo{},
 	}
 }

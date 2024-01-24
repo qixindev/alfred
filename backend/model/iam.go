@@ -48,19 +48,6 @@ type ResourceTypeRoleAction struct {
 	TenantId   uint               `gorm:"primaryKey"`
 }
 
-func (r *ResourceTypeRoleAction) Dto() *dto.ResourceTypeRoleActionDto {
-	return &dto.ResourceTypeRoleActionDto{
-		Id:         r.Id,
-		RoleId:     r.RoleId,
-		TenantId:   r.TenantId,
-		ActionId:   r.ActionId,
-		ActionName: r.ActionName,
-	}
-}
-func ResourceRoleActionDto(r ResourceTypeRoleAction) *dto.ResourceTypeRoleActionDto {
-	return r.Dto()
-}
-
 type ResourceRoleUser struct {
 	Id           uint             `gorm:"primaryKey" json:"id"`
 	ResourceId   string           `json:"resourceId"`

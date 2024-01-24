@@ -125,6 +125,17 @@ definitions:
       userName:
         type: string
     type: object
+  model.GroupResource:
+    properties:
+      groupId:
+        type: string
+      id:
+        type: string
+      name:
+        type: string
+      tenantId:
+        type: integer
+    type: object
   model.Resource:
     properties:
       id:
@@ -137,6 +148,54 @@ definitions:
         type: integer
       typeId:
         type: string
+    type: object
+  model.ResourceGroup:
+    properties:
+      clientId:
+        type: string
+      id:
+        type: string
+      name:
+        type: string
+      tenantId:
+        type: integer
+    type: object
+  model.ResourceGroupAction:
+    properties:
+      groupId:
+        type: string
+      id:
+        type: string
+      name:
+        type: string
+      tenantId:
+        type: integer
+    type: object
+  model.ResourceGroupRole:
+    properties:
+      groupId:
+        type: string
+      id:
+        type: string
+      name:
+        type: string
+      tenantId:
+        type: integer
+    type: object
+  model.ResourceGroupRoleAction:
+    properties:
+      actionId:
+        type: string
+      actionName:
+        type: string
+      id:
+        type: integer
+      roleId:
+        type: string
+      roleName:
+        type: string
+      tenantId:
+        type: integer
     type: object
   model.ResourceRoleUser:
     properties:
@@ -377,6 +436,818 @@ paths:
       summary: openid configuration
       tags:
       - oauth2
+  /accounts/{tenant}/iam/clients/{client}/resourceGroups:
+    get:
+      parameters:
+      - default: default
+        description: tenant
+        in: path
+        name: tenant
+        required: true
+        type: string
+      - default: default
+        description: client
+        in: path
+        name: client
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+      summary: 获取资源组列表
+      tags:
+      - resource-group
+    post:
+      parameters:
+      - default: default
+        description: tenant
+        in: path
+        name: tenant
+        required: true
+        type: string
+      - default: default
+        description: client
+        in: path
+        name: client
+        required: true
+        type: string
+      - description: body
+        in: body
+        name: group
+        required: true
+        schema:
+          $ref: '#/definitions/model.ResourceGroup'
+      responses:
+        "200":
+          description: OK
+      summary: 创建资源组
+      tags:
+      - resource-group
+  /accounts/{tenant}/iam/clients/{client}/resourceGroups/{groupId}:
+    delete:
+      parameters:
+      - default: default
+        description: tenant
+        in: path
+        name: tenant
+        required: true
+        type: string
+      - default: default
+        description: client
+        in: path
+        name: client
+        required: true
+        type: string
+      - description: group id
+        in: path
+        name: groupId
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+      summary: 删除资源组
+      tags:
+      - resource-group
+    post:
+      parameters:
+      - default: default
+        description: tenant
+        in: path
+        name: tenant
+        required: true
+        type: string
+      - default: default
+        description: client
+        in: path
+        name: client
+        required: true
+        type: string
+      - description: group id
+        in: path
+        name: groupId
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+      summary: 获取资源组详细信息
+      tags:
+      - resource-group
+    put:
+      parameters:
+      - default: default
+        description: tenant
+        in: path
+        name: tenant
+        required: true
+        type: string
+      - default: default
+        description: client
+        in: path
+        name: client
+        required: true
+        type: string
+      - description: group id
+        in: path
+        name: groupId
+        required: true
+        type: string
+      - description: body
+        in: body
+        name: group
+        required: true
+        schema:
+          $ref: '#/definitions/model.ResourceGroup'
+      responses:
+        "200":
+          description: OK
+      summary: 更新资源组
+      tags:
+      - resource-group
+  /accounts/{tenant}/iam/clients/{client}/resourceGroups/{groupId}/actions:
+    get:
+      parameters:
+      - default: default
+        description: tenant
+        in: path
+        name: tenant
+        required: true
+        type: string
+      - default: default
+        description: client
+        in: path
+        name: client
+        required: true
+        type: string
+      - description: group id
+        in: path
+        name: groupId
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+      summary: 获取资源组角色列表
+      tags:
+      - resource-group
+    post:
+      parameters:
+      - default: default
+        description: tenant
+        in: path
+        name: tenant
+        required: true
+        type: string
+      - default: default
+        description: client
+        in: path
+        name: client
+        required: true
+        type: string
+      - description: group id
+        in: path
+        name: groupId
+        required: true
+        type: string
+      - description: body
+        in: body
+        name: role
+        required: true
+        schema:
+          $ref: '#/definitions/model.ResourceGroupAction'
+      responses:
+        "200":
+          description: OK
+      summary: 创建资源角色
+      tags:
+      - resource-group
+  /accounts/{tenant}/iam/clients/{client}/resourceGroups/{groupId}/actions/{actionId}:
+    get:
+      parameters:
+      - default: default
+        description: tenant
+        in: path
+        name: tenant
+        required: true
+        type: string
+      - default: default
+        description: client
+        in: path
+        name: client
+        required: true
+        type: string
+      - description: group id
+        in: path
+        name: groupId
+        required: true
+        type: string
+      - description: action id
+        in: path
+        name: actionId
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+      summary: 获取资源组角色
+      tags:
+      - resource-group
+    put:
+      parameters:
+      - default: default
+        description: tenant
+        in: path
+        name: tenant
+        required: true
+        type: string
+      - default: default
+        description: client
+        in: path
+        name: client
+        required: true
+        type: string
+      - description: group id
+        in: path
+        name: groupId
+        required: true
+        type: string
+      - description: action id
+        in: path
+        name: actionId
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+      summary: 删除资源组角色
+      tags:
+      - resource-group
+  /accounts/{tenant}/iam/clients/{client}/resourceGroups/{groupId}/resources:
+    get:
+      parameters:
+      - default: default
+        description: tenant
+        in: path
+        name: tenant
+        required: true
+        type: string
+      - default: default
+        description: client
+        in: path
+        name: client
+        required: true
+        type: string
+      - description: group id
+        in: path
+        name: groupId
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+      summary: 获取资源组的资源列表
+      tags:
+      - resource-group
+    post:
+      parameters:
+      - default: default
+        description: tenant
+        in: path
+        name: tenant
+        required: true
+        type: string
+      - default: default
+        description: client
+        in: path
+        name: client
+        required: true
+        type: string
+      - description: group id
+        in: path
+        name: groupId
+        required: true
+        type: string
+      - description: body
+        in: body
+        name: role
+        required: true
+        schema:
+          $ref: '#/definitions/model.GroupResource'
+      responses:
+        "200":
+          description: OK
+      summary: 创建资源的资源
+      tags:
+      - resource-group
+  /accounts/{tenant}/iam/clients/{client}/resourceGroups/{groupId}/resources/{resourceId}:
+    get:
+      parameters:
+      - default: default
+        description: tenant
+        in: path
+        name: tenant
+        required: true
+        type: string
+      - default: default
+        description: client
+        in: path
+        name: client
+        required: true
+        type: string
+      - description: group id
+        in: path
+        name: groupId
+        required: true
+        type: string
+      - description: resource id
+        in: path
+        name: resourceId
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+      summary: 获取资源组的资源
+      tags:
+      - resource-group
+    put:
+      parameters:
+      - default: default
+        description: tenant
+        in: path
+        name: tenant
+        required: true
+        type: string
+      - default: default
+        description: client
+        in: path
+        name: client
+        required: true
+        type: string
+      - description: group id
+        in: path
+        name: groupId
+        required: true
+        type: string
+      - description: resource id
+        in: path
+        name: resourceId
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+      summary: 删除资源组的资源
+      tags:
+      - resource-group
+  /accounts/{tenant}/iam/clients/{client}/resourceGroups/{groupId}/roles:
+    get:
+      parameters:
+      - default: default
+        description: tenant
+        in: path
+        name: tenant
+        required: true
+        type: string
+      - default: default
+        description: client
+        in: path
+        name: client
+        required: true
+        type: string
+      - description: group id
+        in: path
+        name: groupId
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+      summary: 获取资源组角色列表
+      tags:
+      - resource-group
+    post:
+      parameters:
+      - default: default
+        description: tenant
+        in: path
+        name: tenant
+        required: true
+        type: string
+      - default: default
+        description: client
+        in: path
+        name: client
+        required: true
+        type: string
+      - description: group id
+        in: path
+        name: groupId
+        required: true
+        type: string
+      - description: body
+        in: body
+        name: role
+        required: true
+        schema:
+          $ref: '#/definitions/model.ResourceGroupRole'
+      responses:
+        "200":
+          description: OK
+      summary: 创建资源角色
+      tags:
+      - resource-group
+  /accounts/{tenant}/iam/clients/{client}/resourceGroups/{groupId}/roles/{roleId}:
+    get:
+      parameters:
+      - default: default
+        description: tenant
+        in: path
+        name: tenant
+        required: true
+        type: string
+      - default: default
+        description: client
+        in: path
+        name: client
+        required: true
+        type: string
+      - description: group id
+        in: path
+        name: groupId
+        required: true
+        type: string
+      - description: role id
+        in: path
+        name: roleId
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+      summary: 获取资源组角色
+      tags:
+      - resource-group
+    put:
+      parameters:
+      - default: default
+        description: tenant
+        in: path
+        name: tenant
+        required: true
+        type: string
+      - default: default
+        description: client
+        in: path
+        name: client
+        required: true
+        type: string
+      - description: group id
+        in: path
+        name: groupId
+        required: true
+        type: string
+      - description: role id
+        in: path
+        name: roleId
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+      summary: 删除资源组角色
+      tags:
+      - resource-group
+  /accounts/{tenant}/iam/clients/{client}/resourceGroups/{groupId}/roles/{roleId}/actions:
+    get:
+      parameters:
+      - default: default
+        description: tenant
+        in: path
+        name: tenant
+        required: true
+        type: string
+      - default: default
+        description: client
+        in: path
+        name: client
+        required: true
+        type: string
+      - description: group id
+        in: path
+        name: groupId
+        required: true
+        type: string
+      - description: role id
+        in: path
+        name: roleId
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+      summary: 获取资源组角色列表
+      tags:
+      - resource-group
+    post:
+      parameters:
+      - default: default
+        description: tenant
+        in: path
+        name: tenant
+        required: true
+        type: string
+      - default: default
+        description: client
+        in: path
+        name: client
+        required: true
+        type: string
+      - description: group id
+        in: path
+        name: groupId
+        required: true
+        type: string
+      - description: role id
+        in: path
+        name: roleId
+        required: true
+        type: string
+      - description: body
+        in: body
+        name: role
+        required: true
+        schema:
+          $ref: '#/definitions/model.ResourceGroupRoleAction'
+      responses:
+        "200":
+          description: OK
+      summary: 创建资源角色
+      tags:
+      - resource-group
+    put:
+      parameters:
+      - default: default
+        description: tenant
+        in: path
+        name: tenant
+        required: true
+        type: string
+      - default: default
+        description: client
+        in: path
+        name: client
+        required: true
+        type: string
+      - description: group id
+        in: path
+        name: groupId
+        required: true
+        type: string
+      - description: role id
+        in: path
+        name: roleId
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+      summary: 删除资源组角色
+      tags:
+      - resource-group
+  /accounts/{tenant}/iam/clients/{client}/resourceGroups/{groupId}/roles/{roleId}/actions/{actionsId}:
+    get:
+      parameters:
+      - default: default
+        description: tenant
+        in: path
+        name: tenant
+        required: true
+        type: string
+      - default: default
+        description: client
+        in: path
+        name: client
+        required: true
+        type: string
+      - description: group id
+        in: path
+        name: groupId
+        required: true
+        type: string
+      - description: role id
+        in: path
+        name: roleId
+        required: true
+        type: string
+      - description: action id
+        in: path
+        name: actionId
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+      summary: 获取资源组角色
+      tags:
+      - resource-group
+  /accounts/{tenant}/iam/clients/{client}/resourceGroups/{groupId}/users/{userId}:
+    delete:
+      parameters:
+      - default: default
+        description: tenant
+        in: path
+        name: tenant
+        required: true
+        type: string
+      - default: default
+        description: client
+        in: path
+        name: client
+        required: true
+        type: string
+      - description: group id
+        in: path
+        name: groupId
+        required: true
+        type: string
+      - description: user id
+        in: path
+        name: userId
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+      summary: 踢出用户
+      tags:
+      - resource-group
+    post:
+      parameters:
+      - default: default
+        description: tenant
+        in: path
+        name: tenant
+        required: true
+        type: string
+      - default: default
+        description: client
+        in: path
+        name: client
+        required: true
+        type: string
+      - description: user id
+        in: path
+        name: userId
+        required: true
+        type: string
+      - description: body
+        in: body
+        name: group
+        required: true
+        schema:
+          $ref: '#/definitions/model.ResourceGroup'
+      responses:
+        "200":
+          description: OK
+      summary: 将用户拉入组内
+      tags:
+      - resource-group
+    put:
+      parameters:
+      - default: default
+        description: tenant
+        in: path
+        name: tenant
+        required: true
+        type: string
+      - default: default
+        description: client
+        in: path
+        name: client
+        required: true
+        type: string
+      - description: group id
+        in: path
+        name: groupId
+        required: true
+        type: string
+      - description: user id
+        in: path
+        name: userId
+        required: true
+        type: string
+      - description: body
+        in: body
+        name: group
+        required: true
+        schema:
+          $ref: '#/definitions/model.ResourceGroup'
+      responses:
+        "200":
+          description: OK
+      summary: 修改用户在组内的角色
+      tags:
+      - resource-group
+  /accounts/{tenant}/iam/clients/{client}/resourceGroups/{groupId}/users/{userId}/actions:
+    get:
+      parameters:
+      - default: default
+        description: tenant
+        in: path
+        name: tenant
+        required: true
+        type: string
+      - default: default
+        description: client
+        in: path
+        name: client
+        required: true
+        type: string
+      - description: group id
+        in: path
+        name: groupId
+        required: true
+        type: string
+      - description: user id
+        in: path
+        name: userId
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+      summary: 用户在组内所拥有的权限列表
+      tags:
+      - resource-group
+  /accounts/{tenant}/iam/clients/{client}/resourceGroups/{groupId}/users/{userId}/actions/{actionId}:
+    get:
+      parameters:
+      - default: default
+        description: tenant
+        in: path
+        name: tenant
+        required: true
+        type: string
+      - default: default
+        description: client
+        in: path
+        name: client
+        required: true
+        type: string
+      - description: group id
+        in: path
+        name: groupId
+        required: true
+        type: string
+      - description: user id
+        in: path
+        name: userId
+        required: true
+        type: string
+      - description: action id
+        in: path
+        name: actionId
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+      summary: 用户在组内是否拥有某个权限
+      tags:
+      - resource-group
+  /accounts/{tenant}/iam/clients/{client}/resourceGroups/{groupId}/users/{userId}/roles:
+    get:
+      parameters:
+      - default: default
+        description: tenant
+        in: path
+        name: tenant
+        required: true
+        type: string
+      - default: default
+        description: client
+        in: path
+        name: client
+        required: true
+        type: string
+      - description: group id
+        in: path
+        name: groupId
+        required: true
+        type: string
+      - description: user id
+        in: path
+        name: userId
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+      summary: 用户在组内的角色
+      tags:
+      - resource-group
   /accounts/{tenant}/iam/clients/{client}/types:
     get:
       parameters:

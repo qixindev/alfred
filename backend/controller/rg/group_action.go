@@ -2,67 +2,67 @@ package rg
 
 import "github.com/gin-gonic/gin"
 
-// GetResourceGroupRoleList
+// GetResourceGroupActionList
 // @Summary	获取资源组角色列表
 // @Tags	resource-group
 // @Param	tenant		path	string		true	"tenant"	default(default)
 // @Param	client		path	string		true	"client"	default(default)
 // @Param	groupId		path	string		true	"group id"
 // @Success	200
-// @Router	/accounts/{tenant}/iam/clients/{client}/resourceGroups/{groupId}/roles [get]
-func GetResourceGroupRoleList(c *gin.Context) {
+// @Router	/accounts/{tenant}/iam/clients/{client}/resourceGroups/{groupId}/actions [get]
+func GetResourceGroupActionList(c *gin.Context) {
 
 }
 
-// GetResourceGroupRole
+// GetResourceGroupAction
 // @Summary	获取资源组角色
 // @Tags	resource-group
 // @Param	tenant		path	string		true	"tenant"	default(default)
 // @Param	client		path	string		true	"client"	default(default)
 // @Param	groupId		path	string		true	"group id"
-// @Param	roleId		path	string		true	"role id"
+// @Param	actionId	path	string		true	"action id"
 // @Success	200
-// @Router	/accounts/{tenant}/iam/clients/{client}/resourceGroups/{groupId}/roles/{roleId} [get]
-func GetResourceGroupRole(c *gin.Context) {
+// @Router	/accounts/{tenant}/iam/clients/{client}/resourceGroups/{groupId}/actions/{actionId} [get]
+func GetResourceGroupAction(c *gin.Context) {
 
 }
 
-// CreateResourceGroupRole
+// CreateResourceGroupAction
 // @Summary	创建资源角色
 // @Tags	resource-group
 // @Param	tenant		path	string		true	"tenant"	default(default)
 // @Param	client		path	string		true	"client"	default(default)
 // @Param	groupId		path	string		true	"group id"
-// @Param	role		body	model.ResourceGroupRole	true	"body"
+// @Param	role		body	model.ResourceGroupAction	true	"body"
 // @Success	200
-// @Router	/accounts/{tenant}/iam/clients/{client}/resourceGroups/{groupId}/roles [post]
-func CreateResourceGroupRole(c *gin.Context) {
+// @Router	/accounts/{tenant}/iam/clients/{client}/resourceGroups/{groupId}/actions [post]
+func CreateResourceGroupAction(c *gin.Context) {
 
 }
 
-// UpdateResourceGroupRole
+// UpdateResourceGroupAction
 // @Summary	更新资源组角色
 // @Tags	resource-group
 // @Param	tenant		path	string		true	"tenant"	default(default)
 // @Param	client		path	string		true	"client"	default(default)
 // @Param	groupId		path	string		true	"group id"
-// @Param	roleId		path	string		true	"role id"
-// @Param	role		body	model.ResourceGroupRole	true	"body"
+// @Param	actionId	path	string		true	"action id"
+// @Param	role		body	model.ResourceGroupAction	true	"body"
 // @Success	200
-// @Router	/accounts/{tenant}/iam/clients/{client}/resourceGroups/{groupId}/roles/{roleId} [put]
-func UpdateResourceGroupRole(c *gin.Context) {
+// @Router	/accounts/{tenant}/iam/clients/{client}/resourceGroups/{groupId}/actions/{actionId} [put]
+func UpdateResourceGroupAction(c *gin.Context) {
 
 }
 
-// DeleteResourceGroupRole
+// DeleteResourceGroupAction
 // @Summary	删除资源组角色
 // @Tags	resource-group
 // @Param	tenant		path	string		true	"tenant"	default(default)
 // @Param	client		path	string		true	"client"	default(default)
 // @Param	groupId		path	string		true	"group id"
-// @Param	roleId		path	string		true	"role id"
+// @Param	actionId	path	string		true	"action id"
 // @Success	200
-// @Router	/accounts/{tenant}/iam/clients/{client}/resourceGroups/{groupId}/roles/{roleId} [put]
-func DeleteResourceGroupRole(c *gin.Context) {
+// @Router	/accounts/{tenant}/iam/clients/{client}/resourceGroups/{groupId}/actions/{actionId} [put]
+func DeleteResourceGroupAction(c *gin.Context) {
 
 }
