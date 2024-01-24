@@ -47,6 +47,7 @@ func Login(c *gin.Context) {
 
 	session := sessions.Default(c)
 	session.Set("tenant", tenant.Name)
+	session.Set("tenantId", tenant.Id)
 	session.Set("user", user.Username)
 	session.Set("userId", user.Id)
 	if err := session.Save(); err != nil {
