@@ -10,8 +10,8 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func GetUser(c *gin.Context) *model.User {
-	return c.MustGet("user").(*model.User)
+func GetUser(c *gin.Context) model.User {
+	return c.MustGet("user").(model.User)
 }
 
 // GetUserDetail

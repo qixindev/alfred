@@ -167,6 +167,7 @@ func ProviderCallback(c *gin.Context) {
 	session.Set("tenant", stateInfo.Tenant)
 	session.Set("client", stateInfo.ClientId)
 	session.Set("user", user.Username)
+	session.Set("userId", user.Id)
 	session.Delete("next")
 	if err = session.Save(); err != nil {
 		resp.ErrorSaveSession(c, err)
