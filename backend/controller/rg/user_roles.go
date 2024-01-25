@@ -1,8 +1,10 @@
 package rg
 
 import (
+	"alfred/backend/controller/internal"
 	"alfred/backend/endpoint/resp"
 	"alfred/backend/model"
+	"alfred/backend/service/rg"
 	"github.com/gin-gonic/gin"
 )
 
@@ -12,11 +14,21 @@ import (
 // @Param	tenant		path	string	true	"tenant"	default(default)
 // @Param	client		path	string	true	"client"	default(default)
 // @Param	groupId		path	string	true	"group id"
-// @Param	userId		path	string	true	"user id"
+// @Param	userId		path	integer	true	"user id"
 // @Success	200
 // @Router	/accounts/{tenant}/iam/clients/{client}/resourceGroups/{groupId}/users/{userId}/roles [get]
 func GetResourceGroupUserRole(c *gin.Context) {
-
+	var in model.RequestResourceGroup
+	if err := internal.BindUri(c, &in).SetTenant(&in.Tenant).Error; err != nil {
+		resp.ErrorRequest(c, err)
+		return
+	}
+	res, err := rg.GetResourceGroupUserRole(in.Tenant.Id, in.GroupId, in.UserId)
+	if err != nil {
+		resp.ErrorSqlSelect(c, err, "GetResourceGroupUserRole err")
+		return
+	}
+	resp.SuccessWithData(c, res)
 }
 
 // GetResourceGroupUserActionList
@@ -25,11 +37,21 @@ func GetResourceGroupUserRole(c *gin.Context) {
 // @Param	tenant		path	string		true	"tenant"	default(default)
 // @Param	client		path	string		true	"client"	default(default)
 // @Param	groupId		path	string		true	"group id"
-// @Param	userId		path	string		true	"user id"
+// @Param	userId		path	integer		true	"user id"
 // @Success	200
 // @Router	/accounts/{tenant}/iam/clients/{client}/resourceGroups/{groupId}/users/{userId}/actions [get]
 func GetResourceGroupUserActionList(c *gin.Context) {
-
+	var in model.RequestResourceGroup
+	if err := internal.BindUri(c, &in).SetTenant(&in.Tenant).Error; err != nil {
+		resp.ErrorRequest(c, err)
+		return
+	}
+	res, err := rg.GetResourceGroupUserActionList(in.Tenant.Id, in.GroupId, in.UserId)
+	if err != nil {
+		resp.ErrorSqlSelect(c, err, "GetResourceGroupUserActionList err")
+		return
+	}
+	resp.SuccessWithData(c, res)
 }
 
 // GetResourceGroupUserAction
@@ -43,7 +65,17 @@ func GetResourceGroupUserActionList(c *gin.Context) {
 // @Success	200
 // @Router	/accounts/{tenant}/iam/clients/{client}/resourceGroups/{groupId}/users/{userId}/actions/{actionId} [get]
 func GetResourceGroupUserAction(c *gin.Context) {
-
+	var in model.RequestResourceGroup
+	if err := internal.BindUri(c, &in).SetTenant(&in.Tenant).Error; err != nil {
+		resp.ErrorRequest(c, err)
+		return
+	}
+	res, err := rg.GetResourceGroupUserAction(in.Tenant.Id, in.UserId, in.ActionId)
+	if err != nil {
+		resp.ErrorSqlFirst(c, err, "GetResourceGroupUserAction err")
+		return
+	}
+	resp.SuccessWithData(c, res)
 }
 
 // CreateResourceGroupUserRole
@@ -51,16 +83,22 @@ func GetResourceGroupUserAction(c *gin.Context) {
 // @Tags	resource-group
 // @Param	tenant		path	string		true	"tenant"	default(default)
 // @Param	client		path	string		true	"client"	default(default)
-// @Param	userId		path	string		true	"user id"
-// @Param	group		body	model.ResourceGroupUser	true	"body"
+// @Param	userId		path	integer		true	"user id"
+// @Param	group		body	model.RequestResourceGroup	true	"body"
 // @Success	200
 // @Router	/accounts/{tenant}/iam/clients/{client}/resourceGroups/{groupId}/users/{userId} [post]
 func CreateResourceGroupUserRole(c *gin.Context) {
-	var in model.ResourceGroupUser
-	if err := c.ShouldBindJSON(&in); err != nil {
+	var in model.RequestResourceGroup
+	if err := internal.BindUriAndJson(c, &in).SetTenant(&in.Tenant).Error; err != nil {
 		resp.ErrorRequest(c, err)
+		return
 	}
-
+	res, err := rg.CreateResourceGroupUserRole(in.Tenant.Id, in.GroupId, in.UserId, in.RoleId)
+	if err != nil {
+		resp.ErrorSqlCreate(c, err, "CreateResourceGroupUserRole err")
+		return
+	}
+	resp.SuccessWithData(c, res)
 }
 
 // UpdateResourceGroupUserRole
@@ -69,12 +107,21 @@ func CreateResourceGroupUserRole(c *gin.Context) {
 // @Param	tenant		path	string		true	"tenant"	default(default)
 // @Param	client		path	string		true	"client"	default(default)
 // @Param	groupId		path	string		true	"group id"
-// @Param	userId		path	string		true	"user id"
-// @Param	group		body	model.ResourceGroupUser	true	"body"
+// @Param	userId		path	integer		true	"user id"
+// @Param	group		body	model.RequestResourceGroup	true	"body"
 // @Success	200
 // @Router	/accounts/{tenant}/iam/clients/{client}/resourceGroups/{groupId}/users/{userId} [put]
 func UpdateResourceGroupUserRole(c *gin.Context) {
-
+	var in model.RequestResourceGroup
+	if err := internal.BindUriAndJson(c, &in).SetTenant(&in.Tenant).Error; err != nil {
+		resp.ErrorRequest(c, err)
+		return
+	}
+	if err := rg.UpdateResourceGroupUserRole(in.Tenant.Id, in.GroupId, in.UserId, in.RoleId); err != nil {
+		resp.ErrorSqlUpdate(c, err, "UpdateResourceGroupUserRole err")
+		return
+	}
+	resp.Success(c)
 }
 
 // DeleteResourceGroupUser
@@ -83,9 +130,18 @@ func UpdateResourceGroupUserRole(c *gin.Context) {
 // @Param	tenant		path	string		true	"tenant"	default(default)
 // @Param	client		path	string		true	"client"	default(default)
 // @Param	groupId		path	string		true	"group id"
-// @Param	userId		path	string		true	"user id"
+// @Param	userId		path	integer		true	"user id"
 // @Success	200
 // @Router	/accounts/{tenant}/iam/clients/{client}/resourceGroups/{groupId}/users/{userId} [delete]
 func DeleteResourceGroupUser(c *gin.Context) {
-
+	var in model.RequestResourceGroup
+	if err := internal.BindUri(c, &in).SetTenant(&in.Tenant).Error; err != nil {
+		resp.ErrorRequest(c, err)
+		return
+	}
+	if err := rg.DeleteResourceGroupUserRole(in.Tenant.Id, in.GroupId, in.UserId); err != nil {
+		resp.ErrorSqlDelete(c, err, "DeleteResourceGroupUserRole err")
+		return
+	}
+	resp.Success(c)
 }

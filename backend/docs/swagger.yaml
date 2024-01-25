@@ -125,6 +125,21 @@ definitions:
       userName:
         type: string
     type: object
+  model.RequestResourceGroup:
+    properties:
+      actionIds:
+        items:
+          type: string
+        type: array
+      name:
+        type: string
+      roleId:
+        type: string
+      sub:
+        type: string
+      uid:
+        type: string
+    type: object
   model.Resource:
     properties:
       id:
@@ -137,86 +152,6 @@ definitions:
         type: integer
       typeId:
         type: string
-    type: object
-  model.ResourceGroup:
-    properties:
-      clientId:
-        type: string
-      id:
-        type: string
-      name:
-        type: string
-      tenantId:
-        type: integer
-    type: object
-  model.ResourceGroupAction:
-    properties:
-      groupId:
-        type: string
-      id:
-        type: string
-      name:
-        type: string
-      tenantId:
-        type: integer
-    type: object
-  model.ResourceGroupResource:
-    properties:
-      groupId:
-        type: string
-      id:
-        type: string
-      name:
-        type: string
-      tenantId:
-        type: integer
-    type: object
-  model.ResourceGroupRole:
-    properties:
-      groupId:
-        type: string
-      id:
-        type: string
-      name:
-        type: string
-      tenantId:
-        type: integer
-    type: object
-  model.ResourceGroupRoleAction:
-    properties:
-      actionId:
-        type: string
-      actionName:
-        type: string
-      id:
-        type: integer
-      roleId:
-        type: string
-      roleName:
-        type: string
-      tenantId:
-        type: integer
-    type: object
-  model.ResourceGroupUser:
-    properties:
-      displayName:
-        type: string
-      groupId:
-        type: string
-      id:
-        type: integer
-      resourceGroupName:
-        type: string
-      roleId:
-        type: string
-      roleName:
-        type: string
-      sub:
-        type: string
-      tenantId:
-        type: integer
-      userId:
-        type: integer
     type: object
   model.ResourceRoleUser:
     properties:
@@ -497,7 +432,7 @@ paths:
         name: group
         required: true
         schema:
-          $ref: '#/definitions/model.ResourceGroup'
+          $ref: '#/definitions/model.RequestResourceGroup'
       responses:
         "200":
           description: OK
@@ -579,7 +514,7 @@ paths:
         name: group
         required: true
         schema:
-          $ref: '#/definitions/model.ResourceGroup'
+          $ref: '#/definitions/model.RequestResourceGroup'
       responses:
         "200":
           description: OK
@@ -636,7 +571,7 @@ paths:
         name: role
         required: true
         schema:
-          $ref: '#/definitions/model.ResourceGroupAction'
+          $ref: '#/definitions/model.RequestResourceGroup'
       responses:
         "200":
           description: OK
@@ -733,7 +668,7 @@ paths:
         name: role
         required: true
         schema:
-          $ref: '#/definitions/model.ResourceGroupAction'
+          $ref: '#/definitions/model.RequestResourceGroup'
       responses:
         "200":
           description: OK
@@ -787,10 +722,10 @@ paths:
         type: string
       - description: body
         in: body
-        name: role
+        name: data
         required: true
         schema:
-          $ref: '#/definitions/model.ResourceGroupResource'
+          $ref: '#/definitions/model.RequestResourceGroup'
       responses:
         "200":
           description: OK
@@ -884,10 +819,10 @@ paths:
         type: string
       - description: body
         in: body
-        name: role
+        name: data
         required: true
         schema:
-          $ref: '#/definitions/model.ResourceGroupResource'
+          $ref: '#/definitions/model.RequestResourceGroup'
       responses:
         "200":
           description: OK
@@ -941,10 +876,10 @@ paths:
         type: string
       - description: body
         in: body
-        name: role
+        name: data
         required: true
         schema:
-          $ref: '#/definitions/model.ResourceGroupRole'
+          $ref: '#/definitions/model.RequestResourceGroup'
       responses:
         "200":
           description: OK
@@ -1038,10 +973,10 @@ paths:
         type: string
       - description: body
         in: body
-        name: role
+        name: data
         required: true
         schema:
-          $ref: '#/definitions/model.ResourceGroupRole'
+          $ref: '#/definitions/model.RequestResourceGroup'
       responses:
         "200":
           description: OK
@@ -1135,10 +1070,10 @@ paths:
         type: string
       - description: body
         in: body
-        name: role
+        name: data
         required: true
         schema:
-          $ref: '#/definitions/model.ResourceGroupRoleAction'
+          $ref: '#/definitions/model.RequestResourceGroup'
       responses:
         "200":
           description: OK
@@ -1171,10 +1106,10 @@ paths:
         type: string
       - description: body
         in: body
-        name: role
+        name: data
         required: true
         schema:
-          $ref: '#/definitions/model.ResourceGroupRoleAction'
+          $ref: '#/definitions/model.RequestResourceGroup'
       responses:
         "200":
           description: OK
@@ -1241,7 +1176,7 @@ paths:
         in: path
         name: userId
         required: true
-        type: string
+        type: integer
       responses:
         "200":
           description: OK
@@ -1266,13 +1201,13 @@ paths:
         in: path
         name: userId
         required: true
-        type: string
+        type: integer
       - description: body
         in: body
         name: group
         required: true
         schema:
-          $ref: '#/definitions/model.ResourceGroupUser'
+          $ref: '#/definitions/model.RequestResourceGroup'
       responses:
         "200":
           description: OK
@@ -1302,13 +1237,13 @@ paths:
         in: path
         name: userId
         required: true
-        type: string
+        type: integer
       - description: body
         in: body
         name: group
         required: true
         schema:
-          $ref: '#/definitions/model.ResourceGroupUser'
+          $ref: '#/definitions/model.RequestResourceGroup'
       responses:
         "200":
           description: OK
@@ -1339,7 +1274,7 @@ paths:
         in: path
         name: userId
         required: true
-        type: string
+        type: integer
       responses:
         "200":
           description: OK
@@ -1406,7 +1341,7 @@ paths:
         in: path
         name: userId
         required: true
-        type: string
+        type: integer
       responses:
         "200":
           description: OK

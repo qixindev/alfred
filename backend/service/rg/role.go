@@ -7,7 +7,7 @@ import (
 	"gorm.io/gorm"
 )
 
-func GerResourceGroupRoleList(tenantId uint, groupId string) ([]model.ResourceGroupRole, error) {
+func GetResourceGroupRoleList(tenantId uint, groupId string) ([]model.ResourceGroupRole, error) {
 	var roles []model.ResourceGroupRole
 	if err := global.DB.Where("group_id = ? AND tenant_id = ?", groupId, tenantId).Find(&roles).Error; err != nil {
 		return nil, err
@@ -15,7 +15,7 @@ func GerResourceGroupRoleList(tenantId uint, groupId string) ([]model.ResourceGr
 	return roles, nil
 }
 
-func GerResourceGroupRole(tenantId uint, groupId string, roleId string) (*model.ResourceGroupRole, error) {
+func GetResourceGroupRole(tenantId uint, groupId string, roleId string) (*model.ResourceGroupRole, error) {
 	var role model.ResourceGroupRole
 	if err := global.DB.Where("id = ? AND group_id = ? AND tenant_id = ?", roleId, groupId, tenantId).
 		Find(&role).Error; err != nil {
@@ -96,7 +96,7 @@ func GetResourceGroupUserAction(tenantId uint, userId uint, actionId string) (*m
 	return &role, nil
 }
 
-func CreateResourceGroupUserRole(tenantId uint, userId uint, groupId string, roleId string) (*model.ResourceGroupUser, error) {
+func CreateResourceGroupUserRole(tenantId uint, groupId string, userId uint, roleId string) (*model.ResourceGroupUser, error) {
 	userRole := model.ResourceGroupUser{
 		TenantId:     tenantId,
 		GroupId:      groupId,

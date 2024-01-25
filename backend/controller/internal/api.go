@@ -54,10 +54,10 @@ func (a *Api) BindUriAndJson(obj any) *Api {
 	if a.c == nil {
 		return a.setError(errors.New("gin context should not be nil"))
 	}
-	if err := setUriValue(a.c, obj); err != nil {
+	if err := a.c.ShouldBindJSON(obj); err != nil {
 		return a.setError(err)
 	}
-	if err := a.c.ShouldBindJSON(obj); err != nil {
+	if err := setUriValue(a.c, obj); err != nil {
 		return a.setError(err)
 	}
 	return a

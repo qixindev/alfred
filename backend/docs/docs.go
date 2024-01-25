@@ -2239,7 +2239,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/model.ResourceGroup"
+                            "$ref": "#/definitions/model.RequestResourceGroup"
                         }
                     }
                 ],
@@ -2322,7 +2322,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/model.ResourceGroup"
+                            "$ref": "#/definitions/model.RequestResourceGroup"
                         }
                     }
                 ],
@@ -2441,7 +2441,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/model.ResourceGroupAction"
+                            "$ref": "#/definitions/model.RequestResourceGroup"
                         }
                     }
                 ],
@@ -2538,7 +2538,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/model.ResourceGroupAction"
+                            "$ref": "#/definitions/model.RequestResourceGroup"
                         }
                     }
                 ],
@@ -2660,11 +2660,11 @@ const docTemplate = `{
                     },
                     {
                         "description": "body",
-                        "name": "role",
+                        "name": "data",
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/model.ResourceGroupResource"
+                            "$ref": "#/definitions/model.RequestResourceGroup"
                         }
                     }
                 ],
@@ -2757,11 +2757,11 @@ const docTemplate = `{
                     },
                     {
                         "description": "body",
-                        "name": "role",
+                        "name": "data",
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/model.ResourceGroupResource"
+                            "$ref": "#/definitions/model.RequestResourceGroup"
                         }
                     }
                 ],
@@ -2883,11 +2883,11 @@ const docTemplate = `{
                     },
                     {
                         "description": "body",
-                        "name": "role",
+                        "name": "data",
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/model.ResourceGroupRole"
+                            "$ref": "#/definitions/model.RequestResourceGroup"
                         }
                     }
                 ],
@@ -2980,11 +2980,11 @@ const docTemplate = `{
                     },
                     {
                         "description": "body",
-                        "name": "role",
+                        "name": "data",
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/model.ResourceGroupRole"
+                            "$ref": "#/definitions/model.RequestResourceGroup"
                         }
                     }
                 ],
@@ -3120,11 +3120,11 @@ const docTemplate = `{
                     },
                     {
                         "description": "body",
-                        "name": "role",
+                        "name": "data",
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/model.ResourceGroupRoleAction"
+                            "$ref": "#/definitions/model.RequestResourceGroup"
                         }
                     }
                 ],
@@ -3172,11 +3172,11 @@ const docTemplate = `{
                     },
                     {
                         "description": "body",
-                        "name": "role",
+                        "name": "data",
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/model.ResourceGroupRoleAction"
+                            "$ref": "#/definitions/model.RequestResourceGroup"
                         }
                     }
                 ],
@@ -3313,7 +3313,7 @@ const docTemplate = `{
                         "required": true
                     },
                     {
-                        "type": "string",
+                        "type": "integer",
                         "description": "user id",
                         "name": "userId",
                         "in": "path",
@@ -3325,7 +3325,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/model.ResourceGroupUser"
+                            "$ref": "#/definitions/model.RequestResourceGroup"
                         }
                     }
                 ],
@@ -3358,7 +3358,7 @@ const docTemplate = `{
                         "required": true
                     },
                     {
-                        "type": "string",
+                        "type": "integer",
                         "description": "user id",
                         "name": "userId",
                         "in": "path",
@@ -3370,7 +3370,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/model.ResourceGroupUser"
+                            "$ref": "#/definitions/model.RequestResourceGroup"
                         }
                     }
                 ],
@@ -3410,7 +3410,7 @@ const docTemplate = `{
                         "required": true
                     },
                     {
-                        "type": "string",
+                        "type": "integer",
                         "description": "user id",
                         "name": "userId",
                         "in": "path",
@@ -3455,7 +3455,7 @@ const docTemplate = `{
                         "required": true
                     },
                     {
-                        "type": "string",
+                        "type": "integer",
                         "description": "user id",
                         "name": "userId",
                         "in": "path",
@@ -3552,7 +3552,7 @@ const docTemplate = `{
                         "required": true
                     },
                     {
-                        "type": "string",
+                        "type": "integer",
                         "description": "user id",
                         "name": "userId",
                         "in": "path",
@@ -5585,6 +5585,29 @@ const docTemplate = `{
                 }
             }
         },
+        "model.RequestResourceGroup": {
+            "type": "object",
+            "properties": {
+                "actionIds": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "name": {
+                    "type": "string"
+                },
+                "roleId": {
+                    "type": "string"
+                },
+                "sub": {
+                    "type": "string"
+                },
+                "uid": {
+                    "type": "string"
+                }
+            }
+        },
         "model.Resource": {
             "type": "object",
             "properties": {
@@ -5602,129 +5625,6 @@ const docTemplate = `{
                 },
                 "typeId": {
                     "type": "string"
-                }
-            }
-        },
-        "model.ResourceGroup": {
-            "type": "object",
-            "properties": {
-                "clientId": {
-                    "type": "string"
-                },
-                "id": {
-                    "type": "string"
-                },
-                "name": {
-                    "type": "string"
-                },
-                "tenantId": {
-                    "type": "integer"
-                }
-            }
-        },
-        "model.ResourceGroupAction": {
-            "type": "object",
-            "properties": {
-                "groupId": {
-                    "type": "string"
-                },
-                "id": {
-                    "type": "string"
-                },
-                "name": {
-                    "type": "string"
-                },
-                "tenantId": {
-                    "type": "integer"
-                }
-            }
-        },
-        "model.ResourceGroupResource": {
-            "type": "object",
-            "properties": {
-                "groupId": {
-                    "type": "string"
-                },
-                "id": {
-                    "type": "string"
-                },
-                "name": {
-                    "type": "string"
-                },
-                "tenantId": {
-                    "type": "integer"
-                }
-            }
-        },
-        "model.ResourceGroupRole": {
-            "type": "object",
-            "properties": {
-                "groupId": {
-                    "type": "string"
-                },
-                "id": {
-                    "type": "string"
-                },
-                "name": {
-                    "type": "string"
-                },
-                "tenantId": {
-                    "type": "integer"
-                }
-            }
-        },
-        "model.ResourceGroupRoleAction": {
-            "type": "object",
-            "properties": {
-                "actionId": {
-                    "type": "string"
-                },
-                "actionName": {
-                    "type": "string"
-                },
-                "id": {
-                    "type": "integer"
-                },
-                "roleId": {
-                    "type": "string"
-                },
-                "roleName": {
-                    "type": "string"
-                },
-                "tenantId": {
-                    "type": "integer"
-                }
-            }
-        },
-        "model.ResourceGroupUser": {
-            "type": "object",
-            "properties": {
-                "displayName": {
-                    "type": "string"
-                },
-                "groupId": {
-                    "type": "string"
-                },
-                "id": {
-                    "type": "integer"
-                },
-                "resourceGroupName": {
-                    "type": "string"
-                },
-                "roleId": {
-                    "type": "string"
-                },
-                "roleName": {
-                    "type": "string"
-                },
-                "sub": {
-                    "type": "string"
-                },
-                "tenantId": {
-                    "type": "integer"
-                },
-                "userId": {
-                    "type": "integer"
                 }
             }
         },

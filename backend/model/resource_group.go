@@ -58,13 +58,15 @@ type (
 )
 
 type RequestResourceGroup struct {
-	TenantId   string `json:"tenantId" swaggerignore:"true"`
-	TenantName string `json:"tenantName"`
-	ClientId   string `json:"clientId" uri:"clientId"`
-	GroupId    string `json:"groupId" uri:"groupId"`
-	RoleId     string `json:"roleId" uri:"roleId"`
-	ActionId   string `json:"actionId" uri:"actionId"`
-	UserId     string `json:"userId" uri:"userId"`
-	Name       string `json:"name"`
-	Sub        string `json:"sub"`
+	Tenant     Tenant   `json:"-" swaggerignore:"true"`
+	ClientId   string   `json:"clientId" uri:"client" swaggerignore:"true"`
+	GroupId    string   `json:"groupId" uri:"groupId" swaggerignore:"true"`
+	ResourceId string   `json:"resourceId" uri:"resourceId" swaggerignore:"true"`
+	ActionId   string   `json:"actionId" uri:"actionId" swaggerignore:"true"`
+	RoleId     string   `json:"roleId" uri:"roleId"`
+	UserId     uint     `json:"userId" uri:"userId" swaggerignore:"true"`
+	Name       string   `json:"name"`
+	Sub        string   `json:"sub"`
+	Uid        string   `json:"uid"`
+	ActionIds  []string `json:"actionIds"`
 }

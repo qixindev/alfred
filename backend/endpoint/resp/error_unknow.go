@@ -46,7 +46,7 @@ func ErrorSaveSession(c *gin.Context, err error, isArray ...bool) {
 // sql相关错误
 
 func ErrorSqlFirst(c *gin.Context, err error, msg string, isArray ...bool) {
-	if errors.Is(err, gorm.ErrRecordNotFound) {
+	if err != nil && strings.HasPrefix(err.Error(), "record not found") {
 		errorResponse(c, http.StatusNotFound, CodeSqlFirst, err, msg, isArray)
 	} else {
 		errorResponse(c, http.StatusInternalServerError, CodeSqlFirst, err, msg, isArray)
