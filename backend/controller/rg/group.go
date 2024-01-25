@@ -88,7 +88,7 @@ func UpdateResourceGroup(c *gin.Context) {
 		resp.ErrorRequest(c, err)
 		return
 	}
-	if err := rg.UpdateResourceGroup(in.Tenant.Id, in.ClientId, in.GroupId, in.Name); err != nil {
+	if err := rg.UpdateResourceGroup(in.Tenant.Id, in.ClientId, in.GroupId, in.Name, in.Description); err != nil {
 		resp.ErrorSqlUpdate(c, err, "UpdateResourceGroup err")
 		return
 	}

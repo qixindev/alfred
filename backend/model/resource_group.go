@@ -71,7 +71,6 @@ type RequestResourceGroup struct {
 	UserId      uint     `json:"userId" uri:"userId" swaggerignore:"true"`
 	Name        string   `json:"name"`
 	Description string   `json:"description"`
-	Sub         string   `json:"sub"`
 	Uid         string   `json:"uid"`
 	ActionIds   []string `json:"actionIds"`
 }

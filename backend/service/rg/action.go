@@ -40,10 +40,10 @@ func CreateResourceGroupAction(tenantId uint, groupId string, name string, des s
 	return &action, nil
 }
 
-func UpdateResourceGroupAction(tenantId uint, groupId string, actionId string, name string) error {
+func UpdateResourceGroupAction(tenantId uint, groupId string, actionId string, name, des string) error {
 	if err := global.DB.Model(&model.ResourceGroupAction{}).
 		Where("id = ? AND group_id = ? AND tenant_id = ?", actionId, groupId, tenantId).
-		Update("name", name).Error; err != nil {
+		Updates(map[string]any{"name": name, "description": des}).Error; err != nil {
 		return err
 	}
 	return nil

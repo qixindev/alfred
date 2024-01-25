@@ -131,11 +131,11 @@ definitions:
         items:
           type: string
         type: array
+      description:
+        type: string
       name:
         type: string
       roleId:
-        type: string
-      sub:
         type: string
       uid:
         type: string

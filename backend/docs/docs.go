@@ -5594,13 +5594,13 @@ const docTemplate = `{
                         "type": "string"
                     }
                 },
+                "description": {
+                    "type": "string"
+                },
                 "name": {
                     "type": "string"
                 },
                 "roleId": {
-                    "type": "string"
-                },
-                "sub": {
                     "type": "string"
                 },
                 "uid": {

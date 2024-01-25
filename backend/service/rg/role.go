@@ -41,10 +41,10 @@ func CreateResourceGroupRole(tenantId uint, groupId string, name string, des str
 	return &role, nil
 }
 
-func UpdateResourceGroupRole(tenantId uint, groupId string, roleId string, name string) error {
+func UpdateResourceGroupRole(tenantId uint, groupId string, roleId string, name, des string) error {
 	if err := global.DB.Model(&model.ResourceGroupRole{}).
 		Where("id = ? AND group_id = ? AND tenant_id = ?", roleId, groupId, tenantId).
-		Update("name", name).Error; err != nil {
+		Updates(map[string]any{"name": name, "description": des}).Error; err != nil {
 		return err
 	}
 	return nil

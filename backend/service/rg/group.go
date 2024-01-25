@@ -40,9 +40,9 @@ func CreateResourceGroup(tenantId uint, clientId string, name string, des string
 	return &group, nil
 }
 
-func UpdateResourceGroup(tenantId uint, clientId string, groupId string, name string) error {
+func UpdateResourceGroup(tenantId uint, clientId string, groupId string, name, des string) error {
 	if err := global.DB.Where("id = ? AND client_id = ? AND tenant_id = ?", groupId, clientId, tenantId).
-		Model(&model.ResourceGroup{}).Update("name", name).Error; err != nil {
+		Model(&model.ResourceGroup{}).UpdateColumns(map[string]any{"name": name, "description": des}).Error; err != nil {
 		return err
 	}
 	return nil
@@ -54,7 +54,7 @@ func DeleteResourceGroup(tenantId uint, clientId string, groupId string) error {
 		return err
 	}
 	var roles []string
-	if err := global.DB.Select("id").Where("group_id = ? AND tenant_id = ?", groupId, clientId, tenantId).
+	if err := global.DB.Select("id").Where("group_id = ? AND tenant_id = ?", groupId, tenantId).
 		Model(&model.ResourceGroupRole{}).Find(&roles).Error; err != nil {
 		return err
 	}
@@ -115,9 +115,9 @@ func CreateResourceGroupResource(tenantId uint, groupId string, name string, des
 	return resource, nil
 }
 
-func UpdateResourceGroupResource(tenantId uint, groupId string, resourceId string, name string) error {
+func UpdateResourceGroupResource(tenantId uint, groupId string, resourceId string, name, des string) error {
 	if err := global.DB.Where("id = ? AND group_id = ? AND tenant_id = ?", resourceId, groupId, tenantId).
-		Model(&model.ResourceGroupResource{}).Update("name", name).Error; err != nil {
+		Model(&model.ResourceGroupResource{}).Updates(map[string]any{"name": name, "description": des}).Error; err != nil {
 		return err
 	}
 	return nil

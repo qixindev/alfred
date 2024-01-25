@@ -92,7 +92,7 @@ func UpdateResourceGroupRole(c *gin.Context) {
 		resp.ErrorRequest(c, err)
 		return
 	}
-	if err := rg.UpdateResourceGroupRole(in.Tenant.Id, in.GroupId, in.RoleId, in.Name); err != nil {
+	if err := rg.UpdateResourceGroupRole(in.Tenant.Id, in.GroupId, in.RoleId, in.Name, in.Description); err != nil {
 		resp.ErrorSqlUpdate(c, err, "UpdateResourceGroupRole err")
 		return
 	}
