@@ -53,13 +53,14 @@ func ListClientUsers(c *gin.Context) {
 func GetClientUsers(c *gin.Context) {
 	var clientUser struct {
 		Sub      string `json:"sub"`
+		UserId   uint   `json:"userId"`
 		ClientId string `json:"clientId"`
 		model.User
 	}
 	clientId := c.Param("clientId")
 	subId := c.Param("subId")
 	if err := global.DB.Table("client_users cu").
-		Select("cu.id, cu.sub sub, cu.client_id, u.username username, u.phone, u.email, u.first_name, u.last_name, u.display_name, u.role, u.avatar, u.from, u.meta").
+		Select("cu.id, cu.sub sub, cu.client_id, u.id user_id, u.username username, u.phone, u.email, u.first_name, u.last_name, u.display_name, u.role, u.avatar, u.from, u.meta").
 		Joins("LEFT JOIN users u ON u.id = cu.user_id").
 		Where("cu.tenant_id = ? AND cu.client_id = ? AND cu.sub = ?", internal.GetTenant(c).Id, clientId, subId).
 		Find(&clientUser).Error; err != nil {
