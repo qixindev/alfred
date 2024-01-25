@@ -68,7 +68,7 @@ func CreateResourceGroupRole(c *gin.Context) {
 		resp.ErrorRequest(c, err)
 		return
 	}
-	res, err := rg.CreateResourceGroupRole(in.Tenant.Id, in.GroupId, in.Name, in.Uid)
+	res, err := rg.CreateResourceGroupRole(in.Tenant.Id, in.GroupId, in.Name, in.Description, in.Uid)
 	if err != nil {
 		resp.ErrorSqlCreate(c, err, "CreateResourceGroupRole err")
 		return

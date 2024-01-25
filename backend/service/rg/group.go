@@ -23,15 +23,16 @@ func GetResourceGroup(tenantId uint, clientId string, groupId string) (*model.Re
 	return &group, nil
 }
 
-func CreateResourceGroup(tenantId uint, clientId string, name string, uid string) (*model.ResourceGroup, error) {
+func CreateResourceGroup(tenantId uint, clientId string, name string, des string, uid string) (*model.ResourceGroup, error) {
 	if uid == "" {
 		uid = utils.GetUuid()
 	}
 	group := model.ResourceGroup{
-		Id:       uid,
-		TenantId: tenantId,
-		ClientId: clientId,
-		Name:     name,
+		Id:          uid,
+		TenantId:    tenantId,
+		ClientId:    clientId,
+		Name:        name,
+		Description: des,
 	}
 	if err := global.DB.Create(&group).Error; err != nil {
 		return nil, err
@@ -97,15 +98,16 @@ func GetResourceGroupResource(tenantId uint, groupId string, resourceId string) 
 	return &res, nil
 }
 
-func CreateResourceGroupResource(tenantId uint, groupId string, name string, uid string) (*model.ResourceGroupResource, error) {
+func CreateResourceGroupResource(tenantId uint, groupId string, name string, des string, uid string) (*model.ResourceGroupResource, error) {
 	if uid == "" {
 		uid = utils.GetUuid()
 	}
 	resource := &model.ResourceGroupResource{
-		Id:       uid,
-		TenantId: tenantId,
-		GroupId:  groupId,
-		Name:     name,
+		Id:          uid,
+		TenantId:    tenantId,
+		GroupId:     groupId,
+		Name:        name,
+		Description: des,
 	}
 	if err := global.DB.Create(&resource).Error; err != nil {
 		return nil, err

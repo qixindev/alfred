@@ -24,15 +24,16 @@ func GetResourceGroupRole(tenantId uint, groupId string, roleId string) (*model.
 	return &role, nil
 }
 
-func CreateResourceGroupRole(tenantId uint, groupId string, name string, uid string) (*model.ResourceGroupRole, error) {
+func CreateResourceGroupRole(tenantId uint, groupId string, name string, des string, uid string) (*model.ResourceGroupRole, error) {
 	if uid == "" {
 		uid = utils.GetUuid()
 	}
 	role := model.ResourceGroupRole{
-		Id:       uid,
-		TenantId: tenantId,
-		GroupId:  groupId,
-		Name:     name,
+		Id:          uid,
+		TenantId:    tenantId,
+		GroupId:     groupId,
+		Name:        name,
+		Description: des,
 	}
 	if err := global.DB.Create(&role).Error; err != nil {
 		return nil, err

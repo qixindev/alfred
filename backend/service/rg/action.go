@@ -23,15 +23,16 @@ func GetResourceGroupAction(tenantId uint, groupId string, actionId string) (*mo
 	return &action, nil
 }
 
-func CreateResourceGroupAction(tenantId uint, groupId string, name string, uid string) (*model.ResourceGroupAction, error) {
+func CreateResourceGroupAction(tenantId uint, groupId string, name string, des string, uid string) (*model.ResourceGroupAction, error) {
 	if uid == "" {
 		uid = utils.GetUuid()
 	}
 	action := model.ResourceGroupAction{
-		Id:       uid,
-		TenantId: tenantId,
-		GroupId:  groupId,
-		Name:     name,
+		Id:          uid,
+		TenantId:    tenantId,
+		GroupId:     groupId,
+		Name:        name,
+		Description: des,
 	}
 	if err := global.DB.Create(&action).Error; err != nil {
 		return nil, err

@@ -68,7 +68,7 @@ func CreateResourceGroupAction(c *gin.Context) {
 		resp.ErrorRequest(c, err)
 		return
 	}
-	action, err := rg.CreateResourceGroupAction(in.Tenant.Id, in.GroupId, in.Name, in.Uid)
+	action, err := rg.CreateResourceGroupAction(in.Tenant.Id, in.GroupId, in.Name, in.Description, in.Uid)
 	if err != nil {
 		resp.ErrorSqlCreate(c, err, "CreateResourceGroupAction err")
 		return

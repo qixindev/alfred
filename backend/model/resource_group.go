@@ -2,33 +2,37 @@ package model
 
 type (
 	ResourceGroup struct {
-		Id       string `gorm:"primaryKey" json:"id"`
-		Name     string `json:"name"`
-		ClientId string `json:"clientId" uri:"client"`
-		Client   Client `gorm:"foreignKey:ClientId, TenantId" json:"-" swaggerignore:"true"`
-		TenantId uint   `gorm:"primaryKey"`
+		Id          string `gorm:"primaryKey" json:"id"`
+		Name        string `json:"name"`
+		Description string `json:"description"`
+		ClientId    string `json:"clientId" uri:"client"`
+		Client      Client `gorm:"foreignKey:ClientId, TenantId" json:"-" swaggerignore:"true"`
+		TenantId    uint   `gorm:"primaryKey"`
 	}
 
 	ResourceGroupResource struct {
-		Id       string        `gorm:"primaryKey" json:"id"`
-		Name     string        `json:"name"`
-		GroupId  string        `json:"groupId" uri:"groupId"`
-		Group    ResourceGroup `gorm:"foreignKey:GroupId, TenantId" json:"-" swaggerignore:"true"`
-		TenantId uint          `gorm:"primaryKey"`
+		Id          string        `gorm:"primaryKey" json:"id"`
+		Name        string        `json:"name"`
+		Description string        `json:"description"`
+		GroupId     string        `json:"groupId" uri:"groupId"`
+		Group       ResourceGroup `gorm:"foreignKey:GroupId, TenantId" json:"-" swaggerignore:"true"`
+		TenantId    uint          `gorm:"primaryKey"`
 	}
 	ResourceGroupRole struct {
-		Id       string        `gorm:"primaryKey" json:"id"`
-		Name     string        `json:"name"`
-		GroupId  string        `json:"groupId" uri:"groupId"`
-		Group    ResourceGroup `gorm:"foreignKey:GroupId, TenantId" json:"-" swaggerignore:"true"`
-		TenantId uint          `gorm:"primaryKey"`
+		Id          string        `gorm:"primaryKey" json:"id"`
+		Name        string        `json:"name"`
+		Description string        `json:"description"`
+		GroupId     string        `json:"groupId" uri:"groupId"`
+		Group       ResourceGroup `gorm:"foreignKey:GroupId, TenantId" json:"-" swaggerignore:"true"`
+		TenantId    uint          `gorm:"primaryKey"`
 	}
 	ResourceGroupAction struct {
-		Id       string        `gorm:"primaryKey" json:"id"`
-		Name     string        `json:"name"`
-		GroupId  string        `json:"groupId" uri:"groupId"`
-		Group    ResourceGroup `gorm:"foreignKey:GroupId, TenantId" json:"-" swaggerignore:"true"`
-		TenantId uint          `gorm:"primaryKey"`
+		Id          string        `gorm:"primaryKey" json:"id"`
+		Name        string        `json:"name"`
+		Description string        `json:"description"`
+		GroupId     string        `json:"groupId" uri:"groupId"`
+		Group       ResourceGroup `gorm:"foreignKey:GroupId, TenantId" json:"-" swaggerignore:"true"`
+		TenantId    uint          `gorm:"primaryKey"`
 	}
 
 	ResourceGroupRoleAction struct {
@@ -58,15 +62,16 @@ type (
 )
 
 type RequestResourceGroup struct {
-	Tenant     Tenant   `json:"-" swaggerignore:"true"`
-	ClientId   string   `json:"clientId" uri:"client" swaggerignore:"true"`
-	GroupId    string   `json:"groupId" uri:"groupId" swaggerignore:"true"`
-	ResourceId string   `json:"resourceId" uri:"resourceId" swaggerignore:"true"`
-	ActionId   string   `json:"actionId" uri:"actionId" swaggerignore:"true"`
-	RoleId     string   `json:"roleId" uri:"roleId"`
-	UserId     uint     `json:"userId" uri:"userId" swaggerignore:"true"`
-	Name       string   `json:"name"`
-	Sub        string   `json:"sub"`
-	Uid        string   `json:"uid"`
-	ActionIds  []string `json:"actionIds"`
+	Tenant      Tenant   `json:"-" swaggerignore:"true"`
+	ClientId    string   `json:"clientId" uri:"client" swaggerignore:"true"`
+	GroupId     string   `json:"groupId" uri:"groupId" swaggerignore:"true"`
+	ResourceId  string   `json:"resourceId" uri:"resourceId" swaggerignore:"true"`
+	ActionId    string   `json:"actionId" uri:"actionId" swaggerignore:"true"`
+	RoleId      string   `json:"roleId" uri:"roleId"`
+	UserId      uint     `json:"userId" uri:"userId" swaggerignore:"true"`
+	Name        string   `json:"name"`
+	Description string   `json:"description"`
+	Sub         string   `json:"sub"`
+	Uid         string   `json:"uid"`
+	ActionIds   []string `json:"actionIds"`
 }
