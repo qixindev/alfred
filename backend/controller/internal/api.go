@@ -1,15 +1,13 @@
 package internal
 
 import (
-	"alfred/backend/model"
 	"errors"
 	"github.com/gin-gonic/gin"
 )
 
 type Api struct {
-	c      *gin.Context
-	Error  error
-	Tenant *model.Tenant
+	c     *gin.Context
+	Error error
 }
 
 func New(c *gin.Context) *Api {
@@ -32,15 +30,35 @@ func (a *Api) SetCtx(c *gin.Context) *Api {
 	return a
 }
 
-func (a *Api) SetTenant() *Api {
+func (a *Api) BindUri(obj any) *Api {
 	if a.c == nil {
 		return a.setError(errors.New("gin context should not be nil"))
 	}
-	t := a.c.MustGet("tenant")
-	tenant, ok := t.(*model.Tenant)
-	if !ok {
-		return a
+	if err := setUriValue(a.c, obj); err != nil {
+		return a.setError(err)
 	}
-	a.Tenant = tenant
+	return a
+}
+
+func (a *Api) BindJson(obj any) *Api {
+	if a.c == nil {
+		return a.setError(errors.New("gin context should not be nil"))
+	}
+	if err := a.c.ShouldBindJSON(obj); err != nil {
+		return a.setError(err)
+	}
+	return a
+}
+
+func (a *Api) BindUriAndJson(obj any) *Api {
+	if a.c == nil {
+		return a.setError(errors.New("gin context should not be nil"))
+	}
+	if err := setUriValue(a.c, obj); err != nil {
+		return a.setError(err)
+	}
+	if err := a.c.ShouldBindJSON(obj); err != nil {
+		return a.setError(err)
+	}
 	return a
 }

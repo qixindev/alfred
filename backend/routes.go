@@ -20,7 +20,7 @@ import (
 func AddRoutes(r *gin.Engine) {
 	AddWebRoutes(r)
 	// r.Use(middlewares.AccessJsMiddleware())
-	r.Use(middlewares.WecomDomainCheck())
+	r.Use(middlewares.WecomDomainCheck(), middlewares.GinRecovery())
 	r.GET("/accounts/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
 	// 认证

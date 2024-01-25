@@ -1,6 +1,7 @@
 package rg
 
 import (
+	"alfred/backend/controller/internal"
 	"alfred/backend/endpoint/resp"
 	"alfred/backend/model"
 	"github.com/gin-gonic/gin"
@@ -14,7 +15,11 @@ import (
 // @Success	200
 // @Router	/accounts/{tenant}/iam/clients/{client}/resourceGroups [get]
 func GetResourceGroupList(c *gin.Context) {
-
+	var in model.RequestResourceGroup
+	if err := internal.BindUri(c, &in).Error; err != nil {
+		resp.ErrorRequest(c, err)
+		return
+	}
 }
 
 // GetResourceGroup
@@ -39,9 +44,10 @@ func GetResourceGroup(c *gin.Context) {
 // @Router	/accounts/{tenant}/iam/clients/{client}/resourceGroups [post]
 func CreateResourceGroup(c *gin.Context) {
 	var in model.ResourceGroup
-	if err := c.ShouldBindJSON(&in); err != nil {
+	if err := internal.BindJson(c, &in).Error; err != nil {
 		resp.ErrorRequest(c, err)
 	}
+
 }
 
 // UpdateResourceGroup

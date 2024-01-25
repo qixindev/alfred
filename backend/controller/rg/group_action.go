@@ -1,6 +1,7 @@
 package rg
 
 import (
+	"alfred/backend/controller/internal"
 	"alfred/backend/endpoint/resp"
 	"alfred/backend/model"
 	"github.com/gin-gonic/gin"
@@ -42,9 +43,10 @@ func GetResourceGroupAction(c *gin.Context) {
 // @Router	/accounts/{tenant}/iam/clients/{client}/resourceGroups/{groupId}/actions [post]
 func CreateResourceGroupAction(c *gin.Context) {
 	var in model.ResourceGroupAction
-	if err := c.ShouldBindJSON(&in); err != nil {
+	if err := internal.BindJson(c, &in).Error; err != nil {
 		resp.ErrorRequest(c, err)
 	}
+
 }
 
 // UpdateResourceGroupAction

@@ -7,7 +7,6 @@ import (
 	"alfred/backend/pkg/global"
 	"alfred/backend/pkg/utils"
 	"fmt"
-	"github.com/gin-contrib/cors"
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-contrib/sessions/cookie"
 	"github.com/gin-gonic/gin"
@@ -75,15 +74,14 @@ func StartServer(_ *cobra.Command, _ []string) {
 
 	fmt.Println(fmt.Sprintf("### %s: %v\n", env.GetDeployType(), utils.StructToString(global.CONFIG)))
 
-	r := gin.Default()
-	r.Use(cors.Default())
+	r := gin.New()
 	cookieSecret := GetSessionSecret()
 	store := cookie.NewStore(cookieSecret)
 	store.Options(sessions.Options{
 		MaxAge: 60 * 60 * 24,
 		Path:   "/",
 	})
-	r.Use(sessions.Sessions("QixinAuth", store))
+	r.Use(sessions.Sessions("QixinAuth", store), gin.Logger())
 	backend.AddRoutes(r)
 
 	if err = r.Run(":80"); err != nil {
