@@ -25,9 +25,10 @@ func (a *Api) SetTenant(tenant *model.Tenant) *Api {
 	if !ok {
 		return a.setError(errors.New("failed to get tenant from context"))
 	}
-	tenant, ok = t.(*model.Tenant)
+	tt, ok := t.(*model.Tenant)
 	if !ok {
 		return a
 	}
+	*tenant = *tt
 	return a
 }

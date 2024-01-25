@@ -17,9 +17,7 @@ func New(c *gin.Context) *Api {
 }
 
 func (a *Api) setError(err error) *Api {
-	if a.Error != nil {
-		a.Error = err
-	}
+	a.Error = err
 	return a
 }
 
