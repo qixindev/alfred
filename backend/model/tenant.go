@@ -7,10 +7,10 @@ import (
 type Tenant struct {
 	Id        uint   `gorm:"primaryKey;autoIncrement" json:"id"`
 	Name      string `json:"name" gorm:"uniqueIndex"`
-	LoginPage string `json:"loginPage" gorm:"type:jsonb;default:'{}'"`
-	Proto     string `json:"proto" gorm:"type:jsonb;default:'[]'"`
-	Sub       string `json:"sub" gorm:"<-:false;-:migration"`
-	Role      string `json:"role" gorm:"<-:false;-:migration"`
+	LoginPage string `json:"loginPage,omitempty" gorm:"type:jsonb;default:'{}'"`
+	Proto     string `json:"proto,omitempty" gorm:"type:jsonb;default:'[]'"`
+	Sub       string `json:"sub,omitempty" gorm:"<-:false;-:migration"`
+	Role      string `json:"role,omitempty" gorm:"<-:false;-:migration"`
 }
 
 func (t *Tenant) Dto() dto.TenantDto {

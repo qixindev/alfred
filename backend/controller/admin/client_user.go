@@ -21,6 +21,9 @@ type ModifyPassword struct {
 // @Tags	client-user
 // @Param	tenant		path	string	true	"tenant"	default(default)
 // @Param	clientId	path	string	true	"client id"	default(default)
+// @Param	pageNum		query	integer	false	"page number"
+// @Param	pageSize	query	integer	false	"page size"
+// @Param	search		query	string	false	"search string"
 // @Success	200
 // @Router	/accounts/admin/{tenant}/clients/{clientId}/users [get]
 func ListClientUsers(c *gin.Context) {
@@ -30,16 +33,36 @@ func ListClientUsers(c *gin.Context) {
 		ClientId string `json:"clientId"`
 		model.User
 	}
+	page := model.Paging{}
 	clientId := c.Param("clientId")
-	if err := global.DB.Table("client_users cu").
-		Select("cu.id, cu.sub sub, cu.client_id, u.id user_id, u.username username, u.phone, u.email, u.first_name, u.last_name, u.display_name, u.role, u.avatar, u.from").
+	if err := internal.New(c).BindQuery(&page).Error; err != nil {
+		resp.ErrorRequest(c, err)
+		return
+	}
+
+	tx := global.DB.Table("client_users cu").
+		Select("cu.id", "cu.sub sub", "cu.client_id", "u.id user_id", "u.username username", "u.phone",
+			"u.email", "u.first_name", "u.last_name", "u.display_name", "u.role", "u.avatar", "u.from").
 		Joins("LEFT JOIN users u ON u.id = cu.user_id").
-		Where("cu.tenant_id = ? AND cu.client_id = ?", internal.GetTenant(c).Id, clientId).
-		Find(&clientUser).Error; err != nil {
+		Where("cu.tenant_id = ? AND cu.client_id = ?", internal.GetTenant(c).Id, clientId)
+
+	if page.Search != "" {
+		tx.Where("u.display_name like ?", "%"+page.Search+"%")
+	}
+	var total int64
+	if err := tx.Count(&total).Error; err != nil {
+		resp.ErrorSqlSelect(c, err, "count client user err")
+		return
+	}
+	if page.PageSize > 0 {
+		tx.Offset(page.PageSize * (page.PageNum - 1)).Limit(page.PageSize)
+	}
+
+	if err := tx.Find(&clientUser).Error; err != nil {
 		resp.ErrorSqlSelect(c, err, "list client user err", true)
 		return
 	}
-	resp.SuccessWithArrayData(c, clientUser, 0)
+	resp.SuccessWithPaging(c, clientUser, total)
 }
 
 // GetClientUsers

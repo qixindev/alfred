@@ -13,16 +13,38 @@ import (
 // ListUsers
 // @Summary	get user list
 // @Tags	user
-// @Param	tenant	path	string	true	"tenant"	default(default)
+// @Param	tenant		path	string	true	"tenant"		default(default)
+// @Param	pageNum		query	integer	false	"page number"
+// @Param	pageSize	query	integer	false	"page size"
+// @Param	search		query	string	false	"search string"
 // @Success	200
 // @Router	/accounts/admin/{tenant}/users [get]
 func ListUsers(c *gin.Context) {
+	var tenant model.Tenant
+	var page model.Paging
+	if err := internal.New(c).BindQuery(&page).SetTenant(&tenant).Error; err != nil {
+		resp.ErrorRequest(c, err)
+		return
+	}
+	tx := global.DB.Model(&model.User{}).Where("tenant_id = ?", tenant.Id)
+	if page.Search != "" {
+		tx.Where("display_name like ?", "%"+page.Search+"%")
+	}
+	var total int64
+	if err := tx.Count(&total).Error; err != nil {
+		resp.ErrorSqlSelect(c, err, "count client user err")
+		return
+	}
+	if page.PageSize > 0 {
+		tx.Offset(page.PageSize * (page.PageNum - 1)).Limit(page.PageSize)
+	}
+
 	var users []model.User
-	if err := internal.TenantDB(c).Find(&users).Error; err != nil {
+	if err := tx.Find(&users).Error; err != nil {
 		resp.ErrorSqlSelect(c, err, "list tenant users err", true)
 		return
 	}
-	resp.SuccessWithArrayData(c, utils.Filter(users, model.User2AdminDto), 0)
+	resp.SuccessWithPaging(c, utils.Filter(users, model.User2AdminDto), total)
 }
 
 // GetUser

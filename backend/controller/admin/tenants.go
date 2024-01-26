@@ -1,6 +1,7 @@
 package admin
 
 import (
+	"alfred/backend/controller/internal"
 	"alfred/backend/endpoint/resp"
 	"alfred/backend/model"
 	"alfred/backend/pkg/global"
@@ -14,26 +15,42 @@ import (
 // ListTenants
 // @Summary	list tenants
 // @Tags	admin-tenants
+// @Param	pageNum		query	integer	false	"page number"
+// @Param	pageSize	query	integer	false	"page size"
+// @Param	search		query	string	false	"search string"
 // @Success	200
 // @Router	/accounts/admin/tenants [get]
 func ListTenants(c *gin.Context) {
 	var tenants []model.Tenant
+	var page model.Paging
+	if err := internal.New(c).BindQuery(&page).Error; err != nil {
+		resp.ErrorRequest(c, err)
+		return
+	}
+
 	username := sessions.Default(c).Get("user")
-	if err := global.DB.Model(model.User{}).Select("t.id, t.name, users.role").
-		Joins("LEFT JOIN tenants as t ON t.id = users.tenant_id").
-		Where("users.username = ?", username).
-		Find(&tenants).Error; err != nil {
+	tx := global.DB.Table("users as u").Select("t.id, t.name, u.role").
+		Joins("LEFT JOIN tenants as t ON t.id = u.tenant_id").
+		Where("u.username = ?", username).
+		Where("u.role = ? OR u.role = ?", "admin", "owner")
+	if page.Search != "" {
+		tx.Where("t.name like ?", "%"+page.Search+"%")
+	}
+	var total int64
+	if err := tx.Count(&total).Error; err != nil {
+		resp.ErrorSqlSelect(c, err, "count client user err")
+		return
+	}
+	if page.PageSize > 0 {
+		tx.Offset(page.PageSize * (page.PageNum - 1)).Limit(page.PageSize)
+	}
+
+	if err := tx.Find(&tenants).Error; err != nil {
 		resp.ErrorSqlSelect(c, err, "list tenants err", true)
 		return
 	}
 
-	res := make([]model.Tenant, 0)
-	for _, tenant := range tenants {
-		if tenant.Role == "admin" || tenant.Role == "owner" {
-			res = append(res, tenant)
-		}
-	}
-	resp.SuccessWithArrayData(c, utils.Filter(res, model.Tenant2Dto), 0)
+	resp.SuccessWithPaging(c, tenants, total)
 }
 
 func ListAllTenants(c *gin.Context) {

@@ -5,6 +5,7 @@ import (
 	"alfred/backend/endpoint/resp"
 	"alfred/backend/model"
 	"alfred/backend/service/rg"
+	"errors"
 	"github.com/gin-gonic/gin"
 )
 
@@ -93,6 +94,10 @@ func CreateResourceGroupUserRole(c *gin.Context) {
 		resp.ErrorRequest(c, err)
 		return
 	}
+	if in.RoleId == "" {
+		resp.ErrorRequest(c, errors.New("body roleId should not be empty"))
+		return
+	}
 	res, err := rg.CreateResourceGroupUserRole(in.Tenant.Id, in.GroupId, in.UserId, in.RoleId)
 	if err != nil {
 		resp.ErrorSqlCreate(c, err, "CreateResourceGroupUserRole err")
@@ -115,6 +120,10 @@ func UpdateResourceGroupUserRole(c *gin.Context) {
 	var in model.RequestResourceGroup
 	if err := internal.BindUriAndJson(c, &in).SetTenant(&in.Tenant).Error; err != nil {
 		resp.ErrorRequest(c, err)
+		return
+	}
+	if in.RoleId == "" {
+		resp.ErrorRequest(c, errors.New("body roleId should not be empty"))
 		return
 	}
 	if err := rg.UpdateResourceGroupUserRole(in.Tenant.Id, in.GroupId, in.UserId, in.RoleId); err != nil {

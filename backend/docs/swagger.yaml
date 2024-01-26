@@ -2852,6 +2852,18 @@ paths:
         name: clientId
         required: true
         type: string
+      - description: page number
+        in: query
+        name: pageNum
+        type: integer
+      - description: page size
+        in: query
+        name: pageSize
+        type: integer
+      - description: search string
+        in: query
+        name: search
+        type: string
       responses:
         "200":
           description: OK
@@ -3674,6 +3686,18 @@ paths:
         name: tenant
         required: true
         type: string
+      - description: page number
+        in: query
+        name: pageNum
+        type: integer
+      - description: page size
+        in: query
+        name: pageSize
+        type: integer
+      - description: search string
+        in: query
+        name: search
+        type: string
       responses:
         "200":
           description: OK
@@ -3895,6 +3919,19 @@ paths:
       - user
   /accounts/admin/tenants:
     get:
+      parameters:
+      - description: page number
+        in: query
+        name: pageNum
+        type: integer
+      - description: page size
+        in: query
+        name: pageSize
+        type: integer
+      - description: search string
+        in: query
+        name: search
+        type: string
       responses:
         "200":
           description: OK
