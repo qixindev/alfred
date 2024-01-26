@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { User, useTenant } from "~~/composables/useUser";
+import { userTenant } from "~/composables/getUser";
 import { getUser } from "~/api/common";
 import { ref } from "vue";
 import { ElMessage } from "element-plus";
@@ -26,25 +27,26 @@ const logout = () => {
 const tenant = useTenant();
 /** 用户列表 */
 function getList() {
-  getUser()
-    .then((res: any) => {
-      if (!res) {
-        ElMessage({
-          message: "当前没有租户，请创建租户",
-          type: "error",
-        });
-      }
-      state.dataList = res;
-      //默认第一个
-      tenant.value = localStorage.getItem("tenantValue")
-        ? localStorage.getItem("tenantValue")
-        : state.dataList?.[0].name;
-      localStorage.setItem("tenantValue", tenant.value);
-      // 高亮
-      activeUser.value = localStorage.getItem("tenantValue");
-    })
-    .finally(() => {});
+  state.dataList = [...userTenant.value];
+  //默认第一个
+  tenant.value = localStorage.getItem("tenantValue")
+    ? localStorage.getItem("tenantValue")
+    : state.dataList?.[0].name;
+  localStorage.setItem("tenantValue", tenant.value);
+  // 高亮
+  activeUser.value = localStorage.getItem("tenantValue");
 }
+watch(
+  () => userTenant,
+  () => {
+    getList();
+  },
+  {
+    immediate: true,
+    deep: true,
+  }
+);
+
 // 切换列表
 function clickUser(row: any) {
   //点击用户关闭
