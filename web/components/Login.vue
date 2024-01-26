@@ -34,10 +34,13 @@ const newPrimaryWord = ref([]);
 const newTop = ref([]);
 const login_top = ref(0);
 const login_left = ref(0);
+const navigatePage = ref(false);
 const getInfo = () => {
+  navigatePage.value = true;
   getEnergy(currentTenant).then((res: any) => {
     //  解决 is not iterable
     if (JSON.stringify(res) !== "{}") {
+      navigatePage.value = false;
       info.value = { ...res };
       bottomTitle.value = [...res.bottom];
       login_top.value = res.styleNumTop;
@@ -317,7 +320,9 @@ definePageMeta({
 </script>
 
 <template>
+  <div v-if="navigatePage"></div>
   <div
+    v-else
     class="containerL"
     :style="{
       background: backgroundColor
