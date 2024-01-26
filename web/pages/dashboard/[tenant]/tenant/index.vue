@@ -41,7 +41,7 @@
           </template>
         </el-table-column>
       </el-table>
-      <el-pagination
+      <!-- <el-pagination
         v-model:current-page="currentPage4"
         v-model:page-size="pageSize4"
         :page-sizes="[100, 200, 300, 400]"
@@ -52,7 +52,7 @@
         :total="400"
         @size-change="handleSizeChange"
         @current-change="handleCurrentChange"
-      />
+      /> -->
     </el-card>
 
     <!-- 添加或修改对话框 -->
