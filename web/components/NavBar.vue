@@ -64,7 +64,17 @@ function clickUser(row: any) {
   }
 }
 onMounted(() => {
-  getList();
+  getUser()
+    .then((res: any) => {
+      if (!res) {
+        ElMessage({
+          message: "当前没有租户，请创建租户",
+          type: "error",
+        });
+      }
+      userTenant.value = [...res];
+    })
+    .finally(() => {});
 });
 // 监听当前路由
 watch(
