@@ -62,7 +62,7 @@ func ListClientUsers(c *gin.Context) {
 		resp.ErrorSqlSelect(c, err, "list client user err", true)
 		return
 	}
-	resp.SuccessWithPaging(c, clientUser, total)
+	resp.SuccessWithArrayData(c, clientUser, total)
 }
 
 // GetClientUsers

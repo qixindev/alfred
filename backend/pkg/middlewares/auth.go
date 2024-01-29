@@ -35,7 +35,6 @@ func MultiTenancy(c *gin.Context) {
 	}
 
 	resp.ErrorNotFound(c, "Tenant not found.")
-	return
 }
 
 func AuthorizedAdmin(c *gin.Context) {

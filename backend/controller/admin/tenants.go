@@ -50,7 +50,7 @@ func ListTenants(c *gin.Context) {
 		return
 	}
 
-	resp.SuccessWithPaging(c, tenants, total)
+	resp.SuccessWithArrayData(c, tenants, total)
 }
 
 func ListAllTenants(c *gin.Context) {
