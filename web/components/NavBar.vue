@@ -28,10 +28,12 @@ const tenant = useTenant();
 /** 用户列表 */
 function getList() {
   state.dataList = [...userTenant.value];
-  //默认第一个
-  tenant.value = localStorage.getItem("tenantValue")
-    ? localStorage.getItem("tenantValue")
-    : state.dataList?.[0].name;
+
+  //默认第一个localStorage.getItem("tenantValue")为字符串undefined
+  tenant.value =
+    localStorage.getItem("tenantValue") != "undefined"
+      ? localStorage.getItem("tenantValue")
+      : userTenant.value?.[0]?.name;
   localStorage.setItem("tenantValue", tenant.value);
   // 高亮
   activeUser.value = localStorage.getItem("tenantValue");
