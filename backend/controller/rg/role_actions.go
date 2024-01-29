@@ -11,7 +11,7 @@ import (
 )
 
 // GetResourceGroupRoleActionList
-// @Summary	获取资源组角色列表
+// @Summary	获取资源组角色的动作列表
 // @Tags	resource-group
 // @Param	tenant		path	string		true	"tenant"	default(default)
 // @Param	client		path	string		true	"client"	default(default)
@@ -34,7 +34,7 @@ func GetResourceGroupRoleActionList(c *gin.Context) {
 }
 
 // GetResourceGroupRoleAction
-// @Summary	获取资源组角色
+// @Summary	获取资源组角色的动作
 // @Tags	resource-group
 // @Param	tenant		path	string		true	"tenant"	default(default)
 // @Param	client		path	string		true	"client"	default(default)
@@ -58,7 +58,7 @@ func GetResourceGroupRoleAction(c *gin.Context) {
 }
 
 // CreateResourceGroupRoleAction
-// @Summary	创建资源角色
+// @Summary	创建资源角色的动作
 // @Tags	resource-group
 // @Param	tenant		path	string		true	"tenant"	default(default)
 // @Param	client		path	string		true	"client"	default(default)
@@ -81,7 +81,7 @@ func CreateResourceGroupRoleAction(c *gin.Context) {
 }
 
 // UpdateResourceGroupRoleAction
-// @Summary	更新资源组角色
+// @Summary	更新资源组角色的动作
 // @Tags	resource-group
 // @Param	tenant		path	string		true	"tenant"	default(default)
 // @Param	client		path	string		true	"client"	default(default)
@@ -123,7 +123,7 @@ func UpdateResourceGroupRoleAction(c *gin.Context) {
 }
 
 // DeleteResourceGroupRoleAction
-// @Summary	删除资源组角色
+// @Summary	删除资源组角色的动作
 // @Tags	resource-group
 // @Param	tenant		path	string		true	"tenant"	default(default)
 // @Param	client		path	string		true	"client"	default(default)

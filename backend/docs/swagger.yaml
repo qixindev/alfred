@@ -544,7 +544,7 @@ paths:
       responses:
         "200":
           description: OK
-      summary: 获取资源组角色列表
+      summary: 获取资源组动作列表
       tags:
       - resource-group
     post:
@@ -575,7 +575,7 @@ paths:
       responses:
         "200":
           description: OK
-      summary: 创建资源角色
+      summary: 创建资源组动作
       tags:
       - resource-group
   /accounts/{tenant}/iam/clients/{client}/resourceGroups/{groupId}/actions/{actionId}:
@@ -606,7 +606,7 @@ paths:
       responses:
         "200":
           description: OK
-      summary: 删除资源组角色
+      summary: 删除资源组动作
       tags:
       - resource-group
     get:
@@ -636,7 +636,7 @@ paths:
       responses:
         "200":
           description: OK
-      summary: 获取资源组角色
+      summary: 获取资源组动作
       tags:
       - resource-group
     put:
@@ -672,7 +672,7 @@ paths:
       responses:
         "200":
           description: OK
-      summary: 更新资源组角色
+      summary: 更新资源组动作
       tags:
       - resource-group
   /accounts/{tenant}/iam/clients/{client}/resourceGroups/{groupId}/resources:
@@ -1011,7 +1011,7 @@ paths:
       responses:
         "200":
           description: OK
-      summary: 删除资源组角色
+      summary: 删除资源组角色的动作
       tags:
       - resource-group
     get:
@@ -1041,7 +1041,7 @@ paths:
       responses:
         "200":
           description: OK
-      summary: 获取资源组角色列表
+      summary: 获取资源组角色的动作列表
       tags:
       - resource-group
     post:
@@ -1077,7 +1077,7 @@ paths:
       responses:
         "200":
           description: OK
-      summary: 创建资源角色
+      summary: 创建资源角色的动作
       tags:
       - resource-group
     put:
@@ -1113,7 +1113,7 @@ paths:
       responses:
         "200":
           description: OK
-      summary: 更新资源组角色
+      summary: 更新资源组角色的动作
       tags:
       - resource-group
   /accounts/{tenant}/iam/clients/{client}/resourceGroups/{groupId}/roles/{roleId}/actions/{actionsId}:
@@ -1149,7 +1149,33 @@ paths:
       responses:
         "200":
           description: OK
-      summary: 获取资源组角色
+      summary: 获取资源组角色的动作
+      tags:
+      - resource-group
+  /accounts/{tenant}/iam/clients/{client}/resourceGroups/{groupId}/users:
+    get:
+      parameters:
+      - default: default
+        description: tenant
+        in: path
+        name: tenant
+        required: true
+        type: string
+      - default: default
+        description: client
+        in: path
+        name: client
+        required: true
+        type: string
+      - description: group id
+        in: path
+        name: groupId
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+      summary: 组内用户列表
       tags:
       - resource-group
   /accounts/{tenant}/iam/clients/{client}/resourceGroups/{groupId}/users/{userId}:
@@ -1172,7 +1198,7 @@ paths:
         name: groupId
         required: true
         type: string
-      - description: user id
+      - description: client user id
         in: path
         name: userId
         required: true
@@ -1197,7 +1223,12 @@ paths:
         name: client
         required: true
         type: string
-      - description: user id
+      - description: group id
+        in: path
+        name: groupId
+        required: true
+        type: string
+      - description: client user id
         in: path
         name: userId
         required: true
@@ -1233,7 +1264,7 @@ paths:
         name: groupId
         required: true
         type: string
-      - description: user id
+      - description: client user id
         in: path
         name: userId
         required: true
@@ -1270,7 +1301,7 @@ paths:
         name: groupId
         required: true
         type: string
-      - description: user id
+      - description: client user id
         in: path
         name: userId
         required: true
@@ -1301,7 +1332,7 @@ paths:
         name: groupId
         required: true
         type: string
-      - description: user id
+      - description: client user id
         in: path
         name: userId
         required: true
@@ -1337,7 +1368,7 @@ paths:
         name: groupId
         required: true
         type: string
-      - description: user id
+      - description: client user id
         in: path
         name: userId
         required: true

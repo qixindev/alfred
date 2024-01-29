@@ -9,13 +9,35 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+// GetResourceGroupUserList
+// @Summary	组内用户列表
+// @Tags	resource-group
+// @Param	tenant		path	string	true	"tenant"	default(default)
+// @Param	client		path	string	true	"client"	default(default)
+// @Param	groupId		path	string	true	"group id"
+// @Success	200
+// @Router	/accounts/{tenant}/iam/clients/{client}/resourceGroups/{groupId}/users [get]
+func GetResourceGroupUserList(c *gin.Context) {
+	var in model.RequestResourceGroup
+	if err := internal.BindUri(c, &in).SetTenant(&in.Tenant).Error; err != nil {
+		resp.ErrorRequest(c, err)
+		return
+	}
+	res, err := rg.GetResourceGroupUserList(in.Tenant.Id, in.GroupId)
+	if err != nil {
+		resp.ErrorSqlSelect(c, err, "GetResourceGroupUserList err")
+		return
+	}
+	resp.SuccessWithData(c, res)
+}
+
 // GetResourceGroupUserRole
 // @Summary	用户在组内的角色
 // @Tags	resource-group
 // @Param	tenant		path	string	true	"tenant"	default(default)
 // @Param	client		path	string	true	"client"	default(default)
 // @Param	groupId		path	string	true	"group id"
-// @Param	userId		path	integer	true	"user id"
+// @Param	userId		path	integer	true	"client user id"
 // @Success	200
 // @Router	/accounts/{tenant}/iam/clients/{client}/resourceGroups/{groupId}/users/{userId}/roles [get]
 func GetResourceGroupUserRole(c *gin.Context) {
@@ -38,7 +60,7 @@ func GetResourceGroupUserRole(c *gin.Context) {
 // @Param	tenant		path	string		true	"tenant"	default(default)
 // @Param	client		path	string		true	"client"	default(default)
 // @Param	groupId		path	string		true	"group id"
-// @Param	userId		path	integer		true	"user id"
+// @Param	userId		path	integer		true	"client user id"
 // @Success	200
 // @Router	/accounts/{tenant}/iam/clients/{client}/resourceGroups/{groupId}/users/{userId}/actions [get]
 func GetResourceGroupUserActionList(c *gin.Context) {
@@ -61,7 +83,7 @@ func GetResourceGroupUserActionList(c *gin.Context) {
 // @Param	tenant		path	string		true	"tenant"	default(default)
 // @Param	client		path	string		true	"client"	default(default)
 // @Param	groupId		path	string		true	"group id"
-// @Param	userId		path	string		true	"user id"
+// @Param	userId		path	string		true	"client user id"
 // @Param	actionId	path	string		true	"action id"
 // @Success	200
 // @Router	/accounts/{tenant}/iam/clients/{client}/resourceGroups/{groupId}/users/{userId}/actions/{actionId} [get]
@@ -84,7 +106,8 @@ func GetResourceGroupUserAction(c *gin.Context) {
 // @Tags	resource-group
 // @Param	tenant		path	string		true	"tenant"	default(default)
 // @Param	client		path	string		true	"client"	default(default)
-// @Param	userId		path	integer		true	"user id"
+// @Param	groupId		path	string		true	"group id"
+// @Param	userId		path	integer		true	"client user id"
 // @Param	group		body	model.RequestResourceGroup	true	"body"
 // @Success	200
 // @Router	/accounts/{tenant}/iam/clients/{client}/resourceGroups/{groupId}/users/{userId} [post]
@@ -112,7 +135,7 @@ func CreateResourceGroupUserRole(c *gin.Context) {
 // @Param	tenant		path	string		true	"tenant"	default(default)
 // @Param	client		path	string		true	"client"	default(default)
 // @Param	groupId		path	string		true	"group id"
-// @Param	userId		path	integer		true	"user id"
+// @Param	userId		path	integer		true	"client user id"
 // @Param	group		body	model.RequestResourceGroup	true	"body"
 // @Success	200
 // @Router	/accounts/{tenant}/iam/clients/{client}/resourceGroups/{groupId}/users/{userId} [put]
@@ -139,7 +162,7 @@ func UpdateResourceGroupUserRole(c *gin.Context) {
 // @Param	tenant		path	string		true	"tenant"	default(default)
 // @Param	client		path	string		true	"client"	default(default)
 // @Param	groupId		path	string		true	"group id"
-// @Param	userId		path	integer		true	"user id"
+// @Param	userId		path	integer		true	"client user id"
 // @Success	200
 // @Router	/accounts/{tenant}/iam/clients/{client}/resourceGroups/{groupId}/users/{userId} [delete]
 func DeleteResourceGroupUser(c *gin.Context) {

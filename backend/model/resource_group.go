@@ -51,10 +51,10 @@ type (
 		ResourceGroup     ResourceGroup     `gorm:"foreignKey:GroupId, TenantId" json:"-" swaggerignore:"true"`
 		ResourceGroupName string            `json:"resourceGroupName" gorm:"<-:false;-:migration"`
 		RoleId            string            `json:"roleId" uri:"roleId"`
-		Role              ResourceGroupRole `gorm:"foreignKey:RoleId, TenantId" json:"role" swaggerignore:"true"`
+		Role              ResourceGroupRole `gorm:"foreignKey:RoleId, TenantId" json:"-" swaggerignore:"true"`
 		RoleName          string            `json:"roleName" gorm:"<-:false;-:migration"`
 		ClientUserId      uint              `json:"userId" uri:"userId"`
-		ClientUser        ClientUser        `gorm:"foreignKey:ClientUserId, TenantId" json:"user" swaggerignore:"true"`
+		ClientUser        ClientUser        `gorm:"foreignKey:ClientUserId, TenantId" json:"-" swaggerignore:"true"`
 		TenantId          uint              `gorm:"primaryKey"`
 		Sub               string            `json:"sub" gorm:"<-:false;-:migration"`
 		DisplayName       string            `json:"displayName" gorm:"<-:false;-:migration"`

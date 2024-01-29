@@ -39,6 +39,7 @@ func AddResourceGroupRoutes(rg *gin.RouterGroup) {
 	rg.DELETE("/resourceGroups/:groupId/roles/:roleId/actions", DeleteResourceGroupRoleAction)     // 删除角色的权限，支持数组
 
 	// 用户在组内角色
+	rg.GET("/resourceGroups/:groupId/users", GetResourceGroupUserList)                             // 组内用户列表
 	rg.GET("/resourceGroups/:groupId/users/:userId/role", GetResourceGroupUserRole)                // 用户在组内的角色
 	rg.GET("/resourceGroups/:groupId/users/:userId/actions", GetResourceGroupUserActionList)       // 用户在组内所拥有的权限列表
 	rg.GET("/resourceGroups/:groupId/users/:userId/actions/:actionId", GetResourceGroupUserAction) // 用户在组内是否拥有某个权限

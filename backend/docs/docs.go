@@ -2430,7 +2430,7 @@ const docTemplate = `{
                 "tags": [
                     "resource-group"
                 ],
-                "summary": "获取资源组角色列表",
+                "summary": "获取资源组动作列表",
                 "parameters": [
                     {
                         "type": "string",
@@ -2466,7 +2466,7 @@ const docTemplate = `{
                 "tags": [
                     "resource-group"
                 ],
-                "summary": "创建资源角色",
+                "summary": "创建资源组动作",
                 "parameters": [
                     {
                         "type": "string",
@@ -2513,7 +2513,7 @@ const docTemplate = `{
                 "tags": [
                     "resource-group"
                 ],
-                "summary": "获取资源组角色",
+                "summary": "获取资源组动作",
                 "parameters": [
                     {
                         "type": "string",
@@ -2556,7 +2556,7 @@ const docTemplate = `{
                 "tags": [
                     "resource-group"
                 ],
-                "summary": "更新资源组角色",
+                "summary": "更新资源组动作",
                 "parameters": [
                     {
                         "type": "string",
@@ -2608,7 +2608,7 @@ const docTemplate = `{
                 "tags": [
                     "resource-group"
                 ],
-                "summary": "删除资源组角色",
+                "summary": "删除资源组动作",
                 "parameters": [
                     {
                         "type": "string",
@@ -3099,7 +3099,7 @@ const docTemplate = `{
                 "tags": [
                     "resource-group"
                 ],
-                "summary": "获取资源组角色列表",
+                "summary": "获取资源组角色的动作列表",
                 "parameters": [
                     {
                         "type": "string",
@@ -3142,7 +3142,7 @@ const docTemplate = `{
                 "tags": [
                     "resource-group"
                 ],
-                "summary": "更新资源组角色",
+                "summary": "更新资源组角色的动作",
                 "parameters": [
                     {
                         "type": "string",
@@ -3194,7 +3194,7 @@ const docTemplate = `{
                 "tags": [
                     "resource-group"
                 ],
-                "summary": "创建资源角色",
+                "summary": "创建资源角色的动作",
                 "parameters": [
                     {
                         "type": "string",
@@ -3246,7 +3246,7 @@ const docTemplate = `{
                 "tags": [
                     "resource-group"
                 ],
-                "summary": "删除资源组角色",
+                "summary": "删除资源组角色的动作",
                 "parameters": [
                     {
                         "type": "string",
@@ -3291,7 +3291,7 @@ const docTemplate = `{
                 "tags": [
                     "resource-group"
                 ],
-                "summary": "获取资源组角色",
+                "summary": "获取资源组角色的动作",
                 "parameters": [
                     {
                         "type": "string",
@@ -3338,6 +3338,44 @@ const docTemplate = `{
                 }
             }
         },
+        "/accounts/{tenant}/iam/clients/{client}/resourceGroups/{groupId}/users": {
+            "get": {
+                "tags": [
+                    "resource-group"
+                ],
+                "summary": "组内用户列表",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "default": "default",
+                        "description": "tenant",
+                        "name": "tenant",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "default": "default",
+                        "description": "client",
+                        "name": "client",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "group id",
+                        "name": "groupId",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
         "/accounts/{tenant}/iam/clients/{client}/resourceGroups/{groupId}/users/{userId}": {
             "put": {
                 "tags": [
@@ -3370,7 +3408,7 @@ const docTemplate = `{
                     },
                     {
                         "type": "integer",
-                        "description": "user id",
+                        "description": "client user id",
                         "name": "userId",
                         "in": "path",
                         "required": true
@@ -3414,8 +3452,15 @@ const docTemplate = `{
                         "required": true
                     },
                     {
+                        "type": "string",
+                        "description": "group id",
+                        "name": "groupId",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
                         "type": "integer",
-                        "description": "user id",
+                        "description": "client user id",
                         "name": "userId",
                         "in": "path",
                         "required": true
@@ -3467,7 +3512,7 @@ const docTemplate = `{
                     },
                     {
                         "type": "integer",
-                        "description": "user id",
+                        "description": "client user id",
                         "name": "userId",
                         "in": "path",
                         "required": true
@@ -3512,7 +3557,7 @@ const docTemplate = `{
                     },
                     {
                         "type": "integer",
-                        "description": "user id",
+                        "description": "client user id",
                         "name": "userId",
                         "in": "path",
                         "required": true
@@ -3557,7 +3602,7 @@ const docTemplate = `{
                     },
                     {
                         "type": "string",
-                        "description": "user id",
+                        "description": "client user id",
                         "name": "userId",
                         "in": "path",
                         "required": true
@@ -3609,7 +3654,7 @@ const docTemplate = `{
                     },
                     {
                         "type": "integer",
-                        "description": "user id",
+                        "description": "client user id",
                         "name": "userId",
                         "in": "path",
                         "required": true

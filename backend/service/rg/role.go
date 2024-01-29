@@ -64,6 +64,19 @@ func DeleteResourceGroupRole(tenantId uint, groupId string, roleId string) error
 	})
 }
 
+func GetResourceGroupUserList(tenantId uint, groupId string) ([]model.ResourceGroupUser, error) {
+	var role []model.ResourceGroupUser
+	if err := global.DB.Table("resource_group_users as ru").
+		Select("ru.id", "ru.group_id", "ru.role_id", "ru.client_user_id", "rr.name as role_name", "u.display_name").
+		Joins("LEFT JOIN resource_group_roles rr ON rr.id = ru.role_id").
+		Joins("LEFT JOIN client_users cu ON cu.id = ru.client_user_id").
+		Joins("LEFT JOIN users u ON u.id = cu.user_id").
+		Where("ru.group_id = ? AND ru.tenant_id = ?", groupId, tenantId).Find(&role).Error; err != nil {
+		return nil, err
+	}
+	return role, nil
+}
+
 func GetResourceGroupUserRole(tenantId uint, groupId string, userId uint) (*model.ResourceGroupUser, error) {
 	var role model.ResourceGroupUser
 	if err := global.DB.Where("group_id = ? AND user_id = ? AND tenant_id = ?", groupId, userId, tenantId).First(&role).Error; err != nil {

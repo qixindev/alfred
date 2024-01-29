@@ -9,7 +9,7 @@ import (
 )
 
 // GetResourceGroupActionList
-// @Summary	获取资源组角色列表
+// @Summary	获取资源组动作列表
 // @Tags	resource-group
 // @Param	tenant		path	string		true	"tenant"	default(default)
 // @Param	client		path	string		true	"client"	default(default)
@@ -31,7 +31,7 @@ func GetResourceGroupActionList(c *gin.Context) {
 }
 
 // GetResourceGroupAction
-// @Summary	获取资源组角色
+// @Summary	获取资源组动作
 // @Tags	resource-group
 // @Param	tenant		path	string		true	"tenant"	default(default)
 // @Param	client		path	string		true	"client"	default(default)
@@ -54,7 +54,7 @@ func GetResourceGroupAction(c *gin.Context) {
 }
 
 // CreateResourceGroupAction
-// @Summary	创建资源角色
+// @Summary	创建资源组动作
 // @Tags	resource-group
 // @Param	tenant		path	string		true	"tenant"	default(default)
 // @Param	client		path	string		true	"client"	default(default)
@@ -77,7 +77,7 @@ func CreateResourceGroupAction(c *gin.Context) {
 }
 
 // UpdateResourceGroupAction
-// @Summary	更新资源组角色
+// @Summary	更新资源组动作
 // @Tags	resource-group
 // @Param	tenant		path	string		true	"tenant"	default(default)
 // @Param	client		path	string		true	"client"	default(default)
@@ -100,7 +100,7 @@ func UpdateResourceGroupAction(c *gin.Context) {
 }
 
 // DeleteResourceGroupAction
-// @Summary	删除资源组角色
+// @Summary	删除资源组动作
 // @Tags	resource-group
 // @Param	tenant		path	string		true	"tenant"	default(default)
 // @Param	client		path	string		true	"client"	default(default)
