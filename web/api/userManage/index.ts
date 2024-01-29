@@ -1,7 +1,7 @@
 // const tenant =  import.meta.env.VITE_APP_TENANT
 const tenant = computed(() => useTenant().value)
-export const getUsers = async () => {
-  return await useHttp.get(`/admin/${tenant.value}/users`)
+export const getUsers = async (data?: any) => {
+  return await useHttp.get(`/admin/${tenant.value}/users`,data)
 }
 
 export const saveUser = async (data: any) => {
