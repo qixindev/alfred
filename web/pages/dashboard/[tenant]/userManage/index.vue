@@ -259,18 +259,33 @@ const handleCurrentChange = (val) => {
 /** 查询列表 */
 function getList() {
   state.loading = true;
-  getUsers({
-    pageNum: currentPage.value,
-    pageSize: pageSize.value,
-    search: serchValue.value,
-  })
-    .then((res: any) => {
-      state.dataList = res.data;
-      total.value = res.total;
+  if (serchValue.value == "") {
+    getUsers({
+      pageNum: currentPage.value,
+      pageSize: pageSize.value,
     })
-    .finally(() => {
-      state.loading = false;
-    });
+      .then((res: any) => {
+        state.dataList = res.data;
+        total.value = res.total;
+      })
+      .finally(() => {
+        state.loading = false;
+      });
+  } else {
+    getUsers({
+      pageNum: 1,
+      pageSize: pageSize.value,
+      search: serchValue.value,
+    })
+      .then((res: any) => {
+        state.dataList = res.data;
+        total.value = res.total;
+        currentPage.value = 1;
+      })
+      .finally(() => {
+        state.loading = false;
+      });
+  }
 }
 
 // 表单重置
