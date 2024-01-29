@@ -27,7 +27,7 @@ func GetResourceGroupRoleList(c *gin.Context) {
 		resp.ErrorSqlSelect(c, err, "GetResourceGroupRoleList err")
 		return
 	}
-	resp.SuccessWithData(c, res)
+	resp.SuccessWithPaging(c, res, 0)
 }
 
 // GetResourceGroupRole
@@ -50,7 +50,7 @@ func GetResourceGroupRole(c *gin.Context) {
 		resp.ErrorSqlFirst(c, err, "GetResourceGroupRole err")
 		return
 	}
-	resp.SuccessWithData(c, res)
+	resp.SuccessWithData2(c, res)
 }
 
 // CreateResourceGroupRole
@@ -73,7 +73,7 @@ func CreateResourceGroupRole(c *gin.Context) {
 		resp.ErrorSqlCreate(c, err, "CreateResourceGroupRole err")
 		return
 	}
-	resp.SuccessWithData(c, res)
+	resp.SuccessWithData2(c, res)
 }
 
 // UpdateResourceGroupRole

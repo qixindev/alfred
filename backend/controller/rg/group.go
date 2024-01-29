@@ -26,7 +26,7 @@ func GetResourceGroupList(c *gin.Context) {
 		resp.ErrorSqlSelect(c, err, "GetResourceGroupList err")
 		return
 	}
-	resp.SuccessWithData(c, groups)
+	resp.SuccessWithPaging(c, groups, 0)
 }
 
 // GetResourceGroup
@@ -48,7 +48,7 @@ func GetResourceGroup(c *gin.Context) {
 		resp.ErrorSqlFirst(c, err, "GetResourceGroup err")
 		return
 	}
-	resp.SuccessWithData(c, group)
+	resp.SuccessWithData2(c, group)
 }
 
 // CreateResourceGroup
@@ -70,7 +70,7 @@ func CreateResourceGroup(c *gin.Context) {
 		resp.ErrorSqlCreate(c, err, "CreateResourceGroup err")
 		return
 	}
-	resp.SuccessWithData(c, group)
+	resp.SuccessWithData2(c, group)
 }
 
 // UpdateResourceGroup

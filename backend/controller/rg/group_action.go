@@ -27,7 +27,7 @@ func GetResourceGroupActionList(c *gin.Context) {
 		resp.ErrorSqlSelect(c, err, "GetResourceGroupActionList err")
 		return
 	}
-	resp.SuccessWithData(c, actions)
+	resp.SuccessWithPaging(c, actions, 0)
 }
 
 // GetResourceGroupAction
@@ -50,7 +50,7 @@ func GetResourceGroupAction(c *gin.Context) {
 		resp.ErrorSqlSelect(c, err, "GetResourceGroupAction err")
 		return
 	}
-	resp.SuccessWithData(c, action)
+	resp.SuccessWithData2(c, action)
 }
 
 // CreateResourceGroupAction
@@ -73,7 +73,7 @@ func CreateResourceGroupAction(c *gin.Context) {
 		resp.ErrorSqlCreate(c, err, "CreateResourceGroupAction err")
 		return
 	}
-	resp.SuccessWithData(c, action)
+	resp.SuccessWithData2(c, action)
 }
 
 // UpdateResourceGroupAction

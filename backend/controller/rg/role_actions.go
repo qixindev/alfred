@@ -30,7 +30,7 @@ func GetResourceGroupRoleActionList(c *gin.Context) {
 		resp.ErrorSqlSelect(c, err, "GetResourceGroupRoleActionList err")
 		return
 	}
-	resp.SuccessWithData(c, res)
+	resp.SuccessWithPaging(c, res, 0)
 }
 
 // GetResourceGroupRoleAction
@@ -54,7 +54,7 @@ func GetResourceGroupRoleAction(c *gin.Context) {
 		resp.ErrorSqlFirst(c, err, "GetResourceGroupRoleAction err")
 		return
 	}
-	resp.SuccessWithData(c, res)
+	resp.SuccessWithData2(c, res)
 }
 
 // CreateResourceGroupRoleAction

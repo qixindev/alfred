@@ -28,7 +28,7 @@ func GetResourceGroupUserList(c *gin.Context) {
 		resp.ErrorSqlSelect(c, err, "GetResourceGroupUserList err")
 		return
 	}
-	resp.SuccessWithData(c, res)
+	resp.SuccessWithPaging(c, res, 0)
 }
 
 // GetResourceGroupUserRole
@@ -51,7 +51,7 @@ func GetResourceGroupUserRole(c *gin.Context) {
 		resp.ErrorSqlSelect(c, err, "GetResourceGroupUserRole err")
 		return
 	}
-	resp.SuccessWithData(c, res)
+	resp.SuccessWithData2(c, res)
 }
 
 // GetResourceGroupUserActionList
@@ -74,7 +74,7 @@ func GetResourceGroupUserActionList(c *gin.Context) {
 		resp.ErrorSqlSelect(c, err, "GetResourceGroupUserActionList err")
 		return
 	}
-	resp.SuccessWithData(c, res)
+	resp.SuccessWithPaging(c, res, 0)
 }
 
 // GetResourceGroupUserAction
@@ -98,7 +98,7 @@ func GetResourceGroupUserAction(c *gin.Context) {
 		resp.ErrorSqlFirst(c, err, "GetResourceGroupUserAction err")
 		return
 	}
-	resp.SuccessWithData(c, res)
+	resp.SuccessWithData2(c, res)
 }
 
 // CreateResourceGroupUserRole
@@ -126,7 +126,7 @@ func CreateResourceGroupUserRole(c *gin.Context) {
 		resp.ErrorSqlCreate(c, err, "CreateResourceGroupUserRole err")
 		return
 	}
-	resp.SuccessWithData(c, res)
+	resp.SuccessWithData2(c, res)
 }
 
 // UpdateResourceGroupUserRole

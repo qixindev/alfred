@@ -80,6 +80,9 @@ func SuccessWithArrayData(c *gin.Context, data any, total int64) {
 func SuccessWithPaging(c *gin.Context, data any, total int64) {
 	success(c, SuccessMsg, data, total, true)
 }
+func SuccessWithData2(c *gin.Context, data any) {
+	success(c, SuccessMsg, data, 0, false)
+}
 func SuccessAuth(c *gin.Context, data any) {
 	c.JSON(http.StatusOK, data)
 }
