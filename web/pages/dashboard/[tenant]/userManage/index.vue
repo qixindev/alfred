@@ -4,6 +4,13 @@
       <el-button type="primary" icon="Plus" @click="handleAdd">新增Users</el-button>
     </div>
     <el-card>
+      <div class="top">
+        <el-input
+          v-model="serchValue"
+          placeholder="Please Input"
+          class="topInput"
+        /><el-button type="primary" @click="getList">搜索</el-button>
+      </div>
       <el-table v-loading="loading" stripe :data="dataList">
         <el-table-column label="ID" align="center" prop="id" />
         <el-table-column label="username" align="center" prop="username" />
@@ -62,6 +69,19 @@
           </template>
         </el-table-column>
       </el-table>
+      <el-pagination
+        :current-page="currentPage"
+        :page-size="pageSize"
+        :page-sizes="[10, 15, 20, 50, 100]"
+        :small="small"
+        :disabled="disabled"
+        :background="background"
+        layout="total, sizes, prev, pager, next, jumper"
+        :total="total"
+        class="pagination"
+        @size-change="handleSizeChange"
+        @current-change="handleCurrentChange"
+      />
     </el-card>
 
     <!-- 添加或修改对话框 -->
@@ -158,6 +178,13 @@
 import { ElForm, ElInput, ElMessage, ElMessageBox } from "element-plus";
 
 import { getUsers, saveUser, updateUser, delUser, passUser } from "~/api/userManage";
+const serchValue = ref("");
+const currentPage = ref(1);
+const pageSize = ref(10);
+const small = ref(false);
+const background = ref(false);
+const disabled = ref(false);
+const total = ref(0);
 const tenant = useTenant();
 interface Form {
   id: undefined | Number;
@@ -206,6 +233,7 @@ const state = reactive({
   rules: {
     username: [{ required: true, message: "username 不能为空", trigger: "blur" }],
     passwordHash: [{ required: true, message: "password 不能为空", trigger: "blur" }],
+    displayName: [{ required: true, message: "displayName 不能为空", trigger: "blur" }],
   },
 });
 
@@ -218,13 +246,27 @@ const visible = computed(() => {
 });
 
 const viewDialogVisible = ref(false);
-
+// 改变pageSize
+const handleSizeChange = (val) => {
+  pageSize.value = val;
+  getList();
+};
+// 改变pageNum
+const handleCurrentChange = (val) => {
+  currentPage.value = val;
+  getList();
+};
 /** 查询列表 */
 function getList() {
   state.loading = true;
-  getUsers()
+  getUsers({
+    pageNum: currentPage.value,
+    pageSize: pageSize.value,
+    search: serchValue.value,
+  })
     .then((res: any) => {
-      state.dataList = res;
+      state.dataList = res.data;
+      total.value = res.total;
     })
     .finally(() => {
       state.loading = false;
@@ -417,9 +459,20 @@ onMounted(() => {
 </script>
 
 <style lang="scss" scoped>
+.top {
+  display: flex;
+}
+.topInput {
+  width: 250px;
+  margin-right: 50px;
+}
 .option {
   display: flex;
   justify-content: flex-end;
   margin-bottom: 10px;
+}
+.pagination {
+  margin: 10px;
+  float: right;
 }
 </style>
