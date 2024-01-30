@@ -61,21 +61,11 @@ func SuccessWithMessageAndData(c *gin.Context, msg string, data any) {
 	success(c, msg, data, 0)
 }
 
-const IsCodeAndMessage = false
-
 func SuccessWithData(c *gin.Context, data any) {
-	if IsCodeAndMessage {
-		success(c, SuccessMsg, data, 0, true)
-	} else {
-		c.JSON(http.StatusOK, data)
-	}
+	success(c, SuccessMsg, data, 0, true)
 }
 func SuccessWithArrayData(c *gin.Context, data any, total int64) {
-	if IsCodeAndMessage {
-		success(c, SuccessMsg, data, total, true)
-	} else {
-		c.JSON(http.StatusOK, data)
-	}
+	success(c, SuccessMsg, data, total, true)
 }
 func SuccessWithPaging(c *gin.Context, data any, total int64) {
 	success(c, SuccessMsg, data, total, true)
