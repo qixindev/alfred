@@ -139,6 +139,10 @@ definitions:
         type: string
       uid:
         type: string
+      userIds:
+        items:
+          type: integer
+        type: array
     type: object
   model.Resource:
     properties:
@@ -1152,6 +1156,43 @@ paths:
       summary: 获取资源组角色的动作
       tags:
       - resource-group
+  /accounts/{tenant}/iam/clients/{client}/resourceGroups/{groupId}/roles/{roleId}/users:
+    post:
+      parameters:
+      - default: default
+        description: tenant
+        in: path
+        name: tenant
+        required: true
+        type: string
+      - default: default
+        description: client
+        in: path
+        name: client
+        required: true
+        type: string
+      - description: group id
+        in: path
+        name: groupId
+        required: true
+        type: string
+      - description: role id
+        in: path
+        name: roleId
+        required: true
+        type: string
+      - description: body
+        in: body
+        name: group
+        required: true
+        schema:
+          $ref: '#/definitions/model.RequestResourceGroup'
+      responses:
+        "200":
+          description: OK
+      summary: 将用户拉入组内
+      tags:
+      - resource-group
   /accounts/{tenant}/iam/clients/{client}/resourceGroups/{groupId}/users:
     get:
       parameters:
@@ -1207,42 +1248,6 @@ paths:
         "200":
           description: OK
       summary: 踢出用户
-      tags:
-      - resource-group
-    post:
-      parameters:
-      - default: default
-        description: tenant
-        in: path
-        name: tenant
-        required: true
-        type: string
-      - default: default
-        description: client
-        in: path
-        name: client
-        required: true
-        type: string
-      - description: group id
-        in: path
-        name: groupId
-        required: true
-        type: string
-      - description: client user id
-        in: path
-        name: userId
-        required: true
-        type: integer
-      - description: body
-        in: body
-        name: group
-        required: true
-        schema:
-          $ref: '#/definitions/model.RequestResourceGroup'
-      responses:
-        "200":
-          description: OK
-      summary: 将用户拉入组内
       tags:
       - resource-group
     put:

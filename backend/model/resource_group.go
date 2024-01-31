@@ -7,7 +7,7 @@ type (
 		Description string `json:"description"`
 		ClientId    string `json:"clientId" uri:"client"`
 		Client      Client `gorm:"foreignKey:ClientId, TenantId" json:"-" swaggerignore:"true"`
-		TenantId    uint   `gorm:"primaryKey"`
+		TenantId    uint   `gorm:"primaryKey" json:"tenantId"`
 	}
 
 	ResourceGroupResource struct {
@@ -16,7 +16,7 @@ type (
 		Description string        `json:"description"`
 		GroupId     string        `json:"groupId" uri:"groupId"`
 		Group       ResourceGroup `gorm:"foreignKey:GroupId, TenantId" json:"-" swaggerignore:"true"`
-		TenantId    uint          `gorm:"primaryKey"`
+		TenantId    uint          `gorm:"primaryKey" json:"tenantId"`
 	}
 	ResourceGroupRole struct {
 		Id          string        `gorm:"primaryKey" json:"id"`
@@ -24,7 +24,7 @@ type (
 		Description string        `json:"description"`
 		GroupId     string        `json:"groupId" uri:"groupId"`
 		Group       ResourceGroup `gorm:"foreignKey:GroupId, TenantId" json:"-" swaggerignore:"true"`
-		TenantId    uint          `gorm:"primaryKey"`
+		TenantId    uint          `gorm:"primaryKey" json:"tenantId"`
 	}
 	ResourceGroupAction struct {
 		Id          string        `gorm:"primaryKey" json:"id"`
@@ -32,7 +32,7 @@ type (
 		Description string        `json:"description"`
 		GroupId     string        `json:"groupId" uri:"groupId"`
 		Group       ResourceGroup `gorm:"foreignKey:GroupId, TenantId" json:"-" swaggerignore:"true"`
-		TenantId    uint          `gorm:"primaryKey"`
+		TenantId    uint          `gorm:"primaryKey" json:"tenantId"`
 	}
 
 	ResourceGroupRoleAction struct {
@@ -43,7 +43,7 @@ type (
 		Action     ResourceGroupAction `gorm:"foreignKey:ActionId, TenantId" json:"-" swaggerignore:"true"`
 		ActionName string              `gorm:"<-:false;-:migration" json:"actionName"`
 		RoleName   string              `gorm:"<-:false;-:migration" json:"roleName"`
-		TenantId   uint                `gorm:"primaryKey"`
+		TenantId   uint                `gorm:"primaryKey" json:"tenantId"`
 	}
 	ResourceGroupUser struct {
 		Id                uint              `gorm:"primaryKey" json:"id"`
@@ -55,7 +55,7 @@ type (
 		RoleName          string            `json:"roleName" gorm:"<-:false;-:migration"`
 		ClientUserId      uint              `json:"userId" uri:"userId"`
 		ClientUser        ClientUser        `gorm:"foreignKey:ClientUserId, TenantId" json:"-" swaggerignore:"true"`
-		TenantId          uint              `gorm:"primaryKey"`
+		TenantId          uint              `gorm:"primaryKey" json:"tenantId"`
 		Sub               string            `json:"sub" gorm:"<-:false;-:migration"`
 		DisplayName       string            `json:"displayName" gorm:"<-:false;-:migration"`
 	}
@@ -73,4 +73,5 @@ type RequestResourceGroup struct {
 	Description string   `json:"description"`
 	Uid         string   `json:"uid"`
 	ActionIds   []string `json:"actionIds"`
+	UserIds     []uint   `json:"userIds"`
 }

@@ -3327,6 +3327,60 @@
                 }
             }
         },
+        "/accounts/{tenant}/iam/clients/{client}/resourceGroups/{groupId}/roles/{roleId}/users": {
+            "post": {
+                "tags": [
+                    "resource-group"
+                ],
+                "summary": "将用户拉入组内",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "default": "default",
+                        "description": "tenant",
+                        "name": "tenant",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "default": "default",
+                        "description": "client",
+                        "name": "client",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "group id",
+                        "name": "groupId",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "role id",
+                        "name": "roleId",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "body",
+                        "name": "group",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.RequestResourceGroup"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
         "/accounts/{tenant}/iam/clients/{client}/resourceGroups/{groupId}/users": {
             "get": {
                 "tags": [
@@ -3371,58 +3425,6 @@
                     "resource-group"
                 ],
                 "summary": "修改用户在组内的角色",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "default": "default",
-                        "description": "tenant",
-                        "name": "tenant",
-                        "in": "path",
-                        "required": true
-                    },
-                    {
-                        "type": "string",
-                        "default": "default",
-                        "description": "client",
-                        "name": "client",
-                        "in": "path",
-                        "required": true
-                    },
-                    {
-                        "type": "string",
-                        "description": "group id",
-                        "name": "groupId",
-                        "in": "path",
-                        "required": true
-                    },
-                    {
-                        "type": "integer",
-                        "description": "client user id",
-                        "name": "userId",
-                        "in": "path",
-                        "required": true
-                    },
-                    {
-                        "description": "body",
-                        "name": "group",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/model.RequestResourceGroup"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK"
-                    }
-                }
-            },
-            "post": {
-                "tags": [
-                    "resource-group"
-                ],
-                "summary": "将用户拉入组内",
                 "parameters": [
                     {
                         "type": "string",
@@ -5695,6 +5697,12 @@
                 },
                 "uid": {
                     "type": "string"
+                },
+                "userIds": {
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    }
                 }
             }
         },

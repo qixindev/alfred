@@ -73,6 +73,10 @@ func CreateResourceGroupRoleAction(c *gin.Context) {
 		resp.ErrorRequest(c, err)
 		return
 	}
+	if len(in.ActionIds) == 0 {
+		resp.ErrorRequestWithMsg(c, "action id should not be empty")
+		return
+	}
 	if err := rg.CreateResourceGroupRoleAction(in.Tenant.Id, in.RoleId, in.ActionIds); err != nil {
 		resp.ErrorSqlCreate(c, err, "CreateResourceGroupRoleAction err")
 		return
@@ -94,6 +98,10 @@ func UpdateResourceGroupRoleAction(c *gin.Context) {
 	var in model.RequestResourceGroup
 	if err := internal.BindUriAndJson(c, &in).SetTenant(&in.Tenant).Error; err != nil {
 		resp.ErrorRequest(c, err)
+		return
+	}
+	if len(in.ActionIds) == 0 {
+		resp.ErrorRequestWithMsg(c, "action id should not be empty")
 		return
 	}
 
@@ -135,6 +143,10 @@ func DeleteResourceGroupRoleAction(c *gin.Context) {
 	var in model.RequestResourceGroup
 	if err := internal.BindUri(c, &in).SetTenant(&in.Tenant).Error; err != nil {
 		resp.ErrorRequest(c, err)
+		return
+	}
+	if len(in.ActionIds) == 0 {
+		resp.ErrorRequestWithMsg(c, "action id should not be empty")
 		return
 	}
 	if err := rg.DeleteResourceGroupRoleAction(in.Tenant.Id, in.RoleId, in.ActionIds); err != nil {

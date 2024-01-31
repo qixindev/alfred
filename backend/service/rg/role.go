@@ -110,17 +110,20 @@ func GetResourceGroupUserAction(tenantId uint, userId uint, actionId string) (*m
 	return &role, nil
 }
 
-func CreateResourceGroupUserRole(tenantId uint, groupId string, userId uint, roleId string) (*model.ResourceGroupUser, error) {
-	userRole := model.ResourceGroupUser{
-		TenantId:     tenantId,
-		GroupId:      groupId,
-		ClientUserId: userId,
-		RoleId:       roleId,
+func CreateResourceGroupUserRole(tenantId uint, groupId string, roleId string, userIds []uint) error {
+	userRoles := make([]model.ResourceGroupUser, 0)
+	for _, userId := range userIds {
+		userRoles = append(userRoles, model.ResourceGroupUser{
+			TenantId:     tenantId,
+			GroupId:      groupId,
+			ClientUserId: userId,
+			RoleId:       roleId,
+		})
 	}
-	if err := global.DB.Create(&userRole).Error; err != nil {
-		return nil, err
+	if err := global.DB.Create(&userRoles).Error; err != nil {
+		return err
 	}
-	return &userRole, nil
+	return nil
 }
 
 func UpdateResourceGroupUserRole(tenantId uint, groupId string, userId uint, roleId string) error {

@@ -107,26 +107,25 @@ func GetResourceGroupUserAction(c *gin.Context) {
 // @Param	tenant		path	string		true	"tenant"	default(default)
 // @Param	client		path	string		true	"client"	default(default)
 // @Param	groupId		path	string		true	"group id"
-// @Param	userId		path	integer		true	"client user id"
+// @Param	roleId		path	string		true	"role id"
 // @Param	group		body	model.RequestResourceGroup	true	"body"
 // @Success	200
-// @Router	/accounts/{tenant}/iam/clients/{client}/resourceGroups/{groupId}/users/{userId} [post]
+// @Router	/accounts/{tenant}/iam/clients/{client}/resourceGroups/{groupId}/roles/{roleId}/users [post]
 func CreateResourceGroupUserRole(c *gin.Context) {
 	var in model.RequestResourceGroup
 	if err := internal.BindUriAndJson(c, &in).SetTenant(&in.Tenant).Error; err != nil {
 		resp.ErrorRequest(c, err)
 		return
 	}
-	if in.RoleId == "" {
-		resp.ErrorRequest(c, errors.New("body roleId should not be empty"))
+	if len(in.UserIds) == 0 {
+		resp.ErrorRequestWithMsg(c, "user id should not be empty")
 		return
 	}
-	res, err := rg.CreateResourceGroupUserRole(in.Tenant.Id, in.GroupId, in.UserId, in.RoleId)
-	if err != nil {
+	if err := rg.CreateResourceGroupUserRole(in.Tenant.Id, in.GroupId, in.RoleId, in.UserIds); err != nil {
 		resp.ErrorSqlCreate(c, err, "CreateResourceGroupUserRole err")
 		return
 	}
-	resp.SuccessWithData2(c, res)
+	resp.Success(c)
 }
 
 // UpdateResourceGroupUserRole

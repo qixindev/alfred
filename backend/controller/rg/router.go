@@ -43,7 +43,8 @@ func AddResourceGroupRoutes(rg *gin.RouterGroup) {
 	rg.GET("/resourceGroups/:groupId/users/:userId/role", GetResourceGroupUserRole)                // 用户在组内的角色
 	rg.GET("/resourceGroups/:groupId/users/:userId/actions", GetResourceGroupUserActionList)       // 用户在组内所拥有的权限列表
 	rg.GET("/resourceGroups/:groupId/users/:userId/actions/:actionId", GetResourceGroupUserAction) // 用户在组内是否拥有某个权限
-	rg.POST("/resourceGroups/:groupId/users/:userId", CreateResourceGroupUserRole)                 // 将用户拉入组内
 	rg.PUT("/resourceGroups/:groupId/users/:userId", UpdateResourceGroupUserRole)                  // 修改用户在组内的角色
 	rg.DELETE("/resourceGroups/:groupId/users/:userId", DeleteResourceGroupUser)                   // 踢出用户
+
+	rg.POST("/resourceGroups/:groupId/roles/:roleId/users", CreateResourceGroupUserRole) // 将用户拉入组内
 }
