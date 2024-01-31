@@ -26,7 +26,7 @@ func GetResourceGroupList(c *gin.Context) {
 		resp.ErrorSqlSelect(c, err, "GetResourceGroupList err")
 		return
 	}
-	resp.SuccessWithPaging(c, groups, 0)
+	resp.SuccessWithPaging(c, groups, int64(len(groups)))
 }
 
 // GetResourceGroup

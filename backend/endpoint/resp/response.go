@@ -27,7 +27,7 @@ func response(c *gin.Context, code int, errCode int, msg string, data any, total
 		}
 		c.JSON(code, &Response{Code: errCode, Message: msg, Data: data})
 	} else {
-		if data == nil || total == 0 {
+		if data == nil {
 			data = []struct{}{}
 		}
 		c.JSON(code, &ArrayResponse{Code: errCode, Message: msg, Total: total, Data: data})
