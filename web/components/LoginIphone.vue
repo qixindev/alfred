@@ -35,8 +35,8 @@ const getInfo = () => {
   navigatePage.value = true;
   getEnergy(currentTenant).then((res: any) => {
     //  解决 is not iterable
+    navigatePage.value = false;
     if (JSON.stringify(res) !== "{}") {
-      navigatePage.value = false;
       info.value = { ...res };
       bottomTitle.value = [...res.bottom];
     }
