@@ -97,6 +97,7 @@ func SendMsg(c *gin.Context) {
 		resp.SuccessWithMessage(c, "no provider user")
 		return
 	}
+
 	if err := notify.SendMsgToUsers(&in, providerConfig); err != nil {
 		resp.ErrorUnknown(c, err, "failed to send msg")
 		return
