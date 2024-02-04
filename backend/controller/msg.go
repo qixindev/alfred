@@ -18,7 +18,7 @@ import (
 // SendMsg
 // @Summary	send message
 // @Tags	msg
-// @Param	tenant		path	string			true	"tenant name"
+// @Param	tenant	path		string	true	"tenant"	default(default)
 // @Param	providerId	path	integer			true	"provider id"
 // @Param	by			body	model.SendInfo	true	"msg body"
 // @Success	200
@@ -107,11 +107,13 @@ func SendMsg(c *gin.Context) {
 // GetMsg
 // @Summary	get message
 // @Tags	msg
-// @Param	subId	path	integer	true	"sub id"
+// @Param	subId	path	string	true	"sub id"
+// @Param	tenant	path	string	true	"tenant"	default(default)
+// @Param	msgType	query	string	false	"msg type"
 // @Param	page	query	integer	false	"pageNum"
 // @Param	pageSize	query	integer	false	"pageSize"
 // @Success	200
-// @Router	/accounts/{tenant}/message/{subId} [get]
+// @Router	/accounts/{tenant}/message/getMsg/{subId} [get]
 func GetMsg(c *gin.Context) {
 	subId := c.Param("subId")
 	var SendInfo []model.SendInfo
@@ -124,7 +126,9 @@ func GetMsg(c *gin.Context) {
 	// 获取每页显示的数据数量，默认为10
 	pageSize, _ := strconv.Atoi(c.DefaultQuery("pageSize", "10"))
 
-	//// 获取消息
+	// 获取消息类型参数
+	messageType := c.Query("msgType") //// 获取消息
+
 	var total int64
 	if err := internal.TenantDB(c).Model(&model.SendInfo{}).
 		Where("users_db = ?", subId).
@@ -133,15 +137,19 @@ func GetMsg(c *gin.Context) {
 		return
 	}
 
-	if err := global.DB.
-		Table("message").
+	query := global.DB.Table("message").
 		Select("message.*, u1.display_name as sender_name, u2.display_name as receiver_name, u1.avatar").
 		Joins("LEFT JOIN client_users cu1 ON message.sender = cu1.sub").
 		Joins("LEFT JOIN client_users cu2 ON message.users_db = cu2.sub").
 		Joins("LEFT JOIN users u1 ON cu1.user_id = u1.id").
 		Joins("LEFT JOIN users u2 ON cu2.user_id = u2.id").
-		Where("message.users_db = ? AND message.tenant_id = ?", subId, tenant.Id).
-		Limit(pageSize).Offset((pageNum - 1) * pageSize).Order("send_at desc").
+		Where("message.users_db = ? AND message.tenant_id = ?", subId, tenant.Id)
+
+	if messageType != "" {
+		query = query.Where("message.msg_type = ?", messageType)
+	}
+
+	if err := query.Limit(pageSize).Offset((pageNum - 1) * pageSize).Order("send_at desc").
 		Find(&SendInfoDB).Error; err != nil {
 		resp.ErrorSqlSelect(c, err, "failed to get msg")
 		return
@@ -162,10 +170,10 @@ func GetMsg(c *gin.Context) {
 // MarkMsg
 // @Summary	mark message read
 // @Tags	msg
-// @Param	tenant	path	string	true	"tenant name"
+// @Param	tenant	path		string	true	"tenant"	default(default)
 // @Param	msgId	path	integer	true	"msg id"
 // @Success	200
-// @Router	/accounts/{tenant}/message/{msgId} [put]
+// @Router	/accounts/{tenant}/message/markMsg/{msgId} [put]
 func MarkMsg(c *gin.Context) {
 	var in model.SendInfo
 	if err := c.ShouldBindUri(&in); err != nil {
@@ -191,7 +199,8 @@ func MarkMsg(c *gin.Context) {
 // GetUnreadMsgCount
 // @Summary	get unread message count
 // @Tags	msg
-// @Param	subId	path	integer	true	"sub id"
+// @Param	subId	path	string	true	"sub id"
+// @Param	tenant	path	string	true	"tenant"	default(default)
 // @Success	200
 // @Router	/accounts/{tenant}/unreadMsgCount/{subId} [get]
 func GetUnreadMsgCount(c *gin.Context) {
