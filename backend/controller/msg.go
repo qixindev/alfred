@@ -108,35 +108,23 @@ func SendMsg(c *gin.Context) {
 // GetMsg
 // @Summary	get message
 // @Tags	msg
-// @Param	subId	path	string	true	"sub id"
-// @Param	tenant	path	string	true	"tenant"	default(default)
-// @Param	msgType	query	string	false	"msg type"
-// @Param	page	query	integer	false	"pageNum"
+// @Param	subId		path	string	true	"sub id"
+// @Param	tenant		path	string	true	"tenant"	default(default)
+// @Param	msgTypes	query	string	false	"msg type"
+// @Param	page		query	integer	false	"pageNum"
 // @Param	pageSize	query	integer	false	"pageSize"
 // @Success	200
 // @Router	/accounts/{tenant}/message/getMsg/{subId} [get]
 func GetMsg(c *gin.Context) {
-	subId := c.Param("subId")
 	var SendInfo []model.SendInfo
 	var SendInfoDB []model.SendInfoDB
 
 	tenant := internal.GetTenant(c)
+	subId := c.Param("subId")
+	msgTypes := strings.Split(c.Query("msgTypes"), ",")
 
-	// 获取页码，默认为1
 	pageNum, _ := strconv.Atoi(c.DefaultQuery("pageNum", "1"))
-	// 获取每页显示的数据数量，默认为10
 	pageSize, _ := strconv.Atoi(c.DefaultQuery("pageSize", "10"))
-
-	// 获取消息类型参数
-	messageType := c.Query("msgType") //// 获取消息
-
-	var total int64
-	if err := internal.TenantDB(c).Model(&model.SendInfo{}).
-		Where("users_db = ?", subId).
-		Find(&SendInfo).Count(&total).Error; err != nil {
-		resp.ErrorSqlSelect(c, err, "failed to get msg")
-		return
-	}
 
 	query := global.DB.Table("message").
 		Select("message.*, u1.display_name as sender_name, u2.display_name as receiver_name, u1.avatar").
@@ -146,12 +134,19 @@ func GetMsg(c *gin.Context) {
 		Joins("LEFT JOIN users u2 ON cu2.user_id = u2.id").
 		Where("message.users_db = ? AND message.tenant_id = ?", subId, tenant.Id)
 
-	if messageType != "" {
-		query = query.Where("message.msg_type = ?", messageType)
+	if len(msgTypes) > 0 && msgTypes[0] != "" {
+		query = query.Where("message.msg_type IN ?", msgTypes)
 	}
 
 	if err := query.Limit(pageSize).Offset((pageNum - 1) * pageSize).Order("send_at desc").
 		Find(&SendInfoDB).Error; err != nil {
+		resp.ErrorSqlSelect(c, err, "failed to get msg")
+		return
+	}
+
+	// 在查询之前先计算总数
+	var total int64
+	if err := query.Model(&model.SendInfoDB{}).Count(&total).Error; err != nil {
 		resp.ErrorSqlSelect(c, err, "failed to get msg")
 		return
 	}

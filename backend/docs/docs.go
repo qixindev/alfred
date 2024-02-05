@@ -4952,7 +4952,7 @@ const docTemplate = `{
                     {
                         "type": "string",
                         "description": "msg type",
-                        "name": "msgType",
+                        "name": "msgTypes",
                         "in": "query"
                     },
                     {
