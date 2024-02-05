@@ -166,10 +166,10 @@ func UpdateUserPassword(c *gin.Context) {
 		resp.ErrorRequest(c, err)
 		return
 	}
-	if user.PasswordHash == "" {
-		resp.ErrorRequestWithMsg(c, "password should not be null")
-		return
-	}
+	//if user.PasswordHash == "" {
+	//	resp.ErrorRequestWithMsg(c, "password should not be null")
+	//	return
+	//}
 	hash, err := utils.HashPassword(u.PasswordHash)
 	if err != nil {
 		resp.ErrorUnauthorized(c, nil, "hashPassword err")
