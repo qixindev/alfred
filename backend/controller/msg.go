@@ -7,6 +7,7 @@ import (
 	"alfred/backend/pkg/client/msg/notify"
 	"alfred/backend/pkg/config/env"
 	"alfred/backend/pkg/global"
+	"alfred/backend/service"
 	"alfred/backend/service/auth"
 	"strconv"
 	"strings"
@@ -144,9 +145,10 @@ func GetMsg(c *gin.Context) {
 		return
 	}
 
-	// 在查询之前先计算总数
 	var total int64
-	if err := query.Model(&model.SendInfoDB{}).Count(&total).Error; err != nil {
+	if err := internal.TenantDB(c).Model(&model.SendInfo{}).
+		Where("users_db = ? AND msg_type IN (?)", subId, msgTypes).
+		Find(&SendInfo).Count(&total).Error; err != nil {
 		resp.ErrorSqlSelect(c, err, "failed to get msg")
 		return
 	}
@@ -176,17 +178,9 @@ func MarkMsg(c *gin.Context) {
 		resp.ErrReqPara(c, err)
 		return
 	}
-	var count int64
-	if err := internal.TenantDB(c).Model(&model.SendInfo{}).Where("id = ?", in.Id).Count(&count).Error; err != nil {
-		resp.ErrorSqlSelect(c, err, "failed to mark msg read")
-		return
-	}
-	if count == 0 {
-		resp.SuccessWithMessage(c, "please check msg id")
-		return
-	}
-	if err := internal.TenantDB(c).Model(&model.SendInfo{}).Where("id = ?", in.Id).Update("is_read", true).Error; err != nil {
-		resp.ErrorSqlUpdate(c, err, "failed to mark msg read")
+	tenant := internal.GetTenant(c)
+	if err := service.MarkMsgAsRead(in.Id, tenant); err != nil {
+		resp.ErrorUnknown(c, err, "failed to mark msg read")
 		return
 	}
 	resp.SuccessWithMessage(c, "mark msg read success")
@@ -201,9 +195,10 @@ func MarkMsg(c *gin.Context) {
 // @Router	/accounts/{tenant}/unreadMsgCount/{subId} [get]
 func GetUnreadMsgCount(c *gin.Context) {
 	subId := c.Param("subId")
-	var count int64
-	if err := internal.TenantDB(c).Model(&model.SendInfo{}).Where("users_db = ? AND is_read = ?", subId, false).Count(&count).Error; err != nil {
-		resp.ErrorSqlSelect(c, err, "failed to get msg")
+	tenant := internal.GetTenant(c)
+	count, err := service.GetUnreadMsgCount(subId, tenant)
+	if err != nil {
+		resp.ErrorUnknown(c, err, "failed to get unread msg count")
 		return
 	}
 	resp.SuccessWithMessageAndData(c, "查询成功", count)
