@@ -26,12 +26,12 @@ func SendMsg(c *gin.Context) {
 		return
 	}
 
-	tenant := internal.GetTenant(c)
-	in.TenantId = tenant.Id
-	providerId := c.Param("providerId")
-
 	msgService := service.NewMsgService()
-	providerConfig, err := msgService.ProcessMsg(providerId, in, tenant)
+	providerId := c.Param("providerId")
+	msgService.Tenant = internal.GetTenant(c)
+	in.TenantId = msgService.Tenant.Id
+
+	providerConfig, err := msgService.ProcessMsg(providerId, in)
 	if err != nil {
 		resp.ErrorUnknown(c, err, "failed to process msg")
 		return
@@ -55,17 +55,15 @@ func SendMsg(c *gin.Context) {
 // @Success	200
 // @Router	/accounts/{tenant}/message/getMsg/{subId} [get]
 func GetMsg(c *gin.Context) {
-	var sendInfo []model.SendInfo
-	var sendInfoDB []model.SendInfoDB
 	msgService := service.NewMsgService()
+	msgService.Tenant = internal.GetTenant(c)
 
-	tenant := internal.GetTenant(c)
 	subId := c.Param("subId")
 	msgTypes := strings.Split(c.Query("msgTypes"), ",")
 	pageNum, _ := strconv.Atoi(c.DefaultQuery("pageNum", "1"))
 	pageSize, _ := strconv.Atoi(c.DefaultQuery("pageSize", "10"))
 
-	list, total, err := msgService.GetMsgList(subId, tenant, msgTypes, pageNum, pageSize, sendInfoDB, sendInfo)
+	list, total, err := msgService.GetMsgList(subId, msgTypes, pageNum, pageSize)
 	if err != nil {
 		return
 	}
@@ -81,15 +79,15 @@ func GetMsg(c *gin.Context) {
 // @Router	/accounts/{tenant}/message/markMsg/{msgId} [put]
 func MarkMsg(c *gin.Context) {
 	msgService := service.NewMsgService()
+	msgService.Tenant = internal.GetTenant(c)
+
 	var in model.SendInfo
 	if err := c.ShouldBindUri(&in); err != nil {
 		resp.ErrReqPara(c, err)
 		return
 	}
 
-	tenant := internal.GetTenant(c)
-
-	if err := msgService.MarkMsgAsRead(in.Id, tenant); err != nil {
+	if err := msgService.MarkMsg(in.Id, true); err != nil {
 		resp.ErrorUnknown(c, err, "failed to mark msg read")
 		return
 	}
@@ -104,11 +102,11 @@ func MarkMsg(c *gin.Context) {
 // @Success	200
 // @Router	/accounts/{tenant}/unreadMsgCount/{subId} [get]
 func GetUnreadMsgCount(c *gin.Context) {
-	subId := c.Param("subId")
-	tenant := internal.GetTenant(c)
 	msgService := service.NewMsgService()
+	msgService.Tenant = internal.GetTenant(c)
 
-	count, err := msgService.GetUnreadMsgCount(subId, tenant)
+	subId := c.Param("subId")
+	count, err := msgService.GetMsgCount(subId, false)
 	if err != nil {
 		resp.ErrorUnknown(c, err, "failed to get unread msg count")
 		return

@@ -11,15 +11,15 @@ import (
 	"time"
 )
 
-// MsgService 包含消息相关的服务逻辑
-type MsgService struct{}
+type MsgService struct {
+	Tenant *model.Tenant
+}
 
-// NewMsgService 创建一个新的消息服务
 func NewMsgService() *MsgService {
 	return &MsgService{}
 }
 
-func (*MsgService) ProcessMsg(providerId string, in model.SendInfo, tenant *model.Tenant) (gin.H, error) {
+func (ms *MsgService) ProcessMsg(providerId string, in model.SendInfo) (gin.H, error) {
 	var providerUser []string
 	var providerConfig gin.H
 
@@ -28,11 +28,11 @@ func (*MsgService) ProcessMsg(providerId string, in model.SendInfo, tenant *mode
 		providerConfig["type"] = env.PlatformAlfred
 	} else {
 		var p model.Provider
-		if err := global.DB.First(&p, "id = ? AND tenant_id = ?", providerId, tenant.Id).Error; err != nil {
+		if err := global.DB.First(&p, "id = ? AND tenant_id = ?", providerId, ms.Tenant.Id).Error; err != nil {
 			return gin.H{}, err
 		}
 
-		_, authProvider, err := auth.GetAuthProvider(tenant.Id, p.Name)
+		_, authProvider, err := auth.GetAuthProvider(ms.Tenant.Id, p.Name)
 		if err != nil {
 			return gin.H{}, err
 		}
@@ -44,7 +44,7 @@ func (*MsgService) ProcessMsg(providerId string, in model.SendInfo, tenant *mode
 		}
 		if err = global.DB.Table("provider_users pu").Select("pu.name").
 			Joins("LEFT JOIN client_users as cu ON cu.user_id = pu.user_id").
-			Where("pu.tenant_id = ? AND pu.provider_id = ? AND cu.sub IN (?)", tenant.Id, providerConfig["providerId"], usersSlice).
+			Where("pu.tenant_id = ? AND pu.provider_id = ? AND cu.sub IN (?)", ms.Tenant.Id, providerConfig["providerId"], usersSlice).
 			Find(&providerUser).Error; err != nil {
 			return gin.H{}, err
 		}
@@ -57,7 +57,7 @@ func (*MsgService) ProcessMsg(providerId string, in model.SendInfo, tenant *mode
 			UsersDB:    v,
 			Sender:     in.Sender,
 			Platform:   providerConfig["type"].(string),
-			TenantId:   tenant.Id,
+			TenantId:   ms.Tenant.Id,
 			Msg:        in.Msg,
 			MsgType:    in.MsgType,
 			Title:      in.Title,
@@ -81,32 +81,38 @@ func (*MsgService) ProcessMsg(providerId string, in model.SendInfo, tenant *mode
 	return providerConfig, nil
 }
 
-func (*MsgService) GetMsgList(subId string, tenant *model.Tenant, msgTypes []string, pageNum int, pageSize int, SendInfoDB []model.SendInfoDB, SendInfo []model.SendInfo) ([]model.SendInfoDB, int64, error) {
-	query := global.DB.Table("message").
+func (ms *MsgService) GetMsgList(subId string, msgTypes []string, pageNum int, pageSize int) ([]model.SendInfoDB, int64, error) {
+	var sendInfoDB []model.SendInfoDB
+	var SendInfo []model.SendInfo
+
+	sendInfoDBQuery := global.DB.Table("message").
 		Select("message.*, u1.display_name as sender_name, u2.display_name as receiver_name, u1.avatar").
 		Joins("LEFT JOIN client_users cu1 ON message.sender = cu1.sub").
 		Joins("LEFT JOIN client_users cu2 ON message.users_db = cu2.sub").
 		Joins("LEFT JOIN users u1 ON cu1.user_id = u1.id").
 		Joins("LEFT JOIN users u2 ON cu2.user_id = u2.id").
-		Where("message.users_db = ? AND message.tenant_id = ?", subId, tenant.Id)
+		Where("message.users_db = ? AND message.tenant_id = ?", subId, ms.Tenant.Id)
+
+	sendInfoQuery := global.DB.Model(&model.SendInfo{}).
+		Where("users_db = ? AND tenant_id = ?", subId, ms.Tenant.Id)
 
 	if len(msgTypes) > 0 && msgTypes[0] != "" {
-		query = query.Where("message.msg_type IN ?", msgTypes)
+		sendInfoDBQuery = sendInfoDBQuery.Where("message.msg_type IN ?", msgTypes)
+		sendInfoQuery = sendInfoQuery.Where("message.msg_type IN ?", msgTypes)
 	}
 
-	if err := query.Limit(pageSize).Offset((pageNum - 1) * pageSize).Order("send_at desc").
-		Find(&SendInfoDB).Error; err != nil {
+	if err := sendInfoDBQuery.Limit(pageSize).Offset((pageNum - 1) * pageSize).Order("send_at desc").
+		Find(&sendInfoDB).Error; err != nil {
 		return nil, 0, err
 	}
 
 	var total int64
-	if err := global.DB.Model(&model.SendInfo{}).
-		Where("users_db = ? AND msg_type IN (?) AND tenant_id = ?", subId, msgTypes, tenant.Id).
+	if err := sendInfoQuery.Limit(pageSize).Offset((pageNum - 1) * pageSize).Order("send_at desc").
 		Find(&SendInfo).Count(&total).Error; err != nil {
 		return nil, 0, err
 	}
 
-	for i, v := range SendInfoDB {
+	for i, v := range sendInfoDB {
 		for _, v2 := range SendInfo {
 			if v.Id == v2.Id {
 				SendInfo[i].SenderName = v2.SenderName
@@ -114,26 +120,26 @@ func (*MsgService) GetMsgList(subId string, tenant *model.Tenant, msgTypes []str
 			}
 		}
 	}
-	return SendInfoDB, total, nil
+	return sendInfoDB, total, nil
 }
 
-func (*MsgService) MarkMsgAsRead(msgId uint, tenant *model.Tenant) error {
+func (ms *MsgService) MarkMsg(msgId uint, isRead bool) error {
 	var count int64
-	if err := global.DB.Model(&model.SendInfo{}).Where("id = ? AND tenant_id = ?", msgId, tenant.Id).Count(&count).Error; err != nil {
+	if err := global.DB.Model(&model.SendInfo{}).Where("id = ? AND tenant_id = ?", msgId, ms.Tenant.Id).Count(&count).Error; err != nil {
 		return err
 	}
 	if count == 0 {
 		return errors.New("msg not found")
 	}
-	if err := global.DB.Model(&model.SendInfo{}).Where("id = ? AND tenant_id = ?", msgId, tenant.Id).Update("is_read", true).Error; err != nil {
+	if err := global.DB.Model(&model.SendInfo{}).Where("id = ? AND tenant_id = ?", msgId, ms.Tenant.Id).Update("is_read", isRead).Error; err != nil {
 		return err
 	}
 	return nil
 }
 
-func (*MsgService) GetUnreadMsgCount(subId string, tenant *model.Tenant) (int64, error) {
+func (ms *MsgService) GetMsgCount(subId string, isRead bool) (int64, error) {
 	var count int64
-	if err := global.DB.Model(&model.SendInfo{}).Where("users_db = ? AND is_read = ? AND tenant_id = ?", subId, false, tenant.Id).Count(&count).Error; err != nil {
+	if err := global.DB.Model(&model.SendInfo{}).Where("users_db = ? AND is_read = ? AND tenant_id = ?", subId, isRead, ms.Tenant.Id).Count(&count).Error; err != nil {
 		return 0, err
 	}
 	return count, nil
