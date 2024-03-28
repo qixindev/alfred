@@ -44,6 +44,22 @@ func ListUsers(c *gin.Context) {
 		resp.ErrorSqlSelect(c, err, "list tenant users err", true)
 		return
 	}
+
+	// get subId
+	var clientUsers []model.ClientUser
+	if err := global.DB.Model(&model.ClientUser{}).Where("tenant_id = ?", tenant.Id).Find(&clientUsers).Error; err != nil {
+		resp.ErrorSqlSelect(c, err, "list client users err")
+		return
+	}
+
+	for i := range users {
+		for _, clientUser := range clientUsers {
+			if users[i].Id == clientUser.UserId {
+				users[i].Sub = clientUser.Sub
+			}
+		}
+	}
+
 	resp.SuccessWithPaging(c, utils.Filter(users, model.User2AdminDto), total)
 }
 
