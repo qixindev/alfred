@@ -2246,11 +2246,29 @@ paths:
       summary: get user profile
       tags:
       - user
+  /accounts/{tenant}/message/{msgId}:
+    put:
+      parameters:
+      - description: tenant name
+        in: path
+        name: tenant
+        required: true
+        type: string
+      - description: msg id
+        in: path
+        name: msgId
+        required: true
+        type: integer
+      responses:
+        "200":
+          description: OK
+      summary: mark message read
+      tags:
+      - msg
   /accounts/{tenant}/message/{providerId}:
     post:
       parameters:
-      - default: default
-        description: tenant
+      - description: tenant name
         in: path
         name: tenant
         required: true
@@ -2272,7 +2290,7 @@ paths:
       summary: send message
       tags:
       - msg
-  /accounts/{tenant}/message/getMsg/{subId}:
+  /accounts/{tenant}/message/{subId}:
     get:
       parameters:
       - description: sub id
@@ -2280,15 +2298,9 @@ paths:
         name: subId
         required: true
         type: string
-      - default: default
-        description: tenant
-        in: path
-        name: tenant
-        required: true
-        type: string
       - description: msg type
         in: query
-        name: msgTypes
+        name: msgType
         type: string
       - description: pageNum
         in: query
@@ -2302,26 +2314,6 @@ paths:
         "200":
           description: OK
       summary: get message
-      tags:
-      - msg
-  /accounts/{tenant}/message/markMsg/{msgId}:
-    put:
-      parameters:
-      - default: default
-        description: tenant
-        in: path
-        name: tenant
-        required: true
-        type: string
-      - description: msg id
-        in: path
-        name: msgId
-        required: true
-        type: integer
-      responses:
-        "200":
-          description: OK
-      summary: mark message read
       tags:
       - msg
   /accounts/{tenant}/oauth2/auth:
@@ -2628,13 +2620,7 @@ paths:
         in: path
         name: subId
         required: true
-        type: string
-      - default: default
-        description: tenant
-        in: path
-        name: tenant
-        required: true
-        type: string
+        type: integer
       responses:
         "200":
           description: OK

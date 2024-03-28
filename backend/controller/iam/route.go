@@ -15,7 +15,7 @@ func GetClientFromCid(c *gin.Context) (*model.Client, error) {
 	return &client, nil
 }
 
-func AddIamRoutes(rg *gin.RouterGroup) {
+func AddABACRoutes(rg *gin.RouterGroup) {
 	rg.GET("/types", ListIamType)
 	rg.POST("/types", NewIamType)
 	rg.DELETE("/types/:typeId", DeleteIamType)

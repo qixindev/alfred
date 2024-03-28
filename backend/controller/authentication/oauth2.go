@@ -309,7 +309,7 @@ func GetJwks(c *gin.Context) {
 }
 
 func AddOAuth2Routes(rg *gin.RouterGroup) {
-	rg.GET("/oauth2/auth", middlewares.Authorized(true), GetAuthCode)
+	rg.GET("/oauth2/auth", middlewares.Authorized(), GetAuthCode)
 	rg.POST("/oauth2/device/code", GetDeviceCode)
 	rg.GET("/oauth2/token", GetToken)
 	rg.GET("/.well-known/openid-configuration", GetOpenidConfiguration)

@@ -1,6 +1,7 @@
 package admin
 
 import (
+	"alfred/backend/controller/internal"
 	"alfred/backend/endpoint/resp"
 	"alfred/backend/model"
 	"alfred/backend/pkg/global"
@@ -14,26 +15,42 @@ import (
 // ListTenants
 // @Summary	list tenants
 // @Tags	admin-tenants
+// @Param	pageNum		query	integer	false	"page number"
+// @Param	pageSize	query	integer	false	"page size"
+// @Param	search		query	string	false	"search string"
 // @Success	200
 // @Router	/accounts/admin/tenants [get]
 func ListTenants(c *gin.Context) {
 	var tenants []model.Tenant
+	var page model.Paging
+	if err := internal.New(c).BindQuery(&page).Error; err != nil {
+		resp.ErrorRequest(c, err)
+		return
+	}
+
 	username := sessions.Default(c).Get("user")
-	if err := global.DB.Model(model.User{}).Select("t.id, t.name, users.role").
-		Joins("LEFT JOIN tenants as t ON t.id = users.tenant_id").
-		Where("users.username = ?", username).
-		Find(&tenants).Error; err != nil {
+	tx := global.DB.Table("users as u").Select("t.id, t.name, u.role").
+		Joins("LEFT JOIN tenants as t ON t.id = u.tenant_id").
+		Where("u.username = ?", username).
+		Where("u.role = ? OR u.role = ?", "admin", "owner")
+	if page.Search != "" {
+		tx.Where("t.name like ?", "%"+page.Search+"%")
+	}
+	var total int64
+	if err := tx.Count(&total).Error; err != nil {
+		resp.ErrorSqlSelect(c, err, "count client user err")
+		return
+	}
+	if page.PageSize > 0 {
+		tx.Offset(page.PageSize * (page.PageNum - 1)).Limit(page.PageSize)
+	}
+
+	if err := tx.Find(&tenants).Error; err != nil {
 		resp.ErrorSqlSelect(c, err, "list tenants err", true)
 		return
 	}
 
-	res := make([]model.Tenant, 0)
-	for _, tenant := range tenants {
-		if tenant.Role == "admin" || tenant.Role == "owner" {
-			res = append(res, tenant)
-		}
-	}
-	resp.SuccessWithArrayData(c, utils.Filter(res, model.Tenant2Dto), 0)
+	resp.SuccessWithArrayData(c, tenants, total)
 }
 
 func ListAllTenants(c *gin.Context) {
@@ -193,18 +210,22 @@ func NewTenantSecret(c *gin.Context) {
 }
 
 func AddAdminTenantsRoutes(rg *gin.RouterGroup) {
-	rg.GET("/tenants", middlewares.AuthorizedAdmin, ListTenants)
-	rg.GET("/tenants/all", middlewares.AuthAccessToken, ListAllTenants)
-	rg.GET("/tenants/:tenantId", middlewares.AuthorizedAdmin, GetTenant)
-	rg.POST("/tenants", middlewares.AuthorizedAdmin, NewTenant)
-	rg.PUT("/tenants/:tenantId", middlewares.AuthorizedAdmin, UpdateTenant)
-	rg.DELETE("/tenants/:tenantId", middlewares.AuthorizedAdmin, DeleteTenant)
-	rg.DELETE("/tenants/:tenantId/secrets/:secretId", middlewares.AuthorizedAdmin, DeleteTenantSecret)
-	rg.POST("/tenants/:tenantId/secrets", middlewares.AuthorizedAdmin, NewTenantSecret)
+	adminTenant := rg.Group("", middlewares.AuthorizedAdmin)
+	{
+		adminTenant.GET("/tenants", ListTenants)
+		adminTenant.GET("/tenants/:tenantId", GetTenant)
+		adminTenant.POST("/tenants", NewTenant)
+		adminTenant.PUT("/tenants/:tenantId", UpdateTenant)
+		adminTenant.DELETE("/tenants/:tenantId", DeleteTenant)
+		adminTenant.DELETE("/tenants/:tenantId/secrets/:secretId", DeleteTenantSecret)
+		adminTenant.POST("/tenants/:tenantId/secrets", NewTenantSecret)
 
-	rg.GET("/:tenant/page/login", GetLoginPage)                                               // 获取登录页面配置
-	rg.PUT("/:tenant/page/login", middlewares.AuthorizedAdmin, UpdateLoginPage)               // 更新登录页面配置
-	rg.GET("/:tenant/proto", GetTenantProto)                                                  // 获取用户隐私协议
-	rg.PUT("/:tenant/proto", middlewares.AuthorizedAdmin, UpdateTenantProto)                  // 更新用户隐私协议
-	rg.PUT("/:tenant/picture/:type/upload", middlewares.AuthorizedAdmin, UploadTenantPicture) // 更新图片
+		adminTenant.PUT("/:tenant/page/login", UpdateLoginPage)               // 更新登录页面配置
+		adminTenant.PUT("/:tenant/proto", UpdateTenantProto)                  // 更新用户隐私协议
+		adminTenant.PUT("/:tenant/picture/:type/upload", UploadTenantPicture) // 更新图片
+	}
+
+	rg.GET("/tenants/all", middlewares.AuthAccessToken, ListAllTenants)
+	rg.GET("/:tenant/page/login", GetLoginPage) // 获取登录页面配置
+	rg.GET("/:tenant/proto", GetTenantProto)    // 获取用户隐私协议
 }

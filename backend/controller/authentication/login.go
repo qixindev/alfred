@@ -47,6 +47,7 @@ func Login(c *gin.Context) {
 
 	session := sessions.Default(c)
 	session.Set("tenant", tenant.Name)
+	session.Set("tenantId", tenant.Id)
 	session.Set("user", user.Username)
 	session.Set("userId", user.Id)
 	if err := session.Save(); err != nil {
@@ -163,6 +164,6 @@ func AddLoginRoutes(rg *gin.RouterGroup) {
 	rg.GET("/providers", ListProviders)                   // 第三方信息列表
 	rg.GET("/providers/:provider", GetProvider)           // 第三方具体信息
 	rg.GET("/providers/:provider/login", LoginToProvider) // 第三方登录重定向
-	rg.GET("/logout", middlewares.Authorized(false), Logout)
+	rg.GET("/logout", middlewares.Authorized(), Logout)
 	rg.POST("/register", Register) // 注册
 }

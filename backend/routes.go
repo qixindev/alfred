@@ -6,6 +6,7 @@ import (
 	"alfred/backend/controller/authentication"
 	"alfred/backend/controller/iam"
 	"alfred/backend/controller/reset"
+	"alfred/backend/controller/rg"
 	_ "alfred/backend/docs"
 	"alfred/backend/endpoint/resp"
 	"alfred/backend/pkg/middlewares"
@@ -18,10 +19,12 @@ import (
 
 func AddRoutes(r *gin.Engine) {
 	AddWebRoutes(r)
-	r.Use(middlewares.AccessJsMiddleware())
-	r.Use(middlewares.WecomDomainCheck())
+	// r.Use(middlewares.AccessJsMiddleware())
+	r.Use(middlewares.WecomDomainCheck(), middlewares.GinRecovery())
 	r.GET("/accounts/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
+	// 认证
+	r.GET("/accounts/login/providers/callback", authentication.ProviderCallback) // 验证第三方登录是否成功
 	tenantApi := r.RouterGroup.Group("/accounts/:tenant", middlewares.MultiTenancy)
 	{
 		authentication.AddLoginRoutes(tenantApi)
@@ -31,7 +34,7 @@ func AddRoutes(r *gin.Engine) {
 		reset.AddResetRouter(tenantApi)
 	}
 
-	r.GET("/accounts/login/providers/callback", authentication.ProviderCallback) // 验证第三方登录是否成功
+	// 管理员操作
 	adminApi := r.RouterGroup.Group("/accounts/admin/:tenant", middlewares.MultiTenancy, middlewares.AuthorizedAdmin)
 	{
 		admin.AddAdminGroupsRoutes(adminApi)
@@ -45,9 +48,11 @@ func AddRoutes(r *gin.Engine) {
 
 	adminRouter := r.RouterGroup.Group("/accounts/admin", middlewares.MultiTenancy)
 	admin.AddAdminTenantsRoutes(adminRouter) // all tenants
-
 	iamRouter := r.RouterGroup.Group("/accounts/:tenant/iam/clients/:client", middlewares.MultiTenancy, middlewares.AuthorizedAdmin)
-	iam.AddIamRoutes(iamRouter)
+	{
+		iam.AddABACRoutes(iamRouter)
+		rg.AddResourceGroupRoutes(iamRouter)
+	}
 }
 
 func AddWebRoutes(r *gin.Engine) {

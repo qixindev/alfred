@@ -1,18 +1,17 @@
-package cmd
+package initial
 
 import (
 	"alfred/backend"
-	"alfred/backend/initial"
 	"alfred/backend/pkg/cache"
 	"alfred/backend/pkg/config/env"
 	"alfred/backend/pkg/global"
 	"alfred/backend/pkg/utils"
 	"fmt"
-	"github.com/gin-contrib/cors"
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-contrib/sessions/cookie"
 	"github.com/gin-gonic/gin"
 	"github.com/pkg/errors"
+	"github.com/spf13/cobra"
 	"go.uber.org/zap"
 	"os"
 	"time"
@@ -20,18 +19,18 @@ import (
 
 func initSystem() error {
 	var err error
-	if err = initial.InitConfig(); err != nil { // 初始化配置
+	if err = InitConfig(); err != nil { // 初始化配置
 		return err
 	}
 
 	// 初始化日志
-	global.LOG = initial.Zap()
+	global.LOG = Zap()
 	zap.ReplaceGlobals(global.LOG)
 	if global.LOG == nil {
 		return errors.New("init zap log err")
 	}
 
-	if err = initial.InitDB(); err != nil {
+	if err = InitDB(); err != nil {
 		return errors.WithMessage(err, "InitDB err")
 	}
 
@@ -50,7 +49,7 @@ func initSystem() error {
 		if err = global.DB.AutoMigrate(migrateList...); err != nil {
 			return errors.WithMessage(err, "migrate db err")
 		}
-		if err = initial.InitDefaultTenant(); err != nil {
+		if err = InitDefaultTenant(); err != nil {
 			return errors.WithMessage(err, "InitDefaultTenant err")
 		}
 	}
@@ -58,7 +57,7 @@ func initSystem() error {
 	return nil
 }
 
-func startServer() {
+func StartServer(_ *cobra.Command, _ []string) {
 	var err error
 	for i := 0; i < 10; i++ {
 		if err = initSystem(); err == nil {
@@ -75,15 +74,14 @@ func startServer() {
 
 	fmt.Println(fmt.Sprintf("### %s: %v\n", env.GetDeployType(), utils.StructToString(global.CONFIG)))
 
-	r := gin.Default()
-	r.Use(cors.Default())
-	cookieSecret := initial.GetSessionSecret()
+	r := gin.New()
+	cookieSecret := GetSessionSecret()
 	store := cookie.NewStore(cookieSecret)
 	store.Options(sessions.Options{
 		MaxAge: 60 * 60 * 24,
 		Path:   "/",
 	})
-	r.Use(sessions.Sessions("QixinAuth", store))
+	r.Use(sessions.Sessions("QixinAuth", store), gin.Logger())
 	backend.AddRoutes(r)
 
 	if err = r.Run(":80"); err != nil {

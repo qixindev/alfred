@@ -4927,55 +4927,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/accounts/{tenant}/message/getMsg/{subId}": {
-            "get": {
-                "tags": [
-                    "msg"
-                ],
-                "summary": "get message",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "sub id",
-                        "name": "subId",
-                        "in": "path",
-                        "required": true
-                    },
-                    {
-                        "type": "string",
-                        "default": "default",
-                        "description": "tenant",
-                        "name": "tenant",
-                        "in": "path",
-                        "required": true
-                    },
-                    {
-                        "type": "string",
-                        "description": "msg type",
-                        "name": "msgTypes",
-                        "in": "query"
-                    },
-                    {
-                        "type": "integer",
-                        "description": "pageNum",
-                        "name": "page",
-                        "in": "query"
-                    },
-                    {
-                        "type": "integer",
-                        "description": "pageSize",
-                        "name": "pageSize",
-                        "in": "query"
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK"
-                    }
-                }
-            }
-        },
-        "/accounts/{tenant}/message/markMsg/{msgId}": {
+        "/accounts/{tenant}/message/{msgId}": {
             "put": {
                 "tags": [
                     "msg"
@@ -4984,8 +4936,7 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "string",
-                        "default": "default",
-                        "description": "tenant",
+                        "description": "tenant name",
                         "name": "tenant",
                         "in": "path",
                         "required": true
@@ -5014,8 +4965,7 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "string",
-                        "default": "default",
-                        "description": "tenant",
+                        "description": "tenant name",
                         "name": "tenant",
                         "in": "path",
                         "required": true
@@ -5035,6 +4985,46 @@ const docTemplate = `{
                         "schema": {
                             "$ref": "#/definitions/model.SendInfo"
                         }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/accounts/{tenant}/message/{subId}": {
+            "get": {
+                "tags": [
+                    "msg"
+                ],
+                "summary": "get message",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "sub id",
+                        "name": "subId",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "msg type",
+                        "name": "msgType",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "pageNum",
+                        "name": "page",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "pageSize",
+                        "name": "pageSize",
+                        "in": "query"
                     }
                 ],
                 "responses": {
@@ -5496,17 +5486,9 @@ const docTemplate = `{
                 "summary": "get unread message count",
                 "parameters": [
                     {
-                        "type": "string",
+                        "type": "integer",
                         "description": "sub id",
                         "name": "subId",
-                        "in": "path",
-                        "required": true
-                    },
-                    {
-                        "type": "string",
-                        "default": "default",
-                        "description": "tenant",
-                        "name": "tenant",
                         "in": "path",
                         "required": true
                     }

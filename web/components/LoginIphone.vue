@@ -30,9 +30,12 @@ const info = ref({});
 const bottomTitle = ref([]);
 const newPrimaryWord = ref([]);
 const newTop = ref([]);
+const navigatePage = ref(false);
 const getInfo = () => {
+  navigatePage.value = true;
   getEnergy(currentTenant).then((res: any) => {
     //  解决 is not iterable
+    navigatePage.value = false;
     if (JSON.stringify(res) !== "{}") {
       info.value = { ...res };
       bottomTitle.value = [...res.bottom];
@@ -296,7 +299,12 @@ definePageMeta({
 </script>
 
 <template>
-  <div class="login-boxL" style="padding-top: 0 !important; padding-bottom: 0 !important">
+  <div v-if="navigatePage"></div>
+  <div
+    v-else
+    class="login-boxL"
+    style="padding-top: 0 !important; padding-bottom: 0 !important"
+  >
     <div class="titleL">
       <span
         class="logoL"

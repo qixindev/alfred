@@ -1,9 +1,10 @@
-package cmd
+package initial
 
 import (
 	"alfred/backend/model"
 	"alfred/backend/pkg/global"
 	"fmt"
+	"github.com/spf13/cobra"
 	"os"
 )
 
@@ -38,11 +39,17 @@ func getMigrateModel() []any {
 		&model.ResourceTypeRoleAction{},
 		&model.Resource{},
 		&model.ResourceRoleUser{},
+		&model.ResourceGroup{},
+		&model.ResourceGroupResource{},
+		&model.ResourceGroupRole{},
+		&model.ResourceGroupAction{},
+		&model.ResourceGroupRoleAction{},
+		&model.ResourceGroupUser{},
 		&model.SendInfo{},
 	}
 }
 
-func migrateDB() {
+func MigrateDB(_ *cobra.Command, _ []string) {
 	if err := initSystem(); err != nil {
 		fmt.Println("init system err:", err)
 		os.Exit(1)

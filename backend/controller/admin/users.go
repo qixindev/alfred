@@ -13,16 +13,38 @@ import (
 // ListUsers
 // @Summary	get user list
 // @Tags	user
-// @Param	tenant	path	string	true	"tenant"	default(default)
+// @Param	tenant		path	string	true	"tenant"		default(default)
+// @Param	pageNum		query	integer	false	"page number"
+// @Param	pageSize	query	integer	false	"page size"
+// @Param	search		query	string	false	"search string"
 // @Success	200
 // @Router	/accounts/admin/{tenant}/users [get]
 func ListUsers(c *gin.Context) {
+	var tenant model.Tenant
+	var page model.Paging
+	if err := internal.New(c).BindQuery(&page).SetTenant(&tenant).Error; err != nil {
+		resp.ErrorRequest(c, err)
+		return
+	}
+	tx := global.DB.Model(&model.User{}).Where("tenant_id = ?", tenant.Id)
+	if page.Search != "" {
+		tx.Where("display_name like ?", "%"+page.Search+"%")
+	}
+	var total int64
+	if err := tx.Count(&total).Error; err != nil {
+		resp.ErrorSqlSelect(c, err, "count client user err")
+		return
+	}
+	if page.PageSize > 0 {
+		tx.Offset(page.PageSize * (page.PageNum - 1)).Limit(page.PageSize)
+	}
+
 	var users []model.User
-	if err := internal.TenantDB(c).Find(&users).Error; err != nil {
+	if err := tx.Find(&users).Error; err != nil {
 		resp.ErrorSqlSelect(c, err, "list tenant users err", true)
 		return
 	}
-	resp.SuccessWithArrayData(c, utils.Filter(users, model.User2AdminDto), 0)
+	resp.SuccessWithPaging(c, utils.Filter(users, model.User2AdminDto), total)
 }
 
 // GetUser
@@ -107,27 +129,58 @@ func UpdateUser(c *gin.Context) {
 		resp.ErrorRequest(c, err)
 		return
 	}
-	hash, err := utils.HashPassword(u.PasswordHash)
-	if err != nil {
-		resp.ErrorUnauthorized(c, nil, "hashPassword err")
-		return
-	}
 
 	user.Username = u.Username
 	user.FirstName = u.FirstName
 	user.LastName = u.LastName
 	user.DisplayName = u.DisplayName
-	user.PasswordHash = hash
 	user.Email = u.Email
 	user.Phone = u.Phone
 	user.Disabled = u.Disabled
 	user.Role = u.Role
 	user.Avatar = u.Avatar
-	if err = global.DB.Save(&user).Error; err != nil {
+	if err := global.DB.Save(&user).Error; err != nil {
 		resp.ErrorSqlUpdate(c, err, "update tenant user err")
 		return
 	}
 	resp.SuccessWithData(c, user.AdminDto())
+}
+
+// UpdateUserPassword
+// @Summary	update user
+// @Tags	user
+// @Param	tenant	path	string	true	"tenant"	default(default)
+// @Param	userId	path	integer	true	"user id"
+// @Param	pwd		body	object	true	"password body"
+// @Success	200
+// @Router	/accounts/admin/{tenant}/users/{userId}/password [put]
+func UpdateUserPassword(c *gin.Context) {
+	userId := c.Param("userId")
+	var user model.User
+	if err := internal.TenantDB(c).First(&user, "id = ?", userId).Error; err != nil {
+		resp.ErrorSqlFirst(c, err, "get user err")
+		return
+	}
+	var u model.User
+	if err := c.BindJSON(&u); err != nil {
+		resp.ErrorRequest(c, err)
+		return
+	}
+	//if user.PasswordHash == "" {
+	//	resp.ErrorRequestWithMsg(c, "password should not be null")
+	//	return
+	//}
+	hash, err := utils.HashPassword(u.PasswordHash)
+	if err != nil {
+		resp.ErrorUnauthorized(c, nil, "hashPassword err")
+		return
+	}
+	if err = internal.TenantDB(c).Model(&model.User{}).Where("id = ?", userId).
+		Update("password_hash", hash).Error; err != nil {
+		resp.ErrorSqlUpdate(c, err, "update tenant user err")
+		return
+	}
+	resp.Success(c)
 }
 
 // DeleteUser
@@ -196,6 +249,7 @@ func AddAdminUsersRoutes(rg *gin.RouterGroup) {
 	rg.GET("/users/:userId", GetUser)
 	rg.POST("/users", NewUser)
 	rg.PUT("/users/:userId", UpdateUser)
+	rg.PUT("/users/:userId/password", UpdateUserPassword)
 	rg.DELETE("/users/:userId", DeleteUser)
 
 	rg.GET("/users/:userId/groups", ListUserGroups)

@@ -25,10 +25,10 @@ type MsgStruct struct {
 	ToParty              string          `json:"toparty"`
 	ToTag                string          `json:"totag"`
 	MsgType              string          `json:"msgtype"`
-	AgentId  int64           `json:"agentid"`
-	Markdown MarkdownContext `json:"markdown"`
-	News     NewsMsg         `json:"news"`
-	Safe     int             `json:"safe"`
+	AgentId              int64           `json:"agentid"`
+	Markdown             MarkdownContext `json:"markdown"`
+	News                 NewsMsg         `json:"news"`
+	Safe                 int             `json:"safe"`
 	EnableIdTrans        int             `json:"enable_id_trans"`
 	EnableDuplicateCheck int             `json:"enable_duplicate_check"`
 }

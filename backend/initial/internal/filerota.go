@@ -9,11 +9,11 @@ import (
 	"time"
 )
 
-type fileRotatelogs struct{}
+type fileRotateLogs struct{}
 
-var FileRotatelogs = new(fileRotatelogs)
+var FileRotateLogs = new(fileRotateLogs)
 
-func (r *fileRotatelogs) GetWriteSyncer(level string) (zapcore.WriteSyncer, error) {
+func (r *fileRotateLogs) GetWriteSyncer(level string) (zapcore.WriteSyncer, error) {
 	fileWriter, err := rotatelogs.New(
 		path.Join(global.CONFIG.Zap.Director, "%Y-%m-%d", level+".logger"),
 		rotatelogs.WithClock(rotatelogs.Local),

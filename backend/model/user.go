@@ -85,6 +85,7 @@ func (u *User) AdminDto() dto.UserAdminDto {
 		PhoneVerified:    u.PhoneVerified,
 		TwoFactorEnabled: u.TwoFactorEnabled,
 		Disabled:         u.Disabled,
+		Sub:              u.Sub,
 	}
 }
 

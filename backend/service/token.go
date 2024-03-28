@@ -34,7 +34,7 @@ func GetClientAccessToken(c *gin.Context, client *model.Client) (string, error) 
 }
 
 func GetAccessToken(c *gin.Context, client *model.Client) (string, error) {
-	user := c.MustGet("user").(*model.User)
+	user := c.MustGet("user").(model.User)
 	tenant := getTenant(c)
 	scope := c.Query("scope")
 	var clientUser model.ClientUser

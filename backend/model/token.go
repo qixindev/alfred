@@ -16,3 +16,9 @@ type TokenCode struct {
 	Client   Client `gorm:"foreignKey:ClientId, TenantId" json:"client"`
 	TenantId uint   `json:"tenantId"`
 }
+
+type Paging struct {
+	Search   string `json:"-" gorm:"-" form:"search"`
+	PageNum  int    `json:"-" gorm:"-" form:"pageNum"`
+	PageSize int    `json:"-" gorm:"-" form:"pageSize"`
+}

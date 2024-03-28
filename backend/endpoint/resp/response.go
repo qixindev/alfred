@@ -27,7 +27,7 @@ func response(c *gin.Context, code int, errCode int, msg string, data any, total
 		}
 		c.JSON(code, &Response{Code: errCode, Message: msg, Data: data})
 	} else {
-		if data == nil || total == 0 {
+		if data == nil {
 			data = []struct{}{}
 		}
 		c.JSON(code, &ArrayResponse{Code: errCode, Message: msg, Total: total, Data: data})
@@ -76,6 +76,12 @@ func SuccessWithArrayData(c *gin.Context, data any, total int64) {
 	} else {
 		c.JSON(http.StatusOK, data)
 	}
+}
+func SuccessWithPaging(c *gin.Context, data any, total int64) {
+	success(c, SuccessMsg, data, total, true)
+}
+func SuccessWithData2(c *gin.Context, data any) {
+	success(c, SuccessMsg, data, 0, false)
 }
 func SuccessAuth(c *gin.Context, data any) {
 	c.JSON(http.StatusOK, data)

@@ -38,4 +38,5 @@ type UserAdminDto struct {
 	PhoneVerified    bool   `json:"phoneVerified"`
 	TwoFactorEnabled bool   `json:"twoFactorEnabled"`
 	Disabled         bool   `json:"disabled"`
+	Sub              string `json:"sub"`
 }
