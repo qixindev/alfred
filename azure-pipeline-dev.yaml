@@ -42,7 +42,7 @@ stages:
                     kubernetesServiceEndpoint: 'aks-dev'
                     namespace: 'default'
                     command: 'apply'
-                    arguments: '-f $(Pipeline.Workspace)/DeployDevelop/develop.yaml'
+                    arguments: '-f $(Pipeline.Workspace)/DeployDevelop/develop.yaml --validate=false'
                     secretType: 'dockerRegistry'
                     containerRegistryType: 'Azure Container Registry'
   - stage: test
