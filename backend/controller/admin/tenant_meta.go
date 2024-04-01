@@ -10,6 +10,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/gin-gonic/gin"
+	"go.uber.org/zap"
 )
 
 // GetLoginPage .
@@ -20,11 +21,13 @@ import (
 // @Router	/accounts/admin/{tenant}/page/login [get]
 func GetLoginPage(c *gin.Context) {
 	tenantName := c.Param("tenant")
+	global.LOG.Info("GetLoginPage", zap.String("tenantName", tenantName))
 	var tenant model.Tenant
 	if err := global.DB.Where("name = ?", tenantName).First(&tenant).Error; err != nil {
 		resp.ErrorSqlFirst(c, err, "get tenant err")
 		return
 	}
+	global.LOG.Info("tenant", zap.Any("tenant", tenant))
 	var loginPage map[string]interface{}
 	if err := json.Unmarshal([]byte(tenant.LoginPage), &loginPage); err != nil {
 		resp.ErrorUnknown(c, err, "unmarshal login page err")
